@@ -93,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 editText_highBattery.setEnabled(checked);
                 break;
         }
-        if(!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
+        if (!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
             checkBox_highBattery.setChecked(false);
     }
 
