@@ -31,7 +31,9 @@ import static android.os.BatteryManager.EXTRA_STATUS;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_AC_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_INTENT_TIME;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_USB_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_HIGH;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_HIGH_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WIRELESS_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
@@ -39,8 +41,6 @@ import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
     private static final int NO_STATE = -1;
-    private static final int WARNING_HIGH = 80;
-    private static final int WARNING_LOW = 20;
     private Context context;
 
     @Override
@@ -50,12 +50,15 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Intent batteryStatus = context.registerReceiver(null, intentFilter);
         if (batteryStatus == null) return;
 
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        int warningHigh = sharedPreferences.getInt(PREF_WARNING_LOW, 20);
+        int warningLow = sharedPreferences.getInt(PREF_WARNING_HIGH, 80);
+
         boolean isCharging = isCharging(context);
         int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
         Log.i(TAG, "batteryLevel = " + batteryLevel);
 
         if (isCharging) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
             int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
             switch (chargingType) {
                 case BATTERY_PLUGGED_AC:
@@ -68,11 +71,11 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     if (!sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
-            if (batteryLevel >= WARNING_HIGH) {
-                showNotification(context.getString(R.string.warining_high) + " " + WARNING_HIGH + "%!");
+            if (batteryLevel >= warningHigh) {
+                showNotification(context.getString(R.string.warining_high) + " " + warningHigh + "%!");
             }
-        } else if (batteryLevel <= WARNING_LOW) {
-            showNotification(context.getString(R.string.warning_low) + " " + WARNING_LOW + "%!");
+        } else if (batteryLevel <= warningLow) {
+            showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
         }
     }
 
