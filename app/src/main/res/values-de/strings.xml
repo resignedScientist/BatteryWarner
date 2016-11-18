@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battery Warner</string>
+    <string name="warining_high">Der Akkustand ist höher als</string>
+    <string name="warning_low">Der Akkustand ist niedriger als</string>
+    <string name="settings">Einstellungen</string>
+</resources>
