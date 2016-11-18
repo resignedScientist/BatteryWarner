@@ -10,6 +10,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
+
+import static com.example.laudien.batterywarner.MainActivity.PREF_IS_ENABLED;
 import static com.example.laudien.batterywarner.MainActivity.SHARED_PREFS;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
@@ -89,5 +92,9 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 .putInt(PREF_WARNING_LOW, Integer.parseInt(editText_lowBattery.getText().toString()))
                 .putInt(PREF_WARNING_HIGH, Integer.parseInt(editText_highBattery.getText().toString()))
                 .apply();
+
+        BatteryAlarmReceiver.cancelExistingAlarm(this);
+        if (sharedPreferences.getBoolean(PREF_IS_ENABLED, true))
+            BatteryAlarmReceiver.setRepeatingAlarm(this, BatteryAlarmReceiver.isCharging(this));
     }
 }
