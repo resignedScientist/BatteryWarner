@@ -28,13 +28,13 @@ import static android.os.BatteryManager.BATTERY_STATUS_FULL;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_STATUS;
-import static com.example.laudien.batterywarner.MainActivity.PREF_INTENT_TIME;
-import static com.example.laudien.batterywarner.MainActivity.SHARED_PREFS;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_AC_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_INTENT_TIME;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_USB_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_HIGH_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW_ENABLED;
 import static com.example.laudien.batterywarner.SettingsActivity.PREF_WIRELESS_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
@@ -59,13 +59,13 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
             switch (chargingType) {
                 case BATTERY_PLUGGED_AC:
-                    if(!sharedPreferences.getBoolean(PREF_AC_ENABLED, true)) return;
+                    if (!sharedPreferences.getBoolean(PREF_AC_ENABLED, true)) return;
                     break;
                 case BATTERY_PLUGGED_USB:
-                    if(!sharedPreferences.getBoolean(PREF_USB_ENABLED, true)) return;
+                    if (!sharedPreferences.getBoolean(PREF_USB_ENABLED, true)) return;
                     break;
                 case BATTERY_PLUGGED_WIRELESS:
-                    if(!sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true)) return;
+                    if (!sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
             if (batteryLevel >= WARNING_HIGH) {
@@ -104,11 +104,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         long interval;
         if (charging) {
-            if(!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
+            if (!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
             interval = 1000 * 60;
-        }
-        else{
-            if(!sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true)) return;
+        } else {
+            if (!sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true)) return;
             interval = INTERVAL_HALF_HOUR;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

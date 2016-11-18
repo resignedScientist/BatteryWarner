@@ -12,10 +12,11 @@ import android.widget.EditText;
 
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
 
-import static com.example.laudien.batterywarner.MainActivity.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.MainActivity.SHARED_PREFS;
-
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+    public static final String SHARED_PREFS = "BatteryWarner";
+    public static final String PREF_FIRST_START = "FirstStart";
+    public static final String PREF_INTENT_TIME = "PendingIntentTime";
+    public static final String PREF_IS_ENABLED = "IsEnabled";
     public static final String PREF_USB_ENABLED = "usbEnabled";
     public static final String PREF_AC_ENABLED = "acEnabled";
     public static final String PREF_WIRELESS_ENABLED = "wirelessEnabled";

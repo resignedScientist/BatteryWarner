@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
-
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.laudien.batterywarner.MainActivity.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.MainActivity.SHARED_PREFS;
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
 
 public class BootReceiver extends BroadcastReceiver {
 

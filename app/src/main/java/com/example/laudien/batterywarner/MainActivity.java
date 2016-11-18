@@ -12,11 +12,11 @@ import android.widget.ToggleButton;
 
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
 
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_FIRST_START;
+import static com.example.laudien.batterywarner.SettingsActivity.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String SHARED_PREFS = "BatteryWarner";
-    public static final String PREF_FIRST_START = "FirstStart";
-    public static final String PREF_INTENT_TIME = "PendingIntentTime";
-    public static final String PREF_IS_ENABLED = "IsEnabled";
     private static final String TAG = "MainActivity";
 
     @Override
