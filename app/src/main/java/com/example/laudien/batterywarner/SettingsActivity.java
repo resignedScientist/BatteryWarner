@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     public static final String PREF_WARNING_LOW = "warningLow";
     public static final String PREF_WARNING_HIGH = "warningHigh";
     private SharedPreferences sharedPreferences;
+    private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery;
     private EditText editText_lowBattery, editText_highBattery;
 
     @Override
@@ -33,25 +34,25 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         setContentView(R.layout.activity_settings);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        CheckBox checkBox_usb = (CheckBox) findViewById(R.id.checkBox_usb);
+        editText_lowBattery = (EditText) findViewById(R.id.editText_lowBattery);
+        editText_highBattery = (EditText) findViewById(R.id.editText_highBattery);
+        checkBox_usb = (CheckBox) findViewById(R.id.checkBox_usb);
+        checkBox_ac = (CheckBox) findViewById(R.id.checkBox_ac);
+        checkBox_wireless = (CheckBox) findViewById(R.id.checkBox_wireless);
+        checkBox_lowBattery = (CheckBox) findViewById(R.id.checkBox_lowBattery);
+        checkBox_highBattery = (CheckBox) findViewById(R.id.checkBox_highBattery);
+
         checkBox_usb.setOnCheckedChangeListener(this);
         checkBox_usb.setChecked(sharedPreferences.getBoolean(PREF_USB_ENABLED, true));
-        CheckBox checkBox_ac = (CheckBox) findViewById(R.id.checkBox_ac);
         checkBox_ac.setOnCheckedChangeListener(this);
         checkBox_ac.setChecked(sharedPreferences.getBoolean(PREF_AC_ENABLED, true));
-        CheckBox checkBox_wireless = (CheckBox) findViewById(R.id.checkBox_wireless);
         checkBox_wireless.setOnCheckedChangeListener(this);
         checkBox_wireless.setChecked(sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true));
-        CheckBox checkBox_lowBattery = (CheckBox) findViewById(R.id.checkBox_lowBattery);
         checkBox_lowBattery.setOnCheckedChangeListener(this);
         checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true));
-        CheckBox checkBox_highBattery = (CheckBox) findViewById(R.id.checkBox_highBattery);
         checkBox_highBattery.setOnCheckedChangeListener(this);
         checkBox_highBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true));
-
-        editText_lowBattery = (EditText) findViewById(R.id.editText_lowBattery);
         editText_lowBattery.setText(Integer.toString(sharedPreferences.getInt(PREF_WARNING_LOW, 20)));
-        editText_highBattery = (EditText) findViewById(R.id.editText_highBattery);
         editText_highBattery.setText(Integer.toString(sharedPreferences.getInt(PREF_WARNING_HIGH, 80)));
     }
 
@@ -79,11 +80,21 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 break;
             case R.id.checkBox_lowBattery:
                 sharedPreferences.edit().putBoolean(PREF_WARNING_LOW_ENABLED, checked).apply();
+                editText_lowBattery.setEnabled(checked);
                 break;
             case R.id.checkBox_highBattery:
                 sharedPreferences.edit().putBoolean(PREF_WARNING_HIGH_ENABLED, checked).apply();
+                checkBox_ac.setEnabled(checked);
+                checkBox_usb.setEnabled(checked);
+                checkBox_wireless.setEnabled(checked);
+                checkBox_ac.setChecked(checked);
+                checkBox_usb.setChecked(checked);
+                checkBox_wireless.setChecked(checked);
+                editText_highBattery.setEnabled(checked);
                 break;
         }
+        if(!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
+            checkBox_highBattery.setChecked(false);
     }
 
     @Override
