@@ -22,21 +22,21 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
 
-        <receiver android:name=".BatteryBroadcastReceiver" />
+        <receiver android:name=".Receiver.BatteryAlarmReceiver" />
 
-        <receiver android:name=".BootReceiver">
+        <receiver android:name=".Receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".ChargingReceiver">
+        <receiver android:name=".Receiver.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".DischargingReceiver">
+        <receiver android:name=".Receiver.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
