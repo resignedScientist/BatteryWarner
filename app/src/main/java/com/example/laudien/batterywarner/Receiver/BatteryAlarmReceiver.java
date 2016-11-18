@@ -101,8 +101,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
     }
 
     public static void setRepeatingAlarm(Context context, boolean charging) {
-        Log.i(TAG, "Repeating alarm was set!");
-        Log.i(TAG, "Charging = " + charging);
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         long interval;
         if (charging) {
@@ -119,10 +117,11 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
         alarmManager.setRepeating(ELAPSED_REALTIME, time, interval, pendingIntent);
         sharedPreferences.edit().putLong(PREF_INTENT_TIME, time).apply();
+        Log.i(TAG, "Repeating alarm was set!");
+        Log.i(TAG, "Charging = " + charging);
     }
 
     public static void cancelExistingAlarm(Context context) {
-        Log.i(TAG, "Repeating alarm was canceled!");
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         long oldTime = sharedPreferences.getLong(PREF_INTENT_TIME, NO_STATE);
 
@@ -133,5 +132,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     (int) oldTime, oldBatteryIntent, 0);
             alarmManager.cancel(oldPendingIntent);
         }
+        Log.i(TAG, "Repeating alarm was canceled!");
     }
 }
