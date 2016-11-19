@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner;
+package com.example.laudien.batterywarner.Activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,24 +14,26 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.laudien.batterywarner.R;
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
+
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
+import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WIRELESS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Contract.WARNING_HIGH_MIN;
+import static com.example.laudien.batterywarner.Contract.WARNING_LOW_MAX;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
         SeekBar.OnSeekBarChangeListener {
-    public static final String SHARED_PREFS = "BatteryWarner";
-    public static final String PREF_FIRST_START = "FirstStart";
-    public static final String PREF_INTENT_TIME = "PendingIntentTime";
-    public static final String PREF_IS_ENABLED = "IsEnabled";
-    public static final String PREF_USB_ENABLED = "usbEnabled";
-    public static final String PREF_AC_ENABLED = "acEnabled";
-    public static final String PREF_WIRELESS_ENABLED = "wirelessEnabled";
-    public static final String PREF_WARNING_LOW_ENABLED = "warningLowEnabled";
-    public static final String PREF_WARNING_HIGH_ENABLED = "warningHighEnabled";
-    public static final String PREF_WARNING_LOW = "warningLow";
-    public static final String PREF_WARNING_HIGH = "warningHigh";
     private static final String TAG = "SettingsActivity";
-    private static final int WARNING_HIGH_MIN = 60;
-    private static final int WARNING_LOW_MAX = 40;
     private SharedPreferences sharedPreferences;
     private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
@@ -65,8 +67,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         checkBox_wireless.setChecked(sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true));
         checkBox_lowBattery.setOnCheckedChangeListener(this);
         checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true));
-        seekBar_lowBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_LOW, 20));
-        seekBar_highBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_HIGH, 80));
+        seekBar_lowBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_LOW, DEF_WARNING_LOW));
+        seekBar_highBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_HIGH, DEF_WARNING_HIGH));
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
@@ -135,13 +137,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         int state = seekBar.getProgress();
         switch (seekBar.getId()) {
             case R.id.seekBar_lowBattery:
-                if(state > WARNING_LOW_MAX)
+                if (state > WARNING_LOW_MAX)
                     seekBar.setProgress(WARNING_LOW_MAX);
                 else
                     textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + state + "%");
                 break;
             case R.id.seekBar_highBattery:
-                if(state < WARNING_HIGH_MIN)
+                if (state < WARNING_HIGH_MIN)
                     seekBar.setProgress(WARNING_HIGH_MIN);
                 else
                     textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + state + "%");

@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Activities.SettingsActivity.PREF_WARNING_LOW_ENABLED;
+import static com.example.laudien.batterywarner.Activities.SettingsActivity.SHARED_PREFS;
 
 public class DischargingReceiver extends BroadcastReceiver {
     @Override

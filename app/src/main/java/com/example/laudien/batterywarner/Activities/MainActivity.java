@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner;
+package com.example.laudien.batterywarner.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,11 +10,12 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import com.example.laudien.batterywarner.R;
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
 
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_FIRST_START;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Contract.PREF_FIRST_START;
+import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";

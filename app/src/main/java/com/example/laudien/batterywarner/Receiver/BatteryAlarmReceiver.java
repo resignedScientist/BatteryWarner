@@ -17,7 +17,6 @@ import android.util.Log;
 import com.example.laudien.batterywarner.R;
 
 import static android.app.AlarmManager.ELAPSED_REALTIME;
-import static android.app.AlarmManager.INTERVAL_HALF_HOUR;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
@@ -28,15 +27,19 @@ import static android.os.BatteryManager.BATTERY_STATUS_FULL;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_STATUS;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_AC_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_INTENT_TIME;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_USB_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_HIGH;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_HIGH_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WARNING_LOW_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.PREF_WIRELESS_ENABLED;
-import static com.example.laudien.batterywarner.SettingsActivity.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Contract.INTERVAL_CHARGING;
+import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING;
+import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_INTENT_TIME;
+import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW;
+import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_WIRELESS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
@@ -51,8 +54,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         if (batteryStatus == null) return;
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        int warningLow = sharedPreferences.getInt(PREF_WARNING_LOW, 80);
-        int warningHigh = sharedPreferences.getInt(PREF_WARNING_HIGH, 20);
+        int warningLow = sharedPreferences.getInt(PREF_WARNING_LOW, DEF_WARNING_LOW);
+        int warningHigh = sharedPreferences.getInt(PREF_WARNING_HIGH, DEF_WARNING_HIGH);
 
         boolean isCharging = isCharging(context);
         int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
@@ -108,10 +111,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         long interval;
         if (charging) {
             if (!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
-            interval = 1000 * 60;
+            interval = INTERVAL_CHARGING;
         } else {
             if (!sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true)) return;
-            interval = INTERVAL_HALF_HOUR;
+            interval = INTERVAL_DISCHARGING;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long time = SystemClock.elapsedRealtime();
