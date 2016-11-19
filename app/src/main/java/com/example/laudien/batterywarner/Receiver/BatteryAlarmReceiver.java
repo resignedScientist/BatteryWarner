@@ -31,6 +31,7 @@ import static com.example.laudien.batterywarner.Contract.INTERVAL_CHARGING;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING;
 import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_INTENT_TIME;
+import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
@@ -108,6 +109,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     public static void setRepeatingAlarm(Context context, boolean charging) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        if (!sharedPreferences.getBoolean(PREF_IS_ENABLED, true)) return;
         long interval;
         if (charging) {
             if (!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
