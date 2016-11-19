@@ -3,4 +3,11 @@
     <string name="warining_high">Battery is over</string>
     <string name="warning_low">Battery is under</string>
     <string name="settings">Settings</string>
+    <string name="low_battery_warning">Low battery warning:</string>
+    <string name="high_battery_warning">High battery warning:</string>
+    <string name="enabled">Enabled</string>
+    <string name="enable_on_ac">Enable on AC charging</string>
+    <string name="enable_on_usb">Enable on USB charging</string>
+    <string name="enable_on_wireless">Enable on wireless charging</string>
+    <string name="settings_saved">Settings saved!</string>
 </resources>

@@ -99,8 +99,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 if (sharedPreferences.getBoolean(PREF_IS_ENABLED, true))
                     BatteryAlarmReceiver.setRepeatingAlarm(this, BatteryAlarmReceiver.isCharging(this));
 
-                Log.i(TAG, "Settings saved!");
-                Toast.makeText(getApplicationContext(), "Settings saved!", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, getString(R.string.settings_saved));
+                Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
                 finish(); // close the settings
                 break;
         }
@@ -129,20 +129,19 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        int stateInt = seekBar.getProgress();
-        String state = String.valueOf(stateInt);
+        int state = seekBar.getProgress();
         switch (seekBar.getId()) {
             case R.id.seekBar_lowBattery:
-                if(stateInt > WARNING_LOW_MAX)
+                if(state > WARNING_LOW_MAX)
                     seekBar.setProgress(WARNING_LOW_MAX);
                 else
-                    textView_lowBattery.setText("Low Battery warning: " + state + "%");
+                    textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + state + "%");
                 break;
             case R.id.seekBar_highBattery:
-                if(stateInt < WARNING_HIGH_MIN)
+                if(state < WARNING_HIGH_MIN)
                     seekBar.setProgress(WARNING_HIGH_MIN);
                 else
-                    textView_highBattery.setText("High Battery warning: " + state + "%");
+                    textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + state + "%");
                 break;
         }
     }

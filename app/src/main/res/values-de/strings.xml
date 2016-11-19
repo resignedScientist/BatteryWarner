@@ -4,4 +4,11 @@
     <string name="warining_high">Der Akkustand ist höher als</string>
     <string name="warning_low">Der Akkustand ist niedriger als</string>
     <string name="settings">Einstellungen</string>
+    <string name="low_battery_warning">Warnung beim Entladen:</string>
+    <string name="high_battery_warning">Warnung beim Laden:</string>
+    <string name="enabled">Aktiviert</string>
+    <string name="enable_on_ac">Aktiviert beim Laden mit dem Ladegerät</string>
+    <string name="enable_on_usb">Aktiviert beim Laden per USB</string>
+    <string name="enable_on_wireless">Aktiviert beim kabellosen Laden</string>
+    <string name="settings_saved">Die Einstellungen wurden gespeichert!</string>
 </resources>

@@ -8,14 +8,14 @@
         android:id="@+id/textView_lowBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Low Battery warning:"
+        android:text="@string/low_battery_warning"
         android:textSize="18sp" />
 
     <CheckBox
         android:id="@+id/checkBox_lowBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enabled" />
+        android:text="@string/enabled" />
 
     <SeekBar
         android:layout_width="match_parent"
@@ -32,14 +32,14 @@
         android:id="@+id/textView_highBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="High Battery warning:"
+        android:text="@string/high_battery_warning"
         android:textSize="18sp" />
 
     <CheckBox
         android:id="@+id/checkBox_highBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enabled" />
+        android:text="@string/enabled" />
 
     <SeekBar
         android:layout_width="match_parent"
@@ -56,18 +56,18 @@
         android:id="@+id/checkBox_ac"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enable on AC charging" />
+        android:text="@string/enable_on_ac" />
 
     <CheckBox
         android:id="@+id/checkBox_usb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enable on USB charging" />
+        android:text="@string/enable_on_usb" />
 
     <CheckBox
         android:id="@+id/checkBox_wireless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enable on wireless charging" />
+        android:text="@string/enable_on_wireless" />
 
 </LinearLayout>
