@@ -43,6 +43,8 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         setContentView(R.layout.activity_settings);
         sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
+        textView_lowBattery = (TextView) findViewById(R.id.textView_lowBattery);
+        textView_highBattery = (TextView) findViewById(R.id.textView_highBattery);
         seekBar_lowBattery = (SeekBar) findViewById(R.id.seekBar_lowBattery);
         seekBar_highBattery = (SeekBar) findViewById(R.id.seekBar_highBattery);
         checkBox_usb = (CheckBox) findViewById(R.id.checkBox_usb);
@@ -50,15 +52,11 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         checkBox_wireless = (CheckBox) findViewById(R.id.checkBox_wireless);
         checkBox_lowBattery = (CheckBox) findViewById(R.id.checkBox_lowBattery);
         checkBox_highBattery = (CheckBox) findViewById(R.id.checkBox_highBattery);
-        textView_lowBattery = (TextView) findViewById(R.id.textView_lowBattery);
-        textView_highBattery = (TextView) findViewById(R.id.textView_highBattery);
 
         checkBox_highBattery.setOnCheckedChangeListener(this);
         checkBox_highBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true));
         seekBar_lowBattery.setOnSeekBarChangeListener(this);
         seekBar_highBattery.setOnSeekBarChangeListener(this);
-        seekBar_lowBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_LOW, 20));
-        seekBar_highBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_HIGH, 80));
         checkBox_usb.setOnCheckedChangeListener(this);
         checkBox_usb.setChecked(sharedPreferences.getBoolean(PREF_USB_ENABLED, true));
         checkBox_ac.setOnCheckedChangeListener(this);
@@ -67,6 +65,11 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         checkBox_wireless.setChecked(sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true));
         checkBox_lowBattery.setOnCheckedChangeListener(this);
         checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true));
+        seekBar_lowBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_LOW, 20));
+        seekBar_highBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_HIGH, 80));
+
+        textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
+        textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
     }
 
     @Override
