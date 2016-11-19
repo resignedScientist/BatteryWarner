@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.laudien.batterywarner.Activities.SettingsActivity.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.Activities.SettingsActivity.SHARED_PREFS;
+import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
 
 public class BootReceiver extends BroadcastReceiver {
 
