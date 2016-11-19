@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView_lowBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Low Battery warning:" />
@@ -16,15 +16,15 @@
         android:layout_height="wrap_content"
         android:text="Enabled" />
 
-    <EditText
-        android:id="@+id/editText_lowBattery"
-        android:layout_width="100dp"
+    <SeekBar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
+        android:id="@+id/seekBar_lowBattery"
+        android:max="100"
+        android:progress="20" />
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/textView_highBattery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="High Battery warning:" />
@@ -53,10 +53,11 @@
         android:layout_height="wrap_content"
         android:text="Enable on wireless charging" />
 
-    <EditText
-        android:id="@+id/editText_highBattery"
-        android:layout_width="100dp"
+    <SeekBar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number" />
+        android:id="@+id/seekBar_highBattery"
+        android:max="100"
+        android:progress="20" />
+
 </LinearLayout>
