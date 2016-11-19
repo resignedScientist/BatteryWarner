@@ -27,6 +27,8 @@ import static android.os.BatteryManager.BATTERY_STATUS_FULL;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_STATUS;
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
+import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_CHARGING;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING;
 import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
@@ -39,8 +41,6 @@ import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_WIRELESS_ENABLED;
 import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
-import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
-import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
