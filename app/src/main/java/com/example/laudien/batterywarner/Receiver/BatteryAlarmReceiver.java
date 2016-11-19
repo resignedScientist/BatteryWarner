@@ -72,7 +72,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     break;
             }
             if (batteryLevel >= warningHigh) {
-                showNotification(context.getString(R.string.warining_high) + " " + warningHigh + "%!");
+                showNotification(context.getString(R.string.warning_high) + " " + warningHigh + "%!");
             }
         } else if (batteryLevel <= warningLow) {
             showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
