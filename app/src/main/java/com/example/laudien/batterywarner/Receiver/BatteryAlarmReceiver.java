@@ -88,30 +88,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    public static boolean isCharging(Context context) {
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, intentFilter);
-        if (batteryStatus == null) return false;
-        int status = batteryStatus.getIntExtra(EXTRA_STATUS, NO_STATE);
-        return status == BATTERY_STATUS_CHARGING || status == BATTERY_STATUS_FULL;
-    }
-
-    public static int getBatteryLevel(Context context) {
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, intentFilter);
-        if (batteryStatus == null) return NO_STATE;
-
-        return batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
-    }
-
-    private static int getChargingType(Context context) {
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, intentFilter);
-        if (batteryStatus == null) return NO_STATE;
-
-        return batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
-    }
-
     private void showNotification(String contentText) {
         Log.i(TAG, "Showing notification: " + contentText);
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -167,5 +143,29 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             alarmManager.cancel(oldPendingIntent);
         }
         Log.i(TAG, "Repeating alarm was canceled!");
+    }
+
+    public static boolean isCharging(Context context) {
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, intentFilter);
+        if (batteryStatus == null) return false;
+        int status = batteryStatus.getIntExtra(EXTRA_STATUS, NO_STATE);
+        return status == BATTERY_STATUS_CHARGING || status == BATTERY_STATUS_FULL;
+    }
+
+    public static int getBatteryLevel(Context context) {
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, intentFilter);
+        if (batteryStatus == null) return NO_STATE;
+
+        return batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
+    }
+
+    private static int getChargingType(Context context) {
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, intentFilter);
+        if (batteryStatus == null) return NO_STATE;
+
+        return batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
     }
 }
