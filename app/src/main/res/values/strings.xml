@@ -12,4 +12,6 @@
     <string name="settings_saved">Settings saved!</string>
     <string name="intro_1_title">Welcome to Battery Warner!</string>
     <string name="intro_1_description">It will help your battery to live longer!</string>
+    <string name="enabled_info">Successfully enabled!</string>
+    <string name="disabled_info">Successfully disabled!</string>
 </resources>

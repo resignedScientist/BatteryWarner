@@ -12,4 +12,7 @@
     <string name="enable_on_wireless">Aktiviert beim kabellosen Laden</string>
     <string name="settings_saved">Die Einstellungen wurden gespeichert!</string>
     <string name="intro_1_title">Willkommen beim BatteryWarner!</string>
+    <string name="intro_1_description">Sie hilft deiner Battery, länger zu leben!</string>
+    <string name="enabled_info">Erfolgreich aktiviert!</string>
+    <string name="disabled_info">Erfolgreich deaktiviert!</string>
 </resources>

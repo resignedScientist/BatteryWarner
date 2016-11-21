@@ -8,11 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.laudien.batterywarner.R;
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
 
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.example.laudien.batterywarner.Contract.PREF_FIRST_START;
 import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
 import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
@@ -41,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                 if (isChecked) {
                     BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext(), true);
-                }
+                    Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), LENGTH_SHORT).show();
             }
         });
 
