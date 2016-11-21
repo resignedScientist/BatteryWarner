@@ -1,5 +1,6 @@
 package com.example.laudien.batterywarner;
 
+import static android.app.AlarmManager.INTERVAL_FIFTEEN_MINUTES;
 import static android.app.AlarmManager.INTERVAL_HALF_HOUR;
 
 public class Contract {
@@ -20,7 +21,9 @@ public class Contract {
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;
     public static final long INTERVAL_CHARGING = 1000 * 60;
-    public static final long INTERVAL_DISCHARGING = INTERVAL_HALF_HOUR;
+    public static final long INTERVAL_DISCHARGING_LONG = INTERVAL_HALF_HOUR;
+    public static final long INTERVAL_DISCHARGING_SHORT = INTERVAL_FIFTEEN_MINUTES;
+    public static final long INTERVAL_DISCHARGING_VERY_SHORT = INTERVAL_CHARGING;
 
     // default values
     public static final int DEF_WARNING_LOW = 20;
