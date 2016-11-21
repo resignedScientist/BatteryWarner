@@ -56,7 +56,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
         int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
         boolean isCharging = isCharging(context);
-        Log.i(TAG, "batteryLevel = " + batteryLevel);
+        Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         int warningLow = sharedPreferences.getInt(PREF_WARNING_LOW, DEF_WARNING_LOW);
@@ -142,8 +142,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
         alarmManager.setRepeating(ELAPSED_REALTIME, time, interval, pendingIntent);
         sharedPreferences.edit().putLong(PREF_INTENT_TIME, time).apply();
-        Log.i(TAG, "Repeating alarm was set! interval = " + interval);
-        Log.i(TAG, "firstTimeIsNow = " + firstTimeIsNow);
+        Log.i(TAG, "Repeating alarm was set! interval = " + interval/60000 + " min");
     }
 
     public static void cancelExistingAlarm(Context context) {
