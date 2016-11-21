@@ -86,6 +86,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             } else if (batteryLevel <= warningLow + 10) {
                 cancelExistingAlarm(context);
                 setRepeatingAlarm(context, false);
+                Log.i(TAG, "Changed battery check frequency to a higher rate!");
             }
         }
     }
@@ -126,16 +127,15 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 interval = INTERVAL_DISCHARGING_LONG;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        long time;
-        if(firstTimeIsNow)
-            time = SystemClock.elapsedRealtime();
-        else
-            time = SystemClock.elapsedRealtime() + interval;
+        long time = SystemClock.elapsedRealtime();
+        if(!firstTimeIsNow)
+            time += interval;
         Intent batteryIntent = new Intent(context, BatteryAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
         alarmManager.setRepeating(ELAPSED_REALTIME, time, interval, pendingIntent);
         sharedPreferences.edit().putLong(PREF_INTENT_TIME, time).apply();
-        Log.i(TAG, "Repeating alarm was set!");
+        Log.i(TAG, "Repeating alarm was set! interval = " + interval);
+        Log.i(TAG, "firstTimeIsNow = " + firstTimeIsNow);
     }
 
     public static void cancelExistingAlarm(Context context) {
