@@ -17,13 +17,16 @@ public class Contract {
     public static final String PREF_WARNING_LOW = "warningLow";
     public static final String PREF_WARNING_HIGH = "warningHigh";
 
-    // values
+    // min and max values
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;
-    public static final long INTERVAL_CHARGING = 1000 * 60;
-    public static final long INTERVAL_DISCHARGING_LONG = INTERVAL_HALF_HOUR;
-    public static final long INTERVAL_DISCHARGING_SHORT = INTERVAL_FIFTEEN_MINUTES;
-    public static final long INTERVAL_DISCHARGING_VERY_SHORT = INTERVAL_CHARGING;
+
+    // charge checking intervals
+    public static final long INTERVAL_CHARGING = 1000 * 60; // 1 minute
+    public static final long INTERVAL_DISCHARGING_LONG = INTERVAL_HALF_HOUR; // 30 minutes
+    public static final long INTERVAL_DISCHARGING_VERY_LONG = 2 * INTERVAL_HALF_HOUR; // 1 hour
+    public static final long INTERVAL_DISCHARGING_SHORT = INTERVAL_FIFTEEN_MINUTES; // 15 minutes
+    public static final long INTERVAL_DISCHARGING_VERY_SHORT = 1000 * 60; // 1 minute
 
     // default values
     public static final int DEF_WARNING_LOW = 20;

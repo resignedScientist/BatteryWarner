@@ -32,6 +32,7 @@ import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_CHARGING;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING_LONG;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING_SHORT;
+import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING_VERY_LONG;
 import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING_VERY_SHORT;
 import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_INTENT_TIME;
@@ -127,8 +128,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 interval = INTERVAL_DISCHARGING_VERY_SHORT;
             else if (batteryLevel <= warningLow + 10)
                 interval = INTERVAL_DISCHARGING_SHORT;
-            else
+            else if (batteryLevel <= warningLow + 20)
                 interval = INTERVAL_DISCHARGING_LONG;
+            else
+                interval = INTERVAL_DISCHARGING_VERY_LONG;
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long time = SystemClock.elapsedRealtime();
