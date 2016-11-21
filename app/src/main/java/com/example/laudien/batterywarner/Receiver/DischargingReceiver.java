@@ -15,10 +15,10 @@ public class DischargingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
+        Log.i(TAG, "User stopped charging!");
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         if (context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).getBoolean(PREF_WARNING_LOW_ENABLED, true))
-            BatteryAlarmReceiver.setRepeatingAlarm(context, true);
-        Log.i(TAG, "User stopped charging!");
+            BatteryAlarmReceiver.setRepeatingAlarm(context, false);
     }
 }

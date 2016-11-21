@@ -47,14 +47,11 @@ import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
     private static final int NO_STATE = -1;
-    private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-
         Intent batteryStatus = getBatteryStatus(context);
-        if(batteryStatus == null) return;
+        if (batteryStatus == null) return;
 
         int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
         boolean isCharging = isCharging(context);
@@ -78,20 +75,20 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     break;
             }
             if (batteryLevel >= warningHigh) {
-                showNotification(context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+                showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
             }
         } else {
             if (batteryLevel <= warningLow) {
-                showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+                showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
             } else if (batteryLevel <= warningLow + 10) {
+                Log.i(TAG, "Changing battery check frequency to a higher rate...");
                 cancelExistingAlarm(context);
                 setRepeatingAlarm(context, false);
-                Log.i(TAG, "Changed battery check frequency to a higher rate!");
             }
         }
     }
 
-    private void showNotification(String contentText) {
+    private static void showNotification(Context context, String contentText) {
         Log.i(TAG, "Showing notification: " + contentText);
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification.Builder builder = new Notification.Builder(context)
@@ -113,13 +110,20 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
         int batteryLevel = getBatteryStatus(context).getIntExtra(EXTRA_LEVEL, NO_STATE);
         int warningLow = sharedPreferences.getInt(PREF_WARNING_LOW, DEF_WARNING_LOW);
+        int warningHigh = sharedPreferences.getInt(PREF_WARNING_HIGH, DEF_WARNING_HIGH);
         long interval;
         if (isCharging(context)) {
             if (!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
+            if(batteryLevel >= warningHigh){
+                showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+            }
             interval = INTERVAL_CHARGING;
         } else {
             if (!sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true)) return;
-            if (batteryLevel <= warningLow + 5)
+            if (batteryLevel <= warningLow) {
+                showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
+                return;
+            } else if (batteryLevel <= warningLow + 5)
                 interval = INTERVAL_DISCHARGING_VERY_SHORT;
             else if (batteryLevel <= warningLow + 10)
                 interval = INTERVAL_DISCHARGING_SHORT;
@@ -128,7 +132,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long time = SystemClock.elapsedRealtime();
-        if(!firstTimeIsNow)
+        if (!firstTimeIsNow)
             time += interval;
         Intent batteryIntent = new Intent(context, BatteryAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
@@ -152,7 +156,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "Repeating alarm was canceled!");
     }
 
-    public static Intent getBatteryStatus(Context context){
+    public static Intent getBatteryStatus(Context context) {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         return context.registerReceiver(null, intentFilter);
     }
