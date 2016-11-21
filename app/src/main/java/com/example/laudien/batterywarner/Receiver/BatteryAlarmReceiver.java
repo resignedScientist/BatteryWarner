@@ -117,6 +117,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             if (!sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true)) return;
             if(batteryLevel >= warningHigh){
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+                return;
             }
             interval = INTERVAL_CHARGING;
         } else {
