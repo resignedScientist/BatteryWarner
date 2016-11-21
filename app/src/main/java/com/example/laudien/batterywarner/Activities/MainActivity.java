@@ -46,9 +46,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        if (firstStart)
+        if (firstStart) {
             sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
-        else
+            //startActivity(new Intent(this, IntroActivity.class));
+        } else
             BatteryAlarmReceiver.cancelExistingAlarm(this);
         BatteryAlarmReceiver.setRepeatingAlarm(this, BatteryAlarmReceiver.isCharging(this));
     }
