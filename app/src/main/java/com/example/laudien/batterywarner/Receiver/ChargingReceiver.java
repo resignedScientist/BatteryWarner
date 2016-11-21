@@ -18,7 +18,7 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         if (context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).getBoolean(PREF_WARNING_HIGH_ENABLED, true))
-            BatteryAlarmReceiver.setRepeatingAlarm(context);
+            BatteryAlarmReceiver.setRepeatingAlarm(context, true);
         Log.i(TAG, "User started charging!");
     }
 }

@@ -19,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
 
         if (isChecked) {
-            BatteryAlarmReceiver.setRepeatingAlarm(context);
+            BatteryAlarmReceiver.setRepeatingAlarm(context, true);
         }
     }
 }

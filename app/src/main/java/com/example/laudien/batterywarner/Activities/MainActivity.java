@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
         Button btn_settings = (Button) findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
-        ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
 
         toggleButton.setChecked(isChecked);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
                 BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                 if (isChecked) {
-                    BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext());
+                    BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext(), true);
                 }
             }
         });
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //startActivity(new Intent(this, IntroActivity.class));
         } else
             BatteryAlarmReceiver.cancelExistingAlarm(this);
-        BatteryAlarmReceiver.setRepeatingAlarm(this);
+        BatteryAlarmReceiver.setRepeatingAlarm(this, true);
     }
 
     @Override

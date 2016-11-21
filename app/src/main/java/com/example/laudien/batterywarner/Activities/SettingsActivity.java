@@ -102,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 // restart the alarm (if enabled)
                 BatteryAlarmReceiver.cancelExistingAlarm(this);
                 if (sharedPreferences.getBoolean(PREF_IS_ENABLED, true))
-                    BatteryAlarmReceiver.setRepeatingAlarm(this);
+                    BatteryAlarmReceiver.setRepeatingAlarm(this, true);
 
                 Log.i(TAG, getString(R.string.settings_saved));
                 Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
