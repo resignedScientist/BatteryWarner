@@ -40,9 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
                 BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                 if (isChecked) {
-                    BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext(),
-                            BatteryAlarmReceiver.isCharging(getApplicationContext()),
-                            BatteryAlarmReceiver.getBatteryLevel(getApplicationContext()));
+                    BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext());
                 }
             }
         });
@@ -52,8 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //startActivity(new Intent(this, IntroActivity.class));
         } else
             BatteryAlarmReceiver.cancelExistingAlarm(this);
-        BatteryAlarmReceiver.setRepeatingAlarm(this, BatteryAlarmReceiver.isCharging(this),
-                BatteryAlarmReceiver.getBatteryLevel(this));
+        BatteryAlarmReceiver.setRepeatingAlarm(this);
     }
 
     @Override
