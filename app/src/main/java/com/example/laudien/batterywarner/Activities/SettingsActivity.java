@@ -1,6 +1,9 @@
 package com.example.laudien.batterywarner.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -8,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
@@ -17,10 +22,13 @@ import android.widget.Toast;
 import com.example.laudien.batterywarner.R;
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
 
+import static android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI;
 import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
 import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
+import static com.example.laudien.batterywarner.Contract.PICK_SOUND_REQUEST;
 import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_SOUND_URI;
 import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
@@ -32,12 +40,13 @@ import static com.example.laudien.batterywarner.Contract.WARNING_HIGH_MIN;
 import static com.example.laudien.batterywarner.Contract.WARNING_LOW_MAX;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
-        SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     private static final String TAG = "SettingsActivity";
     private SharedPreferences sharedPreferences;
     private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
     private TextView textView_lowBattery, textView_highBattery;
+    Uri sound;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +81,16 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
+
+        Button btn_sound = (Button) findViewById(R.id.button_sound);
+        btn_sound.setOnClickListener(this);
+
+        // notification sound
+        String uri = sharedPreferences.getString(PREF_SOUND_URI, "");
+        if (!uri.equals(""))
+            sound = Uri.parse(uri); // saved URI
+        else // default URI
+            sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
     @Override
@@ -97,6 +116,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                         .putBoolean(PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
                         .putInt(PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
                         .putInt(PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
+                        .putString(PREF_SOUND_URI, sound.toString())
                         .apply();
 
                 // restart the alarm (if enabled)
@@ -169,5 +189,30 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         }
         if (logText != null)
             Log.i(TAG, logText);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button_sound:
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, getString(R.string.btn_notification) + ":");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, sound);
+                startActivityForResult(intent, PICK_SOUND_REQUEST);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != RESULT_OK) return;
+        switch (requestCode){
+            case PICK_SOUND_REQUEST: // notification sound picker
+                sound = data.getParcelableExtra(EXTRA_RINGTONE_PICKED_URI);
+                break;
+        }
     }
 }

@@ -70,4 +70,15 @@
         android:layout_height="wrap_content"
         android:text="@string/enable_on_wireless" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <Button
+        android:id="@+id/button_sound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_notification"
+        android:textAllCaps="false" />
+
 </LinearLayout>

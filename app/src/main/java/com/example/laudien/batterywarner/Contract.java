@@ -16,6 +16,7 @@ public class Contract {
     public static final String PREF_WARNING_HIGH_ENABLED = "warningHighEnabled";
     public static final String PREF_WARNING_LOW = "warningLow";
     public static final String PREF_WARNING_HIGH = "warningHigh";
+    public static final String PREF_SOUND_URI = "savedSoundUri";
 
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
@@ -31,4 +32,7 @@ public class Contract {
     // default values
     public static final int DEF_WARNING_LOW = 20;
     public static final int DEF_WARNING_HIGH = 80;
+
+    // intent request codes
+    public static final int PICK_SOUND_REQUEST = 1;
 }

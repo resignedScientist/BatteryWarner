@@ -37,6 +37,7 @@ import static com.example.laudien.batterywarner.Contract.INTERVAL_DISCHARGING_VE
 import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_INTENT_TIME;
 import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.example.laudien.batterywarner.Contract.PREF_SOUND_URI;
 import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
 import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
@@ -91,7 +92,14 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     private static void showNotification(Context context, String contentText) {
         Log.i(TAG, "Showing notification: " + contentText);
-        Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        Uri sound;
+        String uri = sharedPreferences.getString(PREF_SOUND_URI, "");
+        if (!uri.equals(""))
+            sound = Uri.parse(uri); // saved URI
+        else // default URI
+            sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(android.R.drawable.alert_light_frame)
                 .setSound(sound)

@@ -15,4 +15,5 @@
     <string name="intro_1_description">Sie hilft deiner Battery, länger zu leben!</string>
     <string name="enabled_info">Erfolgreich aktiviert!</string>
     <string name="disabled_info">Erfolgreich deaktiviert!</string>
+    <string name="btn_notification">Benachrichtigungston ändern</string>
 </resources>
