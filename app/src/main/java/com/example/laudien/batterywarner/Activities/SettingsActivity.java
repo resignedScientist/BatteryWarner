@@ -1,5 +1,6 @@
 package com.example.laudien.batterywarner.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
@@ -86,11 +87,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         btn_sound.setOnClickListener(this);
 
         // notification sound
-        String uri = sharedPreferences.getString(PREF_SOUND_URI, "");
-        if (!uri.equals(""))
-            sound = Uri.parse(uri); // saved URI
-        else // default URI
-            sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        sound = getNotificationSound(this);
     }
 
     @Override
@@ -214,5 +211,13 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 sound = data.getParcelableExtra(EXTRA_RINGTONE_PICKED_URI);
                 break;
         }
+    }
+
+    public static Uri getNotificationSound(Context context){
+        String uri = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).getString(PREF_SOUND_URI, "");
+        if (!uri.equals(""))
+            return Uri.parse(uri); // saved URI
+        else // default URI
+            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 }

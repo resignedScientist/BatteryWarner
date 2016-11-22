@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.example.laudien.batterywarner.Activities.SettingsActivity;
 import com.example.laudien.batterywarner.R;
 
 import static android.app.AlarmManager.ELAPSED_REALTIME;
@@ -92,17 +93,9 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     private static void showNotification(Context context, String contentText) {
         Log.i(TAG, "Showing notification: " + contentText);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        Uri sound;
-        String uri = sharedPreferences.getString(PREF_SOUND_URI, "");
-        if (!uri.equals(""))
-            sound = Uri.parse(uri); // saved URI
-        else // default URI
-            sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(android.R.drawable.alert_light_frame)
-                .setSound(sound)
+                .setSound(SettingsActivity.getNotificationSound(context))
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
