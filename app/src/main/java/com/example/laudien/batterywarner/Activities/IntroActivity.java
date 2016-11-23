@@ -30,7 +30,7 @@ public class IntroActivity extends MaterialIntroActivity {
                 .buttonsColor(R.color.colorButtons)
                 .image(R.drawable.batteries)
                 .title("How does it do that?")
-                .description("Manifacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!")
+                .description("Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!")
                 .build()
         );
 
@@ -39,7 +39,7 @@ public class IntroActivity extends MaterialIntroActivity {
                 .buttonsColor(R.color.colorButtons)
                 .image(R.drawable.ic_done_white_48dp)
                 .title("For the longest life, you have to load \"flat\"!")
-                .description("That means keeping the battery level for example between 20-80% either than 0-100%!")
+                .description("That means keeping the battery level for example between 20-80% instead of 0-100%!")
                 .build()
         );
 
