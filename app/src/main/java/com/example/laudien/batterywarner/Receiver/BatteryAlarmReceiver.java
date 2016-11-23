@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.example.laudien.batterywarner.Activities.SettingsActivity;
 import com.example.laudien.batterywarner.Contract;
+import com.example.laudien.batterywarner.Fragments.SettingsFragment;
 import com.example.laudien.batterywarner.R;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
@@ -65,7 +66,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "Showing notification: " + contentText);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(android.R.drawable.alert_light_frame)
-                .setSound(SettingsActivity.getNotificationSound(context))
+                .setSound(SettingsFragment.getNotificationSound(context))
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))

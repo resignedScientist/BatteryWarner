@@ -52,12 +52,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), LENGTH_SHORT).show();
             }
         });
-        startActivity(new Intent(this, IntroActivity.class));
 
         if (firstStart) {
             BatteryAlarmReceiver.setRepeatingAlarm(this, false);
             sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
-            //startActivity(new Intent(this, IntroActivity.class));
+            startActivity(new Intent(this, IntroActivity.class));
         }
     }
 
