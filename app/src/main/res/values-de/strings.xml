@@ -16,4 +16,11 @@
     <string name="enabled_info">Erfolgreich aktiviert!</string>
     <string name="disabled_info">Erfolgreich deaktiviert!</string>
     <string name="btn_notification">Benachrichtigungston ändern</string>
+    <string name="slide_preferences_title">Und los geht\'s!</string>
+    <string name="slide_preferences_discription">Stelle hier direkt alles ein!</string>
+    <string formatted="false" name="slide_2_description">Laut Hersteller hat der Akku eine höhere Haltbarkeit, wenn man ihn weder zu lange auf 100% lässt, noch komplett entlädt!</string>
+    <string name="slide_2_title">Wie macht die App das?</string>
+    <string name="slide_3_title">Für die höchste Haltbarkeit, muss man \"flach\" laden!</string>
+    <string formatted="false" name="slide_3_description">Das bedeutet, dass man den Akkustand zwischen 20"-"80% hält, anstatt zwischen 0"-"100%!</string>
+    <string name="intro_finish_toast">Auf dass dein Akku länger lebt!</string>
 </resources>

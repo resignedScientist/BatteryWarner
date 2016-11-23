@@ -15,4 +15,11 @@
     <string name="enabled_info">Successfully enabled!</string>
     <string name="disabled_info">Successfully disabled!</string>
     <string name="btn_notification">Choose notification Sound</string>
+    <string name="slide_preferences_title">Let\'s get started!</string>
+    <string name="slide_preferences_discription">Choose your settings right here!</string>
+    <string name="slide_2_title">How does it do that?</string>
+    <string formatted="false" name="slide_2_description">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
+    <string name="slide_3_title">For the longest life, you have to charge \"flat\"!</string>
+    <string formatted="false" name="slide_3_description">That means keeping the battery level for example between 20"–"80% instead of 0"-"100%!</string>
+    <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
 </resources>

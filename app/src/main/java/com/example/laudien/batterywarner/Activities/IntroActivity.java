@@ -40,8 +40,8 @@ public class IntroActivity extends MaterialIntroActivity {
                 .backgroundColor(R.color.colorIntro2)
                 .buttonsColor(R.color.colorButtons)
                 .image(R.drawable.batteries)
-                .title("How does it do that?")
-                .description("Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!")
+                .title(getString(R.string.slide_2_title))
+                .description(getString(R.string.slide_2_description))
                 .build()
         );
 
@@ -49,8 +49,8 @@ public class IntroActivity extends MaterialIntroActivity {
                 .backgroundColor(R.color.colorIntro3)
                 .buttonsColor(R.color.colorButtons)
                 .image(R.drawable.done_white_big)
-                .title("For the longest life, you have to charge \"flat\"!")
-                .description("That means keeping the battery level for example between 20-80% instead of 0-100%!")
+                .title(getString(R.string.slide_3_title))
+                .description(getString(R.string.slide_3_description))
                 .build()
         );
 
@@ -72,7 +72,7 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     public void onFinish() {
         super.onFinish();
-        Toast.makeText(getApplicationContext(), "Let's make your battery last longer!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
     }
 
     @Override
