@@ -1,20 +1,30 @@
 package com.example.laudien.batterywarner.Activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.laudien.batterywarner.Contract;
 import com.example.laudien.batterywarner.CustomSlides.PreferencesSlide;
+import com.example.laudien.batterywarner.Fragments.SettingsFragment;
 import com.example.laudien.batterywarner.R;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
 public class IntroActivity extends MaterialIntroActivity {
+
+    Uri sound;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sound = SettingsFragment.getNotificationSound(this);
         enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
 
         addSlide(new SlideFragmentBuilder()
@@ -63,5 +73,18 @@ public class IntroActivity extends MaterialIntroActivity {
     public void onFinish() {
         super.onFinish();
         Toast.makeText(getApplicationContext(), "Let's make your battery last longer!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+        switch (requestCode) {
+            case Contract.PICK_SOUND_REQUEST: // notification sound picker
+                sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).edit()
+                        .putString(Contract.PREF_SOUND_URI, sound.toString())
+                        .apply();
+                break;
+        }
     }
 }

@@ -166,7 +166,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putBoolean(Contract.PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
                 .putInt(Contract.PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
                 .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
-                .putString(Contract.PREF_SOUND_URI, sound.toString())
                 .apply();
 
         // restart the alarm (if enabled)

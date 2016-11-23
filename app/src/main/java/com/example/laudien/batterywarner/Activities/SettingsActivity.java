@@ -1,7 +1,9 @@
 package com.example.laudien.batterywarner.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -17,6 +19,7 @@ import com.example.laudien.batterywarner.R;
 
 public class SettingsActivity extends AppCompatActivity {
     private SettingsFragment settingsFragment;
+    Uri sound;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         settingsFragment = new SettingsFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
+        sound = SettingsFragment.getNotificationSound(this);
     }
 
     @Override
@@ -46,6 +50,9 @@ public class SettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_done:
                 settingsFragment.saveAll();
+                getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).edit()
+                        .putString(Contract.PREF_SOUND_URI, sound.toString())
+                        .apply();
                 Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
                 finish(); // close the settings
                 break;
@@ -58,8 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (resultCode != RESULT_OK) return;
         switch (requestCode) {
             case Contract.PICK_SOUND_REQUEST: // notification sound picker
-                settingsFragment.sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                break;
+                sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
         }
     }
 }
