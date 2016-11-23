@@ -5,5 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <!-- Intro Activity background colors -->
+    <color name="colorButtons">@color/colorPrimary</color>
     <color name="colorIntro1">#dcca00</color>
+    <color name="colorIntro2">#c9c9c9</color>
+    <color name="colorPreferencesSlide">#ff6f00</color>
 </resources>
