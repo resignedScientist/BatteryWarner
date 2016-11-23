@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW_ENABLED;
-import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
+import com.example.laudien.batterywarner.Contract;
 
 public class DischargingReceiver extends BroadcastReceiver {
     private static final String TAG = "DischargingReceiver";
@@ -18,7 +16,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         Log.i(TAG, "User stopped charging!");
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
-        if (context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).getBoolean(PREF_WARNING_LOW_ENABLED, true))
+        if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
             BatteryAlarmReceiver.setRepeatingAlarm(context, false);
     }
 }

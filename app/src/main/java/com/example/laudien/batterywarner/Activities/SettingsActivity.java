@@ -20,25 +20,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.laudien.batterywarner.Contract;
 import com.example.laudien.batterywarner.R;
 import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
-
-import static android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI;
-import static com.example.laudien.batterywarner.Contract.DEF_WARNING_HIGH;
-import static com.example.laudien.batterywarner.Contract.DEF_WARNING_LOW;
-import static com.example.laudien.batterywarner.Contract.PICK_SOUND_REQUEST;
-import static com.example.laudien.batterywarner.Contract.PREF_AC_ENABLED;
-import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.Contract.PREF_SOUND_URI;
-import static com.example.laudien.batterywarner.Contract.PREF_USB_ENABLED;
-import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH;
-import static com.example.laudien.batterywarner.Contract.PREF_WARNING_HIGH_ENABLED;
-import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW;
-import static com.example.laudien.batterywarner.Contract.PREF_WARNING_LOW_ENABLED;
-import static com.example.laudien.batterywarner.Contract.PREF_WIRELESS_ENABLED;
-import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
-import static com.example.laudien.batterywarner.Contract.WARNING_HIGH_MIN;
-import static com.example.laudien.batterywarner.Contract.WARNING_LOW_MAX;
 
 public class SettingsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,
         SeekBar.OnSeekBarChangeListener, View.OnClickListener {
@@ -53,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
 
         textView_lowBattery = (TextView) findViewById(R.id.textView_lowBattery);
         textView_highBattery = (TextView) findViewById(R.id.textView_highBattery);
@@ -66,19 +50,19 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         checkBox_highBattery = (CheckBox) findViewById(R.id.checkBox_highBattery);
 
         checkBox_highBattery.setOnCheckedChangeListener(this);
-        checkBox_highBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_HIGH_ENABLED, true));
+        checkBox_highBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true));
         seekBar_lowBattery.setOnSeekBarChangeListener(this);
         seekBar_highBattery.setOnSeekBarChangeListener(this);
         checkBox_usb.setOnCheckedChangeListener(this);
-        checkBox_usb.setChecked(sharedPreferences.getBoolean(PREF_USB_ENABLED, true));
+        checkBox_usb.setChecked(sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true));
         checkBox_ac.setOnCheckedChangeListener(this);
-        checkBox_ac.setChecked(sharedPreferences.getBoolean(PREF_AC_ENABLED, true));
+        checkBox_ac.setChecked(sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true));
         checkBox_wireless.setOnCheckedChangeListener(this);
-        checkBox_wireless.setChecked(sharedPreferences.getBoolean(PREF_WIRELESS_ENABLED, true));
+        checkBox_wireless.setChecked(sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true));
         checkBox_lowBattery.setOnCheckedChangeListener(this);
-        checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(PREF_WARNING_LOW_ENABLED, true));
-        seekBar_lowBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_LOW, DEF_WARNING_LOW));
-        seekBar_highBattery.setProgress(sharedPreferences.getInt(PREF_WARNING_HIGH, DEF_WARNING_HIGH));
+        checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true));
+        seekBar_lowBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW));
+        seekBar_highBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH));
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
@@ -106,19 +90,19 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         switch (item.getItemId()) {
             case R.id.menu_done:
                 sharedPreferences.edit()
-                        .putBoolean(PREF_USB_ENABLED, checkBox_usb.isChecked())
-                        .putBoolean(PREF_AC_ENABLED, checkBox_ac.isChecked())
-                        .putBoolean(PREF_WIRELESS_ENABLED, checkBox_wireless.isChecked())
-                        .putBoolean(PREF_WARNING_LOW_ENABLED, checkBox_lowBattery.isChecked())
-                        .putBoolean(PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
-                        .putInt(PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
-                        .putInt(PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
-                        .putString(PREF_SOUND_URI, sound.toString())
+                        .putBoolean(Contract.PREF_USB_ENABLED, checkBox_usb.isChecked())
+                        .putBoolean(Contract.PREF_AC_ENABLED, checkBox_ac.isChecked())
+                        .putBoolean(Contract.PREF_WIRELESS_ENABLED, checkBox_wireless.isChecked())
+                        .putBoolean(Contract.PREF_WARNING_LOW_ENABLED, checkBox_lowBattery.isChecked())
+                        .putBoolean(Contract.PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
+                        .putInt(Contract.PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
+                        .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
+                        .putString(Contract.PREF_SOUND_URI, sound.toString())
                         .apply();
 
                 // restart the alarm (if enabled)
                 BatteryAlarmReceiver.cancelExistingAlarm(this);
-                if (sharedPreferences.getBoolean(PREF_IS_ENABLED, true))
+                if (sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
                     BatteryAlarmReceiver.setRepeatingAlarm(this, true);
 
                 Log.i(TAG, getString(R.string.settings_saved));
@@ -154,14 +138,14 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
         int state = seekBar.getProgress();
         switch (seekBar.getId()) {
             case R.id.seekBar_lowBattery:
-                if (state > WARNING_LOW_MAX)
-                    seekBar.setProgress(WARNING_LOW_MAX);
+                if (state > Contract.WARNING_LOW_MAX)
+                    seekBar.setProgress(Contract.WARNING_LOW_MAX);
                 else
                     textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + state + "%");
                 break;
             case R.id.seekBar_highBattery:
-                if (state < WARNING_HIGH_MIN)
-                    seekBar.setProgress(WARNING_HIGH_MIN);
+                if (state < Contract.WARNING_HIGH_MIN)
+                    seekBar.setProgress(Contract.WARNING_HIGH_MIN);
                 else
                     textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + state + "%");
                 break;
@@ -198,23 +182,24 @@ public class SettingsActivity extends AppCompatActivity implements CompoundButto
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, sound);
-                startActivityForResult(intent, PICK_SOUND_REQUEST);
+                startActivityForResult(intent, Contract.PICK_SOUND_REQUEST);
                 break;
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode != RESULT_OK) return;
-        switch (requestCode){
-            case PICK_SOUND_REQUEST: // notification sound picker
-                sound = data.getParcelableExtra(EXTRA_RINGTONE_PICKED_URI);
+        if (resultCode != RESULT_OK) return;
+        switch (requestCode) {
+            case Contract.PICK_SOUND_REQUEST: // notification sound picker
+                sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                 break;
         }
     }
 
-    public static Uri getNotificationSound(Context context){
-        String uri = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE).getString(PREF_SOUND_URI, "");
+    public static Uri getNotificationSound(Context context) {
+        String uri = context.getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
+                .getString(Contract.PREF_SOUND_URI, "");
         if (!uri.equals(""))
             return Uri.parse(uri); // saved URI
         else // default URI
