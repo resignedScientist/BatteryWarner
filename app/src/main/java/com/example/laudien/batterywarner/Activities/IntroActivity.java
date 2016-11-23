@@ -37,7 +37,7 @@ public class IntroActivity extends MaterialIntroActivity {
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorIntro3)
                 .buttonsColor(R.color.colorButtons)
-                .image(R.drawable.ic_done_white_48dp)
+                .image(R.drawable.done_white_big)
                 .title("For the longest life, you have to load \"flat\"!")
                 .description("That means keeping the battery level for example between 20-80% instead of 0-100%!")
                 .build()
