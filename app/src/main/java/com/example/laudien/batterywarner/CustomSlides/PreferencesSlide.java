@@ -31,7 +31,7 @@ public class PreferencesSlide extends SlideFragment {
 
     @Override
     public boolean canMoveFurther() {
-        return false;
+        return true;
     }
 
     @Override

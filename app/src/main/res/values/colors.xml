@@ -8,6 +8,7 @@
     <color name="colorButtons">@color/colorPrimary</color>
     <color name="colorIntro1">#dcca00</color>
     <color name="colorIntro2">#c9c9c9</color>
+    <color name="colorIntro3">#d78c00</color>
     <color name="colorPreferencesSlide">#ff6f00</color>
 
     <!-- Toolbar colors -->
