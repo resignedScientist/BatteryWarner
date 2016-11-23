@@ -13,7 +13,6 @@ import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.example.laudien.batterywarner.Activities.SettingsActivity;
 import com.example.laudien.batterywarner.Contract;
 import com.example.laudien.batterywarner.Fragments.SettingsFragment;
 import com.example.laudien.batterywarner.R;

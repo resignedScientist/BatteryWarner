@@ -17,7 +17,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.laudien.batterywarner.Contract;
 import com.example.laudien.batterywarner.R;

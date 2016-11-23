@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="20dp">
 
     <TextView
-        android:text="Let's get started!"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:textSize="24sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:text="Let's get started!"
+        android:textSize="24sp" />
 
     <TextView
-        android:text="Choose your settings right here!"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textView2"
-        android:textSize="18sp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="30dp"
+        android:text="Choose your settings right here!"
+        android:textSize="18sp" />
 
     <FrameLayout
+        android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/container_layout"
         android:layout_below="@+id/textView2" />
 
 </RelativeLayout>
