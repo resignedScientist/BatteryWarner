@@ -9,4 +9,8 @@
     <color name="colorIntro1">#dcca00</color>
     <color name="colorIntro2">#c9c9c9</color>
     <color name="colorPreferencesSlide">#ff6f00</color>
+
+    <!-- Toolbar colors -->
+    <color name="colorToolbarIcons">#ffffff</color>
+    <color name="colorToolbarPrimary">@color/colorPrimary</color>
 </resources>
