@@ -56,8 +56,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             if (batteryLevel <= warningLow) {
                 showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
             } else {
-                Log.i(TAG, "Changing battery check frequency to a higher rate...");
-                cancelExistingAlarm(context);
                 setAlarm(context);
             }
         }

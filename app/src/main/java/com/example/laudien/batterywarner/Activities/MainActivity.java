@@ -44,11 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 Log.i(TAG, "User changed status to " + isChecked);
                 sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
-                BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                 if (isChecked) {
                     new BatteryAlarmReceiver().onReceive(getApplicationContext(), null);
                     Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), LENGTH_SHORT).show();
                 } else
+                    BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                     Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), LENGTH_SHORT).show();
             }
         });
