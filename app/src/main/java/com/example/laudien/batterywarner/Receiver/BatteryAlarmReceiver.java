@@ -116,7 +116,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         time += interval;
         pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
         if(isCharging)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         else
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
