@@ -171,7 +171,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         // restart the alarm (if enabled)
         BatteryAlarmReceiver.cancelExistingAlarm(getContext());
         if (sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
-            BatteryAlarmReceiver.setRepeatingAlarm(getContext(), true);
+            BatteryAlarmReceiver.setAlarm(getContext());
 
         Log.i(TAG, getString(R.string.settings_saved));
     }

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
                 BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                 if (isChecked) {
-                    BatteryAlarmReceiver.setRepeatingAlarm(getApplicationContext(), true);
+                    new BatteryAlarmReceiver().onReceive(getApplicationContext(), null);
                     Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), LENGTH_SHORT).show();
                 } else
                     Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), LENGTH_SHORT).show();
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         if (firstStart) {
-            BatteryAlarmReceiver.setRepeatingAlarm(this, false);
+            BatteryAlarmReceiver.setAlarm(this);
             sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
             startActivity(new Intent(this, IntroActivity.class));
         }

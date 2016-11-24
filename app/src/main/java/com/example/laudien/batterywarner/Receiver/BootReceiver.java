@@ -21,7 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
 
         if (isChecked) {
-            BatteryAlarmReceiver.setRepeatingAlarm(context, true);
+            new BatteryAlarmReceiver().onReceive(context, intent);
             Log.i(TAG, "Finished Booting! Setting battery alarm...");
         }
     }

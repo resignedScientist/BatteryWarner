@@ -17,6 +17,6 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
-            BatteryAlarmReceiver.setRepeatingAlarm(context, false);
+            new BatteryAlarmReceiver().onReceive(context, intent);
     }
 }

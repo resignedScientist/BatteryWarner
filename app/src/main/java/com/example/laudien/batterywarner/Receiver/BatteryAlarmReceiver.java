@@ -49,14 +49,16 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             }
             if (batteryLevel >= warningHigh) {
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+            } else {
+                setAlarm(context);
             }
         } else {
             if (batteryLevel <= warningLow) {
                 showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
-            } else if (batteryLevel <= warningLow + 20) {
+            } else {
                 Log.i(TAG, "Changing battery check frequency to a higher rate...");
                 cancelExistingAlarm(context);
-                setRepeatingAlarm(context, false);
+                setAlarm(context);
             }
         }
     }
@@ -76,22 +78,28 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         cancelExistingAlarm(context);
     }
 
-    public static void setRepeatingAlarm(Context context, boolean firstTimeIsNow) {
+    public static void setAlarm(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)) return;
 
         int batteryLevel = getBatteryStatus(context).getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-        long interval;
-        if (isCharging(context)) {
+        int interval;
+        long time = SystemClock.elapsedRealtime();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent batteryIntent = new Intent(context, BatteryAlarmReceiver.class);
+        PendingIntent pendingIntent;
+        boolean isCharging = isCharging(context);
+
+        if (isCharging) { // Charging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
             if (batteryLevel >= warningHigh) {
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
                 return;
             }
             interval = Contract.INTERVAL_CHARGING;
-        } else {
+        } else { // Discharging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
             if (batteryLevel <= warningLow) {
                 showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
@@ -105,13 +113,12 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             else
                 interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
         }
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        long time = SystemClock.elapsedRealtime();
-        if (!firstTimeIsNow)
-            time += interval;
-        Intent batteryIntent = new Intent(context, BatteryAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, time, interval, pendingIntent);
+        time += interval;
+        pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
+        if(isCharging)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        else
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
         Log.i(TAG, "Repeating alarm was set! interval = " + interval / 60000 + " min");
     }
