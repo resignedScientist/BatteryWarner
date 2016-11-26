@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -18,8 +19,8 @@ import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = "SettingsActivity";
     private SettingsFragment settingsFragment;
-    Uri sound;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +32,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         settingsFragment = new SettingsFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
-        sound = SettingsFragment.getNotificationSound(this);
     }
 
     @Override
@@ -50,22 +50,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_done:
                 settingsFragment.saveAll();
-                getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).edit()
-                        .putString(Contract.PREF_SOUND_URI, sound.toString())
-                        .apply();
                 Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
                 finish(); // close the settings
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != RESULT_OK) return;
-        switch (requestCode) {
-            case Contract.PICK_SOUND_REQUEST: // notification sound picker
-                sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-        }
     }
 }

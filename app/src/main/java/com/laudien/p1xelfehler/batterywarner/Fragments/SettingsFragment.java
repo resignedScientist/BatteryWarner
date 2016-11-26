@@ -22,6 +22,8 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
+import static android.app.Activity.RESULT_OK;
+
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private static final String TAG = "SettingsFragment";
@@ -166,6 +168,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putBoolean(Contract.PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
                 .putInt(Contract.PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
                 .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
+                .putString(Contract.PREF_SOUND_URI, sound.toString())
                 .apply();
 
         // restart the alarm (if enabled)
@@ -174,5 +177,15 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             BatteryAlarmReceiver.setAlarm(getContext());
 
         Log.i(TAG, getString(R.string.settings_saved));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) return;
+        switch (requestCode) {
+            case Contract.PICK_SOUND_REQUEST: // notification sound picker
+                sound = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        }
     }
 }
