@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.laudien.batterywarner">
+    package="com.laudien.p1xelfehler.batterywarner">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -10,8 +10,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.IntroActivity" />
-        <activity android:name=".Activities.MainActivity">
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity" />
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,30 +20,30 @@
         </activity>
 
         <activity
-            android:name=".Activities.SettingsActivity"
-            android:parentActivityName=".Activities.MainActivity" />
+            android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity"
+            android:parentActivityName="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />
 
-        <receiver android:name=".Receiver.BatteryAlarmReceiver" />
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver" />
 
-        <receiver android:name=".Receiver.BootReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".Receiver.ChargingReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".Receiver.DischargingReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".Receiver.AppUpdateReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.Receiver;
+package com.laudien.p1xelfehler.batterywarner.Receiver;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -13,9 +13,9 @@ import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.example.laudien.batterywarner.Contract;
-import com.example.laudien.batterywarner.Fragments.SettingsFragment;
-import com.example.laudien.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";

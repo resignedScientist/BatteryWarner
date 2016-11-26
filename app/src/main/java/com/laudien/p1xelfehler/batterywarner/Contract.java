@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner;
+package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
     // shared preferences

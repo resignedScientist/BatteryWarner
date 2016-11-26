@@ -1,11 +1,11 @@
-package com.example.laudien.batterywarner.Receiver;
+package com.laudien.p1xelfehler.batterywarner.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.laudien.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 
 public class DischargingReceiver extends BroadcastReceiver {
     private static final String TAG = "DischargingReceiver";

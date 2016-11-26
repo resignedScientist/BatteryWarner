@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.Receiver;
+package com.laudien.p1xelfehler.batterywarner.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class BootReceiver extends BroadcastReceiver {
     private static final String TAG = "BootReceiver";

@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.Receiver;
+package com.laudien.p1xelfehler.batterywarner.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.laudien.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
 

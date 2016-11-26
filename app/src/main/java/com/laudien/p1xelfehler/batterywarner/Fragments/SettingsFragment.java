@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.Fragments;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +18,9 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.laudien.batterywarner.Contract;
-import com.example.laudien.batterywarner.R;
-import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
+import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 

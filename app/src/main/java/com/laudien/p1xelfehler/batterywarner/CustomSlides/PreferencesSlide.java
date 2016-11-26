@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.CustomSlides;
+package com.laudien.p1xelfehler.batterywarner.CustomSlides;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.laudien.batterywarner.Fragments.SettingsFragment;
-import com.example.laudien.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import agency.tango.materialintroscreen.SlideFragment;
 

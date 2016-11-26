@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

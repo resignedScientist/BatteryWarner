@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,13 +12,13 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.laudien.batterywarner.R;
-import com.example.laudien.batterywarner.Receiver.BatteryAlarmReceiver;
+import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.example.laudien.batterywarner.Contract.PREF_FIRST_START;
-import static com.example.laudien.batterywarner.Contract.PREF_IS_ENABLED;
-import static com.example.laudien.batterywarner.Contract.SHARED_PREFS;
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
+import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";

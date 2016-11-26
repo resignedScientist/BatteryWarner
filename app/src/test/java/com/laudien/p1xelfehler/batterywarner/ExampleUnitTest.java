@@ -1,4 +1,4 @@
-package com.example.laudien.batterywarner;
+package com.laudien.p1xelfehler.batterywarner;
 
 import org.junit.Test;
 
