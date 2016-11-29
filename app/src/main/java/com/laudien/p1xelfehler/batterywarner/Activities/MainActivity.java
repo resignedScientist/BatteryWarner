@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (isChecked) {
                     new BatteryAlarmReceiver().onReceive(getApplicationContext(), null);
                     Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), LENGTH_SHORT).show();
-                } else
+                } else {
                     BatteryAlarmReceiver.cancelExistingAlarm(getApplicationContext());
                     Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), LENGTH_SHORT).show();
+                }
             }
         });
 
