@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -26,9 +27,18 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Intent batteryStatus = getBatteryStatus(context);
         if (batteryStatus == null) return;
 
+        String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
+        Log.i(TAG, "Technology: " + technology);
+
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
-        boolean isCharging = isCharging(context);
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
+
+        double temperature = (double)batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE)/10;
+        Log.i(TAG, "Temperature: " + temperature + "°C");
+
+        double voltage = (double)batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE)/1000;
+        Log.i(TAG, "Voltage: " + voltage + " V");
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
@@ -61,10 +71,15 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private static void showNotification(Context context, String contentText) {
+    private static void showNotification(Context context, String contentText){
+        Intent batteryStatus = getBatteryStatus(context);
+        if(batteryStatus == null) return;
         Log.i(TAG, "Showing notification: " + contentText);
+        int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
+        if(icon == NO_STATE)
+            icon = android.R.drawable.alert_light_frame;
         Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(android.R.drawable.alert_light_frame)
+                .setSmallIcon(icon)
                 .setSound(SettingsFragment.getNotificationSound(context))
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
