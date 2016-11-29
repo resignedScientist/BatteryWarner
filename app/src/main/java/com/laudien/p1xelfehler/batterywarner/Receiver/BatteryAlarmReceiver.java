@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -31,13 +30,15 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "Technology: " + technology);
 
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
-        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
 
-        double temperature = (double)batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE)/10;
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+        Log.i(TAG, "Charging: " + isCharging);
+
+        double temperature = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
         Log.i(TAG, "Temperature: " + temperature + "°C");
 
-        double voltage = (double)batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE)/1000;
+        double voltage = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
         Log.i(TAG, "Voltage: " + voltage + " V");
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -71,12 +72,12 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private static void showNotification(Context context, String contentText){
+    private static void showNotification(Context context, String contentText) {
         Intent batteryStatus = getBatteryStatus(context);
-        if(batteryStatus == null) return;
+        if (batteryStatus == null) return;
         Log.i(TAG, "Showing notification: " + contentText);
         int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
-        if(icon == NO_STATE)
+        if (icon == NO_STATE)
             icon = android.R.drawable.alert_light_frame;
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(icon)
@@ -128,7 +129,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         }
         time += interval;
         pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
-        if(isCharging)
+        if (isCharging)
             alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         else
             alarmManager.set(AlarmManager.ELAPSED_REALTIME, time, pendingIntent);
