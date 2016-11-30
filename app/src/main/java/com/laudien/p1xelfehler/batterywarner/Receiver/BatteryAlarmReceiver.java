@@ -87,7 +87,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)) return;
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if(batteryStatus == null) return;
+        if (batteryStatus == null) return;
 
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);

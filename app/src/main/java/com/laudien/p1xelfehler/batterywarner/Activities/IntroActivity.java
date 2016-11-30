@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +14,13 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.CustomSlides.PreferencesSlide;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
+
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
+import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class IntroActivity extends MaterialIntroActivity {
 
@@ -69,6 +74,9 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     public void onFinish() {
         super.onFinish();
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
+        BatteryAlarmReceiver.setAlarm(this);
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
     }
 }

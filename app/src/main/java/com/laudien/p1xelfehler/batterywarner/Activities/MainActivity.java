@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         if (firstStart) {
-            BatteryAlarmReceiver.setAlarm(this);
-            sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
             startActivity(new Intent(this, IntroActivity.class));
         }
     }
