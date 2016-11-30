@@ -134,22 +134,22 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        String logText = null;
-        switch (seekBar.getId()) {
-            case R.id.seekBar_lowBattery:
-                logText = "Low Battery percentage changed to " + seekBar.getProgress();
-                break;
-            case R.id.seekBar_highBattery:
-                logText = "High Battery percentage changed to " + seekBar.getProgress();
-                break;
-        }
-        if (logText != null)
-            Log.i(TAG, logText);
+
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        String logText = null;
+        switch (seekBar.getId()) {
+            case R.id.seekBar_lowBattery:
+                logText = "Low Battery percentage changed to " + seekBar.getProgress() + "%";
+                break;
+            case R.id.seekBar_highBattery:
+                logText = "High Battery percentage changed to " + seekBar.getProgress() + "%";
+                break;
+        }
+        if (logText != null)
+            Log.i(TAG, logText);
     }
 
     public static Uri getNotificationSound(Context context) {
