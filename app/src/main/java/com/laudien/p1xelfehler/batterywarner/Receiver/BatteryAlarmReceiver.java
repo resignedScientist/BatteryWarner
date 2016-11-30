@@ -23,23 +23,14 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent batteryStatus = getBatteryStatus(context);
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
-
-        String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-        Log.i(TAG, "Technology: " + technology);
 
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
 
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
         Log.i(TAG, "Charging: " + isCharging);
-
-        double temperature = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
-        Log.i(TAG, "Temperature: " + temperature + "°C");
-
-        double voltage = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
-        Log.i(TAG, "Voltage: " + voltage + " V");
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
@@ -73,7 +64,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
     }
 
     private static void showNotification(Context context, String contentText) {
-        Intent batteryStatus = getBatteryStatus(context);
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
         Log.i(TAG, "Showing notification: " + contentText);
         int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
@@ -95,8 +86,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
     public static void setAlarm(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)) return;
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if(batteryStatus == null) return;
 
-        int batteryLevel = getBatteryStatus(context).getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
+        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
         int interval;
@@ -151,16 +144,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "Repeating alarm was canceled!");
     }
 
-    public static Intent getBatteryStatus(Context context) {
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        return context.registerReceiver(null, intentFilter);
-    }
-
     public static boolean isCharging(Context context) {
-        Intent batteryStatus = getBatteryStatus(context);
-        if (batteryStatus == null) return false;
-
-        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, NO_STATE);
-        return status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL;
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        return batteryStatus != null && batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
     }
 }
