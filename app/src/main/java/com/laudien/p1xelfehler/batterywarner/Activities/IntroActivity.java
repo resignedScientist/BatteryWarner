@@ -76,7 +76,6 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onFinish();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
-        BatteryAlarmReceiver.setAlarm(this);
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
     }
 }
