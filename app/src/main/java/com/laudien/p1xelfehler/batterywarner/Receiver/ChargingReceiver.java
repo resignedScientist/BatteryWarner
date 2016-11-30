@@ -17,7 +17,7 @@ public class ChargingReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_CONNECTED")) return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        if(!sharedPreferences.getBoolean(Contract.PREF_FIRST_START, false)) return; // return if intro was not finished
+        if(sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true)) return; // return if intro was not finished
 
         Log.i(TAG, "User started charging!");
 
