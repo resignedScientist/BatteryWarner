@@ -19,9 +19,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
     private LineGraphSeries<DataPoint> series_chargeCurve;
@@ -64,21 +61,21 @@ public class GraphFragment extends Fragment {
         return view;
     }
 
-    private void addChargeCurve(){
+    private void addChargeCurve() {
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
         Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
 
-        if(cursor.moveToFirst()){
-            do{ // while the cursor has data
+        if (cursor.moveToFirst()) { // if the cursor has data
+            do { // while the cursor has data
                 int time = cursor.getInt(0);
                 int percentage = cursor.getInt(1);
                 Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
                 try {
                     series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
-                }catch (Exception e){
+                } catch (Exception e) {
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
                 }
             } while (cursor.moveToNext());

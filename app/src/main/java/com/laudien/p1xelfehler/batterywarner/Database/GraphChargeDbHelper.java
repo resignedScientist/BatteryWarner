@@ -35,7 +35,7 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
         contentValues.put(TABLE_COLUMN_PERCENTAGE, percentage);
         try {
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
-        }catch (Exception e){
+        } catch (Exception e) {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
@@ -43,7 +43,7 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
         close();
     }
 
-    public void resetTable(){
+    public void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
         Log.i(TAG, "Table reset!");
         close();

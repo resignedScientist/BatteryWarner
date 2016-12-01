@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.util.Log;
@@ -46,7 +45,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
                 int graphTime = sharedPreferences.getInt(Contract.PREF_GRAPH_TIME, 0);
                 graphTime++;
-                if(percentage != batteryLevel) {
+                if (percentage != batteryLevel) {
                     percentage = batteryLevel;
                     // write in database
                     GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
