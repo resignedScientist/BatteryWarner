@@ -53,4 +53,10 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+    @Override
+    public synchronized void close() {
+        super.close();
+        Log.i(TAG, "Database closed!");
+    }
 }
