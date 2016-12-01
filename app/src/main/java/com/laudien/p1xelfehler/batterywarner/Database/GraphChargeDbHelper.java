@@ -10,9 +10,9 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
     private static final String TAG = "GraphChargeDbHelper";
     private static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 1; // if the version is changed, a new database will be created!
-    private static final String TABLE_NAME = "ChargeCurve";
-    private static final String TABLE_COLUMN_TIME = "time";
-    private static final String TABLE_COLUMN_PERCENTAGE = "percentage";
+    public static final String TABLE_NAME = "ChargeCurve";
+    public static final String TABLE_COLUMN_TIME = "time";
+    public static final String TABLE_COLUMN_PERCENTAGE = "percentage";
     private static final String CREATE_QUERY =
             "CREATE TABLE " + TABLE_NAME
                     + " (" + TABLE_COLUMN_TIME + " TEXT,"

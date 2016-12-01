@@ -46,7 +46,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
                 int graphTime = sharedPreferences.getInt(Contract.PREF_GRAPH_TIME, 0);
                 graphTime++;
-                Log.i(TAG, "percentage = " + percentage + "; batteryLevel = " + batteryLevel);
                 if(percentage != batteryLevel) {
                     percentage = batteryLevel;
                     // write in database
