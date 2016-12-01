@@ -84,5 +84,6 @@ public class GraphFragment extends Fragment {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        dbHelper.close();
     }
 }
