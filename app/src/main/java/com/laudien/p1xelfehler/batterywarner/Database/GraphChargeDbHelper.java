@@ -39,14 +39,14 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
-        close();
         Log.i(TAG, "Added value (" + percentage + "%/" + time + "min)");
+        close();
     }
 
     public void resetTable(){
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
-        close();
         Log.i(TAG, "Table reset!");
+        close();
     }
 
     @Override
