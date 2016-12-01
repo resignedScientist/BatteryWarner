@@ -25,7 +25,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         // reset graph values
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
         dbHelper.resetTable();
-        sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, 0)
+        sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, -1)
                 .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
                 .apply();
 

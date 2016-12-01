@@ -19,6 +19,9 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
     private LineGraphSeries<DataPoint> series_chargeCurve;
@@ -45,6 +48,9 @@ public class GraphFragment extends Fragment {
             }
         });
 
+        series_chargeCurve = new LineGraphSeries<>();
+        series_chargeCurve.setDrawBackground(true);
+        graph_chargeCurve.addSeries(series_chargeCurve);
         addChargeCurve();
 
         Button btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
@@ -63,17 +69,18 @@ public class GraphFragment extends Fragment {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
         Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
-                GraphChargeDbHelper.TABLE_COLUMN_TIME);
-        graph_chargeCurve.removeAllSeries();
-        series_chargeCurve = new LineGraphSeries<>();
-        series_chargeCurve.setDrawBackground(true);
-        graph_chargeCurve.addSeries(series_chargeCurve);
+                "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
 
         if(cursor.moveToFirst()){
             do{ // while the cursor has data
                 int time = cursor.getInt(0);
                 int percentage = cursor.getInt(1);
-                series_chargeCurve.appendData(new DataPoint(time, percentage), false, 100);
+                Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
+                try {
+                    series_chargeCurve.appendData(new DataPoint(time, percentage), false, 100);
+                }catch (Exception e){
+                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();
