@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.BatteryManager;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -35,8 +37,27 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+        boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true); // ToDo: Change to false
+
 
         if (isCharging) {
+            // charge curve database
+            if (graphEnabled) {
+                int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
+                int graphTime = sharedPreferences.getInt(Contract.PREF_GRAPH_TIME, 0);
+                graphTime++;
+                Log.i(TAG, "percentage = " + percentage + "; batteryLevel = " + batteryLevel);
+                if(percentage != batteryLevel) {
+                    percentage = batteryLevel;
+                    // write in database
+                    GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
+                    dbHelper.addValue(graphTime, percentage);
+                    // save in sharedPreferences
+                    sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
+                }
+                sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, graphTime).apply();
+            }
+            // return if charging type is disabled in settings
             int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
             switch (chargingType) {
                 case BatteryManager.BATTERY_PLUGGED_AC:
@@ -49,6 +70,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
+            // notifications
             if (batteryLevel >= warningHigh) {
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
             } else {

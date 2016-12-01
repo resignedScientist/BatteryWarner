@@ -14,9 +14,9 @@ public final class Contract {
     public static final String PREF_WARNING_LOW = "warningLow";
     public static final String PREF_WARNING_HIGH = "warningHigh";
     public static final String PREF_SOUND_URI = "savedSoundUri";
-    //public static final String PREF_GRAPH_ENABLED = "graphEnabled";
-    //public static final String PREF_LAST_PERCENTAGE = "lastPercentage";
-    //public static final String PREF_GRAPH_TIME = "graphTime";
+    public static final String PREF_GRAPH_ENABLED = "graphEnabled";
+    public static final String PREF_LAST_PERCENTAGE = "lastPercentage";
+    public static final String PREF_GRAPH_TIME = "graphTime";
 
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;

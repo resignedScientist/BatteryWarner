@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
@@ -20,6 +21,13 @@ public class ChargingReceiver extends BroadcastReceiver {
         if(sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true)) return; // return if intro was not finished
 
         Log.i(TAG, "User started charging!");
+
+        // reset graph values
+        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
+        dbHelper.resetTable();
+        sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, 0)
+                .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                .apply();
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
