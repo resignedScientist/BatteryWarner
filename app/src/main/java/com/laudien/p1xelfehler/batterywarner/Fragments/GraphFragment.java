@@ -77,7 +77,7 @@ public class GraphFragment extends Fragment {
                 int percentage = cursor.getInt(1);
                 Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
                 try {
-                    series_chargeCurve.appendData(new DataPoint(time, percentage), false, 100);
+                    series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
                 }catch (Exception e){
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
                 }
