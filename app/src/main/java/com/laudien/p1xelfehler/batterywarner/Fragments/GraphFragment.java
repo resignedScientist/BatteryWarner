@@ -41,9 +41,6 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         GraphView graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        checkBox_chargeCurve.setOnCheckedChangeListener(this);
-        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
 
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
@@ -71,6 +68,10 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
 
         Button btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
         btn_refresh.setOnClickListener(this);
+
+        CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+        checkBox_chargeCurve.setOnCheckedChangeListener(this);
+        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
 
         return view;
     }
@@ -136,6 +137,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         else {
             series_chargeCurve.resetData(new DataPoint[]{new DataPoint(0, 0)});
             viewport_chargeCurve.setMaxX(1);
+            textView_chargingTime.setVisibility(View.INVISIBLE);
         }
     }
 }

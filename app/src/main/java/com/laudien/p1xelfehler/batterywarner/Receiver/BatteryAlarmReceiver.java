@@ -53,7 +53,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             }
 
             // charge curve database
-            if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+            boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
+            if (curveEnabled) {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
@@ -68,13 +69,13 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 }
             }
 
-            if (batteryLevel < 100)
-                setAlarm(context); // set next alarm if not >=100%
-
             // notification if warning value is reached
             int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-            if (batteryLevel >= warningHigh)
+            if (batteryLevel >= warningHigh) {
+                if(curveEnabled && batteryLevel < 100) // new alarm if curve is enabled and battery not at 100%
+                    setAlarm(context);
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+            }
         } else { // discharging
             int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
             if (batteryLevel <= warningLow) {
