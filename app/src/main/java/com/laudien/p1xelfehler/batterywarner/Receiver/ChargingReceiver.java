@@ -9,6 +9,8 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 
+import java.util.Calendar;
+
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class ChargingReceiver extends BroadcastReceiver {
@@ -26,7 +28,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         // reset graph values
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
         dbHelper.resetTable();
-        sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, -1)
+        sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                 .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
                 .apply();
 

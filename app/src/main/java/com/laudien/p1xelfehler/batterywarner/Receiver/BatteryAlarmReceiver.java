@@ -18,6 +18,8 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.util.Calendar;
+
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
     private static final int NO_STATE = -1;
@@ -39,12 +41,13 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true); // ToDo: Change to false
 
 
-        if (isCharging) {
+        if (isCharging) { // charging
             // charge curve database
             if (graphEnabled) {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
-                int graphTime = sharedPreferences.getInt(Contract.PREF_GRAPH_TIME, 0);
-                graphTime++;
+                long timeNow = Calendar.getInstance().getTimeInMillis();
+                long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
+                if(graphTime < 100) graphTime = 0;
                 if (percentage != batteryLevel) {
                     percentage = batteryLevel;
                     // write in database
@@ -53,8 +56,11 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     // save in sharedPreferences
                     sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
                 }
-                sharedPreferences.edit().putInt(Contract.PREF_GRAPH_TIME, graphTime).apply();
             }
+
+            if(batteryLevel < 100)
+                setAlarm(context); // set next alarm if not >=100%
+
             // return if charging type is disabled in settings
             int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
             switch (chargingType) {
@@ -68,13 +74,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
-            // notifications
-            if (batteryLevel >= warningHigh) {
+            // notification if warning value is reached
+            if (batteryLevel >= warningHigh)
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
-            } else {
-                setAlarm(context);
-            }
-        } else {
+        } else { // discharging
             if (batteryLevel <= warningLow) {
                 showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
             } else {
@@ -86,6 +89,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static void showNotification(Context context, String contentText) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
         Log.i(TAG, "Showing notification: " + contentText);
         int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
         if (icon == NO_STATE)
@@ -100,7 +105,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
-        cancelExistingAlarm(context);
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
     }
 
     public static void setAlarm(Context context) {
@@ -121,10 +126,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
         if (isCharging) { // Charging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
-            if (batteryLevel >= warningHigh) {
-                showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
-                return;
-            }
             interval = Contract.INTERVAL_CHARGING;
         } else { // Discharging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;

@@ -29,7 +29,7 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
         Log.i(TAG, "Table created!");
     }
 
-    public void addValue(int time, int percentage) {
+    public void addValue(long time, int percentage) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TABLE_COLUMN_TIME, time);
         contentValues.put(TABLE_COLUMN_PERCENTAGE, percentage);
@@ -39,7 +39,7 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
-        Log.i(TAG, "Added value (" + percentage + "%/" + time + "min)");
+        Log.i(TAG, "Added value (" + percentage + "%/" + time + "ms)");
         close();
     }
 
