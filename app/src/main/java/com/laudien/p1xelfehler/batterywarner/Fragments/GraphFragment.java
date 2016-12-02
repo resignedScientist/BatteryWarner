@@ -28,11 +28,12 @@ import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
 public class GraphFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
-    SharedPreferences sharedPreferences;
-    GraphView graph_chargeCurve;
+    private SharedPreferences sharedPreferences;
+    private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
+    Button btn_refresh;
 
     @Nullable
     @Override
@@ -67,7 +68,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         series_chargeCurve.setDrawBackground(true);
         graph_chargeCurve.addSeries(series_chargeCurve);
 
-        Button btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
+        btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
         btn_refresh.setOnClickListener(this);
 
         CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
@@ -133,6 +134,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         sharedPreferences.edit().putBoolean(Contract.PREF_GRAPH_ENABLED, b).apply();
+        btn_refresh.setEnabled(b);
         if (b) {
             graph_chargeCurve.addSeries(series_chargeCurve);
             addChargeCurve();
