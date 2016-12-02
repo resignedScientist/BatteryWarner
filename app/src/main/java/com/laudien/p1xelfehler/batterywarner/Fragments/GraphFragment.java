@@ -51,7 +51,6 @@ public class GraphFragment extends Fragment {
         series_chargeCurve = new LineGraphSeries<>();
         series_chargeCurve.setDrawBackground(true);
         graph_chargeCurve.addSeries(series_chargeCurve);
-        addChargeCurve();
 
         Button btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
         btn_refresh.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +61,12 @@ public class GraphFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        addChargeCurve();
     }
 
     private void addChargeCurve() {
