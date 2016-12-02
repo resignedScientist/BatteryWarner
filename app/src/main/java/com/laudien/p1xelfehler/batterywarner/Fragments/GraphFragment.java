@@ -29,6 +29,7 @@ import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 public class GraphFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
     SharedPreferences sharedPreferences;
+    GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
@@ -38,7 +39,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        GraphView graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
+        graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
 
@@ -132,10 +133,11 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         sharedPreferences.edit().putBoolean(Contract.PREF_GRAPH_ENABLED, b).apply();
-        if (b)
+        if (b) {
+            graph_chargeCurve.addSeries(series_chargeCurve);
             addChargeCurve();
-        else {
-            series_chargeCurve.resetData(new DataPoint[]{new DataPoint(0, 0)});
+        } else {
+            graph_chargeCurve.removeAllSeries();
             viewport_chargeCurve.setMaxX(1);
             textView_chargingTime.setVisibility(View.INVISIBLE);
         }
