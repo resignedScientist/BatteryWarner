@@ -17,11 +17,11 @@
         android:textStyle="normal|bold" />
 
     <CheckBox
-        android:text="@string/enabled"
+        android:id="@+id/checkBox_chargeCurve"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox_chargeCurve"
-        android:checked="true" />
+        android:checked="true"
+        android:text="@string/enabled" />
 
     <Space
         android:layout_width="match_parent"
