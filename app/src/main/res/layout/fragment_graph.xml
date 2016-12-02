@@ -9,12 +9,12 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
-        android:text="Ladekurve"
+        android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:textStyle="normal|bold"
-        android:textSize="18sp" />
+        android:text="Ladekurve"
+        android:textSize="18sp"
+        android:textStyle="normal|bold" />
 
     <Space
         android:layout_width="match_parent"
@@ -26,15 +26,15 @@
         android:layout_height="300dp" />
 
     <Button
-        android:text="Refresh"
+        android:id="@+id/btn_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btn_refresh" />
+        android:text="Refresh" />
 
     <TextView
-        android:text="Ladezeit: 999s"
+        android:id="@+id/textView_chargingTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView_chargingTime" />
+        android:text="Ladezeit: 999s" />
 
 </LinearLayout>

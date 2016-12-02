@@ -24,14 +24,13 @@ import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
     private LineGraphSeries<DataPoint> series_chargeCurve;
-    private GraphView graph_chargeCurve;
     private TextView textView_chargingTime;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
-        graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
+        GraphView graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         Viewport viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
 

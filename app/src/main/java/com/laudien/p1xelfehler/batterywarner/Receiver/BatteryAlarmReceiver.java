@@ -47,7 +47,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
-                if(graphTime < 100) graphTime = 0;
+                if (graphTime < 100) graphTime = 0;
                 if (percentage != batteryLevel) {
                     percentage = batteryLevel;
                     // write in database
@@ -58,7 +58,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 }
             }
 
-            if(batteryLevel < 100)
+            if (batteryLevel < 100)
                 setAlarm(context); // set next alarm if not >=100%
 
             // return if charging type is disabled in settings
@@ -90,7 +90,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
+        if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
         Log.i(TAG, "Showing notification: " + contentText);
         int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
         if (icon == NO_STATE)

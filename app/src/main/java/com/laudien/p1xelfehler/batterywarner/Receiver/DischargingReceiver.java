@@ -19,11 +19,12 @@ public class DischargingReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true)) return; // return if intro was not finished
+        if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
+            return; // return if intro was not finished
 
         Log.i(TAG, "User stopped charging!");
         long timeNow = Calendar.getInstance().getTimeInMillis();
-        Log.i(TAG, "Charging time = " + (timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow))/1000 + "s!");
+        Log.i(TAG, "Charging time = " + (timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow)) / 1000 + "s!");
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
