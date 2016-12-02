@@ -33,7 +33,8 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     private LineGraphSeries<DataPoint> series_chargeCurve;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    Button btn_refresh;
+    private Button btn_refresh;
+    private long lastTime;
 
     @Nullable
     @Override
@@ -43,6 +44,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
+        lastTime = 1;
 
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
@@ -58,7 +60,10 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX)
-                    return super.formatLabel(value, true) + "min";
+                    if(value == lastTime)
+                        return super.formatLabel(value, true) + " min";
+                    else
+                        return "";
                 else
                     return super.formatLabel(value, false) + "%";
             }
@@ -120,6 +125,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         } else {
             textView_chargingTime.setVisibility(View.INVISIBLE);
         }
+        lastTime = time/60000;
         if (time == 0)
             viewport_chargeCurve.setMaxX(1);
         else
@@ -139,6 +145,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
             graph_chargeCurve.addSeries(series_chargeCurve);
             addChargeCurve();
         } else {
+            lastTime = 1;
             graph_chargeCurve.removeAllSeries();
             viewport_chargeCurve.setMaxX(1);
             textView_chargingTime.setVisibility(View.INVISIBLE);
