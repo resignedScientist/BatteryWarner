@@ -1,6 +1,9 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
+
+    private Contract(){}
+
     // shared preferences
     public static final String SHARED_PREFS = "BatteryWarner";
     public static final String PREF_FIRST_START = "FirstStart";
