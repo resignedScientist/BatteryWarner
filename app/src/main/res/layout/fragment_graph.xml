@@ -16,6 +16,13 @@
         android:textSize="18sp"
         android:textStyle="normal|bold" />
 
+    <CheckBox
+        android:text="@string/enabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkBox"
+        android:checked="true" />
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="10dp" />
@@ -35,6 +42,7 @@
         android:id="@+id/textView_chargingTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ladezeit: 999s" />
+        android:text="Ladezeit: 999s"
+        android:textAlignment="center" />
 
 </LinearLayout>
