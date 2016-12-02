@@ -8,8 +8,6 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
-import java.util.Calendar;
-
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class DischargingReceiver extends BroadcastReceiver {
@@ -23,8 +21,6 @@ public class DischargingReceiver extends BroadcastReceiver {
             return; // return if intro was not finished
 
         Log.i(TAG, "User stopped charging!");
-        long timeNow = Calendar.getInstance().getTimeInMillis();
-        Log.i(TAG, "Charging time = " + (timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow)) / 1000 + "s!");
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();

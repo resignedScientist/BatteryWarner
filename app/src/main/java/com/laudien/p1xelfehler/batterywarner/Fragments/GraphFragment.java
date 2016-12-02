@@ -24,6 +24,7 @@ import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
     private LineGraphSeries<DataPoint> series_chargeCurve;
+    Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
 
     @Nullable
@@ -31,12 +32,18 @@ public class GraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         GraphView graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
-        Viewport viewport_chargeCurve = graph_chargeCurve.getViewport();
+        viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
 
+        // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
         viewport_chargeCurve.setMinY(0);
         viewport_chargeCurve.setMaxY(100);
+
+        // x bounds
+        viewport_chargeCurve.setXAxisBoundsManual(true);
+        viewport_chargeCurve.setMinX(0);
+        viewport_chargeCurve.setMaxX(1);
 
         graph_chargeCurve.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
@@ -71,6 +78,7 @@ public class GraphFragment extends Fragment {
 
     private void addChargeCurve() {
         long time = 0;
+        int percentage = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
@@ -80,7 +88,7 @@ public class GraphFragment extends Fragment {
         if (cursor.moveToFirst()) { // if the cursor has data
             do { // while the cursor has data
                 time = cursor.getLong(0);
-                int percentage = cursor.getInt(1);
+                percentage = cursor.getInt(1);
                 Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
                 try {
                     series_chargeCurve.appendData(new DataPoint(time / 60000, percentage), false, 1000);
@@ -91,13 +99,21 @@ public class GraphFragment extends Fragment {
         }
         cursor.close();
         dbHelper.close();
-        if (!BatteryAlarmReceiver.isCharging(getContext())) {
-            long minutes = time/60000;
-            long seconds = (time - minutes*60000)/1000;
-            textView_chargingTime.setText("Ladezeit: " + minutes + "min, " + seconds + "s");
+        if (!BatteryAlarmReceiver.isCharging(getContext()) || percentage == 100) {
+            String timeString = "Ladezeit: ";
+            if (time > 3600000) {
+                long hours = time / 3600000;
+                timeString += hours + " h, ";
+            }
+            long minutes = time / 60000;
+            textView_chargingTime.setText(timeString + minutes + " min");
             textView_chargingTime.setVisibility(View.VISIBLE);
         } else {
             textView_chargingTime.setVisibility(View.INVISIBLE);
         }
+        if (time == 0)
+            viewport_chargeCurve.setMaxX(1);
+        else
+            viewport_chargeCurve.setMaxX(time / 60000);
     }
 }
