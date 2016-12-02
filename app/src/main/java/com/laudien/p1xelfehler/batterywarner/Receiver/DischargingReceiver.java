@@ -23,7 +23,6 @@ public class DischargingReceiver extends BroadcastReceiver {
         Log.i(TAG, "User stopped charging!");
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
             new BatteryAlarmReceiver().onReceive(context, intent);
     }

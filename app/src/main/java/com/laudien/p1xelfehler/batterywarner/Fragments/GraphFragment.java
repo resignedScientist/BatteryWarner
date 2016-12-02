@@ -1,5 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -17,23 +21,29 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
+    SharedPreferences sharedPreferences;
     private LineGraphSeries<DataPoint> series_chargeCurve;
-    Viewport viewport_chargeCurve;
+    private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
+        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         GraphView graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
+        CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+        checkBox_chargeCurve.setOnCheckedChangeListener(this);
+        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
 
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
@@ -60,12 +70,7 @@ public class GraphFragment extends Fragment {
         graph_chargeCurve.addSeries(series_chargeCurve);
 
         Button btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addChargeCurve();
-            }
-        });
+        btn_refresh.setOnClickListener(this);
 
         return view;
     }
@@ -77,6 +82,7 @@ public class GraphFragment extends Fragment {
     }
 
     private void addChargeCurve() {
+        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) return;
         long time = 0;
         int percentage = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
@@ -115,5 +121,21 @@ public class GraphFragment extends Fragment {
             viewport_chargeCurve.setMaxX(1);
         else
             viewport_chargeCurve.setMaxX(time / 60000);
+    }
+
+    @Override
+    public void onClick(View view) {
+        addChargeCurve();
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        sharedPreferences.edit().putBoolean(Contract.PREF_GRAPH_ENABLED, b).apply();
+        if (b)
+            addChargeCurve();
+        else {
+            series_chargeCurve.resetData(new DataPoint[]{new DataPoint(0, 0)});
+            viewport_chargeCurve.setMaxX(1);
+        }
     }
 }

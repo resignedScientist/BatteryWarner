@@ -36,14 +36,24 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "Charging: " + isCharging);
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-        int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-        boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true); // ToDo: Change to false
-
 
         if (isCharging) { // charging
+            // return if charging type is disabled in settings
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC:
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB:
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
+                    break;
+            }
+
             // charge curve database
-            if (graphEnabled) {
+            if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
@@ -61,23 +71,12 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             if (batteryLevel < 100)
                 setAlarm(context); // set next alarm if not >=100%
 
-            // return if charging type is disabled in settings
-            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
-            switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC:
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
-                    break;
-                case BatteryManager.BATTERY_PLUGGED_USB:
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
-                    break;
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
-                    break;
-            }
             // notification if warning value is reached
+            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
             if (batteryLevel >= warningHigh)
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
         } else { // discharging
+            int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
             if (batteryLevel <= warningLow) {
                 showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
             } else {

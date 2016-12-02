@@ -20,7 +20,7 @@
         android:text="@string/enabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBox_chargeCurve"
         android:checked="true" />
 
     <Space
