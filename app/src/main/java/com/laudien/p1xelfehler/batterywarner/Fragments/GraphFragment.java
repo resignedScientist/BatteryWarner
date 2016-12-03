@@ -115,11 +115,14 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         dbHelper.close();
         if (!BatteryAlarmReceiver.isCharging(getContext()) || percentage == 100) {
             String timeString = "Ladezeit: ";
-            if (time > 3600000) {
+            long minutes;
+            if (time > 3600000) { // over an hour
                 long hours = time / 3600000;
+                minutes = (time-hours*360000)/60000;
                 timeString += hours + " h, ";
-            }
-            long minutes = time / 60000;
+            } else // under an hour
+                minutes = time  / 60000;
+            timeString += minutes + " min";
             textView_chargingTime.setText(timeString + minutes + " min");
             textView_chargingTime.setVisibility(View.VISIBLE);
         } else {
