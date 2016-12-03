@@ -2,8 +2,11 @@ package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,10 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
@@ -26,7 +31,10 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 public class OnOffFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "OnOffFragment";
+    private static final int NO_STATE = -1;
     private Context context;
+    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private CountDownTimer timer;
 
     @Nullable
     @Override
@@ -55,7 +63,38 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        textView_technology = (TextView) view.findViewById(R.id.textView_technology);
+        textView_temp = (TextView) view.findViewById(R.id.textView_temp);
+        textView_health = (TextView) view.findViewById(R.id.textView_health);
+        textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
+        textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
+
+        refreshStatus();
+        timer = new CountDownTimer(10000, 5000) {
+            @Override
+            public void onTick(long l) {
+                refreshStatus();
+            }
+
+            @Override
+            public void onFinish() {
+                this.start();
+            }
+        };
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timer.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
     }
 
     @Override
@@ -65,5 +104,40 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(context, SettingsActivity.class));
                 break;
         }
+    }
+
+    private void refreshStatus(){
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) return;
+
+        String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
+        int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
+        int health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, NO_STATE);
+        String healthString;
+        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
+        int voltage = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE);
+
+        switch (health){
+            case BatteryManager.BATTERY_HEALTH_COLD: healthString = "Cold";
+                break;
+            case BatteryManager.BATTERY_HEALTH_DEAD: healthString = "Dead";
+                break;
+            case BatteryManager.BATTERY_HEALTH_GOOD: healthString = "Good";
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE: healthString = "Overvoltage";
+                break;
+            case BatteryManager.BATTERY_HEALTH_OVERHEAT: healthString = "Overheat";
+                break;
+            case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE: healthString = "Unspecified Failure";
+                break;
+            default: healthString = "Unknown";
+                break;
+        }
+
+        textView_technology.setText("Technologie: " + technology);
+        textView_temp.setText("Temperatur: " + temperature + " °C");
+        textView_health.setText("Gesundheit: " + healthString);
+        textView_batteryLevel.setText("Akkustand: " + batteryLevel + "%");
+        textView_voltage.setText("Spannung: " + voltage);
     }
 }

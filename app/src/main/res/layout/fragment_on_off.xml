@@ -1,26 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:layout_height="match_parent">
 
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:text="@string/settings"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-</RelativeLayout>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/battery_status_full"
+        android:id="@+id/imageView2"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/toggleButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/toggleButton"
+        android:layout_marginBottom="32dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        android:id="@+id/linearLayout2"
+        app:layout_constraintLeft_toLeftOf="@+id/toggleButton"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2">
+
+        <TextView
+            android:text="Technologie: Li-Ion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_technology" />
+
+        <TextView
+            android:text="Temperatur: 25°C"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_temp"
+            tools:layout_editor_absoluteY="16dp"
+            tools:layout_editor_absoluteX="150dp" />
+
+        <TextView
+            android:text="Gesundheit: OK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_health"
+            tools:layout_conversion_absoluteX="142dp"
+            tools:layout_conversion_absoluteY="32dp"
+            tools:layout_conversion_absoluteWidth="226dp"
+            tools:layout_conversion_absoluteHeight="16dp"
+            tools:layout_editor_absoluteY="32dp"
+            tools:layout_editor_absoluteX="142dp" />
+
+        <TextView
+            android:text="Akkustand: 30%"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_batteryLevel"
+            tools:layout_conversion_absoluteX="142dp"
+            tools:layout_conversion_absoluteY="49dp"
+            tools:layout_conversion_absoluteWidth="226dp"
+            tools:layout_conversion_absoluteHeight="16dp"
+            tools:layout_editor_absoluteY="49dp"
+            tools:layout_editor_absoluteX="142dp" />
+
+        <TextView
+            android:text="Spannung: 3,5V"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_voltage"
+            tools:layout_conversion_absoluteX="142dp"
+            tools:layout_conversion_absoluteY="82dp"
+            tools:layout_conversion_absoluteWidth="226dp"
+            tools:layout_conversion_absoluteHeight="16dp"
+            tools:layout_editor_absoluteY="82dp"
+            tools:layout_editor_absoluteX="142dp" />
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

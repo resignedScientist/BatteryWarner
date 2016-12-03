@@ -35,4 +35,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'agency.tango.android:material-intro-screen:0.0.4'
     compile 'com.jjoe64:graphview:4.2.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
