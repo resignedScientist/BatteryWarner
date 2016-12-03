@@ -141,7 +141,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             lastTime = 1;
             graph_chargeCurve.removeAllSeries();
             viewport_chargeCurve.setMaxX(1);
-            textView_chargingTime.setVisibility(View.INVISIBLE);
         }
     }
 }
