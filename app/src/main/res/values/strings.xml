@@ -22,4 +22,22 @@
     <string name="slide_3_title">For the longest life, you have to charge \"flat\"!</string>
     <string formatted="false" name="slide_3_description">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
+    <string name="main_page">Main page</string>
+    <string name="stats">Stats</string>
+    <string name="charging_curve">Charging curve</string>
+    <string name="refresh">Refresh</string>
+    <string name="charging">Charging...</string>
+    <string name="charging_time">Charging time</string>
+    <string name="technology">Technology</string>
+    <string name="temperature">Temperature</string>
+    <string name="health">Health</string>
+    <string name="battery_level">Battery level</string>
+    <string name="voltage">Voltage</string>
+    <string name="health_good">Good</string>
+    <string name="health_unknown">Unknown</string>
+    <string name="health_cold">Cold</string>
+    <string name="health_dead">Dead</string>
+    <string name="health_overvoltage">Overvoltage</string>
+    <string name="health_overheat">Overheat</string>
+    <string name="health_unspecified_failure">Unspecified failure</string>
 </resources>

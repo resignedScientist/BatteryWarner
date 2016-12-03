@@ -1,16 +1,21 @@
 package com.laudien.p1xelfehler.batterywarner.Adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Fragments.OnOffFragment;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    public ViewPagerAdapter(FragmentManager fm) {
+    private Context context;
+
+    public ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
+        this.context = context;
     }
 
     @Override
@@ -37,10 +42,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         String title = "";
         switch (position){
             case 0:
-                title = "Hauptseite";
+                title = context.getString(R.string.main_page);
                 break;
             case 1:
-                title = "Statistiken";
+                title = context.getString(R.string.stats);
                 break;
         }
         return title;

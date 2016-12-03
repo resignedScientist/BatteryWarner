@@ -23,4 +23,22 @@
     <string name="slide_3_title">Für die höchste Haltbarkeit, muss man \"flach\" laden!</string>
     <string formatted="false" name="slide_3_description">Das bedeutet, dass man den Akkustand z.B. zwischen 20-80% hält, anstatt zwischen 0-100%!</string>
     <string name="intro_finish_toast">Auf dass dein Akku länger lebt!</string>
+    <string name="main_page">Hauptseite</string>
+    <string name="stats">Statistiken</string>
+    <string name="charging_curve">Ladekurve</string>
+    <string name="refresh">Aktualisieren</string>
+    <string name="charging">Lade...</string>
+    <string name="charging_time">Ladezeit</string>
+    <string name="technology">Technologie</string>
+    <string name="temperature">Temperatur</string>
+    <string name="health">Gesundheit</string>
+    <string name="battery_level">Akkustand</string>
+    <string name="voltage">Spannung</string>
+    <string name="health_good">Gut</string>
+    <string name="health_unknown">Unbekannt</string>
+    <string name="health_cold">Kalt</string>
+    <string name="health_dead">Tot</string>
+    <string name="health_overvoltage">Zu hohe Spannung</string>
+    <string name="health_overheat">Überhitzung</string>
+    <string name="health_unspecified_failure">Unbekannter Fehler</string>
 </resources>

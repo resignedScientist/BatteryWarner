@@ -119,32 +119,32 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
 
         switch (health) {
             case BatteryManager.BATTERY_HEALTH_COLD:
-                healthString = "Cold";
+                healthString = getString(R.string.health_cold);
                 break;
             case BatteryManager.BATTERY_HEALTH_DEAD:
-                healthString = "Dead";
+                healthString = getString(R.string.health_dead);
                 break;
             case BatteryManager.BATTERY_HEALTH_GOOD:
-                healthString = "Good";
+                healthString = getString(R.string.health_good);
                 break;
             case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
-                healthString = "Overvoltage";
+                healthString = getString(R.string.health_overvoltage);
                 break;
             case BatteryManager.BATTERY_HEALTH_OVERHEAT:
-                healthString = "Overheat";
+                healthString = getString(R.string.health_overheat);
                 break;
             case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
-                healthString = "Unspecified Failure";
+                healthString = getString(R.string.health_unspecified_failure);
                 break;
             default:
-                healthString = "Unknown";
+                healthString = getString(R.string.health_unknown);
                 break;
         }
 
-        textView_technology.setText("Technologie: " + technology);
-        textView_temp.setText("Temperatur: " + temperature + " °C");
-        textView_health.setText("Gesundheit: " + healthString);
-        textView_batteryLevel.setText("Akkustand: " + batteryLevel + "%");
-        textView_voltage.setText("Spannung: " + voltage + " V");
+        textView_technology.setText(getString(R.string.technology) + ": " + technology);
+        textView_temp.setText(getString(R.string.temperature) + ": " + temperature + " °C");
+        textView_health.setText(getString(R.string.health) + ": " + healthString);
+        textView_batteryLevel.setText(getString(R.string.battery_level) + ": " + batteryLevel + "%");
+        textView_voltage.setText(getString(R.string.voltage) + ": " + voltage + " V");
     }
 }

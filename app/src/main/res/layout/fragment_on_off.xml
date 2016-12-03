@@ -61,7 +61,7 @@
             android:id="@+id/textView_technology"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Technologie: Li-Ion"
+            android:text="Technologie: Li-Io"
             android:textSize="18sp" />
 
         <TextView

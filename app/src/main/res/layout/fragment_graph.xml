@@ -36,7 +36,8 @@
         android:id="@+id/btn_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Refresh" />
+        android:text="Refresh"
+        android:textAllCaps="false" />
 
     <TextView
         android:id="@+id/textView_chargingTime"
