@@ -111,11 +111,11 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         if (batteryStatus == null) return;
 
         String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-        int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
+        double temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE)/10;
         int health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, NO_STATE);
         String healthString;
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
-        int voltage = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE);
+        double voltage = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE)/1000;
 
         switch (health){
             case BatteryManager.BATTERY_HEALTH_COLD: healthString = "Cold";
@@ -138,6 +138,6 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         textView_temp.setText("Temperatur: " + temperature + " °C");
         textView_health.setText("Gesundheit: " + healthString);
         textView_batteryLevel.setText("Akkustand: " + batteryLevel + "%");
-        textView_voltage.setText("Spannung: " + voltage);
+        textView_voltage.setText("Spannung: " + voltage + " V");
     }
 }
