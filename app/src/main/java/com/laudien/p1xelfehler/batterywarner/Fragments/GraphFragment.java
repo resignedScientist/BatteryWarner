@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,14 +27,13 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
-public class GraphFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    private Button btn_refresh;
     private long lastTime;
 
     @Nullable
@@ -59,14 +59,12 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         graph_chargeCurve.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
-                if (isValueX)
+                if (isValueX) // X-axis (time)
                     if (value == lastTime || value == 1 || value == 0)
                         return super.formatLabel(value, true) + " min";
-                    else if (value == 1 || value == 0)
-                        return super.formatLabel(value, true);
                     else
                         return "";
-                else
+                else // Y-axis (percent)
                     return super.formatLabel(value, false) + "%";
             }
         });
@@ -74,9 +72,6 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         series_chargeCurve = new LineGraphSeries<>();
         series_chargeCurve.setDrawBackground(true);
         graph_chargeCurve.addSeries(series_chargeCurve);
-
-        btn_refresh = (Button) view.findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(this);
 
         CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
         checkBox_chargeCurve.setOnCheckedChangeListener(this);
@@ -91,7 +86,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         reloadChargeCurve();
     }
 
-    private void reloadChargeCurve() {
+    public void reloadChargeCurve() {
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) return;
         long time = 0;
         int percentage = 0;
@@ -137,14 +132,8 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     }
 
     @Override
-    public void onClick(View view) {
-        reloadChargeCurve();
-    }
-
-    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         sharedPreferences.edit().putBoolean(Contract.PREF_GRAPH_ENABLED, b).apply();
-        btn_refresh.setEnabled(b);
         if (b) {
             graph_chargeCurve.addSeries(series_chargeCurve);
             reloadChargeCurve();
