@@ -88,6 +88,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        refreshStatus();
         timer.start();
     }
 
@@ -111,11 +112,11 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         if (batteryStatus == null) return;
 
         String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-        double temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE)/10;
+        double temperature = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE)/10;
         int health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, NO_STATE);
         String healthString;
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
-        double voltage = batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE)/1000;
+        double voltage = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE)/1000;
 
         switch (health){
             case BatteryManager.BATTERY_HEALTH_COLD: healthString = "Cold";

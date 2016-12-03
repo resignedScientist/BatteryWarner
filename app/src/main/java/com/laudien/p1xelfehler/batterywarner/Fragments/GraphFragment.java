@@ -60,8 +60,10 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX)
-                    if(value == lastTime)
+                    if(value == lastTime || value == 1 || value == 0)
                         return super.formatLabel(value, true) + " min";
+                    else if(value == 1 || value == 0)
+                        return super.formatLabel(value, true);
                     else
                         return "";
                 else
@@ -123,7 +125,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
             } else // under an hour
                 minutes = time  / 60000;
             timeString += minutes + " min";
-            textView_chargingTime.setText(timeString + minutes + " min");
+            textView_chargingTime.setText(timeString);
             textView_chargingTime.setVisibility(View.VISIBLE);
         } else {
             textView_chargingTime.setVisibility(View.INVISIBLE);
