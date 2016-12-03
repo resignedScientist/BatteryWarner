@@ -60,9 +60,9 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX)
-                    if(value == lastTime || value == 1 || value == 0)
+                    if (value == lastTime || value == 1 || value == 0)
                         return super.formatLabel(value, true) + " min";
-                    else if(value == 1 || value == 0)
+                    else if (value == 1 || value == 0)
                         return super.formatLabel(value, true);
                     else
                         return "";
@@ -88,10 +88,10 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
     @Override
     public void onResume() {
         super.onResume();
-        addChargeCurve();
+        reloadChargeCurve();
     }
 
-    private void addChargeCurve() {
+    private void reloadChargeCurve() {
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) return;
         long time = 0;
         int percentage = 0;
@@ -115,22 +115,21 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         }
         cursor.close();
         dbHelper.close();
+        String timeString = "Ladezeit: ";
         if (!BatteryAlarmReceiver.isCharging(getContext()) || percentage == 100) {
-            String timeString = "Ladezeit: ";
             long minutes;
             if (time > 3600000) { // over an hour
                 long hours = time / 3600000;
-                minutes = (time-hours*360000)/60000;
+                minutes = (time - hours * 360000) / 60000;
                 timeString += hours + " h, ";
             } else // under an hour
-                minutes = time  / 60000;
+                minutes = time / 60000;
             timeString += minutes + " min";
-            textView_chargingTime.setText(timeString);
-            textView_chargingTime.setVisibility(View.VISIBLE);
         } else {
-            textView_chargingTime.setVisibility(View.INVISIBLE);
+            timeString = "Lade...";
         }
-        lastTime = time/60000;
+        textView_chargingTime.setText(timeString);
+        lastTime = time / 60000;
         if (time == 0)
             viewport_chargeCurve.setMaxX(1);
         else
@@ -139,7 +138,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
 
     @Override
     public void onClick(View view) {
-        addChargeCurve();
+        reloadChargeCurve();
     }
 
     @Override
@@ -148,7 +147,7 @@ public class GraphFragment extends Fragment implements View.OnClickListener, Com
         btn_refresh.setEnabled(b);
         if (b) {
             graph_chargeCurve.addSeries(series_chargeCurve);
-            addChargeCurve();
+            reloadChargeCurve();
         } else {
             lastTime = 1;
             graph_chargeCurve.removeAllSeries();
