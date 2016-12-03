@@ -61,7 +61,8 @@
             android:text="Technologie: Li-Ion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView_technology" />
+            android:id="@+id/textView_technology"
+            android:textSize="18sp" />
 
         <TextView
             android:text="Temperatur: 25°C"
@@ -69,7 +70,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/textView_temp"
             tools:layout_editor_absoluteY="16dp"
-            tools:layout_editor_absoluteX="150dp" />
+            tools:layout_editor_absoluteX="150dp"
+            android:textSize="18sp" />
 
         <TextView
             android:text="Gesundheit: OK"
@@ -81,7 +83,8 @@
             tools:layout_conversion_absoluteWidth="226dp"
             tools:layout_conversion_absoluteHeight="16dp"
             tools:layout_editor_absoluteY="32dp"
-            tools:layout_editor_absoluteX="142dp" />
+            tools:layout_editor_absoluteX="142dp"
+            android:textSize="18sp" />
 
         <TextView
             android:text="Akkustand: 30%"
@@ -93,7 +96,8 @@
             tools:layout_conversion_absoluteWidth="226dp"
             tools:layout_conversion_absoluteHeight="16dp"
             tools:layout_editor_absoluteY="49dp"
-            tools:layout_editor_absoluteX="142dp" />
+            tools:layout_editor_absoluteX="142dp"
+            android:textSize="18sp" />
 
         <TextView
             android:text="Spannung: 3,5V"
@@ -105,7 +109,8 @@
             tools:layout_conversion_absoluteWidth="226dp"
             tools:layout_conversion_absoluteHeight="16dp"
             tools:layout_editor_absoluteY="82dp"
-            tools:layout_editor_absoluteX="142dp" />
+            tools:layout_editor_absoluteX="142dp"
+            android:textSize="18sp" />
 
     </LinearLayout>
 
