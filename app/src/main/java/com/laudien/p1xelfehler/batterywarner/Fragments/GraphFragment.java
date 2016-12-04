@@ -79,7 +79,7 @@ public class GraphFragment extends Fragment {
     }
 
     public void reloadChargeCurve() {
-        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) { // if graph is disabled
             graph_chargeCurve.setVisibility(View.INVISIBLE);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
             textView_chargingTime.setTextSize(18);
@@ -89,8 +89,9 @@ public class GraphFragment extends Fragment {
             textView_chargingTime.setTextSize(14);
             graph_chargeCurve.setVisibility(View.VISIBLE);
         }
-        long time = 0;
-        int percentage = 0;
+        // read from database:
+        long time;
+        int percentage;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
@@ -98,7 +99,7 @@ public class GraphFragment extends Fragment {
                 "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
 
         if (cursor.moveToFirst()) { // if the cursor has data
-            do { // while the cursor has data
+            do {
                 time = cursor.getLong(0);
                 percentage = cursor.getInt(1);
                 Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
@@ -107,8 +108,8 @@ public class GraphFragment extends Fragment {
                 } catch (Exception e) {
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time / 60000, percentage)});
                 }
-            } while (cursor.moveToNext());
-        } else {
+            } while (cursor.moveToNext()); // while the cursor has data
+        } else { // empty database
             textView_chargingTime.setText(getString(R.string.no_data));
             return;
         }
