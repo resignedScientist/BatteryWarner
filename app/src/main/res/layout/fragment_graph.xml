@@ -12,7 +12,7 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ladekurve"
+        android:text="@string/charging_curve"
         android:textSize="18sp"
         android:textStyle="normal|bold" />
 
