@@ -126,7 +126,7 @@ public class GraphFragment extends Fragment {
                 long minutes;
                 if (time > 3600000) { // over an hour
                     long hours = time / 3600000;
-                    minutes = (time - hours * 360000) / 60000;
+                    minutes = (time - hours * 3600000) / 60000;
                     timeString += hours + " h, ";
                 } else // under an hour
                     minutes = time / 60000;
