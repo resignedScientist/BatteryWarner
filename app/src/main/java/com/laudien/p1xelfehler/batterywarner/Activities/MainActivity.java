@@ -4,14 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Adapter.ViewPagerAdapter;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -58,9 +59,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_refresh) {
+        if (item.getItemId() == R.id.menu_refresh) {
             GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
             graphFragment.reloadChargeCurve();
+            if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
+                    .getBoolean(Contract.PREF_GRAPH_ENABLED, true))
+                Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         toolbar.getMenu().clear();
-        switch (position){
+        switch (position) {
             case 1:
                 toolbar.inflateMenu(R.menu.reload_menu);
                 break;
