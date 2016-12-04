@@ -28,7 +28,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     private static final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
-    private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery;
+    private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery, checkBox_chargeCurve;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
     private TextView textView_lowBattery, textView_highBattery;
     public Uri sound;
@@ -72,6 +72,10 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
         // notification sound
         sound = getNotificationSound(getContext());
+
+        checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+        checkBox_chargeCurve.setOnCheckedChangeListener(this);
+        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
 
         return view;
     }
@@ -171,6 +175,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putInt(Contract.PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
                 .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
                 .putString(Contract.PREF_SOUND_URI, sound.toString())
+                .putBoolean(Contract.PREF_GRAPH_ENABLED, checkBox_chargeCurve.isChecked())
                 .apply();
 
         // restart the alarm (if enabled)

@@ -40,4 +40,8 @@
     <string name="health_overvoltage">Overvoltage</string>
     <string name="health_overheat">Overheat</string>
     <string name="health_unspecified_failure">Unspecified failure</string>
+    <string name="enable_charging_curve">Enable charging curve</string>
+    <string name="disabled_in_settings">Disabled in settings!</string>
+    <string name="no_data">No data yet!</string>
+    <string name="not_enough_data">Not enough data yet!</string>
 </resources>

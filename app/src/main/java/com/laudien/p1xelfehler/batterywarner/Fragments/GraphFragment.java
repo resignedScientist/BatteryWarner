@@ -9,12 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -27,7 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
-public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
@@ -73,10 +69,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         series_chargeCurve.setDrawBackground(true);
         graph_chargeCurve.addSeries(series_chargeCurve);
 
-        CheckBox checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        checkBox_chargeCurve.setOnCheckedChangeListener(this);
-        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
-
         return view;
     }
 
@@ -87,7 +79,16 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     public void reloadChargeCurve() {
-        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) return;
+        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+            graph_chargeCurve.setVisibility(View.INVISIBLE);
+            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
+            textView_chargingTime.setTextSize(18);
+            return;
+        }
+        if (graph_chargeCurve.getVisibility() == View.INVISIBLE) {
+            textView_chargingTime.setTextSize(14);
+            graph_chargeCurve.setVisibility(View.VISIBLE);
+        }
         long time = 0;
         int percentage = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
@@ -107,40 +108,32 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time / 60000, percentage)});
                 }
             } while (cursor.moveToNext());
+        } else {
+            textView_chargingTime.setText(getString(R.string.no_data));
+            return;
         }
         cursor.close();
         dbHelper.close();
-        String timeString = getString(R.string.charging_time) + ": ";
-        if (!BatteryAlarmReceiver.isCharging(getContext()) || percentage == 100) {
-            long minutes;
-            if (time > 3600000) { // over an hour
-                long hours = time / 3600000;
-                minutes = (time - hours * 360000) / 60000;
-                timeString += hours + " h, ";
-            } else // under an hour
-                minutes = time / 60000;
-            timeString += minutes + " min";
-        } else {
-            timeString = getString(R.string.charging);
-        }
-        textView_chargingTime.setText(timeString);
-        lastTime = time / 60000;
-        if (time == 0)
-            viewport_chargeCurve.setMaxX(1);
-        else
-            viewport_chargeCurve.setMaxX(time / 60000);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        sharedPreferences.edit().putBoolean(Contract.PREF_GRAPH_ENABLED, b).apply();
-        if (b) {
-            graph_chargeCurve.addSeries(series_chargeCurve);
-            reloadChargeCurve();
-        } else {
-            lastTime = 1;
-            graph_chargeCurve.removeAllSeries();
-            viewport_chargeCurve.setMaxX(1);
+        if (BatteryAlarmReceiver.isCharging(getContext()) && percentage != 100) { // if charging and not fully charged
+            textView_chargingTime.setText(getString(R.string.charging));
+        } else { // if discharging or fully charged
+            if (time == 0) { // not enough data
+                viewport_chargeCurve.setMaxX(1);
+                textView_chargingTime.setText(getString(R.string.not_enough_data));
+            } else { // enough data
+                String timeString = getString(R.string.charging_time) + ": ";
+                long minutes;
+                if (time > 3600000) { // over an hour
+                    long hours = time / 3600000;
+                    minutes = (time - hours * 360000) / 60000;
+                    timeString += hours + " h, ";
+                } else // under an hour
+                    minutes = time / 60000;
+                timeString += minutes + " min";
+                textView_chargingTime.setText(timeString);
+                lastTime = time / 60000;
+                viewport_chargeCurve.setMaxX(time / 60000);
+            }
         }
     }
 }

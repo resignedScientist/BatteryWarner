@@ -41,4 +41,8 @@
     <string name="health_overvoltage">Zu hohe Spannung</string>
     <string name="health_overheat">Überhitzung</string>
     <string name="health_unspecified_failure">Unbekannter Fehler</string>
+    <string name="enable_charging_curve">Aufzeichnung einer Ladekurve</string>
+    <string name="disabled_in_settings">In den Einstellungen deaktiviert!</string>
+    <string name="no_data">Noch keine Daten!</string>
+    <string name="not_enough_data">Noch nicht genug Daten!</string>
 </resources>
