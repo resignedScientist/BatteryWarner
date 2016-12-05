@@ -41,5 +41,5 @@ public final class Contract {
     public static final int PICK_SOUND_REQUEST = 1;
 
     // activating pro-features
-    public static final boolean IS_PRO = false;
+    public static final boolean IS_PRO = true;
 }
