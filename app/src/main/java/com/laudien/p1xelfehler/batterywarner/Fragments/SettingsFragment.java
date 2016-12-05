@@ -75,7 +75,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sound = getNotificationSound(getContext());
 
         checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        if(Contract.IS_PRO) {
+        if (Contract.IS_PRO) {
             checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
         } else {
             checkBox_chargeCurve.setEnabled(false);
@@ -174,12 +174,13 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     public void saveAll() {
         // reset graph database if disabled and enabled before
-        if(!checkBox_chargeCurve.isChecked() && sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        if (!checkBox_chargeCurve.isChecked() && sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
             dbHelper.resetTable();
             dbHelper.close();
         }
 
+        // save the settings
         sharedPreferences.edit()
                 .putBoolean(Contract.PREF_USB_ENABLED, checkBox_usb.isChecked())
                 .putBoolean(Contract.PREF_AC_ENABLED, checkBox_ac.isChecked())
