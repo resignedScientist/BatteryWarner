@@ -29,7 +29,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
+        if(Contract.IS_PRO){
+            toolbar.setTitle(getString(R.string.app_name) + " Pro");
+        } else {
+            toolbar.setTitle(getString(R.string.app_name));
+        }
         setSupportActionBar(toolbar);
 
         final SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
