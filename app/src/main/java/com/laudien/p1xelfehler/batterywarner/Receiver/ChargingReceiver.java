@@ -26,12 +26,14 @@ public class ChargingReceiver extends BroadcastReceiver {
         Log.i(TAG, "User started charging!");
 
         // reset graph values + already notified
-        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
-        dbHelper.resetTable();
-        sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
-                .putBoolean(Contract.PREF_ALREADY_NOTIFIED, false)
-                .apply();
+        if(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+            GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
+            dbHelper.resetTable();
+            sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
+                    .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                    .putBoolean(Contract.PREF_ALREADY_NOTIFIED, false)
+                    .apply();
+        }
 
         BatteryAlarmReceiver.cancelExistingAlarm(context);
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)

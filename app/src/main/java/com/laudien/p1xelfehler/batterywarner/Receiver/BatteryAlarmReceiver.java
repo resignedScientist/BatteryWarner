@@ -69,11 +69,11 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                 }
             }
 
-            if (curveEnabled && batteryLevel < 100) // new alarm if curve is enabled and battery not at 100%
+            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+            if ((curveEnabled && batteryLevel < 100) || (!curveEnabled && batteryLevel <= warningHigh)) // new alarm
                 setAlarm(context);
 
             // notification if warning value is reached
-            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
             if (batteryLevel >= warningHigh) {
                 showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
             }

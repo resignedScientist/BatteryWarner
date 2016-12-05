@@ -79,62 +79,67 @@ public class GraphFragment extends Fragment {
     }
 
     public void reloadChargeCurve() {
-        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) { // if graph is disabled
-            graph_chargeCurve.setVisibility(View.INVISIBLE);
-            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
-            textView_chargingTime.setTextSize(18);
-            return;
-        }
-        if (graph_chargeCurve.getVisibility() == View.INVISIBLE) {
-            textView_chargingTime.setTextSize(14);
-            graph_chargeCurve.setVisibility(View.VISIBLE);
-        }
-        // read from database:
-        long time;
-        int percentage;
-        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
-        Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
-
-        if (cursor.moveToFirst()) { // if the cursor has data
-            do {
-                time = cursor.getLong(0);
-                percentage = cursor.getInt(1);
-                Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
-                try {
-                    series_chargeCurve.appendData(new DataPoint(time / 60000, percentage), false, 1000);
-                } catch (Exception e) {
-                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time / 60000, percentage)});
-                }
-            } while (cursor.moveToNext()); // while the cursor has data
-        } else { // empty database
-            textView_chargingTime.setText(getString(R.string.no_data));
-            return;
-        }
-        cursor.close();
-        dbHelper.close();
-        if (BatteryAlarmReceiver.isCharging(getContext()) && percentage != 100) { // if charging and not fully charged
-            textView_chargingTime.setText(getString(R.string.charging));
-        } else { // if discharging or fully charged
-            if (time == 0) { // not enough data
-                viewport_chargeCurve.setMaxX(1);
-                textView_chargingTime.setText(getString(R.string.not_enough_data));
-            } else { // enough data
-                String timeString = getString(R.string.charging_time) + ": ";
-                long minutes;
-                if (time > 3600000) { // over an hour
-                    long hours = time / 3600000;
-                    minutes = (time - hours * 3600000) / 60000;
-                    timeString += hours + " h, ";
-                } else // under an hour
-                    minutes = time / 60000;
-                timeString += minutes + " min";
-                textView_chargingTime.setText(timeString);
-                lastTime = time / 60000;
-                viewport_chargeCurve.setMaxX(time / 60000);
+        if (Contract.IS_PRO) {
+            if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) { // if graph is disabled
+                graph_chargeCurve.setVisibility(View.INVISIBLE);
+                textView_chargingTime.setText(getString(R.string.disabled_in_settings));
+                textView_chargingTime.setTextSize(18);
+                return;
             }
+            if (graph_chargeCurve.getVisibility() == View.INVISIBLE) {
+                textView_chargingTime.setTextSize(14);
+                graph_chargeCurve.setVisibility(View.VISIBLE);
+            }
+            // read from database:
+            long time;
+            int percentage;
+            GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
+            SQLiteDatabase database = dbHelper.getReadableDatabase();
+            String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
+            Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
+                    "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
+
+            if (cursor.moveToFirst()) { // if the cursor has data
+                do {
+                    time = cursor.getLong(0);
+                    percentage = cursor.getInt(1);
+                    Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
+                    try {
+                        series_chargeCurve.appendData(new DataPoint(time / 60000, percentage), false, 1000);
+                    } catch (Exception e) {
+                        series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time / 60000, percentage)});
+                    }
+                } while (cursor.moveToNext()); // while the cursor has data
+            } else { // empty database
+                textView_chargingTime.setText(getString(R.string.no_data));
+                return;
+            }
+            cursor.close();
+            dbHelper.close();
+            if (BatteryAlarmReceiver.isCharging(getContext()) && percentage != 100) { // if charging and not fully charged
+                textView_chargingTime.setText(getString(R.string.charging));
+            } else { // if discharging or fully charged
+                if (time == 0) { // not enough data
+                    viewport_chargeCurve.setMaxX(1);
+                    textView_chargingTime.setText(getString(R.string.not_enough_data));
+                } else { // enough data
+                    String timeString = getString(R.string.charging_time) + ": ";
+                    long minutes;
+                    if (time > 3600000) { // over an hour
+                        long hours = time / 3600000;
+                        minutes = (time - hours * 3600000) / 60000;
+                        timeString += hours + " h, ";
+                    } else // under an hour
+                        minutes = time / 60000;
+                    timeString += minutes + " min";
+                    textView_chargingTime.setText(timeString);
+                    lastTime = time / 60000;
+                    viewport_chargeCurve.setMaxX(time / 60000);
+                }
+            }
+        } else { // if no pro version
+            textView_chargingTime.setText(getString(R.string.not_pro));
+            textView_chargingTime.setTextSize(20);
         }
     }
 }

@@ -74,8 +74,15 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sound = getNotificationSound(getContext());
 
         checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        checkBox_chargeCurve.setOnCheckedChangeListener(this);
-        checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
+        if(Contract.IS_PRO) {
+            checkBox_chargeCurve.setOnCheckedChangeListener(this);
+            checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
+        } else {
+            checkBox_chargeCurve.setEnabled(false);
+            checkBox_chargeCurve.setChecked(false);
+            TextView textView_stats = (TextView) view.findViewById(R.id.textView_stats);
+            textView_stats.setText(getString(R.string.stats) + " (" + getString(R.string.pro_only_short) + ")");
+        }
 
         return view;
     }

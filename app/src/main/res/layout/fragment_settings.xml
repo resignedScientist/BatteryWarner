@@ -91,7 +91,7 @@
             android:layout_height="20dp" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textView_stats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/stats"

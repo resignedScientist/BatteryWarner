@@ -60,12 +60,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
-            GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
-            graphFragment.reloadChargeCurve();
-            if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
-                    .getBoolean(Contract.PREF_GRAPH_ENABLED, true))
-                Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
-            return true;
+            if(Contract.IS_PRO) {
+                GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
+                graphFragment.reloadChargeCurve();
+                if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
+                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true))
+                    Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
+                return true;
+            } else {
+                Toast.makeText(getApplicationContext(), "Sorry! :(", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

@@ -45,4 +45,6 @@
     <string name="no_data">No data yet!</string>
     <string name="not_enough_data">Not enough data yet!</string>
     <string name="graph_reloaded">The graph was reloaded!</string>
+    <string name="not_pro">Pro version of the app is needed for that feature!</string>
+    <string name="pro_only_short">Pro only!</string>
 </resources>

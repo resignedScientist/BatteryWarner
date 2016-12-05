@@ -39,4 +39,7 @@ public final class Contract {
 
     // intent request codes
     public static final int PICK_SOUND_REQUEST = 1;
+
+    // activating pro-features
+    public static final boolean IS_PRO = false;
 }
