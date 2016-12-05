@@ -114,6 +114,8 @@ public class GraphFragment extends Fragment {
                 textView_chargingTime.setText(getString(R.string.no_data));
                 return;
             }
+            if (time != 0)
+                viewport_chargeCurve.setMaxX(time / 60000);
             cursor.close();
             dbHelper.close();
             if (BatteryAlarmReceiver.isCharging(getContext()) && percentage != 100) { // if charging and not fully charged
@@ -134,7 +136,6 @@ public class GraphFragment extends Fragment {
                     timeString += minutes + " min";
                     textView_chargingTime.setText(timeString);
                     lastTime = time / 60000;
-                    viewport_chargeCurve.setMaxX(time / 60000);
                 }
             }
         } else { // if no pro version

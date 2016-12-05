@@ -23,6 +23,8 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
+import java.util.Calendar;
+
 import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
@@ -173,11 +175,14 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     public void saveAll() {
-        // reset graph database if disabled and enabled before
-        if (!checkBox_chargeCurve.isChecked() && sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        // reset graph database if it was checked/unchecked
+        if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
             dbHelper.resetTable();
-            dbHelper.close();
+            sharedPreferences.edit()
+                    .putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
+                    .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                    .apply(); // reset time
         }
 
         // save the settings
@@ -196,7 +201,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         // restart the alarm (if enabled)
         BatteryAlarmReceiver.cancelExistingAlarm(getContext());
         if (sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
-            BatteryAlarmReceiver.setAlarm(getContext());
+            new BatteryAlarmReceiver().onReceive(getContext(), null);
 
         Log.i(TAG, getString(R.string.settings_saved));
     }
