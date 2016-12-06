@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if(Contract.IS_PRO){
-            toolbar.setTitle(getString(R.string.app_name)/* + " Pro"*/);
+            toolbar.setTitle(getString(R.string.app_name) + " Pro");
         } else {
             toolbar.setTitle(getString(R.string.app_name));
         }

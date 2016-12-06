@@ -81,15 +81,15 @@ public class GraphFragment extends Fragment {
     public void reloadChargeCurve() {
         // 1. if not pro -> return
         if (!Contract.IS_PRO) {
-            graph_chargeCurve.setVisibility(View.INVISIBLE);
-            textView_chargingTime.setTextSize(18);
-            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
+            textView_chargingTime.setTextSize(20);
+            textView_chargingTime.setText(getString(R.string.not_pro));
             return;
         }
         // 2. if disabled in settings -> return
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-            textView_chargingTime.setTextSize(20);
-            textView_chargingTime.setText(getString(R.string.not_pro));
+            graph_chargeCurve.setVisibility(View.INVISIBLE);
+            textView_chargingTime.setTextSize(18);
+            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
         // 3. load graph
