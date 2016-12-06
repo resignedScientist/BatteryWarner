@@ -82,7 +82,7 @@ public class GraphFragment extends Fragment {
         // 1. if not pro -> return
         if (!Contract.IS_PRO) {
             textView_chargingTime.setTextSize(20);
-            textView_chargingTime.setText(getString(R.string.not_pro));
+            textView_chargingTime.setText(getString(R.string.not_pro) + " (Coming soon!)");
             return;
         }
         // 2. if disabled in settings -> return
@@ -121,6 +121,8 @@ public class GraphFragment extends Fragment {
                 textView_chargingTime.setText(getString(R.string.no_data));
             return;
         }
+        cursor.close();
+        dbHelper.close();
         // 4. Is the phone charging and is it NOT full charged?
         if (charging && percentage != 100) { // charging and not fully charged -> "Charging..."
             textView_chargingTime.setText(getString(R.string.charging));
