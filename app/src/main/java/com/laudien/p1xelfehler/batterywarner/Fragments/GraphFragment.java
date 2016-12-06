@@ -56,7 +56,7 @@ public class GraphFragment extends Fragment {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) // X-axis (time)
-                    if (value == lastTime || value == 1 || value == 0)
+                    if (value == lastTime || value == 0 || value == lastTime/2)
                         return super.formatLabel(value, true) + " min";
                     else
                         return "";
