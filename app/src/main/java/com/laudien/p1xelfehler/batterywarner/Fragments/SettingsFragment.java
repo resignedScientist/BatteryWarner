@@ -31,7 +31,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     private static final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
-    private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery, checkBox_highBattery, checkBox_chargeCurve;
+    private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery,
+            checkBox_highBattery, checkBox_chargeCurve, checkBox_fastCharging;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
     private TextView textView_lowBattery, textView_highBattery;
     public Uri sound;
@@ -77,11 +78,14 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sound = getNotificationSound(getContext());
 
         checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+        checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
         if (Contract.IS_PRO) {
             checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
+            checkBox_fastCharging.setChecked(sharedPreferences.getBoolean(Contract.PREF_FASTER_INTERVAL, false));
         } else {
             checkBox_chargeCurve.setEnabled(false);
             checkBox_chargeCurve.setChecked(false);
+            checkBox_fastCharging.setEnabled(false);
             TextView textView_stats = (TextView) view.findViewById(R.id.textView_stats);
             textView_stats.setText(getString(R.string.stats) + " (" + getString(R.string.pro_only_short) + ")");
         }
@@ -196,6 +200,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
                 .putString(Contract.PREF_SOUND_URI, sound.toString())
                 .putBoolean(Contract.PREF_GRAPH_ENABLED, checkBox_chargeCurve.isChecked())
+                .putBoolean(Contract.PREF_FASTER_INTERVAL, checkBox_fastCharging.isChecked())
                 .apply();
 
         // restart the alarm (if enabled)

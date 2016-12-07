@@ -103,6 +103,12 @@
             android:layout_height="wrap_content"
             android:text="@string/enable_charging_curve" />
 
+        <CheckBox
+            android:text="Higher accuracy for dash/quick charging"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/checkBox_fastCharging" />
+
     </LinearLayout>
 
 </ScrollView>

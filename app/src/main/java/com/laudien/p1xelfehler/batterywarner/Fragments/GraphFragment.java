@@ -30,7 +30,7 @@ public class GraphFragment extends Fragment {
     private LineGraphSeries<DataPoint> series_chargeCurve;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    private long lastTime;
+    private double lastTime;
 
     @Nullable
     @Override
@@ -55,12 +55,14 @@ public class GraphFragment extends Fragment {
         graph_chargeCurve.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) // X-axis (time)
+                if (isValueX) { // X-axis (time)
+                    Log.i(TAG, "lastTime = " + lastTime);
+                    Log.i(TAG, "value = " + value);
                     if (value == lastTime || value == 0 || value == lastTime / 2)
                         return super.formatLabel(value, true) + " min";
                     else
                         return "";
-                else // Y-axis (percent)
+                } else // Y-axis (percent)
                     return super.formatLabel(value, false) + "%";
             }
         });
@@ -103,13 +105,13 @@ public class GraphFragment extends Fragment {
         if (cursor.moveToFirst()) { // if the cursor has data
             do {
                 time = cursor.getLong(0);
+                lastTime = getDoubleTime(time);
                 percentage = cursor.getInt(1);
-                Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage);
+                Log.i(TAG, "Data read: time = " + lastTime + "; percentage = " + percentage);
                 try {
-                    series_chargeCurve.appendData(new DataPoint(time / 60000, percentage), false, 1000);
-                    lastTime = time / 60000;
+                    series_chargeCurve.appendData(new DataPoint(lastTime, percentage), false, 1000);
                 } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
-                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time / 60000, percentage)});
+                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, percentage)});
                     viewport_chargeCurve.setMaxX(1);
                     lastTime = 1;
                 }
@@ -125,30 +127,35 @@ public class GraphFragment extends Fragment {
         dbHelper.close();
         // 4. Is there enough data?
         boolean enoughData = time != 0;
-        if (!enoughData){ // not enough data
+        if (!enoughData) { // not enough data
             lastTime = 1;
             textView_chargingTime.setText(getString(R.string.not_enough_data));
         } else { // enough data
-            viewport_chargeCurve.setMaxX(time / 60000); // set the viewport to the highest time
+            viewport_chargeCurve.setMaxX(lastTime); // set the viewport to the highest time
         }
         // 5. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
         if (charging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
             textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
-        } else if (enoughData){ // discharging + ENOUGH data
+        } else if (enoughData) { // discharging + ENOUGH data
             textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
         }
     }
 
     private String getTimeString(long timeInMillis) { // returns "hours h, minutes min" or "minutes min"
-        long minutes;
+        double minutes;
         if (timeInMillis > 3600000) { // over an hour
             long hours = timeInMillis / 3600000;
             minutes = (timeInMillis - hours * 3600000) / 60000;
             return String.valueOf(hours) + " h, " + String.valueOf(minutes) + " min";
         } else { // under an hour
-            minutes = timeInMillis / 60000;
-            return String.valueOf(minutes) + "min";
+            minutes = getDoubleTime(timeInMillis);
+            if ((int) minutes == minutes)
+                return String.valueOf((int) minutes) + " min";
+            return String.valueOf(minutes) + " min";
         }
+    }
+    private double getDoubleTime(long timeInMillis){ // returns minutes as double
+        return (double) Math.round(2 * (double)timeInMillis / 60000)/2;
     }
 }

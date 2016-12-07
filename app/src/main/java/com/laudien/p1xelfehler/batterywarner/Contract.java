@@ -21,6 +21,7 @@ public final class Contract {
     public static final String PREF_LAST_PERCENTAGE = "lastPercentage";
     public static final String PREF_GRAPH_TIME = "graphTime";
     public static final String PREF_ALREADY_NOTIFIED = "notificationShown";
+    public static final String PREF_FASTER_INTERVAL = "fasterInterval";
 
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
@@ -28,6 +29,7 @@ public final class Contract {
 
     // charge checking intervals
     public static final int INTERVAL_CHARGING = 60000; // 1 minute
+    public static final int INTERVAL_FAST_CHARGING = 30000; // 30 seconds
     public static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     public static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
     public static final int INTERVAL_DISCHARGING_SHORT = 900000; // 15 minutes
