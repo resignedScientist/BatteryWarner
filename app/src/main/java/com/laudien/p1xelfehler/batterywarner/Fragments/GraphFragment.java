@@ -56,7 +56,7 @@ public class GraphFragment extends Fragment {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) // X-axis (time)
-                    if (value == lastTime || value == 0 || value == lastTime/2)
+                    if (value == lastTime || value == 0 || value == lastTime / 2)
                         return super.formatLabel(value, true) + " min";
                     else
                         return "";
@@ -115,36 +115,40 @@ public class GraphFragment extends Fragment {
                 }
             } while (cursor.moveToNext()); // while the cursor has data
         } else { // empty database -> return
-            if (charging) // "Charging..."
-                textView_chargingTime.setText(getString(R.string.charging));
+            if (charging) // "Charging... (0 min)"
+                textView_chargingTime.setText(getString(R.string.charging) + " (0 min)");
             else // "Not data"
                 textView_chargingTime.setText(getString(R.string.no_data));
             return;
         }
         cursor.close();
         dbHelper.close();
-        // 4. Is the phone charging and is it NOT full charged?
-        if (charging && percentage != 100) { // charging and not fully charged -> "Charging..."
-            textView_chargingTime.setText(getString(R.string.charging));
-        } else if (time != 0) { // discharging or full charged + there IS enough data:
-            // Calculate the charging time string
-            String timeString = getString(R.string.charging_time) + ": ";
-            long minutes;
-            if (time > 3600000) { // over an hour
-                long hours = time / 3600000;
-                minutes = (time - hours * 3600000) / 60000;
-                timeString += hours + " h, ";
-            } else // under an hour
-                minutes = time / 60000;
-            timeString += minutes + " min";
-            // Show the time in the textView
-            textView_chargingTime.setText(timeString);
-        } else { // not enough data -> "not enough data"
+        // 4. Is there enough data?
+        boolean enoughData = time != 0;
+        if (!enoughData){ // not enough data
+            lastTime = 1;
             textView_chargingTime.setText(getString(R.string.not_enough_data));
-        }
-        // 5. Are there 3 or more values in the database?
-        if (time > 61000) {
+        } else { // enough data
             viewport_chargeCurve.setMaxX(time / 60000); // set the viewport to the highest time
+        }
+        // 5. Is the phone charging and is it NOT full charged?
+        String timeString = getTimeString(time);
+        if (charging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
+            textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
+        } else if (enoughData){ // discharging + ENOUGH data
+            textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
+        }
+    }
+
+    private String getTimeString(long timeInMillis) { // returns "hours h, minutes min" or "minutes min"
+        long minutes;
+        if (timeInMillis > 3600000) { // over an hour
+            long hours = timeInMillis / 3600000;
+            minutes = (timeInMillis - hours * 3600000) / 60000;
+            return String.valueOf(hours) + " h, " + String.valueOf(minutes) + " min";
+        } else { // under an hour
+            minutes = timeInMillis / 60000;
+            return String.valueOf(minutes) + "min";
         }
     }
 }
