@@ -30,7 +30,7 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
+        //enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
 
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorIntro1)
