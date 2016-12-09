@@ -147,6 +147,8 @@ public class GraphFragment extends Fragment {
         if (timeInMillis > 3600000) { // over an hour
             long hours = timeInMillis / 3600000;
             minutes = (timeInMillis - hours * 3600000) / 60000;
+            if ((int) minutes == minutes)
+                return String.valueOf(hours) + " h, " + String.valueOf((int) minutes) + " min";
             return String.valueOf(hours) + " h, " + String.valueOf(minutes) + " min";
         } else { // under an hour
             minutes = getDoubleTime(timeInMillis);
@@ -155,7 +157,8 @@ public class GraphFragment extends Fragment {
             return String.valueOf(minutes) + " min";
         }
     }
-    private double getDoubleTime(long timeInMillis){ // returns minutes as double
-        return (double) Math.round(2 * (double)timeInMillis / 60000)/2;
+
+    private double getDoubleTime(long timeInMillis) { // returns minutes as double
+        return (double) Math.round(2 * (double) timeInMillis / 60000) / 2;
     }
 }
