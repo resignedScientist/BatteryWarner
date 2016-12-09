@@ -150,7 +150,7 @@ public class GraphFragment extends Fragment {
             minutes = (timeInMillis - hours * 3600000) / 60000;
             if ((int) minutes == minutes)
                 return String.valueOf(hours) + " h, " + String.valueOf((int) minutes) + " min";
-            return String.valueOf(hours) + " h, " + String.valueOf(minutes) + " min";
+            return String.valueOf(hours) + " h " + String.valueOf(minutes) + " min";
         } else { // under an hour
             minutes = getDoubleTime(timeInMillis);
             if ((int) minutes == minutes)
