@@ -11,8 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity" />
-        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity"
-            android:screenOrientation="portrait">
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
