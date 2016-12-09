@@ -31,6 +31,7 @@ public class GraphFragment extends Fragment {
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
     private double lastTime;
+    private int graphCounter;
 
     @Nullable
     @Override
@@ -56,12 +57,11 @@ public class GraphFragment extends Fragment {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) { // X-axis (time)
-                    Log.i(TAG, "lastTime = " + lastTime);
-                    Log.i(TAG, "value = " + value);
-                    if (value == lastTime || value == 0 || value == lastTime / 2)
-                        return super.formatLabel(value, true) + " min";
-                    else
-                        return "";
+                    if (value == 0)
+                        return "0";
+                    if (graphCounter++ % 2 != 0)
+                        return super.formatLabel(value, isValueX) + " min";
+                    return "";
                 } else // Y-axis (percent)
                     return super.formatLabel(value, false) + "%";
             }
@@ -78,6 +78,7 @@ public class GraphFragment extends Fragment {
     public void onResume() {
         super.onResume();
         reloadChargeCurve();
+        graphCounter = 0;
     }
 
     public void reloadChargeCurve() {
