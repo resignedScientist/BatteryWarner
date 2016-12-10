@@ -92,7 +92,6 @@ public class GraphFragment extends Fragment {
         // 2. if disabled in settings -> return
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-            graph_chargeCurve.setVisibility(View.INVISIBLE);
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
         }
