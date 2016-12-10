@@ -47,4 +47,5 @@
     <string name="graph_reloaded">The graph was reloaded!</string>
     <string name="not_pro">Pro version of the app is needed for that feature!</string>
     <string name="pro_only_short">Pro only!</string>
+    <string name="higher_accuracy">Higher accuracy for dash/quick charging</string>
 </resources>

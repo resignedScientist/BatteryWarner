@@ -48,4 +48,5 @@
     <string name="graph_reloaded">Der Graph wurde aktualisiert!</string>
     <string name="not_pro">Du benötigst die Pro-Version der App für dieses Feature!</string>
     <string name="pro_only_short">Nur Pro!</string>
+    <string name="higher_accuracy">Höhere Genauigkeit für Dash/Quick Charging</string>
 </resources>
