@@ -179,6 +179,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     public void saveAll() {
+        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());

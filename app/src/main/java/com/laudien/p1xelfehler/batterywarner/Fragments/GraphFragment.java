@@ -57,8 +57,10 @@ public class GraphFragment extends Fragment {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) { // X-axis (time)
-                    if (value == 0)
+                    if (value == 0) {
+                        graphCounter = 1;
                         return "0";
+                    }
                     if (graphCounter++ % 2 != 0)
                         return super.formatLabel(value, isValueX) + " min";
                     return "";
@@ -78,7 +80,6 @@ public class GraphFragment extends Fragment {
     public void onResume() {
         super.onResume();
         reloadChargeCurve();
-        graphCounter = 0;
     }
 
     public void reloadChargeCurve() {
@@ -89,6 +90,7 @@ public class GraphFragment extends Fragment {
             return;
         }
         // 2. if disabled in settings -> return
+        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             graph_chargeCurve.setVisibility(View.INVISIBLE);
             textView_chargingTime.setTextSize(18);
@@ -149,7 +151,7 @@ public class GraphFragment extends Fragment {
             long hours = timeInMillis / 3600000;
             minutes = (timeInMillis - hours * 3600000) / 60000;
             if ((int) minutes == minutes)
-                return String.valueOf(hours) + " h, " + String.valueOf((int) minutes) + " min";
+                return String.valueOf(hours) + " h " + String.valueOf((int) minutes) + " min";
             return String.valueOf(hours) + " h " + String.valueOf(minutes) + " min";
         } else { // under an hour
             minutes = getDoubleTime(timeInMillis);
