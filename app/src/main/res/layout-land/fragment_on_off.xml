@@ -7,23 +7,24 @@
 
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline5"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_settings" />
+        app:layout_constraintBottom_toTopOf="@+id/btn_settings"
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toRightOf="@+id/scrollView3" />
 
     <Button
         android:id="@+id/btn_settings"
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:text="@string/settings"
         android:textAllCaps="false"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/toggleButton"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
@@ -43,12 +44,9 @@
         app:layout_constraintBottom_toTopOf="@+id/guideline4" />
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
-        app:layout_constraintRight_toLeftOf="@+id/toggleButton"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:id="@+id/scrollView3"
