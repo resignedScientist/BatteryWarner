@@ -80,17 +80,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
         toolbar.getMenu().clear();
         switch (position) {
             case 1:
                 toolbar.inflateMenu(R.menu.reload_menu);
                 break;
         }
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
     }
 
     @Override
