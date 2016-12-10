@@ -145,7 +145,7 @@ public class GraphFragment extends Fragment {
         }
     }
 
-    private String getTimeString(long timeInMillis) { // returns "hours h, minutes min" or "minutes min"
+    private String getTimeString(long timeInMillis) { // returns "hours h minutes min" or "minutes min"
         double minutes;
         if (timeInMillis > 3600000) { // over an hour
             long hours = timeInMillis / 3600000;
