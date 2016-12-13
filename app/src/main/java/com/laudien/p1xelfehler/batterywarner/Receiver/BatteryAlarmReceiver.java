@@ -29,25 +29,26 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
 
+        // battery level
         int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
-
+        // is it charging?
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
         Log.i(TAG, "Charging: " + isCharging);
-
+        // shared prefs
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
 
         if (isCharging) { // charging
             // return if charging type is disabled in settings
             int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
             switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC:
+                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_USB:
+                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
@@ -149,7 +150,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         if (isCharging)
             alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         else
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME, time, pendingIntent);
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
         Log.i(TAG, "Repeating alarm was set! interval = " + (double)interval / 60000 + " min");
     }
