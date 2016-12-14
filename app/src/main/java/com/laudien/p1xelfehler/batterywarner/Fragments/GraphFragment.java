@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -23,15 +26,17 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
-    private LineGraphSeries<DataPoint> series_chargeCurve;
+    private LineGraphSeries<DataPoint> series_chargeCurve, series_speed, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
     private double lastTime;
     private int graphCounter;
+    private CheckBox checkBox_percentage, checkBox_speed, checkBox_temp;
+    private Context context;
 
     @Nullable
     @Override
@@ -42,6 +47,16 @@ public class GraphFragment extends Fragment {
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         lastTime = 1;
+        context = getContext();
+
+        // checkBoxes
+        checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
+        checkBox_speed = (CheckBox) view.findViewById(R.id.checkBox_speed);
+        checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
+
+        checkBox_percentage.setOnCheckedChangeListener(this);
+        checkBox_speed.setOnCheckedChangeListener(this);
+        checkBox_temp.setOnCheckedChangeListener(this);
 
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
@@ -69,8 +84,14 @@ public class GraphFragment extends Fragment {
             }
         });
 
+        // line graphs (= series)
         series_chargeCurve = new LineGraphSeries<>();
         series_chargeCurve.setDrawBackground(true);
+        series_speed = new LineGraphSeries<>();
+        series_speed.setColor(Color.RED);
+        series_temp = new LineGraphSeries<>();
+        series_temp.setColor(Color.GREEN);
+
         graph_chargeCurve.addSeries(series_chargeCurve);
 
         return view;
@@ -90,7 +111,7 @@ public class GraphFragment extends Fragment {
             return;
         }
         // 2. if disabled in settings -> return
-        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
@@ -162,5 +183,29 @@ public class GraphFragment extends Fragment {
 
     private double getDoubleTime(long timeInMillis) { // returns minutes as double
         return (double) Math.round(2 * (double) timeInMillis / 60000) / 2;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        switch (compoundButton.getId()){
+            case R.id.checkbox_percentage:
+                if(b)
+                    graph_chargeCurve.addSeries(series_chargeCurve);
+                else
+                    graph_chargeCurve.removeSeries(series_chargeCurve);
+                break;
+            case R.id.checkBox_speed:
+                if(b)
+                    graph_chargeCurve.addSeries(series_speed);
+                else
+                    graph_chargeCurve.removeSeries(series_speed);
+                break;
+            case R.id.checkBox_temp:
+                if(b)
+                    graph_chargeCurve.addSeries(series_temp);
+                else
+                    graph_chargeCurve.removeSeries(series_temp);
+                break;
+        }
     }
 }
