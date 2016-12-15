@@ -57,6 +57,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
             if (curveEnabled) {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
+                int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
                 if (graphTime < 100) graphTime = 0;
@@ -64,7 +65,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     percentage = batteryLevel;
                     // write in database
                     GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
-                    dbHelper.addValue(graphTime, percentage);
+                    dbHelper.addValue(graphTime, percentage, temperature);
                     // save in sharedPreferences
                     sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
                 }

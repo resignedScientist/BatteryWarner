@@ -120,9 +120,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // 3. load graph
         long time;
         int percentage;
+        double temperature;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String[] columns = {GraphChargeDbHelper.TABLE_COLUMN_TIME, GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE};
+        String[] columns = {
+                GraphChargeDbHelper.TABLE_COLUMN_TIME,
+                GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE,
+                GraphChargeDbHelper.TABLE_COLUMN_TEMP};
         Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
         if (cursor.moveToFirst()) { // if the cursor has data
@@ -130,11 +134,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 time = cursor.getLong(0);
                 lastTime = getDoubleTime(time);
                 percentage = cursor.getInt(1);
-                Log.i(TAG, "Data read: time = " + lastTime + "; percentage = " + percentage);
+                temperature = (double) cursor.getInt(2)/10;
+                Log.i(TAG, "Data read: time = " + lastTime + "; percentage = " + percentage + "; temp = " + temperature);
                 try {
                     series_chargeCurve.appendData(new DataPoint(lastTime, percentage), false, 1000);
+                    series_temp.appendData(new DataPoint(lastTime, temperature), false, 1000);
                 } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, percentage)});
+                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, temperature)});
                     viewport_chargeCurve.setMaxX(1);
                     lastTime = 1;
                 }
