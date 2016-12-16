@@ -33,7 +33,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private LineGraphSeries<DataPoint> series_chargeCurve, series_speed, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    private double lastTime, timeBefore;
     private int graphCounter;
     private CheckBox checkBox_percentage, checkBox_speed, checkBox_temp;
     private Context context;
@@ -46,8 +45,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        lastTime = 1;
-        timeBefore = 0;
         context = getContext();
 
         // checkBoxes
@@ -126,9 +123,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
         // 3. load graph
-        long time;
         int percentage, lastPercentage = 0;
-        double temperature;
+        double temperature, time, lastTime = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {
@@ -139,25 +135,23 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
         if (cursor.moveToFirst()) { // if the cursor has data
             do {
-                time = cursor.getLong(0);
-                lastTime = getDoubleTime(time);
+                time = getDoubleTime(cursor.getLong(0));
                 percentage = cursor.getInt(1);
                 temperature = (double) cursor.getInt(2) / 10;
-                Log.i(TAG, "Data read: time = " + lastTime + "; percentage = " + percentage + "; temp = " + temperature);
+                Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage + "; temp = " + temperature);
                 try {
-                    series_chargeCurve.appendData(new DataPoint(lastTime, percentage), false, 1000);
-                    series_temp.appendData(new DataPoint(lastTime, temperature), false, 1000);
-                    if (lastTime != 0.0) {
-                        series_speed.appendData(new DataPoint(lastTime, getChargingSpeed(percentage, lastPercentage)), false, 1000);
-                    }
+                    series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
+                    series_temp.appendData(new DataPoint(time, temperature), false, 1000);
+                    if (time != 0)
+                        series_speed.appendData(new DataPoint(time, ((percentage-lastPercentage)/(time-lastTime))*10), false, 1000);
                     lastPercentage = percentage;
-                    timeBefore = lastTime;
+                    lastTime = time;
                 } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
-                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, percentage)});
-                    series_temp.resetData(new DataPoint[]{new DataPoint(lastTime, temperature)});
-                    series_speed.resetData(new DataPoint[]{new DataPoint(lastTime, getChargingSpeed(percentage, lastPercentage))});
+                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
+                    series_temp.resetData(new DataPoint[]{new DataPoint(time, temperature)});
+                    series_speed.resetData(new DataPoint[]{new DataPoint(time, 0)});
                     viewport_chargeCurve.setMaxX(1);
-                    lastTime = 1;
+                    //time = 1;
                 }
             } while (cursor.moveToNext()); // while the cursor has data
         } else { // empty database -> return
@@ -172,10 +166,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // 4. Is there enough data?
         boolean enoughData = time != 0;
         if (!enoughData) { // not enough data
-            lastTime = 1;
+            //time = 1;
             textView_chargingTime.setText(getString(R.string.not_enough_data));
         } else { // enough data
-            viewport_chargeCurve.setMaxX(lastTime); // set the viewport to the highest time
+            viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
         }
         // 5. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
@@ -186,28 +180,23 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
     }
 
-    private String getTimeString(long timeInMillis) { // returns "hours h minutes min" or "minutes min"
+    private String getTimeString(double timeInMinutes) { // returns "hours h minutes min" or "minutes min"
         double minutes;
-        if (timeInMillis > 3600000) { // over an hour
-            long hours = timeInMillis / 3600000;
-            minutes = (timeInMillis - hours * 3600000) / 60000;
-            if ((int) minutes == minutes)
+        if (timeInMinutes > 60) { // over an hour
+            long hours = (long) timeInMinutes / 60;
+            minutes = (timeInMinutes - hours * 60);
+            if ((int) minutes == minutes) // if it is an .0 number
                 return String.valueOf(hours) + " h " + String.valueOf((int) minutes) + " min";
             return String.valueOf(hours) + " h " + String.valueOf(minutes) + " min";
         } else { // under an hour
-            minutes = getDoubleTime(timeInMillis);
-            if ((int) minutes == minutes)
-                return String.valueOf((int) minutes) + " min";
-            return String.valueOf(minutes) + " min";
+            if ((int) timeInMinutes == timeInMinutes)
+                return String.valueOf((int) timeInMinutes) + " min";
+            return String.valueOf(timeInMinutes) + " min";
         }
     }
 
     private double getDoubleTime(long timeInMillis) { // returns minutes as double
         return (double) Math.round(2 * (double) timeInMillis / 60000) / 2;
-    }
-
-    private double getChargingSpeed (int percentage, int lastPercentage){
-        return (percentage - lastPercentage)*10 / (lastTime - timeBefore);
     }
 
     @Override
