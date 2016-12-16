@@ -119,7 +119,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
         // 3. load graph
         long time;
-        int percentage;
+        int percentage, lastPercentage = 0;
         double temperature;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -139,9 +139,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 try {
                     series_chargeCurve.appendData(new DataPoint(lastTime, percentage), false, 1000);
                     series_temp.appendData(new DataPoint(lastTime, temperature), false, 1000);
+                    if(lastTime != 0.0) {
+                        series_speed.appendData(new DataPoint(lastTime, (percentage - lastPercentage)/(lastTime)*10), false, 1000);
+                    }
+                    lastPercentage = percentage;
                 } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, percentage)});
-                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(lastTime, temperature)});
+                    series_temp.resetData(new DataPoint[]{new DataPoint(lastTime, temperature)});
                     viewport_chargeCurve.setMaxX(1);
                     lastTime = 1;
                 }
@@ -194,25 +198,22 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        LineGraphSeries series = null;
         switch (compoundButton.getId()){
             case R.id.checkbox_percentage:
-                if(b)
-                    graph_chargeCurve.addSeries(series_chargeCurve);
-                else
-                    graph_chargeCurve.removeSeries(series_chargeCurve);
+                series = series_chargeCurve;
                 break;
             case R.id.checkBox_speed:
-                if(b)
-                    graph_chargeCurve.addSeries(series_speed);
-                else
-                    graph_chargeCurve.removeSeries(series_speed);
+                series = series_speed;
                 break;
             case R.id.checkBox_temp:
-                if(b)
-                    graph_chargeCurve.addSeries(series_temp);
-                else
-                    graph_chargeCurve.removeSeries(series_temp);
+                series = series_temp;
                 break;
         }
+        if(series == null) return;
+        if(b)
+            graph_chargeCurve.addSeries(series);
+        else
+            graph_chargeCurve.removeSeries(series);
     }
 }
