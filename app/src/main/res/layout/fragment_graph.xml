@@ -76,20 +76,20 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Akkustand (%)"
+                android:text="@string/battery_level_percent"
                 android:id="@+id/checkbox_percentage"
                 android:checked="true" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ladegeschwindigkeit (%/10h)"
+                android:text="@string/charging_speed"
                 android:id="@+id/checkBox_speed" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Temperatur (°C)"
+                android:text="@string/temperature_degrees"
                 android:id="@+id/checkBox_temp" />
 
         </LinearLayout>
