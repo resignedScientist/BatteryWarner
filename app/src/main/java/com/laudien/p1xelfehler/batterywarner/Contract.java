@@ -28,6 +28,7 @@ public final class Contract {
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;
+    public static final int WARNING_LOW_MIN = 5;
 
     // charge checking intervals
     public static final int INTERVAL_CHARGING = 60000; // 1 minute

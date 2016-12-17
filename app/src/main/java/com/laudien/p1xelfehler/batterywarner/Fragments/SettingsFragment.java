@@ -137,6 +137,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             case R.id.seekBar_lowBattery:
                 if (state > Contract.WARNING_LOW_MAX)
                     seekBar.setProgress(Contract.WARNING_LOW_MAX);
+                else if (state < Contract.WARNING_LOW_MIN)
+                    seekBar.setProgress(Contract.WARNING_LOW_MIN);
                 else
                     textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + state + "%");
                 break;
