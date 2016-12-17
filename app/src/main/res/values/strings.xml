@@ -49,6 +49,5 @@
     <string name="pro_only_short">Pro only!</string>
     <string name="higher_accuracy">Higher accuracy for dash/quick charging</string>
     <string name="battery_level_percent">Battery level (%)</string>
-    <string name="charging_speed">Charging speed (%/10min)</string>
     <string name="temperature_degrees">Temperature (°C)</string>
 </resources>

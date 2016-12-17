@@ -50,6 +50,5 @@
     <string name="pro_only_short">Nur Pro!</string>
     <string name="higher_accuracy">Höhere Genauigkeit für Dash/Quick Charging</string>
     <string name="battery_level_percent">Akkustand (%)</string>
-    <string name="charging_speed">Ladegeschwindigkeit (%/10min)</string>
     <string name="temperature_degrees">Temperatur (°C)</string>
 </resources>

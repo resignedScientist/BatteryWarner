@@ -86,12 +86,6 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/charging_speed"
-                android:id="@+id/checkBox_speed" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/temperature_degrees"
                 android:id="@+id/checkBox_temp"
                 android:textAlignment="center" />

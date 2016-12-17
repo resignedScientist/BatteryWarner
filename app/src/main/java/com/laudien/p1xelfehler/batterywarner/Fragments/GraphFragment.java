@@ -30,11 +30,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
-    private LineGraphSeries<DataPoint> series_chargeCurve, series_speed, series_temp;
+    private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
     private int graphCounter;
-    private CheckBox checkBox_percentage, checkBox_speed, checkBox_temp;
+    private CheckBox checkBox_percentage, checkBox_temp;
     private Context context;
 
     @Nullable
@@ -49,11 +49,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
-        checkBox_speed = (CheckBox) view.findViewById(R.id.checkBox_speed);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
 
         checkBox_percentage.setOnCheckedChangeListener(this);
-        checkBox_speed.setOnCheckedChangeListener(this);
         checkBox_temp.setOnCheckedChangeListener(this);
 
         // y bounds
@@ -77,13 +75,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     if (graphCounter++ % 2 != 0)
                         return super.formatLabel(value, isValueX) + " min";
                     return "";
-                } else if (checkBox_percentage.isChecked() ^ checkBox_speed.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
+                } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
                     if (checkBox_percentage.isChecked())
                         return super.formatLabel(value, false) + "%";
                     if (checkBox_temp.isChecked())
                         return super.formatLabel(value, false) + "°C";
-                    if (checkBox_speed.isChecked())
-                        return super.formatLabel(value, false);
                 }
                 return super.formatLabel(value, false);
             }
@@ -92,8 +88,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // line graphs (= series)
         series_chargeCurve = new LineGraphSeries<>();
         series_chargeCurve.setDrawBackground(true);
-        series_speed = new LineGraphSeries<>();
-        series_speed.setColor(Color.RED);
         series_temp = new LineGraphSeries<>();
         series_temp.setColor(Color.GREEN);
 
@@ -106,6 +100,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     public void onResume() {
         super.onResume();
         reloadChargeCurve();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        sharedPreferences.edit()
+                .putBoolean(Contract.PREF_CB_PERCENT, checkBox_percentage.isChecked())
+                .putBoolean(Contract.PREF_CB_TEMP, checkBox_temp.isChecked())
+                .apply();
     }
 
     public void reloadChargeCurve() {
@@ -123,8 +126,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
         // 3. load graph
-        int percentage, lastPercentage = 0;
-        double temperature, time, lastTime = 0;
+        int percentage;
+        double temperature, time;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {
@@ -142,14 +145,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 try {
                     series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
                     series_temp.appendData(new DataPoint(time, temperature), false, 1000);
-                    if (time != 0)
-                        series_speed.appendData(new DataPoint(time, ((percentage-lastPercentage)/(time-lastTime))*10), false, 1000);
-                    lastPercentage = percentage;
-                    lastTime = time;
                 } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
                     series_temp.resetData(new DataPoint[]{new DataPoint(time, temperature)});
-                    series_speed.resetData(new DataPoint[]{new DataPoint(time, 0)});
                     viewport_chargeCurve.setMaxX(1);
                     //time = 1;
                 }
@@ -205,9 +203,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         switch (compoundButton.getId()) {
             case R.id.checkbox_percentage:
                 series = series_chargeCurve;
-                break;
-            case R.id.checkBox_speed:
-                series = series_speed;
                 break;
             case R.id.checkBox_temp:
                 series = series_temp;
