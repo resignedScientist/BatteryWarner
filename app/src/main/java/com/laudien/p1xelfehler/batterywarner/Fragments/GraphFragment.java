@@ -54,9 +54,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         checkBox_percentage.setOnCheckedChangeListener(this);
         checkBox_temp.setOnCheckedChangeListener(this);
 
-        checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
-        checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
-
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
         viewport_chargeCurve.setMinY(0);
@@ -103,6 +100,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     public void onResume() {
         super.onResume();
         reloadChargeCurve();
+        checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
+        checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
     }
 
     @Override
