@@ -35,7 +35,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private TextView textView_chargingTime;
     private int graphCounter;
     private CheckBox checkBox_percentage, checkBox_temp;
-    private Context context;
+    private boolean graphEnabled;
 
     @Nullable
     @Override
@@ -45,7 +45,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        context = getContext();
+        graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
+
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
@@ -121,8 +122,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return;
         }
         // 2. if disabled in settings -> return
-        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        if (!sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        Log.i(TAG, "graphEnabled = " + graphEnabled);
+        if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
         }

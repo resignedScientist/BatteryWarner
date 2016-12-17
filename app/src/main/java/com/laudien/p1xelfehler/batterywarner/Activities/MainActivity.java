@@ -29,14 +29,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(Contract.IS_PRO){
+        if (Contract.IS_PRO) {
             toolbar.setTitle(getString(R.string.app_name) + " Pro");
         } else {
             toolbar.setTitle(getString(R.string.app_name));
         }
         setSupportActionBar(toolbar);
 
-        final SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         boolean firstStart = sharedPreferences.getBoolean(PREF_FIRST_START, true);
 
         if (firstStart) {
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
-            if(Contract.IS_PRO) {
+            if (Contract.IS_PRO) {
                 GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
                 graphFragment.reloadChargeCurve();
                 if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
