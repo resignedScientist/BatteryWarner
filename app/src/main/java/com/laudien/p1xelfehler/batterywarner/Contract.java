@@ -36,7 +36,7 @@ public final class Contract {
     public static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     public static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
     public static final int INTERVAL_DISCHARGING_SHORT = 900000; // 15 minutes
-    public static final int INTERVAL_DISCHARGING_VERY_SHORT = 180000; // 3 minutes
+    public static final int INTERVAL_DISCHARGING_VERY_SHORT = 60000; // 1 minute
 
     // default values
     public static final int DEF_WARNING_LOW = 20;
