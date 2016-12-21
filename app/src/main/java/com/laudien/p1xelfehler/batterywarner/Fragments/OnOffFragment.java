@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
@@ -160,20 +159,20 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         textView_voltage.setText(getString(R.string.voltage) + ": " + voltage + " V");
 
         // Image color
-        if (batteryLevel <= warningLow){ // below warning low
+        if (batteryLevel <= warningLow) { // battery low
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow));
-        } else if (batteryLevel < warningHigh){ // between warning low and warning high
+        } else if (batteryLevel < warningHigh) { // battery ok
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk));
-        } else { // above warning high
+        } else { // battery high
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryHigh));
         }
     }
 
-    private void setImageColor(int color){
+    private void setImageColor(int color) {
         setImageColor(color, img_battery);
     }
 
-    public static void setImageColor(int color, ImageView imageView){
+    public static void setImageColor(int color, ImageView imageView) {
         Drawable drawable = imageView.getDrawable();
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imageView.setImageDrawable(drawable);
