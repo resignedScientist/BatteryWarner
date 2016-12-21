@@ -50,4 +50,5 @@
     <string name="higher_accuracy">Higher accuracy for dash/quick charging</string>
     <string name="battery_level_percent">Battery level (%)</string>
     <string name="temperature_degrees">Temperature (°C)</string>
+    <string name="enable_dark_theme">Enable Dark Theme</string>
 </resources>

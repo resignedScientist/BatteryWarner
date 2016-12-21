@@ -121,7 +121,7 @@
             android:textSize="18sp" />
 
         <Switch
-            android:text="Enable Dark Theme"
+            android:text="@string/enable_dark_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/switch_darkTheme" />
