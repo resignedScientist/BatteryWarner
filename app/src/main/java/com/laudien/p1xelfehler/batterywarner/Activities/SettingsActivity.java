@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
@@ -21,6 +22,8 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
+
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = "SettingsActivity";
     private SettingsFragment settingsFragment;
@@ -28,6 +31,11 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)){
+            setTheme(R.style.DarkTheme);
+        }
+
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.settings));

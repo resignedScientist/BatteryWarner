@@ -16,7 +16,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
@@ -35,6 +37,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             checkBox_highBattery, checkBox_chargeCurve, checkBox_fastCharging;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
     private TextView textView_lowBattery, textView_highBattery;
+    private Switch switch_darkTheme;
     public Uri sound;
 
     @Nullable
@@ -52,6 +55,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         checkBox_wireless = (CheckBox) view.findViewById(R.id.checkBox_wireless);
         checkBox_lowBattery = (CheckBox) view.findViewById(R.id.checkBox_lowBattery);
         checkBox_highBattery = (CheckBox) view.findViewById(R.id.checkBox_highBattery);
+        switch_darkTheme = (Switch) view.findViewById(R.id.switch_darkTheme);
 
         checkBox_highBattery.setOnCheckedChangeListener(this);
         checkBox_highBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true));
@@ -67,6 +71,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true));
         seekBar_lowBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW));
         seekBar_highBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH));
+        switch_darkTheme.setOnCheckedChangeListener(this);
+        switch_darkTheme.setChecked(sharedPreferences.getBoolean(Contract.PREF_DARK_THEME, false));
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
@@ -107,6 +113,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 checkBox_usb.setChecked(checked);
                 checkBox_wireless.setChecked(checked);
                 seekBar_highBattery.setEnabled(checked);
+                break;
+            case R.id.switch_darkTheme:
+                //Toast.makeText(getContext(), "Please restart application to change the theme!", Toast.LENGTH_SHORT).show();
                 break;
         }
         if (!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
@@ -204,6 +213,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putString(Contract.PREF_SOUND_URI, sound.toString())
                 .putBoolean(Contract.PREF_GRAPH_ENABLED, checkBox_chargeCurve.isChecked())
                 .putBoolean(Contract.PREF_FASTER_INTERVAL, checkBox_fastCharging.isChecked())
+                .putBoolean(Contract.PREF_DARK_THEME, switch_darkTheme.isChecked())
                 .apply();
 
         // restart the alarm (if enabled)

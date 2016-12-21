@@ -16,6 +16,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
@@ -27,6 +28,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        boolean firstStart = sharedPreferences.getBoolean(PREF_FIRST_START, true);
+        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)){
+            setTheme(R.style.DarkTheme);
+        }
+
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (Contract.IS_PRO) {
@@ -35,9 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toolbar.setTitle(getString(R.string.app_name));
         }
         setSupportActionBar(toolbar);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        boolean firstStart = sharedPreferences.getBoolean(PREF_FIRST_START, true);
 
         if (firstStart) {
             startActivity(new Intent(this, IntroActivity.class));

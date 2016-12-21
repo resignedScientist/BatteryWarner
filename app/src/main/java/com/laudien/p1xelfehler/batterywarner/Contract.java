@@ -24,6 +24,7 @@ public final class Contract {
     public static final String PREF_FASTER_INTERVAL = "fasterInterval";
     public static final String PREF_CB_PERCENT = "checkBoxPercent";
     public static final String PREF_CB_TEMP = "checkBoxDegrees";
+    public static final String PREF_DARK_THEME = "darkThemeEnabled";
 
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;

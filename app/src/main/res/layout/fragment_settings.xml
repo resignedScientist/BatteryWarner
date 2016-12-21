@@ -109,6 +109,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/checkBox_fastCharging" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Theming"
+            android:textSize="18sp" />
+
+        <Switch
+            android:text="Enable Dark Theme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch_darkTheme" />
+
     </LinearLayout>
 
 </ScrollView>
