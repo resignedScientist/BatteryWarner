@@ -118,7 +118,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // 1. if not pro -> return
         if (!Contract.IS_PRO) {
             textView_chargingTime.setTextSize(20);
-            textView_chargingTime.setText(getString(R.string.not_pro) + " (Coming soon!)");
+            textView_chargingTime.setText(getString(R.string.not_pro));
             checkBox_temp.setEnabled(false);
             checkBox_percentage.setEnabled(false);
             return;
