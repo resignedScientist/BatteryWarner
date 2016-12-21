@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.CustomSlides.ImageSlide;
 import com.laudien.p1xelfehler.batterywarner.CustomSlides.PreferencesSlide;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -25,14 +26,7 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onCreate(savedInstanceState);
         //enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
 
-        addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.colorIntro1)
-                .buttonsColor(R.color.colorButtons)
-                .image(R.drawable.battery_status_full_white)
-                .title(getString(R.string.intro_1_title))
-                .description(getString(R.string.intro_1_description))
-                .build()
-        );
+        addSlide(new ImageSlide());
 
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorIntro2)
