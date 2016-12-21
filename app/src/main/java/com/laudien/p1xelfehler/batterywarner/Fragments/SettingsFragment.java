@@ -18,8 +18,9 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -222,6 +223,10 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             new BatteryAlarmReceiver().onReceive(getContext(), null);
 
         Log.i(TAG, getString(R.string.settings_saved));
+
+        if (getActivity() instanceof IntroActivity && switch_darkTheme.isChecked()) {
+            startActivity(new Intent(getActivity(), MainActivity.class));
+        }
     }
 
     @Override

@@ -17,7 +17,6 @@ import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
-import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)){
+        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)) {
             setTheme(R.style.DarkTheme);
         }
 

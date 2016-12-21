@@ -43,7 +43,7 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
-        Log.i(TAG, "Added value (" + percentage + "%/" + time + "ms/" + temperature/10 + "°C)");
+        Log.i(TAG, "Added value (" + percentage + "%/" + time + "ms/" + temperature / 10 + "°C)");
         close();
     }
 
