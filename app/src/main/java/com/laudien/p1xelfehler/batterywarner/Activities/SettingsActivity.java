@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.menu_done:
                 settingsFragment.saveAll();
                 Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
-                finish(); // close the settings
+                onNavigateUp();
                 break;
         }
         return super.onOptionsItemSelected(item);
