@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,11 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
@@ -34,6 +39,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private CountDownTimer timer;
+    private ImageView img_battery;
+    private int warningLow, warningHigh;
 
     @Nullable
     @Override
@@ -45,6 +52,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
         final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
+        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
 
         toggleButton.setChecked(isChecked);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -67,6 +76,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         textView_health = (TextView) view.findViewById(R.id.textView_health);
         textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
+        img_battery = (ImageView) view.findViewById(R.id.img_battery);
 
         refreshStatus();
         timer = new CountDownTimer(10000, 5000) {
@@ -80,6 +90,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
                 this.start();
             }
         };
+
+        //setImageColor("#44a300");
 
         return view;
     }
@@ -146,5 +158,24 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         textView_health.setText(getString(R.string.health) + ": " + healthString);
         textView_batteryLevel.setText(getString(R.string.battery_level) + ": " + batteryLevel + "%");
         textView_voltage.setText(getString(R.string.voltage) + ": " + voltage + " V");
+
+        // Image color
+        if (batteryLevel <= warningLow){ // below warning low
+            setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow));
+        } else if (batteryLevel < warningHigh){ // between warning low and warning high
+            setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk));
+        } else { // above warning high
+            setImageColor(getContext().getResources().getColor(R.color.colorBatteryHigh));
+        }
+    }
+
+    private void setImageColor(int color){
+        setImageColor(color, img_battery);
+    }
+
+    public static void setImageColor(int color, ImageView imageView){
+        Drawable drawable = imageView.getDrawable();
+        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        imageView.setImageDrawable(drawable);
     }
 }

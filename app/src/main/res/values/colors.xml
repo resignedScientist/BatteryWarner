@@ -14,4 +14,9 @@
     <!-- Toolbar colors -->
     <color name="colorToolbarIcons">#ffffff</color>
     <color name="colorToolbarPrimary">@color/colorPrimary</color>
+
+    <!-- Battery Icon Colors -->
+    <color name="colorBatteryOk">#44a300</color>
+    <color name="colorBatteryLow">#dd0000</color>
+    <color name="colorBatteryHigh">#f89200</color>
 </resources>

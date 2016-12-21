@@ -30,14 +30,14 @@
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/img_battery"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline5"
-        app:srcCompat="@drawable/battery_status_full"
+        app:srcCompat="@drawable/battery_status_full_white"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintVertical_bias="1.0"
         android:layout_marginStart="16dp"
