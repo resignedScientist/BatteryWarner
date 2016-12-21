@@ -51,4 +51,5 @@
     <string name="battery_level_percent">Battery level (%)</string>
     <string name="temperature_degrees">Temperature (°C)</string>
     <string name="enable_dark_theme">Enable Dark Theme</string>
+    <string name="theming">Theming</string>
 </resources>
