@@ -223,10 +223,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             new BatteryAlarmReceiver().onReceive(getContext(), null);
 
         Log.i(TAG, getString(R.string.settings_saved));
-
-        if (getActivity() instanceof IntroActivity && switch_darkTheme.isChecked()) {
-            startActivity(new Intent(getActivity(), MainActivity.class));
-        }
     }
 
     @Override

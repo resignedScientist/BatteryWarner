@@ -45,8 +45,8 @@ public class PreferencesSlide extends SlideFragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         settingsFragment.saveAll();
     }
 }
