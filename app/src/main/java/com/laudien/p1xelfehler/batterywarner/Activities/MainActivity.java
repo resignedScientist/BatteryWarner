@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        boolean firstStart = sharedPreferences.getBoolean(PREF_FIRST_START, true);
         if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)){
             setTheme(R.style.DarkTheme);
         }
@@ -43,10 +42,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toolbar.setTitle(getString(R.string.app_name));
         }
         setSupportActionBar(toolbar);
-
-        if (firstStart) {
-            startActivity(new Intent(this, IntroActivity.class));
-        }
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());

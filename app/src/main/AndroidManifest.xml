@@ -10,16 +10,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity" />
-        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".Activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity" />
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity"
             android:parentActivityName="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />
