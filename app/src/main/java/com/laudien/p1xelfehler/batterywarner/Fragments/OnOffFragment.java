@@ -34,7 +34,6 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class OnOffFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    public static final String BROADCAST_ACTION = "com.laudien.p1xelfehler.batterywarner.STATE_CHANGED";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final String TAG = "OnOffFragment";
     private static final int NO_STATE = -1;
@@ -89,7 +88,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(BROADCAST_ACTION);
+        filter.addAction(Contract.BROADCAST_STATE_CHANGED);
         getActivity().registerReceiver(receiver, filter);
         receiver.onReceive(context, null);
         refreshStatus();

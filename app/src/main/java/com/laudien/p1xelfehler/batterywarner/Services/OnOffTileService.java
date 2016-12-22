@@ -10,7 +10,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Fragments.OnOffFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
@@ -72,7 +71,7 @@ public class OnOffTileService extends TileService {
         tile.updateTile();
 
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(OnOffFragment.BROADCAST_ACTION);
+        broadcastIntent.setAction(Contract.BROADCAST_STATE_CHANGED);
         sendBroadcast(broadcastIntent);
     }
 }
