@@ -53,4 +53,5 @@
     <string name="temperature_degrees">Temperatur (°C)</string>
     <string name="enable_dark_theme">Aktiviere dunkles Thema</string>
     <string name="theming">Thema</string>
+    <string name="please_finish_intro">Bitte erst das Intro abschließen!</string>
 </resources>

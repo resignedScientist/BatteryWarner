@@ -18,6 +18,7 @@ public class OnOffTileService extends TileService {
 
     private static final String TAG = "OnOffTileService";
     private Tile tile;
+    private boolean firstStart;
 
     @Override
     public void onTileAdded() {
@@ -32,16 +33,21 @@ public class OnOffTileService extends TileService {
     public void onStartListening() {
         super.onStartListening();
         tile = getQsTile();
-        // load state from shared preferences
-        if (Contract.IS_PRO) {
+        if (Contract.IS_PRO) { // pro version
             SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+            // check if the intro was finished first
+            firstStart = sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true);
             boolean isEnabled = sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
+            if (firstStart) {
+                isEnabled = false;
+            }
+            // set state from shared preferences
             if (isEnabled)
                 tile.setState(Tile.STATE_ACTIVE);
             else
                 tile.setState(Tile.STATE_INACTIVE);
 
-        } else {
+        } else { // free version
             tile.setState(Tile.STATE_INACTIVE);
         }
         tile.updateTile();
@@ -50,8 +56,12 @@ public class OnOffTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        if (!Contract.IS_PRO) {
+        if (!Contract.IS_PRO) { // not pro
             Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (firstStart) { // intro not finished
+            Toast.makeText(getApplicationContext(), getString(R.string.please_finish_intro), Toast.LENGTH_SHORT).show();
             return;
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
