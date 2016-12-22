@@ -20,8 +20,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -98,7 +96,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             textView_stats.setText(getString(R.string.stats) + " (" + getString(R.string.pro_only_short) + ")");
         }
 
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             switch_darkTheme.setEnabled(false);
             TextView textView_theming = (TextView) view.findViewById(R.id.textView_theming);
             textView_theming.setText(textView_theming.getText() + " (Android 5.0+)");
