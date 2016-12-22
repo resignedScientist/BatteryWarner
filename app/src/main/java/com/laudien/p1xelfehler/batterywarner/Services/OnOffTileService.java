@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.OnOffFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {
@@ -58,10 +59,12 @@ public class OnOffTileService extends TileService {
         SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
         if (isActive) { // disable battery warnings
             tile.setState(Tile.STATE_INACTIVE);
+            BatteryAlarmReceiver.cancelExistingAlarm(this);
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Tile deactivated!");
         } else { // enable battery warnings
             tile.setState(Tile.STATE_ACTIVE);
+            new BatteryAlarmReceiver().onReceive(this, null);
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Tile activated!");
         }
