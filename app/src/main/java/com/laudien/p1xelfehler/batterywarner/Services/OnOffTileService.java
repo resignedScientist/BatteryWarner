@@ -21,15 +21,6 @@ public class OnOffTileService extends TileService {
     private boolean firstStart;
 
     @Override
-    public void onTileAdded() {
-        super.onTileAdded();
-        tile = getQsTile();
-        if (!Contract.IS_PRO) {
-            Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     public void onStartListening() {
         super.onStartListening();
         tile = getQsTile();
