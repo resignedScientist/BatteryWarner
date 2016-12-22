@@ -51,5 +51,5 @@ public final class Contract {
     public static final String BROADCAST_STATE_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATE_CHANGED";
 
     // activating pro-features
-    public static final boolean IS_PRO = false;
+    public static final boolean IS_PRO = true;
 }
