@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Battery Warner</string>
-    <string name="warning_high">Battery is over</string>
-    <string name="warning_low">Battery is under</string>
+    <string name="warning_high">Battery level is above</string>
+    <string name="warning_low">Battery level is below</string>
     <string name="settings">Settings</string>
     <string name="low_battery_warning">Low battery warning:</string>
     <string name="high_battery_warning">High battery warning:</string>
