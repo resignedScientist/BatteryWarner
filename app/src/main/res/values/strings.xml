@@ -54,4 +54,5 @@
     <string name="theming">Theming</string>
     <string name="please_finish_intro">Please finish the intro first!</string>
     <string name="tile_title">Battery Warnings</string>
+    <string name="click_to_exit">Click again to exit app!</string>
 </resources>

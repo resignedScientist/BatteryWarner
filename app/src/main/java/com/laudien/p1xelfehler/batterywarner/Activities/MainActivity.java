@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (!backPressed) {
-            Toast.makeText(getApplicationContext(), "Click again to exit app!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.click_to_exit), Toast.LENGTH_SHORT).show();
             backPressed = true;
             new Handler().postDelayed(new Runnable() {
                 @Override
