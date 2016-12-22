@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPagerAdapter viewPagerAdapter;
+    private boolean backPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,5 +97,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!backPressed) {
+            Toast.makeText(getApplicationContext(), "Click again to exit app!", Toast.LENGTH_SHORT).show();
+            backPressed = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    backPressed = false;
+                }
+            }, 3000);
+        } else {
+            finish();
+        }
     }
 }
