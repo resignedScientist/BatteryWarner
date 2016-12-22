@@ -74,7 +74,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                         return "0";
                     }
                     if (graphCounter++ % 2 != 0)
-                        return super.formatLabel(value, isValueX) + " min";
+                        return super.formatLabel(value, true) + " min";
                     return "";
                 } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
                     if (checkBox_percentage.isChecked())
