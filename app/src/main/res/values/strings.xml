@@ -53,4 +53,5 @@
     <string name="enable_dark_theme">Enable Dark Theme</string>
     <string name="theming">Theming</string>
     <string name="please_finish_intro">Please finish the intro first!</string>
+    <string name="tile_title">Battery Warnings</string>
 </resources>

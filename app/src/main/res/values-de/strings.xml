@@ -54,4 +54,5 @@
     <string name="enable_dark_theme">Aktiviere dunkles Thema</string>
     <string name="theming">Thema</string>
     <string name="please_finish_intro">Bitte erst das Intro abschließen!</string>
+    <string name="tile_title">Batterie Warnungen</string>
 </resources>
