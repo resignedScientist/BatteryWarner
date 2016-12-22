@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -95,6 +96,12 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             checkBox_fastCharging.setEnabled(false);
             TextView textView_stats = (TextView) view.findViewById(R.id.textView_stats);
             textView_stats.setText(getString(R.string.stats) + " (" + getString(R.string.pro_only_short) + ")");
+        }
+
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT){
+            switch_darkTheme.setEnabled(false);
+            TextView textView_theming = (TextView) view.findViewById(R.id.textView_theming);
+            textView_theming.setText(textView_theming.getText() + " (Android 5.0+)");
         }
 
         return view;

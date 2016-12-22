@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,13 +34,16 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class OnOffFragment extends Fragment implements View.OnClickListener {
 
+    public static final String BROADCAST_ACTION = "com.laudien.p1xelfehler.batterywarner.STATE_CHANGED";
+    private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final String TAG = "OnOffFragment";
     private static final int NO_STATE = -1;
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private ToggleButton toggleButton;
     private CountDownTimer timer;
     private ImageView img_battery;
-    private int warningLow, warningHigh;
+    private int warningLow, warningHigh, currentColor;
 
     @Nullable
     @Override
@@ -50,7 +54,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
         Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
-        final ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
+        toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
         warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
 
@@ -98,6 +102,9 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BROADCAST_ACTION);
+        getActivity().registerReceiver(receiver, filter);
         refreshStatus();
         timer.start();
     }
@@ -105,6 +112,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onPause() {
         super.onPause();
+        getActivity().unregisterReceiver(receiver);
         timer.cancel();
     }
 
@@ -159,12 +167,20 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         textView_voltage.setText(getString(R.string.voltage) + ": " + voltage + " V");
 
         // Image color
+        int nextColor;
         if (batteryLevel <= warningLow) { // battery low
+            nextColor = COLOR_RED;
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow));
         } else if (batteryLevel < warningHigh) { // battery ok
+            nextColor = COLOR_GREEN;
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk));
         } else { // battery high
+            nextColor = COLOR_ORANGE;
             setImageColor(getContext().getResources().getColor(R.color.colorBatteryHigh));
+        }
+        if (nextColor != currentColor){
+            new BatteryAlarmReceiver().onReceive(getContext(), null);
+            currentColor = nextColor;
         }
     }
 
@@ -177,4 +193,12 @@ public class OnOffFragment extends Fragment implements View.OnClickListener {
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
         imageView.setImageDrawable(drawable);
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+            toggleButton.setChecked(sharedPreferences.getBoolean(PREF_IS_ENABLED, true));
+        }
+    };
 }
