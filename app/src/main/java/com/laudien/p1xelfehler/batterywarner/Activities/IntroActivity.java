@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -68,5 +69,6 @@ public class IntroActivity extends MaterialIntroActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
