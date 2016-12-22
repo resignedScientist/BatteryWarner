@@ -23,38 +23,35 @@ public class OnOffTileService extends TileService {
     public void onTileAdded() {
         super.onTileAdded();
         tile = getQsTile();
-        if (!Contract.IS_PRO){
+        if (!Contract.IS_PRO) {
             Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
-            tile.setState(Tile.STATE_INACTIVE);
-            tile.updateTile();
-            return;
         }
-        //loadState();
-    }
-
-    @Override
-    public void onTileRemoved() {
-        super.onTileRemoved();
     }
 
     @Override
     public void onStartListening() {
         super.onStartListening();
         tile = getQsTile();
-        loadState();
-    }
+        // load state from shared preferences
+        if (Contract.IS_PRO) {
+            SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+            boolean isEnabled = sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
+            if (isEnabled)
+                tile.setState(Tile.STATE_ACTIVE);
+            else
+                tile.setState(Tile.STATE_INACTIVE);
 
-    @Override
-    public void onStopListening() {
-        super.onStopListening();
+        } else {
+            tile.setState(Tile.STATE_INACTIVE);
+        }
+        tile.updateTile();
     }
 
     @Override
     public void onClick() {
         super.onClick();
-        if (!Contract.IS_PRO){
+        if (!Contract.IS_PRO) {
             Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
-            tile.setState(Tile.STATE_INACTIVE);
             return;
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
@@ -74,17 +71,5 @@ public class OnOffTileService extends TileService {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(OnOffFragment.BROADCAST_ACTION);
         sendBroadcast(broadcastIntent);
-    }
-
-    private void loadState (){
-        if (Contract.IS_PRO) {
-            SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
-            boolean isEnabled = sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
-            if (isEnabled)
-                tile.setState(Tile.STATE_ACTIVE);
-            else
-                tile.setState(Tile.STATE_INACTIVE);
-            tile.updateTile();
-        }
     }
 }
