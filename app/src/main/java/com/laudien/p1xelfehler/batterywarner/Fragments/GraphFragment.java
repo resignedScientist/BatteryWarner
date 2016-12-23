@@ -133,25 +133,27 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
-
-        // check for the correct charging type
+        // 3. check for the correct charging type
         boolean disabled = false;
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
             int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
             switch (chargingType) {
                 case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) disabled = true;
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true))
+                        disabled = true;
                     break;
                 case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) disabled = true;
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true))
+                        disabled = true;
                     break;
                 case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) disabled = true;
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true))
+                        disabled = true;
                     break;
             }
         }
-        // 3. load graph
+        // 4. load graph
         int percentage;
         double temperature, time;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
@@ -187,7 +189,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         cursor.close();
         dbHelper.close();
-        // 4. Is there enough data?
+        // 5. Is there enough data?
         boolean enoughData = time != 0;
         if (!enoughData) { // not enough data
             //time = 1;
@@ -195,13 +197,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         } else { // enough data
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
         }
-        // 5. Is the phone charging and is it NOT full charged?
+        // 6. Show user if this charging type is disabled
+        if (disabled) {
+            textView_chargingTime.setText(getString(R.string.charging_type_disabled));
+            return;
+        }
+        // 7. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
         if (charging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
-            if (!disabled)
-                textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
-            else
-                textView_chargingTime.setText(getString(R.string.charging_type_disabled));
+            textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
         } else if (enoughData) { // discharging + ENOUGH data
             textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
         }
