@@ -3,7 +3,9 @@ package com.laudien.p1xelfehler.batterywarner.Receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -25,6 +27,25 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         Log.i(TAG, "User started charging!");
 
+        BatteryAlarmReceiver.cancelExistingAlarm(context); // cancel alarm
+
+        // check for the correct charging method first
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus != null) {
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
+                    break;
+            }
+        }
+
         // reset graph values + already notified
         if(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
@@ -35,7 +56,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .apply();
         }
 
-        BatteryAlarmReceiver.cancelExistingAlarm(context);
+        // start new alarm
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
                 .getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
             new BatteryAlarmReceiver().onReceive(context, intent);
