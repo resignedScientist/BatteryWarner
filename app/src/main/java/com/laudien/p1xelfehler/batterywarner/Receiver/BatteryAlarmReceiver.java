@@ -22,7 +22,6 @@ import java.util.Calendar;
 
 public class BatteryAlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "BatteryBroadcast";
-    private static final int NO_STATE = -1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,17 +29,17 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         if (batteryStatus == null) return;
 
         // battery level
-        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
+        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
         // is it charging?
-        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         Log.i(TAG, "Charging: " + isCharging);
         // shared prefs
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
 
         if (isCharging) { // charging
             // return if charging type is disabled in settings
-            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
             switch (chargingType) {
                 case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
@@ -56,8 +55,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
             // charge curve database
             boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
             if (curveEnabled) {
-                int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, NO_STATE);
-                int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
+                int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
+                int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
                 if (graphTime < 100) graphTime = 0;
@@ -95,8 +94,8 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
         Log.i(TAG, "Showing notification: " + contentText);
-        int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, NO_STATE);
-        if (icon == NO_STATE)
+        int icon = batteryStatus.getIntExtra(BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
+        if (icon == Contract.NO_STATE)
             icon = android.R.drawable.alert_light_frame;
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(icon)
@@ -117,7 +116,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
 
-        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
+        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int interval;
         long time = SystemClock.elapsedRealtime();
@@ -155,9 +154,9 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     public static void cancelExistingAlarm(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        long oldTime = sharedPreferences.getLong(Contract.PREF_INTENT_TIME, NO_STATE);
+        long oldTime = sharedPreferences.getLong(Contract.PREF_INTENT_TIME, Contract.NO_STATE);
 
-        if (oldTime != NO_STATE) {
+        if (oldTime != Contract.NO_STATE) {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent oldBatteryIntent = new Intent(context, BatteryAlarmReceiver.class);
             PendingIntent oldPendingIntent = PendingIntent.getBroadcast(context,
@@ -169,6 +168,6 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
 
     public static boolean isCharging(Context context) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        return batteryStatus != null && batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+        return batteryStatus != null && batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
     }
 }

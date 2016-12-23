@@ -52,4 +52,7 @@ public final class Contract {
 
     // activating pro-features
     public static final boolean IS_PRO = true;
+
+    // the rest
+    public static final int NO_STATE = -1;
 }
