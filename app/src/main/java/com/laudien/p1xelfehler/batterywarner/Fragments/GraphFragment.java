@@ -1,10 +1,13 @@
 package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -130,6 +133,24 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
+
+        // check for the correct charging type
+        boolean disabled = false;
+        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus != null) {
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) disabled = true;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) disabled = true;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) disabled = true;
+                    break;
+            }
+        }
         // 3. load graph
         int percentage;
         double temperature, time;
@@ -177,7 +198,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // 5. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
         if (charging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
-            textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
+            if (!disabled)
+                textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
+            else
+                textView_chargingTime.setText(getString(R.string.charging_type_disabled));
         } else if (enoughData) { // discharging + ENOUGH data
             textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
         }

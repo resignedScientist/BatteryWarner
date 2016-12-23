@@ -56,4 +56,5 @@
     <string name="please_finish_intro">Bitte erst das Intro abschließen!</string>
     <string name="tile_title">Batterie Warnungen</string>
     <string name="click_to_exit">Erneut klicken, um die App zu beenden!</string>
+    <string name="charging_type_disabled">Die jetzige Lademethode ist deaktiviert!</string>
 </resources>
