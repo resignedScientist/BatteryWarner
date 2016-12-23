@@ -2,9 +2,11 @@ package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -205,6 +207,35 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                     .putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                     .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
                     .apply(); // reset time
+        }
+
+        // check if the current charging type was enabled
+        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus != null) {
+            boolean currentChargingTypeEnabled = false;
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true) && checkBox_ac.isChecked())
+                        currentChargingTypeEnabled = true;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true) && checkBox_usb.isChecked())
+                        currentChargingTypeEnabled = true;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true) && checkBox_wireless.isChecked())
+                        currentChargingTypeEnabled = true;
+                    break;
+            }
+            if (currentChargingTypeEnabled) { // if it was enabled -> reset database table and last percentage/time
+                GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
+                dbHelper.resetTable();
+                sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
+                        .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                        .putBoolean(Contract.PREF_ALREADY_NOTIFIED, false)
+                        .apply();
+            }
         }
 
         // save the settings
