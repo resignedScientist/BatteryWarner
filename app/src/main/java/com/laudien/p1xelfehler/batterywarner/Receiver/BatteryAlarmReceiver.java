@@ -52,13 +52,16 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     break;
             }
 
+            // return if the last time is < 20s ago
+            long timeNow = Calendar.getInstance().getTimeInMillis();
+            long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
+            if (graphTime > 100 && graphTime < 20000) return;
+
             // charge curve database
             boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
             if (curveEnabled) {
                 int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
                 int temperature = batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
-                long timeNow = Calendar.getInstance().getTimeInMillis();
-                long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
                 if (graphTime < 100) graphTime = 0;
                 if (percentage != batteryLevel) {
                     percentage = batteryLevel;
