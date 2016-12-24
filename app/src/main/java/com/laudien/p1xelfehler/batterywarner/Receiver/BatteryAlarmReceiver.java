@@ -130,7 +130,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
         alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
-        Log.i(TAG, "Repeating alarm was set! interval = " + (double)interval / 60000 + " min");
+        Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");
     }
 
     public static void cancelExistingAlarm(Context context) {
@@ -152,7 +152,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         return batteryStatus != null && batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
     }
 
-    public static boolean checkBattery (Context context, boolean isCharging){ // returns true if successful
+    public static boolean checkBattery(Context context, boolean isCharging) { // returns true if successful
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return false;
 
@@ -170,10 +170,12 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return false;
                     break;
                 case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return false;
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true))
+                        return false;
                     break;
                 case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return false;
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true))
+                        return false;
                     break;
             }
             int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
@@ -191,7 +193,7 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         return true;
     }
 
-    public static boolean checkBattery (Context context){
+    public static boolean checkBattery(Context context) {
         return checkBattery(context, isCharging(context));
     }
 }
