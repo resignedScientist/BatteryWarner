@@ -131,6 +131,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
+            return;
         }
         boolean charging = BatteryAlarmReceiver.isCharging(getContext()); // get the charging state
         // 3. check for the correct charging type
