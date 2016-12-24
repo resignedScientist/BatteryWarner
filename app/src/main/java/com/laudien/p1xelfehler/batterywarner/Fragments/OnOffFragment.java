@@ -156,16 +156,16 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         int nextColor;
         if (batteryLevel <= warningLow) { // battery low
             nextColor = COLOR_RED;
-            setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow));
+            setImageColor(context.getResources().getColor(R.color.colorBatteryLow));
         } else if (batteryLevel < warningHigh) { // battery ok
             nextColor = COLOR_GREEN;
-            setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk));
+            setImageColor(context.getResources().getColor(R.color.colorBatteryOk));
         } else { // battery high
             nextColor = COLOR_ORANGE;
-            setImageColor(getContext().getResources().getColor(R.color.colorBatteryHigh));
+            setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
         }
         if (nextColor != currentColor){
-            new BatteryAlarmReceiver().onReceive(getContext(), null);
+            BatteryAlarmReceiver.checkBattery(context);
             currentColor = nextColor;
         }
     }

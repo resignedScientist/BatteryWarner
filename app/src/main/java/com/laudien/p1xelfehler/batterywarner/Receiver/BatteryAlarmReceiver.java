@@ -37,21 +37,10 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
         // shared prefs
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
 
-        if (isCharging) { // charging
-            // return if charging type is disabled in settings
-            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-            switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
-                    break;
-                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
-                    break;
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
-                    break;
-            }
+        if (!checkBattery(context, isCharging)) return; // check battery and show notifications
 
+        // log in database and set alarm
+        if (isCharging) { // charging
             // charge curve database
             boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
             if (curveEnabled) {
@@ -69,20 +58,12 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
                     sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
                 }
             }
-
             int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
             if ((curveEnabled && batteryLevel < 100) || (!curveEnabled && batteryLevel <= warningHigh)) // new alarm
                 setAlarm(context);
-
-            // notification if warning value is reached
-            if (batteryLevel >= warningHigh) {
-                showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
-            }
         } else { // discharging
             int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-            if (batteryLevel <= warningLow) {
-                showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
-            } else {
+            if (batteryLevel > warningLow) {
                 setAlarm(context);
             }
         }
@@ -169,5 +150,48 @@ public class BatteryAlarmReceiver extends BroadcastReceiver {
     public static boolean isCharging(Context context) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         return batteryStatus != null && batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+    }
+
+    public static boolean checkBattery (Context context, boolean isCharging){ // returns true if successful
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) return false;
+
+        // battery level
+        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
+        Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
+        Log.i(TAG, "Charging: " + isCharging);
+        // shared prefs
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        if (isCharging) { // charging
+            // return if charging type is disabled in settings
+            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return false;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return false;
+                    break;
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return false;
+                    break;
+            }
+            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+
+            // notification if warning value is reached
+            if (batteryLevel >= warningHigh) {
+                showNotification(context, context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+            }
+        } else { // discharging
+            int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+            if (batteryLevel <= warningLow) {
+                showNotification(context, context.getString(R.string.warning_low) + " " + warningLow + "%!");
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkBattery (Context context){
+        return checkBattery(context, isCharging(context));
     }
 }
