@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
@@ -22,12 +23,12 @@ public class AppUpdateReceiver extends BroadcastReceiver {
 
         Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
 
-        boolean isCharging = BatteryAlarmReceiver.isCharging(context);
+        boolean isCharging = BatteryAlarmManager.isCharging(context);
 
         if(isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
         if(!isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
 
-        BatteryAlarmReceiver.cancelExistingAlarm(context);
-        new BatteryAlarmReceiver().onReceive(context, null);
+        BatteryAlarmManager.cancelExistingAlarm(context);
+        new BatteryAlarmManager(context).checkBattery(true);
     }
 }

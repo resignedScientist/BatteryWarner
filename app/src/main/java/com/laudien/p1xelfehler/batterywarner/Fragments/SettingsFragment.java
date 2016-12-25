@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +24,7 @@ import android.widget.TextView;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 
 import java.util.Calendar;
 
@@ -213,17 +212,17 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
             boolean currentChargingTypeEnabled = false;
-            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
             switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true) && checkBox_ac.isChecked())
                         currentChargingTypeEnabled = true;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true) && checkBox_usb.isChecked())
                         currentChargingTypeEnabled = true;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true) && checkBox_wireless.isChecked())
                         currentChargingTypeEnabled = true;
                     break;
@@ -254,9 +253,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .apply();
 
         // restart the alarm (if enabled)
-        BatteryAlarmReceiver.cancelExistingAlarm(getContext());
+        BatteryAlarmManager.cancelExistingAlarm(getContext());
         if (sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
-            new BatteryAlarmReceiver().onReceive(getContext(), null);
+            new BatteryAlarmManager(getContext()).checkBattery(true);
 
         Log.i(TAG, getString(R.string.settings_saved));
     }

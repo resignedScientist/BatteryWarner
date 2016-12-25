@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -26,7 +25,7 @@ import android.widget.ToggleButton;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Receiver.BatteryAlarmReceiver;
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
@@ -39,6 +38,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     private static final int NO_STATE = -1;
     private SharedPreferences sharedPreferences;
     private Context context;
+    private BatteryAlarmManager batteryAlarmManager;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private ToggleButton toggleButton;
     private CountDownTimer timer;
@@ -51,6 +51,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        batteryAlarmManager = new BatteryAlarmManager(context);
         Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
@@ -115,30 +116,30 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
 
-        String technology = batteryStatus.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
-        double temperature = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
-        int health = batteryStatus.getIntExtra(BatteryManager.EXTRA_HEALTH, NO_STATE);
+        String technology = batteryStatus.getStringExtra(android.os.BatteryManager.EXTRA_TECHNOLOGY);
+        double temperature = (double) batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
+        int health = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_HEALTH, NO_STATE);
         String healthString;
-        int batteryLevel = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, NO_STATE);
-        double voltage = (double) batteryStatus.getIntExtra(BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
+        int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
+        double voltage = (double) batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
 
         switch (health) {
-            case BatteryManager.BATTERY_HEALTH_COLD:
+            case android.os.BatteryManager.BATTERY_HEALTH_COLD:
                 healthString = getString(R.string.health_cold);
                 break;
-            case BatteryManager.BATTERY_HEALTH_DEAD:
+            case android.os.BatteryManager.BATTERY_HEALTH_DEAD:
                 healthString = getString(R.string.health_dead);
                 break;
-            case BatteryManager.BATTERY_HEALTH_GOOD:
+            case android.os.BatteryManager.BATTERY_HEALTH_GOOD:
                 healthString = getString(R.string.health_good);
                 break;
-            case BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
+            case android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
                 healthString = getString(R.string.health_overvoltage);
                 break;
-            case BatteryManager.BATTERY_HEALTH_OVERHEAT:
+            case android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT:
                 healthString = getString(R.string.health_overheat);
                 break;
-            case BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+            case android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
                 healthString = getString(R.string.health_unspecified_failure);
                 break;
             default:
@@ -165,7 +166,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
         }
         if (nextColor != currentColor) {
-            BatteryAlarmReceiver.checkBattery(context);
+            batteryAlarmManager.checkBattery(false);
             currentColor = nextColor;
         }
     }
@@ -195,10 +196,10 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         Log.i(TAG, "User changed status to " + isChecked);
         sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
         if (isChecked) {
-            new BatteryAlarmReceiver().onReceive(context, null);
+            batteryAlarmManager.checkBattery(true);
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
         } else {
-            BatteryAlarmReceiver.cancelExistingAlarm(context);
+            BatteryAlarmManager.cancelExistingAlarm(context);
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
     }

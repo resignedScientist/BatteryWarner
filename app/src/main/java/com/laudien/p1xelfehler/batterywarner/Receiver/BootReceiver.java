@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -25,7 +26,7 @@ public class BootReceiver extends BroadcastReceiver {
 
         if (isChecked) {
             Log.i(TAG, "Finished Booting! Setting battery alarm...");
-            new BatteryAlarmReceiver().onReceive(context, intent);
+            new BatteryAlarmManager(context).checkBattery(true);
         }
     }
 }

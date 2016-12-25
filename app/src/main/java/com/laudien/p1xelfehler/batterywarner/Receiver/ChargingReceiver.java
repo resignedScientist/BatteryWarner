@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.BatteryManager;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 
@@ -27,20 +27,20 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         Log.i(TAG, "User started charging!");
 
-        BatteryAlarmReceiver.cancelExistingAlarm(context); // cancel alarm
+        BatteryAlarmManager.cancelExistingAlarm(context); // cancel alarm
 
         // check for the correct charging method first
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
-            int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
             switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
                     break;
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
                     if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
                     break;
             }
@@ -59,6 +59,6 @@ public class ChargingReceiver extends BroadcastReceiver {
         // start new alarm
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
                 .getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
-            new BatteryAlarmReceiver().onReceive(context, intent);
+            new BatteryAlarmManager(context).checkBattery(true);
     }
 }

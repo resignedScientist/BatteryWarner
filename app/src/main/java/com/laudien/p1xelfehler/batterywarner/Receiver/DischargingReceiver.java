@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
@@ -25,8 +26,8 @@ public class DischargingReceiver extends BroadcastReceiver {
         // set already shown to false
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
 
-        BatteryAlarmReceiver.cancelExistingAlarm(context);
+        BatteryAlarmManager.cancelExistingAlarm(context);
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
-            new BatteryAlarmReceiver().onReceive(context, intent);
+            new BatteryAlarmManager(context).checkBattery(true);
     }
 }
