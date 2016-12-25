@@ -63,6 +63,10 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                         dbHelper.addValue(graphTime, percentage, temperature);
                         // save in sharedPreferences
                         sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
+                        // send broadcast (database changed)
+                        Intent intent = new Intent();
+                        intent.setAction(Contract.BROADCAST_DATABASE_CHANGED);
+                        context.sendBroadcast(intent);
                     }
                 }
                 int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);

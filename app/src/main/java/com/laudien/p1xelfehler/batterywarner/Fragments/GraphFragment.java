@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -105,6 +106,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         reloadChargeCurve();
         checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
         checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Contract.BROADCAST_DATABASE_CHANGED);
+        getActivity().registerReceiver(dbChangedReceiver, filter);
     }
 
     @Override
@@ -114,6 +118,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 .putBoolean(Contract.PREF_CB_PERCENT, checkBox_percentage.isChecked())
                 .putBoolean(Contract.PREF_CB_TEMP, checkBox_temp.isChecked())
                 .apply();
+        getActivity().unregisterReceiver(dbChangedReceiver);
     }
 
     public void reloadChargeCurve() {
@@ -248,4 +253,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         else
             graph_chargeCurve.removeSeries(series);
     }
+
+    private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadChargeCurve();
+        }
+    };
 }

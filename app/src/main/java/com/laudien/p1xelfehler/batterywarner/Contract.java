@@ -49,6 +49,7 @@ public final class Contract {
 
     // custom broadcasts
     public static final String BROADCAST_STATE_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATE_CHANGED";
+    public static final String BROADCAST_DATABASE_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_DATABASE_CHANGED";
 
     // activating pro-features
     public static final boolean IS_PRO = true;
