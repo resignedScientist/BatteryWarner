@@ -23,9 +23,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;

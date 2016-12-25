@@ -19,14 +19,17 @@ public class AppUpdateReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true)) return; // return if intro was not finished
+        if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
+            return; // return if intro was not finished
 
         Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
 
         boolean isCharging = BatteryAlarmManager.isCharging(context);
 
-        if(isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
-        if(!isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
+        if (isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
+            return;
+        if (!isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
+            return;
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);

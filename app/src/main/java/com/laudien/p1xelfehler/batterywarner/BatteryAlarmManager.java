@@ -127,7 +127,8 @@ public class BatteryAlarmManager extends BroadcastReceiver {
     }
 
     private void setAlarm() {
-        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null) return;
+        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null)
+            return;
 
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int interval;

@@ -20,7 +20,8 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) return;
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        if(sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true)) return; // return if intro was not finished
+        if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
+            return; // return if intro was not finished
 
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
 

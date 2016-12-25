@@ -47,7 +47,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         }
 
         // reset graph values + already notified
-        if(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
             dbHelper.resetTable();
             sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
