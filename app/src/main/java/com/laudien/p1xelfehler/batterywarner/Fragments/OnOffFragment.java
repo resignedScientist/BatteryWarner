@@ -196,6 +196,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         Log.i(TAG, "User changed status to " + isChecked);
         sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
         if (isChecked) {
+            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
             batteryAlarmManager.checkBattery(true);
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
         } else {
