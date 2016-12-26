@@ -24,6 +24,8 @@ public class BootReceiver extends BroadcastReceiver {
 
         boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
 
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+
         if (isChecked) {
             Log.i(TAG, "Finished Booting! Setting battery alarm...");
             new BatteryAlarmManager(context).checkBattery(true);

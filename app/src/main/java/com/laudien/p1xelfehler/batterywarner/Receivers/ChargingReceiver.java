@@ -55,6 +55,11 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .apply();
         }
 
+        // send broadcast
+        Intent databaseIntent = new Intent();
+        databaseIntent.setAction(Contract.BROADCAST_DATABASE_CHANGED);
+        context.sendBroadcast(databaseIntent);
+
         // start new alarm
         if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
                 .getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
