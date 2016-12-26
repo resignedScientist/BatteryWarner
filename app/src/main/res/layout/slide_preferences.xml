@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/textView"
@@ -20,7 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
         android:text="@string/slide_preferences_discription"
         android:textSize="18sp" />
 
@@ -29,6 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/textView2"
-        android:layout_marginBottom="60dp" />
+        android:layout_marginBottom="80dp" />
 
 </RelativeLayout>
