@@ -8,6 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Dark Theme -->
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
     <!-- Toolbar theme -->
     <style name="ToolbarTheme" parent="Theme.AppCompat">
         <item name="popupTheme">@style/Theme.AppCompat.Light</item>
