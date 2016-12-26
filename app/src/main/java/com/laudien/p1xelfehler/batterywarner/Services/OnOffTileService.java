@@ -64,7 +64,8 @@ public class OnOffTileService extends TileService {
             Log.i(TAG, "Tile deactivated!");
         } else { // enable battery warnings
             tile.setState(Tile.STATE_ACTIVE);
-            new BatteryAlarmManager(this).checkBattery(false);
+            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+            new BatteryAlarmManager(this).checkBattery(true);
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
             Log.i(TAG, "Tile activated!");
         }
