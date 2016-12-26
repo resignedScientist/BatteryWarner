@@ -8,7 +8,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
