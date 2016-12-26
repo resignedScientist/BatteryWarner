@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
@@ -115,13 +116,17 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         int icon = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
         if (icon == Contract.NO_STATE)
             icon = android.R.drawable.alert_light_frame;
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(icon)
                 .setSound(SettingsFragment.getNotificationSound(context))
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(contentText);
+                .setContentText(contentText)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
