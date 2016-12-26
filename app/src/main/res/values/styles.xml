@@ -2,29 +2,24 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <!-- Dark Theme -->
-    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" >
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    </style>
-
-    <!-- Toolbar theme -->
-    <style name="ToolbarTheme" parent="Theme.AppCompat">
-        <item name="popupTheme">@style/Theme.AppCompat.Light</item>
-        <item name="colorPrimary">@color/colorToolbarPrimary</item>
-        <item name="colorControlNormal">@color/colorToolbarIcons</item>
-    </style>
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" />
 
     <!-- TabLayout Theme -->
-    <style name="TabLayoutTheme" parent="TextAppearance.Design.Tab">
-        <item name="textAllCaps">false</item>
-        <item name="android:textAllCaps">false</item>
+    <style name="TabLayoutTheme" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TabLayoutText</item>
+        <item name="tabBackground">?attr/colorPrimary</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
 
+    <style name="TabLayoutText" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>
