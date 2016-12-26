@@ -24,10 +24,10 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
