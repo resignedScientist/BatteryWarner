@@ -27,27 +27,27 @@
             android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity"
             android:parentActivityName="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />
 
-        <receiver android:name=".BatteryAlarmManager"/>
+        <receiver android:name=".Receivers.BatteryAlarmManager"/>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.BootReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.ChargingReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.DischargingReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receiver.AppUpdateReceiver">
+        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>

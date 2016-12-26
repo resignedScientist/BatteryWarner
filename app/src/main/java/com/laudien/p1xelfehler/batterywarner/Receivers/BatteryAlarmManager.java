@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner;
+package com.laudien.p1xelfehler.batterywarner.Receivers;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -12,8 +12,10 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 

@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Receiver;
+package com.laudien.p1xelfehler.batterywarner.Receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 
