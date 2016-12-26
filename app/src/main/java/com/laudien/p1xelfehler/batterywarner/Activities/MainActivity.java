@@ -20,7 +20,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPagerAdapter viewPagerAdapter;
@@ -29,11 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)) {
-            setTheme(R.style.DarkTheme);
-        }
 
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

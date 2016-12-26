@@ -18,7 +18,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private static final String TAG = "SettingsActivity";
     private SettingsFragment settingsFragment;
 
@@ -26,9 +26,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(PREF_DARK_THEME, false)) {
-            setTheme(R.style.DarkTheme);
-        }
 
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
