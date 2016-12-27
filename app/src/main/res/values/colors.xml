@@ -11,10 +11,6 @@
     <color name="colorIntro3">#d78c00</color>
     <color name="colorPreferencesSlide">#8000e422</color>
 
-    <!-- Toolbar colors -->
-    <color name="colorToolbarIcons">#ffffff</color>
-    <color name="colorToolbarPrimary">@color/colorPrimary</color>
-
     <!-- Battery Icon Colors -->
     <color name="colorBatteryOk">#44a300</color>
     <color name="colorBatteryLow">#dd0000</color>
