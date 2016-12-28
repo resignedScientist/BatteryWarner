@@ -83,11 +83,14 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         // notification sound
         sound = getNotificationSound(getContext());
 
-        checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
         if (Contract.IS_PRO) {
+            checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+            checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
+            checkBox_chargeCurve.setOnCheckedChangeListener(this);
             checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
             checkBox_fastCharging.setChecked(sharedPreferences.getBoolean(Contract.PREF_FASTER_INTERVAL, false));
+            if (!checkBox_chargeCurve.isChecked())
+                checkBox_fastCharging.setEnabled(false); // disable fast charging checkbox
         } else {
             checkBox_chargeCurve.setEnabled(false);
             checkBox_chargeCurve.setChecked(false);
@@ -116,6 +119,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 break;
             case R.id.switch_darkTheme:
                 //Toast.makeText(getContext(), "Please restart application to change the theme!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.checkBox_chargeCurve:
+                checkBox_fastCharging.setEnabled(checked);
                 break;
         }
         if (!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())

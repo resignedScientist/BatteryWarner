@@ -1,12 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +15,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_DARK_THEME;
-import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
-
 public class MainActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
-    private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPagerAdapter viewPagerAdapter;
     private boolean backPressed = false;
@@ -61,11 +55,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
             if (Contract.IS_PRO) {
-                GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
-                graphFragment.reloadChargeCurve();
                 if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
-                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true))
+                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true)){
+                    GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
+                    graphFragment.reloadChargeCurve();
                     Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
+                }
                 return true;
             } else {
                 Toast.makeText(getApplicationContext(), "Sorry! :(", Toast.LENGTH_SHORT).show();

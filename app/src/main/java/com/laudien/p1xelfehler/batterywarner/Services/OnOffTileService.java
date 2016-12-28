@@ -73,7 +73,7 @@ public class OnOffTileService extends TileService {
         tile.updateTile();
 
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(Contract.BROADCAST_STATE_CHANGED);
+        broadcastIntent.setAction(Contract.BROADCAST_ON_OFF_CHANGED);
         sendBroadcast(broadcastIntent);
     }
 }

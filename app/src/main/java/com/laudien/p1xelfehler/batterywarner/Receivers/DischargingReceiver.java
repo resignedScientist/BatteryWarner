@@ -27,11 +27,10 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // send broadcast
         Intent databaseIntent = new Intent();
-        databaseIntent.setAction(Contract.BROADCAST_DATABASE_CHANGED);
+        databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
         context.sendBroadcast(databaseIntent);
 
         BatteryAlarmManager.cancelExistingAlarm(context);
-        if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE).getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
-            new BatteryAlarmManager(context).checkBattery(true);
+        new BatteryAlarmManager(context).checkBattery(true);
     }
 }

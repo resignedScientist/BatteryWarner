@@ -28,7 +28,10 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         BatteryAlarmManager.cancelExistingAlarm(context); // cancel alarm
 
-        // check for the correct charging method first
+        // reset already notified
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+
+        // check for the correct charging method
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus))
             return; // return if current charging type is disabled
@@ -42,12 +45,9 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .apply();
         }
 
-        // reset already notified
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-
         // send broadcast
         Intent databaseIntent = new Intent();
-        databaseIntent.setAction(Contract.BROADCAST_DATABASE_CHANGED);
+        databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
         context.sendBroadcast(databaseIntent);
 
         // start new alarm

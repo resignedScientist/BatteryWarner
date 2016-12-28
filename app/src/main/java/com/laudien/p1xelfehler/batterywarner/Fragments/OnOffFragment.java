@@ -89,7 +89,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Contract.BROADCAST_STATE_CHANGED);
+        filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
         getActivity().registerReceiver(receiver, filter);
         receiver.onReceive(context, null);
         refreshStatus();

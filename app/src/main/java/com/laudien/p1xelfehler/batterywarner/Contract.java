@@ -48,8 +48,8 @@ public final class Contract {
     public static final int PICK_SOUND_REQUEST = 1;
 
     // custom broadcasts
-    public static final String BROADCAST_STATE_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATE_CHANGED";
-    public static final String BROADCAST_DATABASE_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_DATABASE_CHANGED";
+    public static final String BROADCAST_ON_OFF_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_ON_OFF_CHANGED";
+    public static final String BROADCAST_STATUS_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATUS_CHANGED";
 
     // activating pro-features
     public static final boolean IS_PRO = true;

@@ -80,7 +80,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                         sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
                         // send broadcast (database changed)
                         Intent intent = new Intent();
-                        intent.setAction(Contract.BROADCAST_DATABASE_CHANGED);
+                        intent.setAction(Contract.BROADCAST_STATUS_CHANGED);
                         context.sendBroadcast(intent);
                     }
                 }
@@ -172,11 +172,6 @@ public class BatteryAlarmManager extends BroadcastReceiver {
             alarmManager.cancel(oldPendingIntent);
         }
         Log.i(TAG, "Repeating alarm was canceled!");
-    }
-
-    public static boolean isCharging(Context context) {
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        return batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
     }
 
     public static boolean isChargingModeEnabled(SharedPreferences sharedPreferences, Intent batteryStatus) {

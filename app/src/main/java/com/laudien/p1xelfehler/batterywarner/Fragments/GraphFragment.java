@@ -50,10 +50,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
 
-
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
+
+        if (!graphEnabled) { // disable checkboxes if the graph is disabled
+            checkBox_percentage.setEnabled(false);
+            checkBox_temp.setEnabled(false);
+        }
 
         checkBox_percentage.setOnCheckedChangeListener(this);
         checkBox_temp.setOnCheckedChangeListener(this);
@@ -107,7 +111,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
         checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Contract.BROADCAST_DATABASE_CHANGED);
+        filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
         getActivity().registerReceiver(dbChangedReceiver, filter);
     }
 
@@ -137,28 +141,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
             return;
         }
-        boolean charging = BatteryAlarmManager.isCharging(getContext()); // get the charging state
-        // 3. check for the correct charging type
-        boolean disabled = false;
-        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null) {
-            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-            switch (chargingType) {
-                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true))
-                        disabled = true;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true))
-                        disabled = true;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true))
-                        disabled = true;
-                    break;
-            }
-        }
         // 4. load graph
+        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        boolean isCharging = batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         int percentage;
         double temperature, time;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
@@ -186,7 +171,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
             } while (cursor.moveToNext()); // while the cursor has data
         } else { // empty database -> return
-            if (charging) // "Charging... (0 min)"
+            if (isCharging) // "Charging... (0 min)"
                 textView_chargingTime.setText(getString(R.string.charging) + " (0 min)");
             else // "Not data"
                 textView_chargingTime.setText(getString(R.string.no_data));
@@ -203,14 +188,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
         }
         // 6. Show user if this charging type is disabled
-        if (disabled) {
+        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
             Log.i(TAG, "The current charging type is disabled!");
             textView_chargingTime.setText(getString(R.string.charging_type_disabled));
             return;
         }
         // 7. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
-        if (charging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
+        if (isCharging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
             textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
         } else if (enoughData) { // discharging + ENOUGH data
             textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
