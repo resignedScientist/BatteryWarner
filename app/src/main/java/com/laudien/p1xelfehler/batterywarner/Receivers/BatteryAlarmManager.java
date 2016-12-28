@@ -128,7 +128,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
 
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int interval;
-        long time = SystemClock.elapsedRealtime();
+        long time = SystemClock.currentThreadTimeMillis();
 
         if (isCharging) { // Charging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
@@ -153,8 +153,9 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         time += interval;
 
         Intent batteryIntent = new Intent(context, BatteryAlarmManager.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0);
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0); // request code = time
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
 
         Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");

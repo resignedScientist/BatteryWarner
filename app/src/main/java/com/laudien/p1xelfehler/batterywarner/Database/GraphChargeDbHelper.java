@@ -9,7 +9,7 @@ import android.util.Log;
 public class GraphChargeDbHelper extends SQLiteOpenHelper {
     private static final String TAG = "GraphChargeDbHelper";
     private static final String DATABASE_NAME = "ChargeCurveDB";
-    private static final int DATABASE_VERSION = 3; // if the version is changed, a new database will be created!
+    private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     public static final String TABLE_NAME = "ChargeCurve";
     public static final String TABLE_COLUMN_TIME = "time";
     public static final String TABLE_COLUMN_PERCENTAGE = "percentage";
