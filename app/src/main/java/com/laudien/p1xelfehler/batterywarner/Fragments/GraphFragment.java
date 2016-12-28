@@ -187,8 +187,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         } else { // enough data
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
         }
-        // 6. Show user if this charging type is disabled
-        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
+        // 6. Show user if charging and current charging type is disabled
+        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus) && isCharging) {
             Log.i(TAG, "The current charging type is disabled!");
             textView_chargingTime.setText(getString(R.string.charging_type_disabled));
             return;
