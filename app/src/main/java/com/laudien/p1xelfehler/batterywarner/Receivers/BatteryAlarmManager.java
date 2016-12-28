@@ -56,7 +56,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         // check battery and show notifications
         if (isCharging) { // charging
             int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-            boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
+            boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
 
             // notification if warning value is reached
             if (batteryLevel >= warningHigh) {
@@ -65,7 +65,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
 
             // log data in database and set alarm
             if (logAndSetAlarm) {
-                if (curveEnabled) {
+                if (graphEnabled) {
                     int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
                     int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
                     long timeNow = Calendar.getInstance().getTimeInMillis();
@@ -84,7 +84,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                         context.sendBroadcast(intent);
                     }
                 }
-                if ((curveEnabled && batteryLevel < 100) || (!curveEnabled && batteryLevel <= warningHigh)) // new alarm
+                if ((graphEnabled && batteryLevel < 100) || (!graphEnabled && batteryLevel <= warningHigh)) // new alarm
                     setAlarm();
             }
         } else { // discharging
