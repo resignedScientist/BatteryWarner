@@ -22,13 +22,9 @@ public class BootReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
+        Log.i(TAG, "Finished Booting! Setting battery alarm...");
 
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-
-        if (isChecked) {
-            Log.i(TAG, "Finished Booting! Setting battery alarm...");
-            new BatteryAlarmManager(context).checkBattery(true);
-        }
+        new BatteryAlarmManager(context).checkBattery(true);
     }
 }

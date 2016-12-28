@@ -40,8 +40,11 @@ public class BatteryAlarmManager extends BroadcastReceiver {
     public void checkBattery(boolean logAndSetAlarm) {
         batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
-
         sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+
+        if (!isChargingModeEnabled(sharedPreferences, batteryStatus))
+            return; // return if current charging mode is disabled
+
         batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
 
@@ -54,20 +57,6 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         if (isCharging) { // charging
             int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
             boolean curveEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
-
-            // return if charging type is disabled in settings
-            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-            switch (chargingType) {
-                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
-                    break;
-            }
 
             // notification if warning value is reached
             if (batteryLevel >= warningHigh) {
@@ -188,6 +177,37 @@ public class BatteryAlarmManager extends BroadcastReceiver {
     public static boolean isCharging(Context context) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         return batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+    }
+
+    public static boolean isChargingModeEnabled(SharedPreferences sharedPreferences, Intent batteryStatus) {
+        // returns true if the current charging mode is enabled
+
+        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
+            return false; // return false if all warnings are disabled
+        if (batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED,
+                Contract.NO_STATE) != 0) { // charging
+            if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
+                return false; // return false if warning high is disabled
+            // check charging type
+            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+            switch (chargingType) {
+                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return false;
+                    break;
+                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true))
+                        return false;
+                    break;
+                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true))
+                        return false;
+                    break;
+            }
+        } else { // discharging
+            if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
+                return false; // return false if warning low is disabled
+        }
+        return true;
     }
 
     @Override

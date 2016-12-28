@@ -23,13 +23,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
 
         Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
 
-        boolean isCharging = BatteryAlarmManager.isCharging(context);
-
-        if (isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
-            return;
-        if (!isCharging && !sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true))
-            return;
-
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);
     }

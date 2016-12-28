@@ -30,30 +30,20 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // check for the correct charging method first
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null) {
-            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-            switch (chargingType) {
-                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) return;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) return;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) return;
-                    break;
-            }
-        }
+        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus))
+            return; // return if current charging type is disabled
 
-        // reset graph values + already notified
+        // reset graph values if graph is enabled
         if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
             dbHelper.resetTable();
             sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                     .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
-                    .putBoolean(Contract.PREF_ALREADY_NOTIFIED, false)
                     .apply();
         }
+
+        // reset already notified
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
 
         // send broadcast
         Intent databaseIntent = new Intent();
@@ -61,8 +51,6 @@ public class ChargingReceiver extends BroadcastReceiver {
         context.sendBroadcast(databaseIntent);
 
         // start new alarm
-        if (context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
-                .getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true))
-            new BatteryAlarmManager(context).checkBattery(true);
+        new BatteryAlarmManager(context).checkBattery(true);
     }
 }
