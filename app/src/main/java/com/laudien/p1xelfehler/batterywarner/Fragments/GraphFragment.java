@@ -143,9 +143,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         // 4. load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) return;
         boolean isCharging = batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        int percentage;
-        double temperature, time;
+        boolean chargingModeEnabled = BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus);
+        boolean isFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
+        int percentage = 0;
+        double temperature, time = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {
@@ -170,11 +173,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     //time = 1;
                 }
             } while (cursor.moveToNext()); // while the cursor has data
-        } else { // empty database -> return
-            if (isCharging) // "Charging... (0 min)"
-                textView_chargingTime.setText(getString(R.string.charging) + " (0 min)");
-            else // "Not data"
-                textView_chargingTime.setText(getString(R.string.no_data));
+        } else if (!isCharging) { // empty database and discharging -> no data yet + return
+            textView_chargingTime.setText(getString(R.string.no_data));
+            cursor.close();
+            dbHelper.close();
             return;
         }
         cursor.close();
@@ -188,14 +190,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
         }
         // 6. Show user if charging and current charging type is disabled
-        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus) && isCharging) {
+        if (!chargingModeEnabled && isCharging) {
             Log.i(TAG, "The current charging type is disabled!");
             textView_chargingTime.setText(getString(R.string.charging_type_disabled));
             return;
         }
         // 7. Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
-        if (isCharging && percentage != 100) { // charging and not fully charged -> "Charging... (time)"
+        if (isCharging && !isFull) { // charging and not fully charged -> "Charging... (time)"
             textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
         } else if (enoughData) { // discharging + ENOUGH data
             textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
