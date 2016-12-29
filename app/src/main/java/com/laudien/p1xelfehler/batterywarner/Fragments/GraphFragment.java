@@ -244,6 +244,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Status change received!");
             reloadChargeCurve();
         }
     };

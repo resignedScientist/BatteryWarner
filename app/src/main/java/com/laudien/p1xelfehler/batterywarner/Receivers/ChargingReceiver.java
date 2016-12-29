@@ -28,6 +28,11 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         BatteryAlarmManager.cancelExistingAlarm(context); // cancel alarm
 
+        // send broadcast
+        Intent databaseIntent = new Intent();
+        databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
+        context.sendBroadcast(databaseIntent);
+
         // reset already notified
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
 
@@ -44,11 +49,6 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
                     .apply();
         }
-
-        // send broadcast
-        Intent databaseIntent = new Intent();
-        databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
-        context.sendBroadcast(databaseIntent);
 
         // start new alarm
         new BatteryAlarmManager(context).checkBattery(true);
