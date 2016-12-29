@@ -7,8 +7,8 @@ android {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 46
-        versionName "1.44-beta"
+        versionCode 47
+        versionName "1.45-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
