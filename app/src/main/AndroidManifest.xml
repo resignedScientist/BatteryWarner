@@ -27,7 +27,7 @@
             android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity"
             android:parentActivityName="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />
 
-        <receiver android:name=".Receivers.BatteryAlarmManager"/>
+        <receiver android:name=".Receivers.BatteryAlarmManager" />
 
         <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.BootReceiver">
             <intent-filter>
