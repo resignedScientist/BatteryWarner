@@ -191,7 +191,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         // 6. Show user if charging and current charging type is disabled
         if (!chargingModeEnabled && isCharging) {
-            Log.i(TAG, "The current charging type is disabled!");
             textView_chargingTime.setText(getString(R.string.charging_type_disabled));
             return;
         }
