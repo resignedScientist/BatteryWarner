@@ -196,6 +196,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     public void saveAll() {
+        Log.i(TAG, getString(R.string.settings_saved));
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
@@ -253,10 +254,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
         // restart the alarm (if enabled)
         BatteryAlarmManager.cancelExistingAlarm(getContext());
-        if (sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true))
-            new BatteryAlarmManager(getContext()).checkBattery(true);
-
-        Log.i(TAG, getString(R.string.settings_saved));
+        new BatteryAlarmManager(getContext()).checkBattery(true);
     }
 
     @Override
