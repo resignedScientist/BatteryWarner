@@ -114,8 +114,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         sharedPreferences.edit()
                 .putBoolean(Contract.PREF_CB_PERCENT, checkBox_percentage.isChecked())
                 .putBoolean(Contract.PREF_CB_TEMP, checkBox_temp.isChecked())
@@ -139,6 +139,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
             return;
         }
+        // remove the series from the graph view first
+        graph_chargeCurve.removeSeries(series_chargeCurve);
+        graph_chargeCurve.removeSeries(series_temp);
         // 4. load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
@@ -185,9 +188,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.not_enough_data));
         } else { // enough data
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
-            // (re-)load the series into the graphView
-            graph_chargeCurve.removeSeries(series_chargeCurve);
-            graph_chargeCurve.removeSeries(series_temp);
+            // load the series into the graphView
             if (checkBox_percentage.isChecked())
                 graph_chargeCurve.addSeries(series_chargeCurve);
             if (checkBox_temp.isChecked())
