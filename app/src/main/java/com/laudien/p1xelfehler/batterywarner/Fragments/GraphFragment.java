@@ -144,10 +144,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // 4. load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
-        boolean isCharging = batteryStatus != null && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         boolean chargingModeEnabled = BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus);
         boolean isFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
-        int percentage = 0;
+        int percentage;
         double temperature, time = 0;
         GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
