@@ -126,9 +126,9 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null)
             return;
 
+        long time = Calendar.getInstance().getTimeInMillis();
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int interval;
-        long time = SystemClock.currentThreadTimeMillis();
 
         if (isCharging) { // Charging
             if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
