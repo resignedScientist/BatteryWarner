@@ -50,6 +50,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
 
+        // line graphs (= series)
+        series_chargeCurve = new LineGraphSeries<>();
+        series_chargeCurve.setDrawBackground(true);
+        series_temp = new LineGraphSeries<>();
+        series_temp.setColor(Color.GREEN);
+
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
@@ -57,12 +63,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (!graphEnabled) { // disable checkboxes if the graph is disabled
             checkBox_percentage.setEnabled(false);
             checkBox_temp.setEnabled(false);
+        } else {
+            checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
+            checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
+            checkBox_percentage.setOnCheckedChangeListener(this);
+            checkBox_temp.setOnCheckedChangeListener(this);
         }
-
-        checkBox_percentage.setOnCheckedChangeListener(this);
-        checkBox_temp.setOnCheckedChangeListener(this);
-        checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
-        checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
 
         // y bounds
         viewport_chargeCurve.setYAxisBoundsManual(true);
@@ -94,12 +100,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return super.formatLabel(value, false);
             }
         });
-
-        // line graphs (= series)
-        series_chargeCurve = new LineGraphSeries<>();
-        series_chargeCurve.setDrawBackground(true);
-        series_temp = new LineGraphSeries<>();
-        series_temp.setColor(Color.GREEN);
 
         return view;
     }
@@ -168,7 +168,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
                     series_temp.resetData(new DataPoint[]{new DataPoint(time, temperature)});
                     viewport_chargeCurve.setMaxX(1);
-                    //time = 1;
                 }
             } while (cursor.moveToNext()); // while the cursor has data
         } else if (!isCharging) { // empty database and discharging -> no data yet + return
@@ -186,6 +185,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.not_enough_data));
         } else { // enough data
             viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
+            // (re-)load the series into the graphView
+            graph_chargeCurve.removeSeries(series_chargeCurve);
+            graph_chargeCurve.removeSeries(series_temp);
+            if (checkBox_percentage.isChecked())
+                graph_chargeCurve.addSeries(series_chargeCurve);
+            if (checkBox_temp.isChecked())
+                graph_chargeCurve.addSeries(series_temp);
         }
         // 6. Show user if charging and current charging type is disabled
         if (!chargingModeEnabled && isCharging) {
