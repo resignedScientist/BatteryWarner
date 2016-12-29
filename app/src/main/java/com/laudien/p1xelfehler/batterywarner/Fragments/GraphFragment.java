@@ -101,8 +101,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         series_temp = new LineGraphSeries<>();
         series_temp.setColor(Color.GREEN);
 
-        graph_chargeCurve.addSeries(series_chargeCurve);
-
         return view;
     }
 
