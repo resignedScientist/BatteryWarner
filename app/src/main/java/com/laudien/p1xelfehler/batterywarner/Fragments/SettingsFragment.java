@@ -73,6 +73,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         seekBar_highBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH));
         switch_darkTheme.setOnCheckedChangeListener(this);
         switch_darkTheme.setChecked(sharedPreferences.getBoolean(Contract.PREF_DARK_THEME, false));
+        checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
+        checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
@@ -84,8 +86,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sound = getNotificationSound(getContext());
 
         if (Contract.IS_PRO) {
-            checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-            checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
             checkBox_chargeCurve.setOnCheckedChangeListener(this);
             checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
             checkBox_fastCharging.setChecked(sharedPreferences.getBoolean(Contract.PREF_FASTER_INTERVAL, false));
