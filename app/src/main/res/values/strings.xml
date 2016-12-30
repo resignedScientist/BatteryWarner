@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Battery Warner Pro</string>
+    <string name="app_name">Battery Warner</string>
     <string name="warning_high">Battery level is above</string>
     <string name="warning_low">Battery level is below</string>
     <string name="settings">Settings</string>
