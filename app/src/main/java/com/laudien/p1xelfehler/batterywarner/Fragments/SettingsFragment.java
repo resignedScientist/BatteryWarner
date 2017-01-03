@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
@@ -43,6 +47,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+        setHasOptionsMenu(true);
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
 
         textView_lowBattery = (TextView) view.findViewById(R.id.textView_lowBattery);
@@ -99,6 +104,24 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         }
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.settings_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_done:
+                saveAll();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
+                getActivity().onNavigateUp();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

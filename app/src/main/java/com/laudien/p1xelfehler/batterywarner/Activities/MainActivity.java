@@ -10,13 +10,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Adapter.ViewPagerAdapter;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {

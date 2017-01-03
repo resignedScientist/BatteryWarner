@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -42,19 +40,6 @@ public class SettingsActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.settings));
         }
-        getMenuInflater().inflate(R.menu.settings_menu, menu);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_done:
-                settingsFragment.saveAll();
-                Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
-                onNavigateUp();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
