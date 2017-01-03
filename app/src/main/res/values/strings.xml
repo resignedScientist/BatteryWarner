@@ -56,4 +56,8 @@
     <string name="tile_title">Battery Warnings</string>
     <string name="click_to_exit">Click again to exit app!</string>
     <string name="charging_type_disabled">The current charging type is disabled in settings!</string>
+    <string name="uninstall_title">Uninstall free app first!</string>
+    <string name="uninstall_text">The free and the pro app are both installed! Please uninstall the free app first!</string>
+    <string name="uninstall_cancel">Cancel</string>
+    <string name="uninstall_go">Uninstall it!</string>
 </resources>

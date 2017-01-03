@@ -28,6 +28,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        isAppInstalled();
+
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (Contract.IS_PRO) {
@@ -122,15 +124,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         // both apps are installed:
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Test")
-                .setMessage("The free app and pro app are both installed! Uninstall the free version first!")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.uninstall_title))
+                .setMessage(getString(R.string.uninstall_text))
+                .setNegativeButton(getString(R.string.uninstall_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         finish();
                     }
                 })
-                .setPositiveButton("Uninstall it", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.uninstall_go), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Uri uri = Uri.parse("package:" + Contract.PACKAGE_NAME_FREE);
