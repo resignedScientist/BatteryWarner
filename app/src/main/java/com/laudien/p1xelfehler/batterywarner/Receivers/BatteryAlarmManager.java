@@ -9,8 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;

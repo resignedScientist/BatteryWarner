@@ -6,7 +6,6 @@ import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;

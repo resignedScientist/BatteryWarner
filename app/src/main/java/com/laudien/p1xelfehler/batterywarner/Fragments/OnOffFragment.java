@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;

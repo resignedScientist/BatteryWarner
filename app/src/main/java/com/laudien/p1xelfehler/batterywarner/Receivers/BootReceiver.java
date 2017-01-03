@@ -4,12 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class BootReceiver extends BroadcastReceiver {
