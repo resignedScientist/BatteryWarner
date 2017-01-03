@@ -28,6 +28,8 @@ import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
+import java.util.Locale;
+
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     //private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
@@ -213,12 +215,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             long hours = (long) timeInMinutes / 60;
             minutes = (timeInMinutes - hours * 60);
             if ((int) minutes == minutes) // if it is an .0 number
-                return String.valueOf(hours) + " h " + String.valueOf((int) minutes) + " min";
-            return String.valueOf(hours) + " h " + String.valueOf(minutes) + " min";
+                return String.format(Locale.getDefault(), "%d h %d min", hours, (int) minutes);
+            return String.format(Locale.getDefault(), "%d h %.1f min", hours, minutes);
         } else { // under an hour
             if ((int) timeInMinutes == timeInMinutes)
-                return String.valueOf((int) timeInMinutes) + " min";
-            return String.valueOf(timeInMinutes) + " min";
+                return String.format(Locale.getDefault(), "%d min", (int) timeInMinutes);
+            return String.format(Locale.getDefault(), "%.1f min", timeInMinutes);
         }
     }
 
