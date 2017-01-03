@@ -12,11 +12,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -45,6 +49,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
+        setHasOptionsMenu(true);
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
@@ -122,6 +127,31 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 .putBoolean(Contract.PREF_CB_TEMP, checkBox_temp.isChecked())
                 .apply();
         getActivity().unregisterReceiver(dbChangedReceiver);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.reload_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_refresh) {
+            Context applicationContext = getActivity().getApplicationContext();
+            if (Contract.IS_PRO) {
+                if (graphEnabled) {
+                    reloadChargeCurve();
+                    Toast.makeText(applicationContext, getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(applicationContext, getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            } else {
+                Toast.makeText(applicationContext, "Sorry! :(", Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void reloadChargeCurve() {

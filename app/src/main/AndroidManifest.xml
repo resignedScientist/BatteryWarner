@@ -20,9 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity" />
-        <activity
-            android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />
         <activity
             android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity"
             android:parentActivityName="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity" />

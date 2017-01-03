@@ -12,13 +12,10 @@ import com.laudien.p1xelfehler.batterywarner.R;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
-    private Fragment onOffFragment, graphFragment;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.context = context;
-        onOffFragment = new OnOffFragment();
-        graphFragment = new GraphFragment();
     }
 
     @Override
@@ -26,10 +23,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = onOffFragment;
+                fragment = new OnOffFragment();
                 break;
             case 1:
-                fragment = graphFragment;
+                fragment = new GraphFragment();
                 break;
         }
         return fragment;

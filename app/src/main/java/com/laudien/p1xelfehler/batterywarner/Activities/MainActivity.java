@@ -19,9 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
-    private Toolbar toolbar;
-    private ViewPagerAdapter viewPagerAdapter;
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean backPressed = false;
 
     @Override
@@ -31,7 +29,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         isAppInstalled();
 
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (Contract.IS_PRO) {
             toolbar.setTitle(getString(R.string.app_name) + " Pro");
         } else {
@@ -40,9 +38,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         setSupportActionBar(toolbar);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
-        viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -55,46 +52,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
-            if (Contract.IS_PRO) {
-                if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
-                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-                    GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
-                    graphFragment.reloadChargeCurve();
-                    Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            } else {
-                Toast.makeText(getApplicationContext(), "Sorry! :(", Toast.LENGTH_SHORT).show();
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        toolbar.getMenu().clear();
-        switch (position) {
-            case 1:
-                toolbar.inflateMenu(R.menu.reload_menu);
-                break;
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
     }
 
     @Override
