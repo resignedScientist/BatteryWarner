@@ -26,6 +26,8 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
+import java.util.Locale;
+
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
@@ -147,10 +149,12 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         }
 
         textView_technology.setText(getString(R.string.technology) + ": " + technology);
-        textView_temp.setText(getString(R.string.temperature) + ": " + temperature + " °C");
+        textView_temp.setText(String.format(Locale.getDefault(),
+                getString(R.string.temperature) + ": %.1f °C", temperature));
         textView_health.setText(getString(R.string.health) + ": " + healthString);
-        textView_batteryLevel.setText(getString(R.string.battery_level) + ": " + batteryLevel + "%");
-        textView_voltage.setText(getString(R.string.voltage) + ": " + voltage + " V");
+        textView_batteryLevel.setText(String.format(getString(R.string.battery_level) + ": %d%%", batteryLevel));
+        textView_voltage.setText(String.format(Locale.getDefault(),
+                getString(R.string.voltage) + ": %.3f V", voltage));
 
         // Image color
         int nextColor;
