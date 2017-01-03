@@ -20,7 +20,7 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class IntroActivity extends MaterialIntroActivity {
 
-    private static final String TAG = "IntroActivity";
+    //private static final String TAG = "IntroActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     public void onFinish() {
         super.onFinish();
-        Log.i(TAG, "The intro was finished!");
+        //Log.i(TAG, "The intro was finished!");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();

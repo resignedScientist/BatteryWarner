@@ -21,7 +21,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Calendar;
 
 public class BatteryAlarmManager extends BroadcastReceiver {
-    private static final String TAG = "BatteryAlarmManager";
+
+    //private static final String TAG = "BatteryAlarmManager";
     private Context context;
     private SharedPreferences sharedPreferences;
     private boolean isCharging;
@@ -49,9 +50,9 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
 
         // log messages
-        Log.i(TAG, "Alarm received! (logAndSetAlarm = " + logAndSetAlarm + ")");
+        /*Log.i(TAG, "Alarm received! (logAndSetAlarm = " + logAndSetAlarm + ")");
         Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
-        Log.i(TAG, "Charging: " + isCharging);
+        Log.i(TAG, "Charging: " + isCharging);*/
 
         // check battery and show notifications
         if (isCharging) { // charging
@@ -101,7 +102,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         if (batteryStatus == null) return;
         if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
 
-        Log.i(TAG, "Showing notification: " + contentText);
+        //Log.i(TAG, "Showing notification: " + contentText);
         int icon = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
         if (icon == Contract.NO_STATE)
             icon = android.R.drawable.alert_light_frame;
@@ -158,7 +159,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
 
-        Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");
+        //Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");
     }
 
     public static void cancelExistingAlarm(Context context) {
@@ -172,7 +173,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                     (int) oldTime, oldBatteryIntent, 0);
             alarmManager.cancel(oldPendingIntent);
         }
-        Log.i(TAG, "Repeating alarm was canceled!");
+        //Log.i(TAG, "Repeating alarm was canceled!");
     }
 
     public static boolean isChargingModeEnabled(SharedPreferences sharedPreferences, Intent batteryStatus) {

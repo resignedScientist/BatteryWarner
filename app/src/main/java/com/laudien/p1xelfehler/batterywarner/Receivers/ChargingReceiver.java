@@ -15,7 +15,7 @@ import java.util.Calendar;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class ChargingReceiver extends BroadcastReceiver {
-    private static final String TAG = "ChargingReceiver";
+    //private static final String TAG = "ChargingReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -24,7 +24,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        Log.i(TAG, "User started charging!");
+        //Log.i(TAG, "User started charging!");
 
         BatteryAlarmManager.cancelExistingAlarm(context); // cancel alarm
 

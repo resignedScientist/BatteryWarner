@@ -33,8 +33,8 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class OnOffFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
+    //private static final String TAG = "OnOffFragment";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
-    private static final String TAG = "OnOffFragment";
     private static final int NO_STATE = -1;
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -193,7 +193,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        Log.i(TAG, "User changed status to " + isChecked);
+        //Log.i(TAG, "User changed status to " + isChecked);
         sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
         if (isChecked) {
             sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();

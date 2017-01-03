@@ -31,7 +31,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
-    private static final String TAG = "SettingsFragment";
+    //private static final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
     private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery,
             checkBox_highBattery, checkBox_chargeCurve, checkBox_fastCharging;
@@ -173,7 +173,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        String logText = null;
+        /*String logText = null;
         switch (seekBar.getId()) {
             case R.id.seekBar_lowBattery:
                 logText = "Low Battery percentage changed to " + seekBar.getProgress() + "%";
@@ -183,7 +183,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 break;
         }
         if (logText != null)
-            Log.i(TAG, logText);
+            Log.i(TAG, logText);*/
     }
 
     public static Uri getNotificationSound(Context context) {
@@ -196,7 +196,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     public void saveAll() {
-        Log.i(TAG, getString(R.string.settings_saved));
+        //Log.i(TAG, getString(R.string.settings_saved));
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {

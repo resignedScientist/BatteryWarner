@@ -12,7 +12,7 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "AppUpdateReceiver";
+    //private static final String TAG = "AppUpdateReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -21,7 +21,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
+        //Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);

@@ -11,7 +11,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class DischargingReceiver extends BroadcastReceiver {
-    private static final String TAG = "DischargingReceiver";
+    //private static final String TAG = "DischargingReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -20,7 +20,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        Log.i(TAG, "User stopped charging!");
+        //Log.i(TAG, "User stopped charging!");
 
         // set already shown to false
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();

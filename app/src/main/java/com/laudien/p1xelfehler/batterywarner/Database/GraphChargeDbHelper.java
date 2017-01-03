@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class GraphChargeDbHelper extends SQLiteOpenHelper {
-    private static final String TAG = "GraphChargeDbHelper";
+    //private static final String TAG = "GraphChargeDbHelper";
     private static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     public static final String TABLE_NAME = "ChargeCurve";
@@ -22,13 +22,13 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
 
     public GraphChargeDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        Log.i(TAG, "Database created/opened!");
+        //Log.i(TAG, "Database created/opened!");
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_QUERY);
-        Log.i(TAG, "Table created!");
+        //Log.i(TAG, "Table created!");
     }
 
 
@@ -43,13 +43,13 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
-        Log.i(TAG, "Added value (" + percentage + "%/" + time + "ms/" + temperature / 10 + "°C)");
+        //Log.i(TAG, "Added value (" + percentage + "%/" + time + "ms/" + temperature / 10 + "°C)");
         close();
     }
 
     public void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
-        Log.i(TAG, "Table reset!");
+        //Log.i(TAG, "Table reset!");
         close();
     }
 
@@ -61,6 +61,6 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
     @Override
     public synchronized void close() {
         super.close();
-        Log.i(TAG, "Database closed!");
+        //Log.i(TAG, "Database closed!");
     }
 }

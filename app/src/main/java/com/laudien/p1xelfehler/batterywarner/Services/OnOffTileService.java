@@ -16,7 +16,7 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {
 
-    private static final String TAG = "OnOffTileService";
+    //private static final String TAG = "OnOffTileService";
     private Tile tile;
     private boolean firstStart;
 
@@ -61,13 +61,13 @@ public class OnOffTileService extends TileService {
             tile.setState(Tile.STATE_INACTIVE);
             BatteryAlarmManager.cancelExistingAlarm(this);
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Tile deactivated!");
+            //Log.i(TAG, "Tile deactivated!");
         } else { // enable battery warnings
             tile.setState(Tile.STATE_ACTIVE);
             sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
             new BatteryAlarmManager(this).checkBattery(true);
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Tile activated!");
+            //Log.i(TAG, "Tile activated!");
         }
         sharedPreferences.edit().putBoolean(Contract.PREF_IS_ENABLED, !isActive).apply();
         tile.updateTile();

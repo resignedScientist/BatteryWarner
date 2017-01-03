@@ -30,7 +30,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    private static final String TAG = "GraphFragment";
+    //private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
@@ -133,7 +133,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return;
         }
         // 2. if disabled in settings -> return
-        Log.i(TAG, "graphEnabled = " + graphEnabled);
+        //Log.i(TAG, "graphEnabled = " + graphEnabled);
         if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
@@ -163,7 +163,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 time = getDoubleTime(cursor.getLong(0));
                 percentage = cursor.getInt(1);
                 temperature = (double) cursor.getInt(2) / 10;
-                Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage + "; temp = " + temperature);
+                //Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage + "; temp = " + temperature);
                 try {
                     series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
                     series_temp.appendData(new DataPoint(time, temperature), false, 1000);
@@ -248,7 +248,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "Status change received!");
+            //Log.i(TAG, "Status change received!");
             reloadChargeCurve();
         }
     };
