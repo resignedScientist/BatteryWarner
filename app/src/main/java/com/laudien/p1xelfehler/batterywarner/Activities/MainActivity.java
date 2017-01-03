@@ -1,10 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,7 +60,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (item.getItemId() == R.id.menu_refresh) {
             if (Contract.IS_PRO) {
                 if (getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE)
-                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true)){
+                        .getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
                     GraphFragment graphFragment = (GraphFragment) viewPagerAdapter.getItem(1);
                     graphFragment.reloadChargeCurve();
                     Toast.makeText(getApplicationContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
@@ -105,5 +109,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } else {
             finish();
         }
+    }
+
+    private void isAppInstalled() {
+        // checks if 2 versions (free + pro) are installed and tells you that you have to uninstall the free one
+        PackageManager packageManager = getPackageManager();
+        try {
+            packageManager.getPackageInfo(Contract.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(Contract.PACKAGE_NAME_PRO, PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            return; // one of the app is not installed
+        }
+        // both apps are installed:
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Test")
+                .setMessage("The free app and pro app are both installed! Uninstall the free version first!")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setPositiveButton("Uninstall it", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Uri uri = Uri.parse("package:" + Contract.PACKAGE_NAME_FREE);
+                        Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri);
+                        startActivity(uninstallIntent);
+                    }
+                })
+                .show();
     }
 }

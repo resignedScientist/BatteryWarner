@@ -54,6 +54,10 @@ public final class Contract {
     // activating pro-features
     public static final boolean IS_PRO = true;
 
+    // package names
+    public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
+    public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
+
     // the rest
     public static final int NO_STATE = -1;
 }
