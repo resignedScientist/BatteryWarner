@@ -11,6 +11,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class BootReceiver extends BroadcastReceiver {
+
     //private static final String TAG = "BootReceiver";
 
     @Override
