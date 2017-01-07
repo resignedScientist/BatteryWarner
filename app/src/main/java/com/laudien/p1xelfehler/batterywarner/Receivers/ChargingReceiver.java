@@ -16,6 +16,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
 
@@ -79,6 +80,8 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .setAutoCancel(true);
             notificationManager.notify(Contract.NOTIFICATION_ID_SILENT_MODE, builder.build());
         }
+
+        context.startService(new Intent(context, ChargingService.class));
 
         // start new alarm
         new BatteryAlarmManager(context).checkBattery(true);
