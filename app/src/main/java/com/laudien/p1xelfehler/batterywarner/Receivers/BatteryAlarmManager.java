@@ -15,6 +15,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
 
@@ -83,8 +84,11 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                         context.sendBroadcast(intent);
                     }
                 }
-                if ((graphEnabled && batteryLevel < 100) || (!graphEnabled && batteryLevel <= warningHigh)) // new alarm
-                    setAlarm();
+                /*if ((graphEnabled && batteryLevel < 100) || (!graphEnabled && batteryLevel <= warningHigh)) // new alarm
+                    setAlarm();*/
+
+                if (batteryLevel == 100)
+                    context.stopService(new Intent(context, ChargingService.class));
             }
         } else { // discharging
             int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
@@ -124,31 +128,25 @@ public class BatteryAlarmManager extends BroadcastReceiver {
     private void setAlarm() {
         if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null)
             return;
+        if (!isCharging) return; // only set alarm if discharging
 
         long time = Calendar.getInstance().getTimeInMillis();
         int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
         int interval;
 
-        if (isCharging) { // Charging
-            if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true)) return;
-            if (sharedPreferences.getBoolean(Contract.PREF_FASTER_INTERVAL, false))
-                interval = Contract.INTERVAL_FAST_CHARGING;
-            else
-                interval = Contract.INTERVAL_CHARGING;
-        } else { // Discharging
-            if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
-            if (batteryLevel <= warningLow) {
-                showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
-                return;
-            } else if (batteryLevel <= warningLow + 5)
-                interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
-            else if (batteryLevel <= warningLow + 10)
-                interval = Contract.INTERVAL_DISCHARGING_SHORT;
-            else if (batteryLevel <= warningLow + 20)
-                interval = Contract.INTERVAL_DISCHARGING_LONG;
-            else
-                interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
-        }
+        if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
+        if (batteryLevel <= warningLow) {
+            showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+            return;
+        } else if (batteryLevel <= warningLow + 5)
+            interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
+        else if (batteryLevel <= warningLow + 10)
+            interval = Contract.INTERVAL_DISCHARGING_SHORT;
+        else if (batteryLevel <= warningLow + 20)
+            interval = Contract.INTERVAL_DISCHARGING_LONG;
+        else
+            interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
+
         time += interval;
 
         Intent batteryIntent = new Intent(context, BatteryAlarmManager.class);
