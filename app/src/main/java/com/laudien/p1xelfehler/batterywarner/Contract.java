@@ -51,12 +51,16 @@ public final class Contract {
     public static final String BROADCAST_ON_OFF_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_ON_OFF_CHANGED";
     public static final String BROADCAST_STATUS_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATUS_CHANGED";
 
-    // activating pro-features
-    public static final boolean IS_PRO = true;
+    // notification ids
+    public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
+    public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
 
     // package names
     public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
+
+    // activating pro-features
+    public static final boolean IS_PRO = true;
 
     // the rest
     public static final int NO_STATE = -1;

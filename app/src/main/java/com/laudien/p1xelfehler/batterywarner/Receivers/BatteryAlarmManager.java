@@ -117,7 +117,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, builder.build());
+        notificationManager.notify(Contract.NOTIFICATION_ID_BATTERY_WARNING, builder.build());
         sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
     }
 

@@ -77,7 +77,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .setContentText(context.getString(R.string.notifications_are_off))
                     .setContentIntent(contentIntent)
                     .setAutoCancel(true);
-            notificationManager.notify(0, builder.build());
+            notificationManager.notify(Contract.NOTIFICATION_ID_SILENT_MODE, builder.build());
         }
 
         // start new alarm
