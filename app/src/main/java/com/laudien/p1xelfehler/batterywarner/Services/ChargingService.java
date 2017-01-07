@@ -58,12 +58,6 @@ public class ChargingService extends Service {
     }
 
     @Override
-    public boolean stopService(Intent name) {
-        Log.i(TAG, "Service stopped!");
-        return super.stopService(name);
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Service destroyed!");
