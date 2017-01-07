@@ -3,9 +3,11 @@ package com.laudien.p1xelfehler.batterywarner.Receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
@@ -21,6 +23,11 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             return; // return if intro was not finished
 
         //Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
+
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        if (isCharging)
+            context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);
