@@ -143,9 +143,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 checkBox_wireless.setChecked(checked);
                 seekBar_highBattery.setEnabled(checked);
                 break;
-            case R.id.switch_darkTheme:
-                //Toast.makeText(getContext(), "Please restart application to change the theme!", Toast.LENGTH_SHORT).show();
-                break;
         }
         if (!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
             checkBox_highBattery.setChecked(false);
