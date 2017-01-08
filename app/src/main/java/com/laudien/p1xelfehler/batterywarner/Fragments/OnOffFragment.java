@@ -24,6 +24,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
 
@@ -44,6 +45,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
     private IntentFilter onOffChangedFilter, batteryChangedFilter;
+    private boolean isCharging;
+
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -53,6 +56,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             toggleButton.setOnCheckedChangeListener(OnOffFragment.this); // enable the toasts
         }
     };
+
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -62,6 +66,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             String healthString;
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
+            isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
 
             switch (health) {
                 case android.os.BatteryManager.BATTERY_HEALTH_COLD:
@@ -184,10 +189,16 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
         if (isChecked) {
             sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-            batteryAlarmManager.checkBattery(true);
+            if (isCharging)
+                context.startService(new Intent(context, ChargingService.class));
+            else
+                batteryAlarmManager.checkBattery(true);
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
         } else {
-            BatteryAlarmManager.cancelExistingAlarm(context);
+            if (isCharging)
+                context.stopService(new Intent(context, ChargingService.class));
+            else
+                BatteryAlarmManager.cancelExistingAlarm(context);
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
     }
