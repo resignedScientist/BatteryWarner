@@ -19,7 +19,6 @@ public final class Contract {
     public static final String PREF_LAST_PERCENTAGE = "lastPercentage";
     public static final String PREF_GRAPH_TIME = "graphTime";
     public static final String PREF_ALREADY_NOTIFIED = "notificationShown";
-    public static final String PREF_FASTER_INTERVAL = "fasterInterval";
     public static final String PREF_CB_PERCENT = "checkBoxPercent";
     public static final String PREF_CB_TEMP = "checkBoxDegrees";
     public static final String PREF_DARK_THEME = "darkThemeEnabled";

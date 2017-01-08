@@ -107,12 +107,6 @@
             android:layout_height="wrap_content"
             android:text="@string/enable_charging_curve" />
 
-        <CheckBox
-            android:text="@string/higher_accuracy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox_fastCharging" />
-
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
@@ -125,10 +119,10 @@
             android:textSize="18sp" />
 
         <Switch
-            android:text="@string/enable_dark_theme"
+            android:id="@+id/switch_darkTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/switch_darkTheme" />
+            android:text="@string/enable_dark_theme" />
 
     </LinearLayout>
 

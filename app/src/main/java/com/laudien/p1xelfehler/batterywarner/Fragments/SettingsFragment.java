@@ -34,14 +34,23 @@ import static android.app.Activity.RESULT_OK;
 
 public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
+    public Uri sound;
     //private static final String TAG = "SettingsFragment";
     private SharedPreferences sharedPreferences;
     private CheckBox checkBox_usb, checkBox_ac, checkBox_wireless, checkBox_lowBattery,
-            checkBox_highBattery, checkBox_chargeCurve, checkBox_fastCharging;
+            checkBox_highBattery, checkBox_chargeCurve;
     private SeekBar seekBar_lowBattery, seekBar_highBattery;
     private TextView textView_lowBattery, textView_highBattery;
     private Switch switch_darkTheme;
-    public Uri sound;
+
+    public static Uri getNotificationSound(Context context) {
+        String uri = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
+                .getString(Contract.PREF_SOUND_URI, "");
+        if (!uri.equals(""))
+            return Uri.parse(uri); // saved URI
+        else // default URI
+            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    }
 
     @Nullable
     @Override
@@ -78,7 +87,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         switch_darkTheme.setOnCheckedChangeListener(this);
         switch_darkTheme.setChecked(sharedPreferences.getBoolean(Contract.PREF_DARK_THEME, false));
         checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
-        checkBox_fastCharging = (CheckBox) view.findViewById(R.id.checkBox_fastCharging);
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
         textView_highBattery.setText(getString(R.string.high_battery_warning) + " " + seekBar_highBattery.getProgress() + "%");
@@ -92,13 +100,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         if (Contract.IS_PRO) {
             checkBox_chargeCurve.setOnCheckedChangeListener(this);
             checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
-            checkBox_fastCharging.setChecked(sharedPreferences.getBoolean(Contract.PREF_FASTER_INTERVAL, false));
-            if (!checkBox_chargeCurve.isChecked())
-                checkBox_fastCharging.setEnabled(false); // disable fast charging checkbox
         } else {
             checkBox_chargeCurve.setEnabled(false);
             checkBox_chargeCurve.setChecked(false);
-            checkBox_fastCharging.setEnabled(false);
             TextView textView_stats = (TextView) view.findViewById(R.id.textView_stats);
             textView_stats.setText(getString(R.string.stats) + " (" + getString(R.string.pro_only_short) + ")");
         }
@@ -141,9 +145,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 break;
             case R.id.switch_darkTheme:
                 //Toast.makeText(getContext(), "Please restart application to change the theme!", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.checkBox_chargeCurve:
-                checkBox_fastCharging.setEnabled(checked);
                 break;
         }
         if (!checkBox_ac.isChecked() && !checkBox_usb.isChecked() && !checkBox_wireless.isChecked())
@@ -208,15 +209,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             Log.i(TAG, logText);*/
     }
 
-    public static Uri getNotificationSound(Context context) {
-        String uri = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
-                .getString(Contract.PREF_SOUND_URI, "");
-        if (!uri.equals(""))
-            return Uri.parse(uri); // saved URI
-        else // default URI
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-    }
-
     public void saveAll() {
         //Log.i(TAG, getString(R.string.settings_saved));
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
@@ -270,7 +262,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
                 .putString(Contract.PREF_SOUND_URI, sound.toString())
                 .putBoolean(Contract.PREF_GRAPH_ENABLED, checkBox_chargeCurve.isChecked())
-                .putBoolean(Contract.PREF_FASTER_INTERVAL, checkBox_fastCharging.isChecked())
                 .putBoolean(Contract.PREF_DARK_THEME, switch_darkTheme.isChecked())
                 .apply();
 
