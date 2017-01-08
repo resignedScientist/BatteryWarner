@@ -26,11 +26,13 @@ public class BootReceiver extends BroadcastReceiver {
         //Log.i(TAG, "Finished Booting! Setting battery alarm...");
 
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        if (isCharging)
-            context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
-
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-        new BatteryAlarmManager(context).checkBattery(true);
+        if (batteryStatus != null) {
+            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+            boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            if (isCharging)
+                context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
+            else
+                new BatteryAlarmManager(context).checkBattery(true);
+        }
     }
 }

@@ -37,127 +37,6 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public void checkBattery(boolean logAndSetAlarm) {
-        batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) return;
-        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-
-        if (!isChargingModeEnabled(sharedPreferences, batteryStatus))
-            return; // return if current charging mode is disabled
-
-        batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
-        isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-
-        // log messages
-        /*Log.i(TAG, "Alarm received! (logAndSetAlarm = " + logAndSetAlarm + ")");
-        Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
-        Log.i(TAG, "Charging: " + isCharging);*/
-
-        // check battery and show notifications
-        if (isCharging) { // charging
-            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-            boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
-
-            // notification if warning value is reached
-            if (batteryLevel >= warningHigh) {
-                showNotification(context.getString(R.string.warning_high) + " " + warningHigh + "%!");
-            }
-
-            // log data in database and set alarm
-            if (logAndSetAlarm) {
-                if (graphEnabled) {
-                    int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
-                    int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
-                    long timeNow = Calendar.getInstance().getTimeInMillis();
-                    long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
-                    if (graphTime < 100) graphTime = 0;
-                    if (percentage != batteryLevel) {
-                        percentage = batteryLevel;
-                        // write in database
-                        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
-                        dbHelper.addValue(graphTime, percentage, temperature);
-                        // save in sharedPreferences
-                        sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
-                        // send broadcast (database changed)
-                        Intent intent = new Intent();
-                        intent.setAction(Contract.BROADCAST_STATUS_CHANGED);
-                        context.sendBroadcast(intent);
-                    }
-                }
-                /*if ((graphEnabled && batteryLevel < 100) || (!graphEnabled && batteryLevel <= warningHigh)) // new alarm
-                    setAlarm();*/
-
-                if (batteryLevel == 100)
-                    context.stopService(new Intent(context, ChargingService.class));
-            }
-        } else { // discharging
-            int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-            if (batteryLevel <= warningLow) { // show notification
-                showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
-            } else if (logAndSetAlarm) { // set alarm
-                setAlarm();
-            }
-        }
-    }
-
-    private void showNotification(String contentText) {
-        if (batteryStatus == null) return;
-        if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
-
-        //Log.i(TAG, "Showing notification: " + contentText);
-        int icon = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
-        if (icon == Contract.NO_STATE)
-            icon = android.R.drawable.alert_light_frame;
-        PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(icon)
-                .setSound(SettingsFragment.getNotificationSound(context))
-                .setVibrate(new long[]{0, 300, 300, 300})
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(contentText)
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true);
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Contract.NOTIFICATION_ID_BATTERY_WARNING, builder.build());
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
-    }
-
-    private void setAlarm() {
-        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null)
-            return;
-        if (!isCharging) return; // only set alarm if discharging
-
-        long time = Calendar.getInstance().getTimeInMillis();
-        int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-        int interval;
-
-        if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
-        if (batteryLevel <= warningLow) {
-            showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
-            return;
-        } else if (batteryLevel <= warningLow + 5)
-            interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
-        else if (batteryLevel <= warningLow + 10)
-            interval = Contract.INTERVAL_DISCHARGING_SHORT;
-        else if (batteryLevel <= warningLow + 20)
-            interval = Contract.INTERVAL_DISCHARGING_LONG;
-        else
-            interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
-
-        time += interval;
-
-        Intent batteryIntent = new Intent(context, BatteryAlarmManager.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0); // request code = time
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
-        sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
-
-        //Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");
-    }
-
     public static void cancelExistingAlarm(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         long oldTime = sharedPreferences.getLong(Contract.PREF_INTENT_TIME, Contract.NO_STATE);
@@ -201,6 +80,127 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                 return false; // return false if warning low is disabled
         }
         return true;
+    }
+
+    public void checkBattery(boolean notify) {
+        batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) return;
+        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+
+        if (!isChargingModeEnabled(sharedPreferences, batteryStatus))
+            return; // return if current charging mode is disabled
+
+        batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
+        isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+
+        // log messages
+        /*Log.i(TAG, "Alarm received! (notify = " + notify + ")");
+        Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
+        Log.i(TAG, "Charging: " + isCharging);*/
+
+        // check battery and show notifications
+        if (isCharging) { // charging
+            int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+            boolean graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
+
+            // notification if warning value is reached
+            if (batteryLevel >= warningHigh) {
+                showNotification(context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+            }
+
+            // log data in database and set alarm
+            if (notify) {
+                if (graphEnabled) {
+                    int percentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
+                    int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
+                    long timeNow = Calendar.getInstance().getTimeInMillis();
+                    long graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
+                    if (graphTime < 100) graphTime = 0;
+                    if (percentage != batteryLevel) {
+                        percentage = batteryLevel;
+                        // write in database
+                        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
+                        dbHelper.addValue(graphTime, percentage, temperature);
+                        // save in sharedPreferences
+                        sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, percentage).apply();
+                        // send broadcast (database changed)
+                        Intent intent = new Intent();
+                        intent.setAction(Contract.BROADCAST_STATUS_CHANGED);
+                        context.sendBroadcast(intent);
+                    }
+                }
+                /*if ((graphEnabled && batteryLevel < 100) || (!graphEnabled && batteryLevel <= warningHigh)) // new alarm
+                    setAlarm();*/
+
+                if (batteryLevel == 100)
+                    context.stopService(new Intent(context, ChargingService.class));
+            }
+        } else { // discharging
+            int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+            if (batteryLevel <= warningLow) { // show notification
+                showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+            } else if (notify) { // set alarm
+                setAlarm();
+            }
+        }
+    }
+
+    private void showNotification(String contentText) {
+        if (batteryStatus == null) return;
+        if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
+
+        //Log.i(TAG, "Showing notification: " + contentText);
+        int icon = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
+        if (icon == Contract.NO_STATE)
+            icon = android.R.drawable.alert_light_frame;
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification.Builder builder = new Notification.Builder(context)
+                .setSmallIcon(icon)
+                .setSound(SettingsFragment.getNotificationSound(context))
+                .setVibrate(new long[]{0, 300, 300, 300})
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(contentText)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(Contract.NOTIFICATION_ID_BATTERY_WARNING, builder.build());
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
+    }
+
+    private void setAlarm() {
+        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true) || batteryStatus == null)
+            return;
+        if (isCharging) return; // only set alarm if discharging
+
+        long time = Calendar.getInstance().getTimeInMillis();
+        int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+        int interval;
+
+        if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
+        if (batteryLevel <= warningLow) {
+            showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+            return;
+        } else if (batteryLevel <= warningLow + 5)
+            interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
+        else if (batteryLevel <= warningLow + 10)
+            interval = Contract.INTERVAL_DISCHARGING_SHORT;
+        else if (batteryLevel <= warningLow + 20)
+            interval = Contract.INTERVAL_DISCHARGING_LONG;
+        else
+            interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
+
+        time += interval;
+
+        Intent batteryIntent = new Intent(context, BatteryAlarmManager.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(context, (int) time, batteryIntent, 0); // request code = time
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, time).apply();
+
+        //Log.i(TAG, "Repeating alarm was set! interval = " + (double) interval / 60000 + " min");
     }
 
     @Override

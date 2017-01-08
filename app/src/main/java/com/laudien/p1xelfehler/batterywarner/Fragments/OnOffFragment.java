@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,7 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class OnOffFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = "OnOffFragment";
+    //private static final String TAG = "OnOffFragment";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final int NO_STATE = -1;
     private SharedPreferences sharedPreferences;
@@ -44,72 +43,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
-    private IntentFilter filter1, filter2;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_on_off, container, false);
-        context = getContext();
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        batteryAlarmManager = new BatteryAlarmManager(context);
-        Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
-        btn_settings.setOnClickListener(this);
-        toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-
-        boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
-        toggleButton.setChecked(isChecked);
-        toggleButton.setOnCheckedChangeListener(this);
-
-        textView_technology = (TextView) view.findViewById(R.id.textView_technology);
-        textView_temp = (TextView) view.findViewById(R.id.textView_temp);
-        textView_health = (TextView) view.findViewById(R.id.textView_health);
-        textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
-        textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
-        img_battery = (ImageView) view.findViewById(R.id.img_battery);
-
-        filter1 = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
-        filter2 = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().registerReceiver(onOffChangedReceiver, filter1);
-        getActivity().registerReceiver(batteryChangedReceiver, filter2);
-        onOffChangedReceiver.onReceive(context, null);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getActivity().unregisterReceiver(onOffChangedReceiver);
-        getActivity().unregisterReceiver(batteryChangedReceiver);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_settings:
-                startActivity(new Intent(context, SettingsActivity.class));
-                break;
-        }
-    }
-
-    private void setImageColor(int color) {
-        setImageColor(color, img_battery);
-    }
-
-    public static void setImageColor(int color, ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-        imageView.setImageDrawable(drawable);
-    }
-
+    private IntentFilter onOffChangedFilter, batteryChangedFilter;
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -119,22 +53,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             toggleButton.setOnCheckedChangeListener(OnOffFragment.this); // enable the toasts
         }
     };
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        //Log.i(TAG, "User changed status to " + isChecked);
-        sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
-        if (isChecked) {
-            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-            batteryAlarmManager.checkBattery(true);
-            Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
-        } else {
-            BatteryAlarmManager.cancelExistingAlarm(context);
-            Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
-        }
-    }
-
-    private  BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String technology = intent.getStringExtra(android.os.BatteryManager.EXTRA_TECHNOLOGY);
@@ -194,4 +113,82 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             }
         }
     };
+
+    public static void setImageColor(int color, ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        imageView.setImageDrawable(drawable);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_on_off, container, false);
+        context = getContext();
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        batteryAlarmManager = new BatteryAlarmManager(context);
+        Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
+        btn_settings.setOnClickListener(this);
+        toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
+        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+
+        boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
+        toggleButton.setChecked(isChecked);
+        toggleButton.setOnCheckedChangeListener(this);
+
+        textView_technology = (TextView) view.findViewById(R.id.textView_technology);
+        textView_temp = (TextView) view.findViewById(R.id.textView_temp);
+        textView_health = (TextView) view.findViewById(R.id.textView_health);
+        textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
+        textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
+        img_battery = (ImageView) view.findViewById(R.id.img_battery);
+
+        onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
+        batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(onOffChangedReceiver, onOffChangedFilter);
+        getActivity().registerReceiver(batteryChangedReceiver, batteryChangedFilter);
+        onOffChangedReceiver.onReceive(context, null);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(onOffChangedReceiver);
+        getActivity().unregisterReceiver(batteryChangedReceiver);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_settings:
+                startActivity(new Intent(context, SettingsActivity.class));
+                break;
+        }
+    }
+
+    private void setImageColor(int color) {
+        setImageColor(color, img_battery);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        //Log.i(TAG, "User changed status to " + isChecked);
+        sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
+        if (isChecked) {
+            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+            batteryAlarmManager.checkBattery(true);
+            Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
+        } else {
+            BatteryAlarmManager.cancelExistingAlarm(context);
+            Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
+        }
+    }
 }

@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -58,15 +57,14 @@ public class ChargingReceiver extends BroadcastReceiver {
                     .apply();
         }
 
+        // notify if silent/vibrate mode
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         int ringerMode = audioManager.getRingerMode();
-
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (
                 !notificationManager.areNotificationsEnabled()
-                || ringerMode == AudioManager.RINGER_MODE_SILENT
-                || ringerMode == AudioManager.RINGER_MODE_VIBRATE)
-        {
+                        || ringerMode == AudioManager.RINGER_MODE_SILENT
+                        || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
             PendingIntent contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
@@ -81,9 +79,7 @@ public class ChargingReceiver extends BroadcastReceiver {
             notificationManager.notify(Contract.NOTIFICATION_ID_SILENT_MODE, builder.build());
         }
 
+        // start charging service
         context.startService(new Intent(context, ChargingService.class));
-
-        // start new alarm
-        new BatteryAlarmManager(context).checkBattery(true);
     }
 }
