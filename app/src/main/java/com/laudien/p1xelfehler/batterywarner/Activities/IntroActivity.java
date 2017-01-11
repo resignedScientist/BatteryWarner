@@ -1,15 +1,20 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.CustomSlides.ImageSlide;
 import com.laudien.p1xelfehler.batterywarner.CustomSlides.PreferencesSlide;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+
+import java.util.Calendar;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
@@ -67,6 +72,18 @@ public class IntroActivity extends MaterialIntroActivity {
         //Log.i(TAG, "The intro was finished!");
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
+        if (Contract.IS_PRO) {
+            Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            if (batteryStatus != null) {
+                // start the service if charging
+                if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0) {
+                    sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
+                            .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                            .apply();
+                    startService(new Intent(this, ChargingService.class));
+                }
+            }
+        }
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }

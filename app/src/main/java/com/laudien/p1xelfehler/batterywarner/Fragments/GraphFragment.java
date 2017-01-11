@@ -84,7 +84,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // x bounds
         viewport_chargeCurve.setXAxisBoundsManual(true);
         viewport_chargeCurve.setMinX(0);
-        viewport_chargeCurve.setMaxX(1);
 
         graph_chargeCurve.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
@@ -94,7 +93,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                         graphCounter = 1;
                         return "0";
                     }
-                    if (graphCounter++ % 2 != 0)
+                    if (graphCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
                 } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
@@ -176,66 +175,38 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        boolean chargingModeEnabled = BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus);
-        boolean isFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
-        int percentage;
-        double temperature, time = 0;
+        boolean isChargingAndNotFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
+                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        String[] columns = {
-                GraphDbHelper.TABLE_COLUMN_TIME,
-                GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
-                GraphDbHelper.TABLE_COLUMN_TEMP};
-        Cursor cursor = database.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
-        if (cursor.moveToFirst()) { // if the cursor has data
-            do {
-                time = getDoubleTime(cursor.getLong(0));
-                percentage = cursor.getInt(1);
-                temperature = (double) cursor.getInt(2) / 10;
-                //Log.i(TAG, "Data read: time = " + time + "; percentage = " + percentage + "; temp = " + temperature);
-                try {
-                    series_chargeCurve.appendData(new DataPoint(time, percentage), false, 1000);
-                    series_temp.appendData(new DataPoint(time, temperature), false, 1000);
-                } catch (Exception e) { // if x has a lower value than the values on the graph -> reset graph
-                    series_chargeCurve.resetData(new DataPoint[]{new DataPoint(time, percentage)});
-                    series_temp.resetData(new DataPoint[]{new DataPoint(time, temperature)});
-                    viewport_chargeCurve.setMaxX(1);
+        LineGraphSeries<DataPoint> series[] =  dbHelper.getGraphs();
+        if (series != null) {
+            series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
+            series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
+            graph_chargeCurve.addSeries(series_chargeCurve);
+            graph_chargeCurve.addSeries(series_temp);
+            double maxTime = series_chargeCurve.getHighestValueX();
+            if (maxTime != 0) { // enough data
+                //textView_chargingTime.setText(getString(R.string.charging) + " (" + getTimeString(maxTime) + ")");
+                if (isChargingAndNotFull){
+                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), getTimeString(maxTime)));
+                } else {
+                    textView_chargingTime.setText(String.format("%s: %s", getString(R.string.charging_time), getTimeString(maxTime)));
                 }
-            } while (cursor.moveToNext()); // while the cursor has data
-        } else if (!isCharging) { // empty database and discharging -> no data yet + return
-            textView_chargingTime.setText(getString(R.string.no_data));
-            cursor.close();
-            dbHelper.close();
-            return;
-        }
-        cursor.close();
-        dbHelper.close();
-        // Is there enough data?
-        boolean enoughData = time != 0;
-        if (!enoughData) { // not enough data
-            //time = 1;
-            textView_chargingTime.setText(getString(R.string.not_enough_data));
-        } else { // enough data
-            viewport_chargeCurve.setMaxX(time); // set the viewport to the highest time
-            // load the series into the graphView
-            if (checkBox_percentage.isChecked())
-                graph_chargeCurve.addSeries(series_chargeCurve);
-            if (checkBox_temp.isChecked())
-                graph_chargeCurve.addSeries(series_temp);
-        }
-        // Show user if charging and current charging type is disabled
-        if (!chargingModeEnabled && isCharging) {
-            textView_chargingTime.setText(getString(R.string.charging_type_disabled));
-            return;
-        }
-        // Is the phone charging and is it NOT full charged?
-        String timeString = getTimeString(time);
-        if (isCharging && !isFull) { // charging and not fully charged -> "Charging... (time)"
-            textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");
-        } else if (enoughData) { // discharging + ENOUGH data
-            textView_chargingTime.setText(getString(R.string.charging_time) + ": " + timeString);
+                viewport_chargeCurve.setMaxX(maxTime);
+            } else { // not enough data
+                viewport_chargeCurve.setMaxX(1);
+                if (isChargingAndNotFull) {
+                    textView_chargingTime.setText(String.format("%s (0 min)", getString(R.string.charging)));
+                } else {
+                    textView_chargingTime.setText(getString(R.string.not_enough_data));
+                }
+            }
+        } else { // empty database
+            if (isChargingAndNotFull){
+                textView_chargingTime.setText(String.format("%s (0 min)", getString(R.string.charging)));
+            } else {
+                textView_chargingTime.setText(getString(R.string.no_data));
+            }
         }
     }
 
