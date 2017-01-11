@@ -155,7 +155,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     public void reloadChargeCurve() {
-        // 1. if not pro -> return
+        // if not pro -> return
         if (!Contract.IS_PRO) {
             textView_chargingTime.setTextSize(20);
             textView_chargingTime.setText(getString(R.string.not_pro));
@@ -163,17 +163,17 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             checkBox_percentage.setEnabled(false);
             return;
         }
-        // 2. if disabled in settings -> return
+        // if disabled in settings -> return
         //Log.i(TAG, "graphEnabled = " + graphEnabled);
         if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
             return;
         }
-        // remove the series from the graph view first
+        // remove the series from the graph view
         graph_chargeCurve.removeSeries(series_chargeCurve);
         graph_chargeCurve.removeSeries(series_temp);
-        // 4. load graph
+        // load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
         boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
@@ -212,7 +212,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         cursor.close();
         dbHelper.close();
-        // 5. Is there enough data?
+        // Is there enough data?
         boolean enoughData = time != 0;
         if (!enoughData) { // not enough data
             //time = 1;
@@ -225,12 +225,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             if (checkBox_temp.isChecked())
                 graph_chargeCurve.addSeries(series_temp);
         }
-        // 6. Show user if charging and current charging type is disabled
+        // Show user if charging and current charging type is disabled
         if (!chargingModeEnabled && isCharging) {
             textView_chargingTime.setText(getString(R.string.charging_type_disabled));
             return;
         }
-        // 7. Is the phone charging and is it NOT full charged?
+        // Is the phone charging and is it NOT full charged?
         String timeString = getTimeString(time);
         if (isCharging && !isFull) { // charging and not fully charged -> "Charging... (time)"
             textView_chargingTime.setText(getString(R.string.charging) + " (" + timeString + ")");

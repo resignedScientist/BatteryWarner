@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -50,10 +49,9 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // reset graph values if graph is enabled
         if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-            GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
-            dbHelper.resetTable();
             sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                     .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                    .putBoolean(Contract.PREF_RESET_GRAPH, true)
                     .apply();
         }
 

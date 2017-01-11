@@ -53,6 +53,7 @@ public class ChargingService extends Service {
             registerReceiver(ringerModeChangedReceiver,
                     new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION));
             registerReceiver(batteryChangedReceiver, batteryChangedFilter);
+            batteryAlarmManager.checkBattery(true); // check immediately
         }
         return super.onStartCommand(intent, flags, startId);
     }
