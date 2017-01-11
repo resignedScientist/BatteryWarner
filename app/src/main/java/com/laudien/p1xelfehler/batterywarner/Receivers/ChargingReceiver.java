@@ -1,19 +1,13 @@
 package com.laudien.p1xelfehler.batterywarner.Receivers;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
-import android.support.v4.app.NotificationManagerCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
@@ -56,26 +50,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         }
 
         // notify if silent/vibrate mode
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int ringerMode = audioManager.getRingerMode();
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        if (
-                !notificationManager.areNotificationsEnabled()
-                        || ringerMode == AudioManager.RINGER_MODE_SILENT
-                        || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-            PendingIntent contentIntent = PendingIntent.getActivity(
-                    context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(SettingsFragment.getNotificationSound(context))
-                    .setVibrate(new long[]{0, 300, 300, 300})
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(context.getString(R.string.notifications_are_off))
-                    .setContentIntent(contentIntent)
-                    .setAutoCancel(true);
-            notificationManager.notify(Contract.NOTIFICATION_ID_SILENT_MODE, builder.build());
-        }
+        new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
 
         // start charging service
         context.startService(new Intent(context, ChargingService.class));

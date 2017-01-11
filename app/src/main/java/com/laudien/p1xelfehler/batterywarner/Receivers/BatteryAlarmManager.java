@@ -1,8 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Receivers;
 
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,11 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
@@ -100,7 +96,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
 
             // notification if warning value is reached
             if (batteryLevel >= warningHigh) {
-                showNotification(context.getString(R.string.warning_high) + " " + warningHigh + "%!");
+                new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_HIGH);
             }
 
             // log data in database and set alarm
@@ -136,36 +132,11 @@ public class BatteryAlarmManager extends BroadcastReceiver {
         } else { // discharging
             int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
             if (batteryLevel <= warningLow) { // show notification
-                showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+                new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_LOW);
             } else if (logAndNotify) { // set alarm
                 setAlarm();
             }
         }
-    }
-
-    private void showNotification(String contentText) {
-        if (batteryStatus == null) return;
-        if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
-
-        //Log.i(TAG, "Showing notification: " + contentText);
-        int icon = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_ICON_SMALL, Contract.NO_STATE);
-        if (icon == Contract.NO_STATE)
-            icon = android.R.drawable.alert_light_frame;
-        PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(icon)
-                .setSound(SettingsFragment.getNotificationSound(context))
-                .setVibrate(new long[]{0, 300, 300, 300})
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(contentText)
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true);
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Contract.NOTIFICATION_ID_BATTERY_WARNING, builder.build());
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
     }
 
     private void setAlarm() {
@@ -179,7 +150,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
 
         if (!sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true)) return;
         if (batteryLevel <= warningLow) {
-            showNotification(context.getString(R.string.warning_low) + " " + warningLow + "%!");
+            new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_LOW);
             return;
         } else if (batteryLevel <= warningLow + 5)
             interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
