@@ -118,7 +118,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                     if (graphTime < 100) graphTime = 0;
                     if (percentage != batteryLevel) {
                         percentage = batteryLevel;
-                        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(context);
+                        GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(context);
                         // if the graph is marked to be resetted -> reset it!
                         if (sharedPreferences.getBoolean(Contract.PREF_RESET_GRAPH, false)) {
                             sharedPreferences.edit().putBoolean(Contract.PREF_RESET_GRAPH, false).apply();

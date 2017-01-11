@@ -181,7 +181,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         boolean isFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
         int percentage;
         double temperature, time = 0;
-        GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
+        GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {
                 GraphChargeDbHelper.TABLE_COLUMN_TIME,

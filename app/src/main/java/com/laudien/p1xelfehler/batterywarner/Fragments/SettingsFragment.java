@@ -211,7 +211,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-            GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
+            GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
             dbHelper.resetTable();
             sharedPreferences.edit()
                     .putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
@@ -239,7 +239,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                     break;
             }
             if (currentChargingTypeEnabled) { // if it was enabled -> reset database table and last percentage/time
-                GraphChargeDbHelper dbHelper = new GraphChargeDbHelper(getContext());
+                GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
                 dbHelper.resetTable();
                 sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                         .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
