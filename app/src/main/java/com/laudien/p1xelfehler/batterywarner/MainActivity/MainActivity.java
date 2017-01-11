@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }, 3000);
         } else {
-            finish();
+            finishAffinity();
         }
     }
 
