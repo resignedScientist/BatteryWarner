@@ -27,6 +27,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 import java.util.Locale;
 
@@ -171,7 +172,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
         boolean isChargingAndNotFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
-                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100;
+                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
+                && BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus);
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
         if (series != null) {
@@ -219,10 +221,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return String.format(Locale.getDefault(), "%d min", (int) timeInMinutes);
             return String.format(Locale.getDefault(), "%.1f min", timeInMinutes);
         }
-    }
-
-    private double getDoubleTime(long timeInMillis) { // returns minutes as double
-        return (double) Math.round(2 * (double) timeInMillis / 60000) / 2;
     }
 
     @Override
