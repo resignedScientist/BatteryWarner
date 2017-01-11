@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
@@ -32,7 +33,7 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // cancel warning notifications
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(Contract.NOTIFICATION_ID_BATTERY_WARNING);
+        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);

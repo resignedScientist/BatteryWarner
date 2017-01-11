@@ -16,6 +16,8 @@ public class NotificationBuilder {
     public static final int NOTIFICATION_WARNING_HIGH = 0;
     public static final int NOTIFICATION_WARNING_LOW = 1;
     public static final int NOTIFICATION_SILENT_MODE = 2;
+    public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
+    public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
     private Context context;
 
     public NotificationBuilder(Context context) {
@@ -30,7 +32,7 @@ public class NotificationBuilder {
                 int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
                 showNotification(
                         String.format("%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        Contract.NOTIFICATION_ID_BATTERY_WARNING
+                        NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
             case NOTIFICATION_WARNING_LOW:
@@ -38,7 +40,7 @@ public class NotificationBuilder {
                 int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_LOW);
                 showNotification(
                         String.format("%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        Contract.NOTIFICATION_ID_BATTERY_WARNING
+                        NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
             case NOTIFICATION_SILENT_MODE:
@@ -50,7 +52,7 @@ public class NotificationBuilder {
                         || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
                     showNotification(
                             context.getString(R.string.notifications_are_off),
-                            Contract.NOTIFICATION_ID_SILENT_MODE
+                            NOTIFICATION_ID_SILENT_MODE
                     );
                 }
                 break;

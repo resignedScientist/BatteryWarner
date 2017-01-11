@@ -55,7 +55,7 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // cancel warning notifications
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(Contract.NOTIFICATION_ID_BATTERY_WARNING);
+        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
         // start charging service
         context.startService(new Intent(context, ChargingService.class));

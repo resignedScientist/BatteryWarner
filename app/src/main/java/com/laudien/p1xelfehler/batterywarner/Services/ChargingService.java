@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 public class ChargingService extends Service {
@@ -28,7 +29,7 @@ public class ChargingService extends Service {
 
             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(Contract.NOTIFICATION_ID_SILENT_MODE);
+                notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
             }
         }
     };
