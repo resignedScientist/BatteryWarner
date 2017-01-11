@@ -1,12 +1,10 @@
-package com.laudien.p1xelfehler.batterywarner.Adapter;
+package com.laudien.p1xelfehler.batterywarner.MainActivity;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Fragments.OnOffFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {

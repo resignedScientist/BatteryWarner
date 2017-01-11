@@ -1,9 +1,10 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.IntroActivity.IntroActivity;
+import com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
 

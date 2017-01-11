@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.CustomSlides;
+package com.laudien.p1xelfehler.batterywarner.IntroActivity;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;

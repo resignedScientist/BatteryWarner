@@ -10,11 +10,11 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsFragment;
 
 import java.util.Calendar;
 

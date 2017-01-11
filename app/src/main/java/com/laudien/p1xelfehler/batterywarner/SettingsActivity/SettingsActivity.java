@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,7 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class SettingsActivity extends BaseActivity {

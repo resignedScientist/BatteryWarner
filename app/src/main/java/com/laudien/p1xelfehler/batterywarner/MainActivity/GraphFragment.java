@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Fragments;
+package com.laudien.p1xelfehler.batterywarner.MainActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,13 +25,13 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    //private static final String TAG = "GraphFragment";
+    // private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
@@ -40,6 +40,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private int graphCounter;
     private CheckBox checkBox_percentage, checkBox_temp;
     private boolean graphEnabled;
+    private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadChargeCurve();
+        }
+    };
 
     @Nullable
     @Override
@@ -153,7 +159,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return;
         }
         // if disabled in settings -> return
-        //Log.i(TAG, "graphEnabled = " + graphEnabled);
         if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
@@ -172,11 +177,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (series != null) {
             series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
             series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
-            graph_chargeCurve.addSeries(series_chargeCurve);
-            graph_chargeCurve.addSeries(series_temp);
+            if (checkBox_percentage.isChecked())
+                graph_chargeCurve.addSeries(series_chargeCurve);
+            if (checkBox_temp.isChecked())
+                graph_chargeCurve.addSeries(series_temp);
             double maxTime = series_chargeCurve.getHighestValueX();
             if (maxTime != 0) { // enough data
-                //textView_chargingTime.setText(getString(R.string.charging) + " (" + getTimeString(maxTime) + ")");
                 if (isChargingAndNotFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), getTimeString(maxTime)));
                 } else {
@@ -236,12 +242,4 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         else
             graph_chargeCurve.removeSeries(series);
     }
-
-    private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //Log.i(TAG, "Status change received!");
-            reloadChargeCurve();
-        }
-    };
 }

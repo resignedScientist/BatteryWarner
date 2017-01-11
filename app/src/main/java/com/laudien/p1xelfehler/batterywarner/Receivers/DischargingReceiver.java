@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
@@ -29,8 +28,6 @@ public class DischargingReceiver extends BroadcastReceiver {
         Intent databaseIntent = new Intent();
         databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
         context.sendBroadcast(databaseIntent);
-
-        context.stopService(new Intent(context, ChargingService.class));
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);

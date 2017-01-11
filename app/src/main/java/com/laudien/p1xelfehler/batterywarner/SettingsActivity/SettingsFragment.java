@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Fragments;
+package com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,9 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
 
@@ -207,8 +208,6 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     }
 
     public void saveAll() {
-        //Log.i(TAG, getString(R.string.settings_saved));
-        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
@@ -264,7 +263,14 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
         // restart the alarm (if enabled)
         BatteryAlarmManager.cancelExistingAlarm(getContext());
-        new BatteryAlarmManager(getContext()).checkBattery(true);
+        if (batteryStatus == null) return;
+        if (BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
+            Context context = getContext();
+            if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0)
+                context.startService(new Intent(context, ChargingService.class));
+            else
+                new BatteryAlarmManager(getContext()).checkBattery(true);
+        }
     }
 
     @Override

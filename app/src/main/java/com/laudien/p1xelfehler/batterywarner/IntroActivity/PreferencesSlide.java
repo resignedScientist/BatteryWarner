@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.CustomSlides;
+package com.laudien.p1xelfehler.batterywarner.IntroActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsFragment;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
@@ -44,9 +44,7 @@ public class PreferencesSlide extends SlideFragment {
         return null;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    public void saveSettings() {
         settingsFragment.saveAll();
     }
 }

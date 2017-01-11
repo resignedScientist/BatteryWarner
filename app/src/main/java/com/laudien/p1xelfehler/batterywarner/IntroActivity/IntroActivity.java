@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner.IntroActivity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.CustomSlides.ImageSlide;
-import com.laudien.p1xelfehler.batterywarner.CustomSlides.PreferencesSlide;
+import com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
@@ -24,7 +24,8 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class IntroActivity extends MaterialIntroActivity {
 
-    //private static final String TAG = "IntroActivity";
+    // private static final String TAG = "IntroActivity";
+    private PreferencesSlide preferencesSlide;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +52,8 @@ public class IntroActivity extends MaterialIntroActivity {
                 .build()
         );
 
-        addSlide(new PreferencesSlide());
+        preferencesSlide = new PreferencesSlide();
+        addSlide(preferencesSlide);
     }
 
     @Override
@@ -69,14 +71,15 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     public void onFinish() {
         super.onFinish();
-        //Log.i(TAG, "The intro was finished!");
+        preferencesSlide.saveSettings();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
         if (Contract.IS_PRO) {
             Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             if (batteryStatus != null) {
-                // start the service if charging
-                if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0) {
+                // start the service if charging (if enabled in settings)
+                if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
+                        && BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
                     sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                             .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
                             .apply();

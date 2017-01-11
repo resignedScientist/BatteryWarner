@@ -10,12 +10,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsFragment;
 
 import java.util.Calendar;
 
@@ -48,7 +48,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                     (int) oldTime, oldBatteryIntent, 0);
             alarmManager.cancel(oldPendingIntent);
         }
-        //Log.i(TAG, "Repeating alarm was canceled!");
+        context.stopService(new Intent(context, ChargingService.class));
     }
 
     public static boolean isChargingModeEnabled(SharedPreferences sharedPreferences, Intent batteryStatus) {
@@ -92,11 +92,6 @@ public class BatteryAlarmManager extends BroadcastReceiver {
 
         batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-
-        // log messages
-        /*Log.i(TAG, "Alarm received! (logAndNotify = " + logAndNotify + ")");
-        Log.i(TAG, "batteryLevel: " + batteryLevel + "%");
-        Log.i(TAG, "Charging: " + isCharging);*/
 
         // check battery and show notifications
         if (isCharging) { // charging
