@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.SettingsActivity;
+package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 
 import android.content.Context;
 import android.content.Intent;

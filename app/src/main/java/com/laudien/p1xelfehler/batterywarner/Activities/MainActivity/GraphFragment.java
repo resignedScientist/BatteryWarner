@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

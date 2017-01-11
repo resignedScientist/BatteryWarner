@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,10 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsActivity;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean backPressed = false;

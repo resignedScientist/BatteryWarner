@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StartActivity">
+        <activity android:name=".Activities.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
@@ -19,11 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.laudien.p1xelfehler.batterywarner.IntroActivity.IntroActivity" />
-        <activity android:name="com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity" />
+        <activity android:name=".Activities.IntroActivity.IntroActivity" />
+        <activity android:name=".Activities.MainActivity.MainActivity" />
         <activity
-            android:name="com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsActivity"
-            android:parentActivityName="com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity" />
+            android:name=".Activities.SettingsActivity.SettingsActivity"
+            android:parentActivityName=".Activities.MainActivity.MainActivity" />
 
         <receiver android:name=".Receivers.BatteryAlarmManager" />
 

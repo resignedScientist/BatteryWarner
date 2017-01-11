@@ -10,12 +10,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.SettingsActivity.SettingsFragment;
 
 import java.util.Calendar;
 
