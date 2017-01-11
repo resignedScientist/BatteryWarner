@@ -39,7 +39,7 @@ public class NotificationBuilder {
                 break;
             case NOTIFICATION_WARNING_LOW:
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
-                int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_LOW);
+                int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING
