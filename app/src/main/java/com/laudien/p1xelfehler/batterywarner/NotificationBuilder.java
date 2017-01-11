@@ -29,14 +29,16 @@ public class NotificationBuilder {
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
                 showNotification(
-                        String.format("%s %d%%!", context.getString(R.string.warning_high), warningHigh)
+                        String.format("%s %d%%!", context.getString(R.string.warning_high), warningHigh),
+                        Contract.NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
             case NOTIFICATION_WARNING_LOW:
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_LOW);
                 showNotification(
-                        String.format("%s %d%%!", context.getString(R.string.warning_low), warningLow)
+                        String.format("%s %d%%!", context.getString(R.string.warning_low), warningLow),
+                        Contract.NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
             case NOTIFICATION_SILENT_MODE:
@@ -47,14 +49,15 @@ public class NotificationBuilder {
                         || ringerMode == AudioManager.RINGER_MODE_SILENT
                         || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
                     showNotification(
-                            context.getString(R.string.notifications_are_off)
+                            context.getString(R.string.notifications_are_off),
+                            Contract.NOTIFICATION_ID_SILENT_MODE
                     );
                 }
                 break;
         }
     }
 
-    private void showNotification(String contentText) {
+    private void showNotification(String contentText, int id) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
@@ -68,6 +71,6 @@ public class NotificationBuilder {
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Contract.NOTIFICATION_ID_BATTERY_WARNING, builder.build());
+        notificationManager.notify(id, builder.build());
     }
 }

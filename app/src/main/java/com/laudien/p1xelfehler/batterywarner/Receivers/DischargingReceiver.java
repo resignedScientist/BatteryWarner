@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 
@@ -28,6 +29,10 @@ public class DischargingReceiver extends BroadcastReceiver {
         Intent databaseIntent = new Intent();
         databaseIntent.setAction(Contract.BROADCAST_STATUS_CHANGED);
         context.sendBroadcast(databaseIntent);
+
+        // cancel warning notifications
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(Contract.NOTIFICATION_ID_BATTERY_WARNING);
 
         BatteryAlarmManager.cancelExistingAlarm(context);
         new BatteryAlarmManager(context).checkBattery(true);

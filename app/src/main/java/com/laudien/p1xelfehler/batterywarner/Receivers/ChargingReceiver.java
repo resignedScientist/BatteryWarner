@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -51,6 +52,10 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // notify if silent/vibrate mode
         new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
+
+        // cancel warning notifications
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(Contract.NOTIFICATION_ID_BATTERY_WARNING);
 
         // start charging service
         context.startService(new Intent(context, ChargingService.class));
