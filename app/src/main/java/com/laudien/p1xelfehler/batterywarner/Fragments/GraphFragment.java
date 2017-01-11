@@ -5,9 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,7 +27,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 import java.util.Locale;
 
@@ -55,12 +51,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
-
-        // line graphs (= series)
-        series_chargeCurve = new LineGraphSeries<>();
-        series_chargeCurve.setDrawBackground(true);
-        series_temp = new LineGraphSeries<>();
-        series_temp.setColor(Color.GREEN);
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
@@ -178,7 +168,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         boolean isChargingAndNotFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
                 && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        LineGraphSeries<DataPoint> series[] =  dbHelper.getGraphs();
+        LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
         if (series != null) {
             series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
             series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
@@ -187,7 +177,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             double maxTime = series_chargeCurve.getHighestValueX();
             if (maxTime != 0) { // enough data
                 //textView_chargingTime.setText(getString(R.string.charging) + " (" + getTimeString(maxTime) + ")");
-                if (isChargingAndNotFull){
+                if (isChargingAndNotFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), getTimeString(maxTime)));
                 } else {
                     textView_chargingTime.setText(String.format("%s: %s", getString(R.string.charging_time), getTimeString(maxTime)));
@@ -202,7 +192,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
             }
         } else { // empty database
-            if (isChargingAndNotFull){
+            if (isChargingAndNotFull) {
                 textView_chargingTime.setText(String.format("%s (0 min)", getString(R.string.charging)));
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));

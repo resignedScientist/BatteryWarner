@@ -9,7 +9,6 @@ import android.graphics.Color;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.jjoe64.graphview.series.Series;
 
 public class GraphDbHelper extends SQLiteOpenHelper {
     //private static final String TAG = "GraphDbHelper";
@@ -79,7 +78,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         //Log.i(TAG, "Database closed!");
     }
 
-    public LineGraphSeries<DataPoint>[] getGraphs (){
+    public LineGraphSeries<DataPoint>[] getGraphs() {
         LineGraphSeries<DataPoint>[] output = new LineGraphSeries[2];
         output[TYPE_PERCENTAGE] = new LineGraphSeries<>();
         output[TYPE_TEMPERATURE] = new LineGraphSeries<>();
@@ -91,13 +90,13 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         Cursor cursor = database.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
 
-        if (cursor.moveToFirst()){ // if the cursor has data
+        if (cursor.moveToFirst()) { // if the cursor has data
             double time, temperature;
             int percentage;
             do {
                 time = (double) cursor.getLong(0) / 60000;
                 percentage = cursor.getInt(1);
-                temperature = (double) cursor.getInt(2)/10;
+                temperature = (double) cursor.getInt(2) / 10;
                 output[TYPE_PERCENTAGE].appendData(new DataPoint(time, percentage), true, 1000);
                 output[TYPE_TEMPERATURE].appendData(new DataPoint(time, temperature), true, 1000);
             } while (cursor.moveToNext()); // while the cursor has data
