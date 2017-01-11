@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class GraphChargeDbHelper extends SQLiteOpenHelper {
-    //private static final String TAG = "GraphChargeDbHelper";
-    private static GraphChargeDbHelper instance;
+public class GraphDbHelper extends SQLiteOpenHelper {
+    //private static final String TAG = "GraphDbHelper";
+    private static GraphDbHelper instance;
     private static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     public static final String TABLE_NAME = "ChargeCurve";
@@ -20,14 +20,14 @@ public class GraphChargeDbHelper extends SQLiteOpenHelper {
                     + TABLE_COLUMN_PERCENTAGE + " INTEGER,"
                     + TABLE_COLUMN_TEMP + " INTEGER);";
 
-    private GraphChargeDbHelper(Context context) {
+    private GraphDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //Log.i(TAG, "Database created/opened!");
     }
 
-    public static GraphChargeDbHelper getInstance(Context context) {
+    public static GraphDbHelper getInstance(Context context) {
         if (instance == null) {
-            instance = new GraphChargeDbHelper(context);
+            instance = new GraphDbHelper(context);
         }
         return instance;
     }

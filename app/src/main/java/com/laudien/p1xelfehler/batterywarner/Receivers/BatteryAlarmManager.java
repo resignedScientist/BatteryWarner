@@ -12,7 +12,7 @@ import android.content.SharedPreferences;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
+import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.Fragments.SettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -118,7 +118,7 @@ public class BatteryAlarmManager extends BroadcastReceiver {
                     if (graphTime < 100) graphTime = 0;
                     if (percentage != batteryLevel) {
                         percentage = batteryLevel;
-                        GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(context);
+                        GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
                         // if the graph is marked to be resetted -> reset it!
                         if (sharedPreferences.getBoolean(Contract.PREF_RESET_GRAPH, false)) {
                             sharedPreferences.edit().putBoolean(Contract.PREF_RESET_GRAPH, false).apply();

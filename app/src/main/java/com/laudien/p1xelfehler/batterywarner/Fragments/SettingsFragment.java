@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
+import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
@@ -211,7 +211,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         // reset graph database if it was checked/unchecked
         if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-            GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             dbHelper.resetTable();
             sharedPreferences.edit()
                     .putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
@@ -239,7 +239,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                     break;
             }
             if (currentChargingTypeEnabled) { // if it was enabled -> reset database table and last percentage/time
-                GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
+                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
                 dbHelper.resetTable();
                 sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
                         .putInt(Contract.PREF_LAST_PERCENTAGE, -1)

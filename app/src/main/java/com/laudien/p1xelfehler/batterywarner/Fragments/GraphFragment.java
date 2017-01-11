@@ -28,7 +28,7 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.Database.GraphChargeDbHelper;
+import com.laudien.p1xelfehler.batterywarner.Database.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
@@ -181,14 +181,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         boolean isFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
         int percentage;
         double temperature, time = 0;
-        GraphChargeDbHelper dbHelper = GraphChargeDbHelper.getInstance(getContext());
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         String[] columns = {
-                GraphChargeDbHelper.TABLE_COLUMN_TIME,
-                GraphChargeDbHelper.TABLE_COLUMN_PERCENTAGE,
-                GraphChargeDbHelper.TABLE_COLUMN_TEMP};
-        Cursor cursor = database.query(GraphChargeDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphChargeDbHelper.TABLE_COLUMN_TIME + "), " + GraphChargeDbHelper.TABLE_COLUMN_TIME);
+                GraphDbHelper.TABLE_COLUMN_TIME,
+                GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
+                GraphDbHelper.TABLE_COLUMN_TEMP};
+        Cursor cursor = database.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
+                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
         if (cursor.moveToFirst()) { // if the cursor has data
             do {
                 time = getDoubleTime(cursor.getLong(0));
