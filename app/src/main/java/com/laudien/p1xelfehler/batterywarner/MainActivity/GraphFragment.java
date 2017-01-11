@@ -88,7 +88,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 if (isValueX) { // X-axis (time)
                     if (value == 0) {
                         graphCounter = 1;
-                        return "0";
+                        return "0 min";
                     }
                     if (graphCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
