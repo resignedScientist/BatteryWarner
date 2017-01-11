@@ -12,6 +12,8 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
 
+import java.util.Locale;
+
 public class NotificationBuilder {
     public static final int NOTIFICATION_WARNING_HIGH = 0;
     public static final int NOTIFICATION_WARNING_LOW = 1;
@@ -31,7 +33,7 @@ public class NotificationBuilder {
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
                 showNotification(
-                        String.format("%s %d%%!", context.getString(R.string.warning_high), warningHigh),
+                        String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
@@ -39,7 +41,7 @@ public class NotificationBuilder {
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_LOW);
                 showNotification(
-                        String.format("%s %d%%!", context.getString(R.string.warning_low), warningLow),
+                        String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
                 break;
