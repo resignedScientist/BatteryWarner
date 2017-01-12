@@ -5,7 +5,6 @@ public final class Contract {
     // shared preferences
     public static final String SHARED_PREFS = "BatteryWarner";
     public static final String PREF_FIRST_START = "FirstStart";
-    public static final String PREF_INTENT_TIME = "PendingIntentTime";
     public static final String PREF_IS_ENABLED = "IsEnabled";
     public static final String PREF_USB_ENABLED = "usbEnabled";
     public static final String PREF_AC_ENABLED = "acEnabled";
@@ -42,6 +41,7 @@ public final class Contract {
     public static final boolean IS_PRO = true;
     // the rest
     public static final int NO_STATE = -1;
+    static final String PREF_INTENT_TIME = "PendingIntentTime";
     // charge checking intervals
     static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
