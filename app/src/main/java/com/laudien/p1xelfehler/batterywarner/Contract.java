@@ -27,11 +27,6 @@ public final class Contract {
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;
     public static final int WARNING_LOW_MIN = 5;
-    // charge checking intervals
-    public static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
-    public static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
-    public static final int INTERVAL_DISCHARGING_SHORT = 900000; // 15 minutes
-    public static final int INTERVAL_DISCHARGING_VERY_SHORT = 60000; // 1 minute
     // default values
     public static final int DEF_WARNING_LOW = 20;
     public static final int DEF_WARNING_HIGH = 80;
@@ -47,6 +42,11 @@ public final class Contract {
     public static final boolean IS_PRO = true;
     // the rest
     public static final int NO_STATE = -1;
+    // charge checking intervals
+    static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
+    static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
+    static final int INTERVAL_DISCHARGING_SHORT = 900000; // 15 minutes
+    static final int INTERVAL_DISCHARGING_VERY_SHORT = 60000; // 1 minute
 
     private Contract() {
     }

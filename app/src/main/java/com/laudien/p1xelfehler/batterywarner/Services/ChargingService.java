@@ -10,7 +10,6 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -18,7 +17,7 @@ import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 
 public class ChargingService extends Service {
 
-    private final static String TAG = "ChargingService";
+    // private final static String TAG = "ChargingService";
     private BatteryAlarmManager batteryAlarmManager;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
@@ -37,7 +36,6 @@ public class ChargingService extends Service {
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            Log.i(TAG, "battery change received!");
             SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
             if (!BatteryAlarmManager.isChargingNotificationEnabled(sharedPreferences, batteryStatus)) {
                 stopSelf();
@@ -54,7 +52,6 @@ public class ChargingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Service started!");
         batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         registerReceiver(
                 ringerModeChangedReceiver,

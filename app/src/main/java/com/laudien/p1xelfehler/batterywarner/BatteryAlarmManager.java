@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
@@ -15,7 +14,7 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import java.util.Calendar;
 
 public class BatteryAlarmManager {
-    private static final String TAG = "BatteryAlarmManager";
+    // private static final String TAG = "BatteryAlarmManager";
     private static BatteryAlarmManager instance;
     private SharedPreferences sharedPreferences;
     private int batteryLevel, temperature, warningHigh, warningLow;
@@ -126,7 +125,6 @@ public class BatteryAlarmManager {
         graphDbHelper.addValue(graphTime, batteryLevel, temperature);
         sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, batteryLevel).apply();
         GraphFragment.notify(context);
-        Log.i(TAG, "logged in database");
     }
 
     public void setDischargingAlarm(Context context) {
