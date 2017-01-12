@@ -23,17 +23,22 @@ public class BootReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        //Log.i(TAG, "Finished Booting! Setting battery alarm...");
-
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null) {
-            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-            boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-            if (isCharging) {
-                sharedPreferences.edit().putBoolean(Contract.PREF_RESET_GRAPH, true).apply();
-                context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
-            } else
-                new BatteryAlarmManager(context).checkBattery(true);
+        if (batteryStatus == null) {
+            return;
         }
+
+        // set already notified to false
+        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+
+        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+        if (isCharging) { // charging
+            sharedPreferences.edit().putBoolean(Contract.PREF_RESET_GRAPH, true).apply(); // reset graph
+            context.startService(new Intent(context, ChargingService.class)); // start charging service if enabled
+        } else { // discharging
+            batteryAlarmManager.setDischargingAlarm(context); // start discharging alarm if enabled
+        }
+        batteryAlarmManager.checkAndNotify(context, batteryStatus); // check battery and notify
     }
 }

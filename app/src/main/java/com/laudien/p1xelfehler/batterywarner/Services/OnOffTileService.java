@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Services;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.service.quicksettings.Tile;
@@ -56,17 +57,31 @@ public class OnOffTileService extends TileService {
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) {
+            return;
+        }
+        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
+        batteryAlarmManager.checkAndNotify(this, batteryStatus);
+
         if (isActive) { // disable battery warnings
             tile.setState(Tile.STATE_INACTIVE);
-            BatteryAlarmManager.cancelExistingAlarm(this);
+            if (isCharging) { // charging
+                stopService(new Intent(this, ChargingService.class));
+            } else { // discharging
+                batteryAlarmManager.cancelDischargingAlarm(this);
+            }
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
-            //Log.i(TAG, "Tile deactivated!");
         } else { // enable battery warnings
             tile.setState(Tile.STATE_ACTIVE);
             sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-            new BatteryAlarmManager(this).checkBattery(true);
+            if (isCharging) { // charging
+                startService(new Intent(this, ChargingService.class));
+            } else { // discharging
+                batteryAlarmManager.setDischargingAlarm(this);
+            }
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
-            //Log.i(TAG, "Tile activated!");
         }
         sharedPreferences.edit().putBoolean(Contract.PREF_IS_ENABLED, !isActive).apply();
         tile.updateTile();

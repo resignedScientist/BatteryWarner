@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 import java.util.Locale;
 
@@ -30,6 +31,9 @@ public class NotificationBuilder {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
         switch (type) {
             case NOTIFICATION_WARNING_HIGH:
+                if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
+                    return; // return if disabled in settings or not charging
+                }
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
                 showNotification(
@@ -39,6 +43,9 @@ public class NotificationBuilder {
                 sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
                 break;
             case NOTIFICATION_WARNING_LOW:
+                if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
+                    return; // return if disabled in settings or charging
+                }
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
                 int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
                 showNotification(

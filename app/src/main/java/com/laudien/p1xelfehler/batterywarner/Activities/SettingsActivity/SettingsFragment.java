@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -218,33 +217,17 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                     .apply(); // reset time
         }
 
-        // check if the current charging type was enabled
-        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null) {
-            boolean currentChargingTypeEnabled = false;
-            int chargingType = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-            switch (chargingType) {
-                case android.os.BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true) && checkBox_ac.isChecked())
-                        currentChargingTypeEnabled = true;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true) && checkBox_usb.isChecked())
-                        currentChargingTypeEnabled = true;
-                    break;
-                case android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                    if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true) && checkBox_wireless.isChecked())
-                        currentChargingTypeEnabled = true;
-                    break;
-            }
-            if (currentChargingTypeEnabled) { // if it was enabled -> reset database table and last percentage/time
-                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-                dbHelper.resetTable();
-                sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                        .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
-                        .putBoolean(Contract.PREF_ALREADY_NOTIFIED, false)
-                        .apply();
-            }
+        Context context = getContext();
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+
+        // notify if warning low was changed
+        if (seekBar_lowBattery.getProgress() != sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW)) {
+            batteryAlarmManager.notifyWarningLowChanged(seekBar_lowBattery.getProgress());
+        }
+
+        // notify if warning high was changed
+        if (seekBar_highBattery.getProgress() != sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH)) {
+            batteryAlarmManager.notifyWarningHighChanged(seekBar_highBattery.getProgress());
         }
 
         // save the settings
@@ -261,16 +244,15 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 .putBoolean(Contract.PREF_DARK_THEME, switch_darkTheme.isChecked())
                 .apply();
 
-        // restart the alarm (if enabled)
-        BatteryAlarmManager.cancelExistingAlarm(getContext());
-        if (batteryStatus == null) return;
-        if (BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
-            Context context = getContext();
-            if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0)
-                context.startService(new Intent(context, ChargingService.class));
-            else
-                new BatteryAlarmManager(getContext()).checkBattery(true);
-        }
+        // notify if necessary and enabled
+        batteryAlarmManager.checkAndNotify(context);
+
+        // restart discharging alarm and charging service
+        batteryAlarmManager.cancelDischargingAlarm(context);
+        batteryAlarmManager.setDischargingAlarm(context);
+        Intent chargingService = new Intent(context, ChargingService.class);
+        context.stopService(chargingService);
+        context.startService(chargingService);
     }
 
     @Override

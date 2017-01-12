@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -13,6 +14,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 public class GraphDbHelper extends SQLiteOpenHelper {
     public static final int TYPE_PERCENTAGE = 0;
     public static final int TYPE_TEMPERATURE = 1;
+    private static final String TAG = "GraphDbHelper";
     private static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     private static final String TABLE_NAME = "ChargeCurve";
@@ -24,7 +26,6 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                     + " (" + TABLE_COLUMN_TIME + " TEXT,"
                     + TABLE_COLUMN_PERCENTAGE + " INTEGER,"
                     + TABLE_COLUMN_TEMP + " INTEGER);";
-    //private static final String TAG = "GraphDbHelper";
     private static GraphDbHelper instance;
 
     private GraphDbHelper(Context context) {
@@ -55,6 +56,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL(CREATE_QUERY);
             getWritableDatabase().insert(TABLE_NAME, null, contentValues);
         }
+        Log.i(TAG, "Value added!");
         close();
     }
 

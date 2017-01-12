@@ -25,8 +25,6 @@
             android:name=".Activities.SettingsActivity.SettingsActivity"
             android:parentActivityName=".Activities.MainActivity.MainActivity" />
 
-        <receiver android:name=".Receivers.BatteryAlarmManager" />
-
         <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -44,7 +42,7 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".Receivers.DischargingAlarmReceiver" />
         <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

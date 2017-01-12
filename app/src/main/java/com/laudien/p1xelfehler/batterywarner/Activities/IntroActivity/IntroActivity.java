@@ -74,18 +74,21 @@ public class IntroActivity extends MaterialIntroActivity {
         preferencesSlide.saveSettings();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
-        if (Contract.IS_PRO) {
-            Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            if (batteryStatus != null) {
-                // start the service if charging (if enabled in settings)
-                if (batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
-                        && BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
-                    sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                            .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
-                            .apply();
-                    startService(new Intent(this, ChargingService.class));
-                }
+        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
+        if (batteryStatus != null) {
+            // start the service if charging (if enabled in settings)
+            if (BatteryAlarmManager.isChargingNotificationEnabled(sharedPreferences, batteryStatus)) {
+                sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
+                        .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                        .apply();
+                startService(new Intent(this, ChargingService.class));
+                // set the alarm if discharging (if enabled in settings)
+            } else if (BatteryAlarmManager.isDischargingNotificationEnabled(this, sharedPreferences)) {
+                batteryAlarmManager.setDischargingAlarm(this);
             }
+            // notify if enabled/necessary
+            batteryAlarmManager.checkAndNotify(this, batteryStatus);
         }
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));

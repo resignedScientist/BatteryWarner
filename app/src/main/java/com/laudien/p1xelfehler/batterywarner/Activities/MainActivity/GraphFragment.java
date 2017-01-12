@@ -48,6 +48,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
     };
 
+    public static void notify(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Contract.BROADCAST_STATUS_CHANGED);
+        context.sendBroadcast(intent);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,6 +118,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         reloadChargeCurve();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
+        filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
         getActivity().registerReceiver(dbChangedReceiver, filter);
     }
 
@@ -159,7 +166,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             checkBox_percentage.setEnabled(false);
             return;
         }
-        // if disabled in settings -> return
+        // if graph disabled in settings -> return
         if (!graphEnabled) {
             textView_chargingTime.setTextSize(18);
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
@@ -171,9 +178,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         // load graph
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) return;
-        boolean isChargingAndNotFull = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0
+        boolean isChargingAndNotFull = BatteryAlarmManager.isChargingNotificationEnabled(getContext(), sharedPreferences)
                 && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
-                && BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus);
+                && sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
         if (series != null) {

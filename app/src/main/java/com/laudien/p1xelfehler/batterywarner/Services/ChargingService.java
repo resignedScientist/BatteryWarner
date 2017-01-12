@@ -36,33 +36,40 @@ public class ChargingService extends Service {
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            batteryAlarmManager.checkBattery(true);
+        public void onReceive(Context context, Intent batteryStatus) {
+            Log.i(TAG, "battery change received!");
+            SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+            if (!BatteryAlarmManager.isChargingNotificationEnabled(sharedPreferences, batteryStatus)) {
+                stopSelf();
+                return;
+            }
+            batteryAlarmManager.checkAndNotify(context, batteryStatus);
+            batteryAlarmManager.logInDatabase(context);
+            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
+            if (batteryLevel == 100) {
+                stopSelf(); // stop service if battery is full
+            }
         }
     };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Service started!");
-        batteryAlarmManager = new BatteryAlarmManager(this);
-        SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
-        IntentFilter batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = registerReceiver(null, batteryChangedFilter);
-        if (!BatteryAlarmManager.isChargingModeEnabled(sharedPreferences, batteryStatus)) {
-            stopSelf();
-        } else {
-            registerReceiver(ringerModeChangedReceiver,
-                    new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION));
-            registerReceiver(batteryChangedReceiver, batteryChangedFilter);
-            batteryAlarmManager.checkBattery(true); // check immediately
-        }
+        batteryAlarmManager = BatteryAlarmManager.getInstance(this);
+        registerReceiver(
+                ringerModeChangedReceiver,
+                new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION)
+        );
+        registerReceiver(
+                batteryChangedReceiver,
+                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        );
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "Service destroyed!");
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
     }

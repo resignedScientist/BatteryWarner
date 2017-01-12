@@ -113,7 +113,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
                 setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
             }
             if (nextColor != currentColor) {
-                batteryAlarmManager.checkBattery(false);
+                batteryAlarmManager.checkAndNotify(context);
                 currentColor = nextColor;
             }
         }
@@ -131,7 +131,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
         sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        batteryAlarmManager = new BatteryAlarmManager(context);
+        batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
@@ -185,21 +185,27 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        //Log.i(TAG, "User changed status to " + isChecked);
+        batteryAlarmManager.checkAndNotify(context);
         sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
-        if (isChecked) {
+        if (isChecked) { // turned on
             sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
-            if (isCharging)
+            if (isCharging) {
                 context.startService(new Intent(context, ChargingService.class));
-            else
-                batteryAlarmManager.checkBattery(true);
+            } else {
+                batteryAlarmManager.setDischargingAlarm(context);
+            }
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
-        } else {
-            if (isCharging)
+        } else { // turned off
+            if (isCharging) {
                 context.stopService(new Intent(context, ChargingService.class));
-            else
-                BatteryAlarmManager.cancelExistingAlarm(context);
+            } else {
+                batteryAlarmManager.cancelDischargingAlarm(context);
+            }
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
+        // send broadcast
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(Contract.BROADCAST_ON_OFF_CHANGED);
+        context.sendBroadcast(broadcastIntent);
     }
 }

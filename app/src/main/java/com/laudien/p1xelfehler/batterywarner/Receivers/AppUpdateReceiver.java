@@ -22,14 +22,18 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
             return; // return if intro was not finished
 
-        //Log.i(TAG, "App has been upgraded! Starting alarms if activated...");
-
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) {
+            return;
+        }
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        if (isCharging)
+        if (isCharging) { // charging
             context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
-
-        BatteryAlarmManager.cancelExistingAlarm(context);
-        new BatteryAlarmManager(context).checkBattery(true);
+        } else { // discharging
+            batteryAlarmManager.cancelDischargingAlarm(context);
+            batteryAlarmManager.setDischargingAlarm(context);
+        }
+        batteryAlarmManager.checkAndNotify(context, batteryStatus);
     }
 }
