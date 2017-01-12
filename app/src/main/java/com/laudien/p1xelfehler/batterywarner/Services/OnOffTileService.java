@@ -9,9 +9,9 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {

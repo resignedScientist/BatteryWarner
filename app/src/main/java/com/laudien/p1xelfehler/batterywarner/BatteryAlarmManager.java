@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Receivers;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,9 +10,7 @@ import android.os.BatteryManager;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
 import java.util.Calendar;
 
@@ -77,13 +75,9 @@ public class BatteryAlarmManager {
             return false;
         }
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        if (isCharging) {
-            return false; // return false if charging
-        }
-        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)) {
-            return false; // return false if all warnings are disabled
-        }
-        return sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true);
+        return !isCharging
+                && sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)
+                && sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true);
     }
 
     public void checkAndNotify(Context context) {
@@ -182,12 +176,8 @@ public class BatteryAlarmManager {
         alarmManager.cancel(pendingIntent);
     }
 
-    int getBatteryLevel() {
+    public int getBatteryLevel() {
         return batteryLevel;
-    }
-
-    int getWarningLow() {
-        return warningLow;
     }
 
     public void notifyWarningLowChanged(int warningLow) {

@@ -11,16 +11,15 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 import java.util.Locale;
 
 public class NotificationBuilder {
-    public static final int NOTIFICATION_WARNING_HIGH = 0;
-    public static final int NOTIFICATION_WARNING_LOW = 1;
     public static final int NOTIFICATION_SILENT_MODE = 2;
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
+    static final int NOTIFICATION_WARNING_HIGH = 0;
+    static final int NOTIFICATION_WARNING_LOW = 1;
     private Context context;
 
     public NotificationBuilder(Context context) {

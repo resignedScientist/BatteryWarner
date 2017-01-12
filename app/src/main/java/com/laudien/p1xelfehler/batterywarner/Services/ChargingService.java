@@ -12,9 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
-import com.laudien.p1xelfehler.batterywarner.Receivers.BatteryAlarmManager;
 
 public class ChargingService extends Service {
 
