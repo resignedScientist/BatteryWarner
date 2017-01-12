@@ -1,4 +1,18 @@
 <resources>
+    <!-- Shared Preference Keys -->
+    <string name="category_lowBattery">Low battery warning</string>
+    <string name="category_highBattery">High battery warning</string>
+    <string name="category_stats">Stats</string>
+    <string name="category_theming">Theming</string>
+    <string name="checkBox_warningLow">Enabled</string>
+    <string name="checkBox_warningHigh">Enabled</string>
+    <string name="checkBox_ac">Enable on AC charging</string>
+    <string name="checkBox_usb">Enable on USB charging</string>
+    <string name="checkBox_wireless">Enable on wireless charging</string>
+    <string name="checkBox_chargeCurve">Enable charging curve</string>
+    <string name="switch_darkTheme">Enable Dark Theme</string>
+
+    <!-- Oher Strings -->
     <string name="app_name">Battery Warner</string>
     <string name="warning_high">Battery level is above</string>
     <string name="warning_low">Battery level is below</string>
@@ -18,9 +32,9 @@
     <string name="slide_preferences_title">Let\'s get started!</string>
     <string name="slide_preferences_discription">Choose your settings right here!</string>
     <string name="slide_2_title">How does it do that?</string>
-    <string formatted="false" name="slide_2_description">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
+    <string name="slide_2_description" formatted="false">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
     <string name="slide_3_title">For the longest life, you have to charge \"flat\"!</string>
-    <string formatted="false" name="slide_3_description">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
+    <string name="slide_3_description" formatted="false">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
     <string name="main_page">Main page</string>
     <string name="stats">Stats</string>
