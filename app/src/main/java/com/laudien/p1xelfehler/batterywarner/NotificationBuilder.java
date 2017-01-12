@@ -36,6 +36,7 @@ public class NotificationBuilder {
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
+                sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
                 break;
             case NOTIFICATION_WARNING_LOW:
                 if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
@@ -44,6 +45,7 @@ public class NotificationBuilder {
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
+                sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
                 break;
             case NOTIFICATION_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
