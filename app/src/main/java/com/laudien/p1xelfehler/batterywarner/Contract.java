@@ -21,7 +21,6 @@ public final class Contract {
     public static final boolean IS_PRO = true;
     // the rest
     public static final int NO_STATE = -1;
-    static final String PREF_INTENT_TIME = "PendingIntentTime";
     // charge checking intervals
     static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes

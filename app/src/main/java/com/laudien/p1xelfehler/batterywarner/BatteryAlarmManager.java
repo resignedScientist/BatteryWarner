@@ -156,11 +156,11 @@ public class BatteryAlarmManager {
                 currentTime + interval,
                 pendingIntent
         );
-        sharedPreferences.edit().putLong(Contract.PREF_INTENT_TIME, currentTime + interval).apply();
+        sharedPreferences.edit().putLong(context.getString(R.string.pref_intent_time), currentTime + interval).apply();
     }
 
     public void cancelDischargingAlarm(Context context) {
-        long intentTime = sharedPreferences.getLong(Contract.PREF_INTENT_TIME, Contract.NO_STATE);
+        long intentTime = sharedPreferences.getLong(context.getString(R.string.pref_intent_time), Contract.NO_STATE);
         if (intentTime == Contract.NO_STATE) {
             return;
         }
