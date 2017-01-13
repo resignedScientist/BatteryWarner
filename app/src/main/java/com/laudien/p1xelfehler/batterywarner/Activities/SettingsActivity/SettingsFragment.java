@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -44,8 +45,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     private Switch switch_darkTheme;
 
     public static Uri getNotificationSound(Context context) {
-        String uri = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE)
-                .getString(Contract.PREF_SOUND_URI, "");
+        String uri = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.pref_sound_uri), "");
         if (!uri.equals(""))
             return Uri.parse(uri); // saved URI
         else // default URI
@@ -57,7 +58,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         setHasOptionsMenu(true);
-        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         textView_lowBattery = (TextView) view.findViewById(R.id.textView_lowBattery);
         textView_highBattery = (TextView) view.findViewById(R.id.textView_highBattery);
@@ -71,21 +72,21 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         switch_darkTheme = (Switch) view.findViewById(R.id.switch_darkTheme);
 
         checkBox_highBattery.setOnCheckedChangeListener(this);
-        checkBox_highBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_HIGH_ENABLED, true));
+        checkBox_highBattery.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), true));
         seekBar_lowBattery.setOnSeekBarChangeListener(this);
         seekBar_highBattery.setOnSeekBarChangeListener(this);
         checkBox_usb.setOnCheckedChangeListener(this);
-        checkBox_usb.setChecked(sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true));
+        checkBox_usb.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), true));
         checkBox_ac.setOnCheckedChangeListener(this);
-        checkBox_ac.setChecked(sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true));
+        checkBox_ac.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), true));
         checkBox_wireless.setOnCheckedChangeListener(this);
-        checkBox_wireless.setChecked(sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true));
+        checkBox_wireless.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), true));
         checkBox_lowBattery.setOnCheckedChangeListener(this);
-        checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true));
-        seekBar_lowBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW));
-        seekBar_highBattery.setProgress(sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH));
+        checkBox_lowBattery.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), true));
+        seekBar_lowBattery.setProgress(sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW));
+        seekBar_highBattery.setProgress(sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH));
         switch_darkTheme.setOnCheckedChangeListener(this);
-        switch_darkTheme.setChecked(sharedPreferences.getBoolean(Contract.PREF_DARK_THEME, false));
+        switch_darkTheme.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), false));
         checkBox_chargeCurve = (CheckBox) view.findViewById(R.id.checkBox_chargeCurve);
 
         textView_lowBattery.setText(getString(R.string.low_battery_warning) + " " + seekBar_lowBattery.getProgress() + "%");
@@ -99,7 +100,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
         if (Contract.IS_PRO) {
             checkBox_chargeCurve.setOnCheckedChangeListener(this);
-            checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true));
+            checkBox_chargeCurve.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true));
         } else {
             checkBox_chargeCurve.setEnabled(false);
             checkBox_chargeCurve.setChecked(false);
@@ -208,12 +209,12 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     public void saveAll() {
         // reset graph database if it was checked/unchecked
-        if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
+        if (checkBox_chargeCurve.isChecked() != sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true)) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             dbHelper.resetTable();
             sharedPreferences.edit()
-                    .putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                    .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+                    .putLong(getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
+                    .putInt(getString(R.string.pref_last_percentage), -1)
                     .apply(); // reset time
         }
 
@@ -221,27 +222,27 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
 
         // notify if warning low was changed
-        if (seekBar_lowBattery.getProgress() != sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW)) {
+        if (seekBar_lowBattery.getProgress() != sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW)) {
             batteryAlarmManager.notifyWarningLowChanged(seekBar_lowBattery.getProgress());
         }
 
         // notify if warning high was changed
-        if (seekBar_highBattery.getProgress() != sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH)) {
+        if (seekBar_highBattery.getProgress() != sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH)) {
             batteryAlarmManager.notifyWarningHighChanged(seekBar_highBattery.getProgress());
         }
 
         // save the settings
         sharedPreferences.edit()
-                .putBoolean(Contract.PREF_USB_ENABLED, checkBox_usb.isChecked())
-                .putBoolean(Contract.PREF_AC_ENABLED, checkBox_ac.isChecked())
-                .putBoolean(Contract.PREF_WIRELESS_ENABLED, checkBox_wireless.isChecked())
-                .putBoolean(Contract.PREF_WARNING_LOW_ENABLED, checkBox_lowBattery.isChecked())
-                .putBoolean(Contract.PREF_WARNING_HIGH_ENABLED, checkBox_highBattery.isChecked())
-                .putInt(Contract.PREF_WARNING_LOW, seekBar_lowBattery.getProgress())
-                .putInt(Contract.PREF_WARNING_HIGH, seekBar_highBattery.getProgress())
-                .putString(Contract.PREF_SOUND_URI, sound.toString())
-                .putBoolean(Contract.PREF_GRAPH_ENABLED, checkBox_chargeCurve.isChecked())
-                .putBoolean(Contract.PREF_DARK_THEME, switch_darkTheme.isChecked())
+                .putBoolean(getString(R.string.pref_usb_enabled), checkBox_usb.isChecked())
+                .putBoolean(getString(R.string.pref_ac_enabled), checkBox_ac.isChecked())
+                .putBoolean(getString(R.string.pref_wireless_enabled), checkBox_wireless.isChecked())
+                .putBoolean(getString(R.string.pref_warning_low_enabled), checkBox_lowBattery.isChecked())
+                .putBoolean(getString(R.string.pref_warning_high_enabled), checkBox_highBattery.isChecked())
+                .putInt(getString(R.string.pref_warning_low), seekBar_lowBattery.getProgress())
+                .putInt(getString(R.string.pref_warning_high), seekBar_highBattery.getProgress())
+                .putString(getString(R.string.pref_sound_uri), sound.toString())
+                .putBoolean(getString(R.string.pref_graph_enabled), checkBox_chargeCurve.isChecked())
+                .putBoolean(getString(R.string.pref_dark_theme_enabled), switch_darkTheme.isChecked())
                 .apply();
 
         // notify if necessary and enabled

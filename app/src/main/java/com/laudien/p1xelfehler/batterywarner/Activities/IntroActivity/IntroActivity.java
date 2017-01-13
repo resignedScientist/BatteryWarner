@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -18,9 +18,6 @@ import java.util.Calendar;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
-
-import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_FIRST_START;
-import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class IntroActivity extends MaterialIntroActivity {
 
@@ -72,15 +69,15 @@ public class IntroActivity extends MaterialIntroActivity {
     public void onFinish() {
         super.onFinish();
         preferencesSlide.saveSettings();
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(PREF_FIRST_START, false).apply();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         if (batteryStatus != null) {
             // start the service if charging (if enabled in settings)
-            if (BatteryAlarmManager.isChargingNotificationEnabled(sharedPreferences, batteryStatus)) {
-                sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                        .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
+            if (BatteryAlarmManager.isChargingNotificationEnabled(this, sharedPreferences, batteryStatus)) {
+                sharedPreferences.edit().putLong(getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
+                        .putInt(getString(R.string.pref_last_percentage), -1)
                         .apply();
                 startService(new Intent(this, ChargingService.class));
                 // set the alarm if discharging (if enabled in settings)

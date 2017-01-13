@@ -6,21 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.NewSettingsFragment;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
 public class PreferencesSlide extends SlideFragment {
 
-    SettingsFragment settingsFragment;
+    //SettingsFragment settingsFragment;
+    NewSettingsFragment settingsFragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.slide_preferences, container, false);
-        settingsFragment = new SettingsFragment();
-        getFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
+        settingsFragment = new NewSettingsFragment();
+        getActivity().getFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
         return view;
     }
 
@@ -45,6 +46,6 @@ public class PreferencesSlide extends SlideFragment {
     }
 
     public void saveSettings() {
-        settingsFragment.saveAll();
+        //settingsFragment.saveAll();
     }
 }

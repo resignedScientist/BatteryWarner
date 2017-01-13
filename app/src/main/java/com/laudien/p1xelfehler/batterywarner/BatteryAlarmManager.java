@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
@@ -21,9 +22,9 @@ public class BatteryAlarmManager {
     private long graphTime; // time since beginning of charging
 
     private BatteryAlarmManager(Context context) {
-        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
+        warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
     }
 
     public static BatteryAlarmManager getInstance(Context context) {
@@ -35,32 +36,32 @@ public class BatteryAlarmManager {
 
     public static boolean isChargingNotificationEnabled(Context context, SharedPreferences sharedPreferences) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        return isChargingNotificationEnabled(sharedPreferences, batteryStatus);
+        return isChargingNotificationEnabled(context, sharedPreferences, batteryStatus);
     }
 
-    public static boolean isChargingNotificationEnabled(SharedPreferences sharedPreferences, Intent batteryStatus) {
+    public static boolean isChargingNotificationEnabled(Context context, SharedPreferences sharedPreferences, Intent batteryStatus) {
         // check if charging and notification of current charging method is enabled
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         if (!isCharging) {
             return false; // return false if not charging
         }
-        if (!sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)) {
+        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true)) {
             return false; // return false if all warnings are disabled
         }
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
         switch (chargingType) {
             case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                if (!sharedPreferences.getBoolean(Contract.PREF_AC_ENABLED, true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), true)) {
                     return false;
                 }
                 break;
             case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                if (!sharedPreferences.getBoolean(Contract.PREF_USB_ENABLED, true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), true)) {
                     return false;
                 }
                 break;
             case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                if (!sharedPreferences.getBoolean(Contract.PREF_WIRELESS_ENABLED, true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), true)) {
                     return false;
                 }
         }
@@ -75,8 +76,8 @@ public class BatteryAlarmManager {
         }
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         return !isCharging
-                && sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true)
-                && sharedPreferences.getBoolean(Contract.PREF_WARNING_LOW_ENABLED, true);
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true)
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), true);
     }
 
     public void checkAndNotify(Context context) {
@@ -88,8 +89,8 @@ public class BatteryAlarmManager {
         if (batteryStatus == null) {
             return;
         }
-        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
             return; // return if already notified
         }
 
@@ -97,7 +98,7 @@ public class BatteryAlarmManager {
         if (Contract.IS_PRO) {
             temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
             long timeNow = Calendar.getInstance().getTimeInMillis();
-            graphTime = timeNow - sharedPreferences.getLong(Contract.PREF_GRAPH_TIME, timeNow);
+            graphTime = timeNow - sharedPreferences.getLong(context.getString(R.string.pref_graph_time), timeNow);
             if (graphTime < 100) graphTime = 0; // makes sure that every graph begins at 0 min
         }
 
@@ -112,18 +113,18 @@ public class BatteryAlarmManager {
         if (!Contract.IS_PRO) {
             return; // don't log if it's not the pro version
         }
-        int lastPercentage = sharedPreferences.getInt(Contract.PREF_LAST_PERCENTAGE, Contract.NO_STATE);
+        int lastPercentage = sharedPreferences.getInt(context.getString(R.string.pref_last_percentage), Contract.NO_STATE);
         if (batteryLevel == lastPercentage) {
             return; // don't log if the battery level did not change
         }
         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
         // if the graph is marked to be resetted -> reset it!
-        if (sharedPreferences.getBoolean(Contract.PREF_RESET_GRAPH, false)) {
-            sharedPreferences.edit().putBoolean(Contract.PREF_RESET_GRAPH, false).apply();
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_reset_graph), false)) {
+            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_reset_graph), false).apply();
             graphDbHelper.resetTable();
         }
         graphDbHelper.addValue(graphTime, batteryLevel, temperature);
-        sharedPreferences.edit().putInt(Contract.PREF_LAST_PERCENTAGE, batteryLevel).apply();
+        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_percentage), batteryLevel).apply();
         GraphFragment.notify(context);
     }
 

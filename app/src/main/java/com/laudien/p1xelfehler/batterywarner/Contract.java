@@ -2,26 +2,6 @@ package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
 
-    // shared preferences
-    public static final String SHARED_PREFS = "BatteryWarner";
-    public static final String PREF_FIRST_START = "FirstStart";
-    public static final String PREF_IS_ENABLED = "IsEnabled";
-    public static final String PREF_USB_ENABLED = "usbEnabled";
-    public static final String PREF_AC_ENABLED = "acEnabled";
-    public static final String PREF_WIRELESS_ENABLED = "wirelessEnabled";
-    public static final String PREF_WARNING_LOW_ENABLED = "warningLowEnabled";
-    public static final String PREF_WARNING_HIGH_ENABLED = "warningHighEnabled";
-    public static final String PREF_WARNING_LOW = "warningLow";
-    public static final String PREF_WARNING_HIGH = "warningHigh";
-    public static final String PREF_SOUND_URI = "savedSoundUri";
-    public static final String PREF_GRAPH_ENABLED = "graphEnabled";
-    public static final String PREF_LAST_PERCENTAGE = "lastPercentage";
-    public static final String PREF_GRAPH_TIME = "graphTime";
-    public static final String PREF_ALREADY_NOTIFIED = "notificationShown";
-    public static final String PREF_CB_PERCENT = "checkBoxPercent";
-    public static final String PREF_CB_TEMP = "checkBoxDegrees";
-    public static final String PREF_DARK_THEME = "darkThemeEnabled";
-    public static final String PREF_RESET_GRAPH = "resetGraph";
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;

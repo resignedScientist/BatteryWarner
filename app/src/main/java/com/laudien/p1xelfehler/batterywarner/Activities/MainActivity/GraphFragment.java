@@ -5,9 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.ColorUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,11 +63,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         setHasOptionsMenu(true);
-        sharedPreferences = getContext().getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        graphEnabled = sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true);
+        graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true);
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
@@ -73,8 +77,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             checkBox_percentage.setEnabled(false);
             checkBox_temp.setEnabled(false);
         } else {
-            checkBox_percentage.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_PERCENT, true));
-            checkBox_temp.setChecked(sharedPreferences.getBoolean(Contract.PREF_CB_TEMP, false));
+            Context context = getContext();
+            checkBox_percentage.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_percent), true));
+            checkBox_temp.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_temperature), false));
             checkBox_percentage.setOnCheckedChangeListener(this);
             checkBox_temp.setOnCheckedChangeListener(this);
         }
@@ -125,9 +130,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public void onPause() {
         super.onPause();
+        Context context = getContext();
         sharedPreferences.edit()
-                .putBoolean(Contract.PREF_CB_PERCENT, checkBox_percentage.isChecked())
-                .putBoolean(Contract.PREF_CB_TEMP, checkBox_temp.isChecked())
+                .putBoolean(context.getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
+                .putBoolean(context.getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
                 .apply();
         getActivity().unregisterReceiver(dbChangedReceiver);
     }
@@ -180,10 +186,17 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (batteryStatus == null) return;
         boolean isChargingAndNotFull = BatteryAlarmManager.isChargingNotificationEnabled(getContext(), sharedPreferences)
                 && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
-                && sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
+                && sharedPreferences.getBoolean(getContext().getString(R.string.pref_is_enabled), true);
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
         if (series != null) {
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = getContext().getTheme();
+            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+            int color = typedValue.data;
+            int backgroundColor = ColorUtils.setAlphaComponent(color, 64);
+            series[GraphDbHelper.TYPE_PERCENTAGE].setColor(color);
+            series[GraphDbHelper.TYPE_PERCENTAGE].setBackgroundColor(backgroundColor);
             series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
             series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
             if (checkBox_percentage.isChecked())

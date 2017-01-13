@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,8 +30,6 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.Contract.PREF_IS_ENABLED;
-import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class OnOffFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -50,9 +49,9 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             toggleButton.setOnCheckedChangeListener(null); // disable the toasts
-            toggleButton.setChecked(sharedPreferences.getBoolean(PREF_IS_ENABLED, true));
+            toggleButton.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true));
             toggleButton.setOnCheckedChangeListener(OnOffFragment.this); // enable the toasts
         }
     };
@@ -130,15 +129,15 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(this);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
 
-        boolean isChecked = sharedPreferences.getBoolean(PREF_IS_ENABLED, true);
+        boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), true);
         toggleButton.setChecked(isChecked);
         toggleButton.setOnCheckedChangeListener(this);
 
@@ -186,9 +185,9 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         batteryAlarmManager.checkAndNotify(context);
-        sharedPreferences.edit().putBoolean(PREF_IS_ENABLED, isChecked).apply();
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
         if (isChecked) { // turned on
-            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) {
                 context.startService(new Intent(context, ChargingService.class));
             } else {

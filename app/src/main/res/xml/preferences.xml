@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/low_battery_warning">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_warning_low_enabled"
+            android:title="@string/enabled" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/high_battery_warning">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_warning_high_enabled"
+            android:title="@string/enabled" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_ac_enabled"
+            android:title="@string/enable_on_ac" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_usb_enabled"
+            android:title="@string/enable_on_usb" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_wireless_enabled"
+            android:title="@string/enable_on_wireless" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/stats">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_graph_enabled"
+            android:title="@string/enable_charging_curve" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/theming">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_dark_theme_enabled"
+            android:title="@string/enable_dark_theme" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:key="@string/pref_sound_uri"
+            android:title="@string/btn_notification" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

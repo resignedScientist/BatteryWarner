@@ -5,17 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Calendar;
-
-import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class ChargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "ChargingReceiver";
@@ -23,8 +22,8 @@ public class ChargingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_CONNECTED")) return;
-        final SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
 
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
@@ -39,13 +38,13 @@ public class ChargingReceiver extends BroadcastReceiver {
                 }
 
                 // reset already notified
-                sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
                 // reset graph values if graph is enabled
-                if (sharedPreferences.getBoolean(Contract.PREF_GRAPH_ENABLED, true)) {
-                    sharedPreferences.edit().putLong(Contract.PREF_GRAPH_TIME, Calendar.getInstance().getTimeInMillis())
-                            .putInt(Contract.PREF_LAST_PERCENTAGE, -1)
-                            .putBoolean(Contract.PREF_RESET_GRAPH, true)
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true)) {
+                    sharedPreferences.edit().putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
+                            .putInt(context.getString(R.string.pref_last_percentage), -1)
+                            .putBoolean(context.getString(R.string.pref_reset_graph), true)
                             .apply();
                 }
 

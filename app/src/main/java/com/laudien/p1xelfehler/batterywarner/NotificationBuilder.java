@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
@@ -27,31 +28,33 @@ public class NotificationBuilder {
     }
 
     public void showNotification(int type) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
             case NOTIFICATION_WARNING_HIGH:
                 if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or not charging
                 }
-                if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
-                int warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false))
+                    return;
+                int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
-                sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
             case NOTIFICATION_WARNING_LOW:
                 if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or charging
                 }
-                if (sharedPreferences.getBoolean(Contract.PREF_ALREADY_NOTIFIED, false)) return;
-                int warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false))
+                    return;
+                int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING
                 );
-                sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, true).apply();
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
             case NOTIFICATION_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 
 public class DischargingAlarmReceiver extends BroadcastReceiver {
     Context context;
@@ -17,7 +17,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        sharedPreferences = context.getSharedPreferences(Contract.SHARED_PREFS, Context.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
             return; // return if disabled in settings
         }

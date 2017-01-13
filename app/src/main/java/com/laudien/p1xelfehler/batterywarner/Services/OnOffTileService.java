@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
@@ -25,10 +26,10 @@ public class OnOffTileService extends TileService {
         super.onStartListening();
         tile = getQsTile();
         if (Contract.IS_PRO) { // pro version
-            SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             // check if the intro was finished first
-            firstStart = sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true);
-            boolean isEnabled = sharedPreferences.getBoolean(Contract.PREF_IS_ENABLED, true);
+            firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), true);
+            boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), true);
             if (firstStart) {
                 isEnabled = false;
             }
@@ -56,7 +57,7 @@ public class OnOffTileService extends TileService {
             return;
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
-        SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;
@@ -75,7 +76,7 @@ public class OnOffTileService extends TileService {
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
             tile.setState(Tile.STATE_ACTIVE);
-            sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging
@@ -83,7 +84,7 @@ public class OnOffTileService extends TileService {
             }
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
         }
-        sharedPreferences.edit().putBoolean(Contract.PREF_IS_ENABLED, !isActive).apply();
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();
         tile.updateTile();
 
         Intent broadcastIntent = new Intent();

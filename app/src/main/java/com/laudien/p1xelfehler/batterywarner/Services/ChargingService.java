@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -36,8 +37,8 @@ public class ChargingService extends Service {
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            SharedPreferences sharedPreferences = getSharedPreferences(Contract.SHARED_PREFS, MODE_PRIVATE);
-            if (!BatteryAlarmManager.isChargingNotificationEnabled(sharedPreferences, batteryStatus)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences, batteryStatus)) {
                 stopSelf();
                 return;
             }

@@ -4,15 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
-
-import static com.laudien.p1xelfehler.batterywarner.Contract.SHARED_PREFS;
 
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
@@ -20,8 +19,8 @@ public class DischargingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        if (sharedPreferences.getBoolean(Contract.PREF_FIRST_START, true))
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
 
         // cancel warning notifications
@@ -33,7 +32,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         }
 
         // set already shown to false
-        sharedPreferences.edit().putBoolean(Contract.PREF_ALREADY_NOTIFIED, false).apply();
+        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
         // send notification if under lowWarning
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
