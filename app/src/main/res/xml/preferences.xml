@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/low_battery_warning">
-        <CheckBoxPreference
-            android:defaultValue="true"
+        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference
             android:key="@string/pref_warning_low_enabled"
-            android:title="@string/enabled" />
+            app:default_checked="true"
+            app:slider_max="100" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
-        <CheckBoxPreference
-            android:defaultValue="true"
+        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference
             android:key="@string/pref_warning_high_enabled"
-            android:title="@string/enabled" />
+            app:default_checked="true"
+            app:slider_max="100" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/pref_ac_enabled"
@@ -39,7 +40,6 @@
             android:defaultValue="content://settings/system/notification_sound"
             android:key="@string/pref_sound_uri"
             android:title="@string/btn_notification" />
-        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference android:key="testKey" />
     </PreferenceCategory>
 
 </PreferenceScreen>

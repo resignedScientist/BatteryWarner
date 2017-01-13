@@ -28,6 +28,7 @@ public class IntroActivity extends MaterialIntroActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         addSlide(new ImageSlide());
 

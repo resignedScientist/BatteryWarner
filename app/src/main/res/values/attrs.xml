@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SliderPreference">
+        <attr name="slider_max" format="integer" />
+        <attr name="default_checked" format="boolean" />
+    </declare-styleable>
+</resources>
