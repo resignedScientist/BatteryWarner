@@ -12,8 +12,8 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class SettingsActivity extends BaseActivity {
-    //private SettingsFragment settingsFragment;
-    private NewSettingsFragment settingsFragment;
+    private SettingsFragment settingsFragment;
+    //private NewSettingsFragment settingsFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,9 +30,9 @@ public class SettingsActivity extends BaseActivity {
         }
         setSupportActionBar(toolbar);
 
-        //settingsFragment = new SettingsFragment();
-        settingsFragment = new NewSettingsFragment();
-        getFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
+        settingsFragment = new SettingsFragment();
+        //settingsFragment = new NewSettingsFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
     }
 
     @Override
