@@ -5,6 +5,8 @@
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:key="@string/pref_sound_uri"
+            android:ringtoneType="notification"
+            android:showSilent="false"
             android:title="@string/btn_notification" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/low_battery_warning">
