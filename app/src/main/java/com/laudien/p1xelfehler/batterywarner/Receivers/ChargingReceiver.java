@@ -29,6 +29,10 @@ public class ChargingReceiver extends BroadcastReceiver {
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         batteryAlarmManager.cancelDischargingAlarm(context); // cancel discharging alarm
 
+        // cancel warning notifications
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -53,10 +57,6 @@ public class ChargingReceiver extends BroadcastReceiver {
 
                 // notify if silent/vibrate mode
                 new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
-
-                // cancel warning notifications
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
                 // start charging service
                 context.startService(new Intent(context, ChargingService.class));

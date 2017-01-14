@@ -223,12 +223,12 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
         // notify if warning low was changed
         if (seekBar_lowBattery.getProgress() != sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW)) {
-            batteryAlarmManager.notifyWarningLowChanged(seekBar_lowBattery.getProgress());
+            //batteryAlarmManager.notifyWarningLowChanged(seekBar_lowBattery.getProgress());
         }
 
         // notify if warning high was changed
         if (seekBar_highBattery.getProgress() != sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH)) {
-            batteryAlarmManager.notifyWarningHighChanged(seekBar_highBattery.getProgress());
+            //batteryAlarmManager.notifyWarningHighChanged(seekBar_highBattery.getProgress());
         }
 
         // save the settings

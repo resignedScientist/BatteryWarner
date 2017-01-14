@@ -18,13 +18,11 @@ public class BatteryAlarmManager {
     // private static final String TAG = "BatteryAlarmManager";
     private static BatteryAlarmManager instance;
     private SharedPreferences sharedPreferences;
-    private int batteryLevel, temperature, warningHigh, warningLow;
+    private int batteryLevel, temperature;
     private long graphTime; // time since beginning of charging
 
     private BatteryAlarmManager(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
-        warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
     }
 
     public static BatteryAlarmManager getInstance(Context context) {
@@ -101,6 +99,8 @@ public class BatteryAlarmManager {
             if (graphTime < 100) graphTime = 0; // makes sure that every graph begins at 0 min
         }
 
+        int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
+        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
         if (batteryLevel >= warningHigh) { // warning high
             new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_HIGH);
         } else if (batteryLevel <= warningLow) { // warning low
@@ -133,6 +133,7 @@ public class BatteryAlarmManager {
         }
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int interval;
+        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
         if (batteryLevel <= warningLow + 5) {
             interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
         } else if (batteryLevel <= warningLow + 10) {
@@ -176,13 +177,5 @@ public class BatteryAlarmManager {
 
     public int getBatteryLevel() {
         return batteryLevel;
-    }
-
-    public void notifyWarningLowChanged(int warningLow) {
-        this.warningLow = warningLow;
-    }
-
-    public void notifyWarningHighChanged(int warningHigh) {
-        this.warningHigh = warningHigh;
     }
 }

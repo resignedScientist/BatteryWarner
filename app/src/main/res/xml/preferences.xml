@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/notification_sound">
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:key="@string/pref_sound_uri"
+            android:title="@string/btn_notification" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/low_battery_warning">
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference
             android:key="@string/pref_warning_low_enabled"
@@ -43,10 +49,6 @@
             android:defaultValue="false"
             android:key="@string/pref_dark_theme_enabled"
             android:title="@string/enable_dark_theme" />
-        <RingtonePreference
-            android:defaultValue="content://settings/system/notification_sound"
-            android:key="@string/pref_sound_uri"
-            android:title="@string/btn_notification" />
     </PreferenceCategory>
 
 </PreferenceScreen>
