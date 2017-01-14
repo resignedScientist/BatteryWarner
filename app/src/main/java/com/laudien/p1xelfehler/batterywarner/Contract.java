@@ -1,9 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
-    // Shared Preferences that are also needed here
-    public static final String PREF_WARNING_HIGH = "warningHigh";
-    public static final String PREF_WARNING_LOW = "warningLow";
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;
@@ -20,9 +17,12 @@ public final class Contract {
     public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
     // activating pro-features
-    public static final boolean IS_PRO = false;
+    public static final boolean IS_PRO = true;
     // the rest
     public static final int NO_STATE = -1;
+    // Shared Preferences that are also needed here
+    static final String PREF_WARNING_HIGH = "warningHigh";
+    static final String PREF_WARNING_LOW = "warningLow";
     // charge checking intervals
     static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
