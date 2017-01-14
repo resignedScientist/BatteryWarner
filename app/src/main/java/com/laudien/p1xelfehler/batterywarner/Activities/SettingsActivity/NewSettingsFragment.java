@@ -3,8 +3,8 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -14,7 +14,7 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
 
     private static final String TAG = "NewSettingsFragment";
     SliderPreference sliderPreference_high;
-    CheckBoxPreference checkBox_ac, checkBox_usb, checkBox_wireless;
+    SwitchPreference switch_ac, switch_usb, switch_wireless;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,9 +23,9 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
 
         sliderPreference_high = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
         sliderPreference_high.setOnCheckedChangeListener(this);
-        checkBox_ac = (CheckBoxPreference) findPreference(getString(R.string.pref_ac_enabled));
-        checkBox_usb = (CheckBoxPreference) findPreference(getString(R.string.pref_usb_enabled));
-        checkBox_wireless = (CheckBoxPreference) findPreference(getString(R.string.pref_wireless_enabled));
+        switch_ac = (SwitchPreference) findPreference(getString(R.string.pref_ac_enabled));
+        switch_usb = (SwitchPreference) findPreference(getString(R.string.pref_usb_enabled));
+        switch_wireless = (SwitchPreference) findPreference(getString(R.string.pref_wireless_enabled));
     }
 
     @Override

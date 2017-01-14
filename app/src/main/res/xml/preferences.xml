@@ -25,21 +25,21 @@
             app:key_progress="@string/pref_warning_low"
             app:slider_max="40"
             app:unit="%" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_ac_enabled"
             android:title="@string/enable_on_ac" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_usb_enabled"
             android:title="@string/enable_on_usb" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_wireless_enabled"
             android:title="@string/enable_on_wireless" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/stats">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_graph_enabled"
             android:title="@string/enable_charging_curve" />
