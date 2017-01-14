@@ -65,7 +65,7 @@ public class NewSettingsFragment extends PreferenceFragment implements Preferenc
             if (context != null) {
                 Toast.makeText(
                         context,
-                        "Das Thema wird erst aktiviert, wenn die Settings geschlossen werden!",
+                        getString(R.string.theme_activated_toast),
                         Toast.LENGTH_SHORT
                 ).show();
             }

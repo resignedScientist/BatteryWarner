@@ -63,4 +63,5 @@
     <string name="uninstall_go">Deinstallieren</string>
     <string name="notifications_are_off">Achtung! Die Benachrichtigungen sind abgeschaltet!</string>
     <string name="notification_sound">Benachrichtigunston</string>
+    <string name="theme_activated_toast">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 </resources>
