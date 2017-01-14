@@ -3,18 +3,23 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+
+import java.util.Locale;
 
 public class NewSettingsFragment extends PreferenceFragment implements SliderPreference.OnCheckedChangeListener {
 
     private static final String TAG = "NewSettingsFragment";
     SliderPreference sliderPreference_high;
-    SwitchPreference switch_ac, switch_usb, switch_wireless;
+    SwitchPreference switch_ac, switch_usb, switch_wireless, switch_graphEnabled;
+    PreferenceCategory category_graph;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,14 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
         switch_ac = (SwitchPreference) findPreference(getString(R.string.pref_ac_enabled));
         switch_usb = (SwitchPreference) findPreference(getString(R.string.pref_usb_enabled));
         switch_wireless = (SwitchPreference) findPreference(getString(R.string.pref_wireless_enabled));
+        switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
+        category_graph = (PreferenceCategory) findPreference("stats");
+
+        if (!Contract.IS_PRO) {
+            switch_graphEnabled.setEnabled(false);
+            category_graph.setTitle(String.format(Locale.getDefault(),
+                    "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
+        }
     }
 
     @Override
@@ -43,6 +56,6 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
 
     @Override
     public void onCheckedChanged(boolean changedTo) {
-        switch_ac.setEnabled(changedTo);
+        //switch_ac.setEnabled(changedTo);
     }
 }

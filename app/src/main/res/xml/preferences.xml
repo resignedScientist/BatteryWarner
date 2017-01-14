@@ -37,7 +37,9 @@
             android:key="@string/pref_wireless_enabled"
             android:title="@string/enable_on_wireless" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/stats">
+    <PreferenceCategory
+        android:key="stats"
+        android:title="@string/stats">
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_graph_enabled"
