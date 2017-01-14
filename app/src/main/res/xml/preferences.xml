@@ -5,13 +5,20 @@
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference
             android:key="@string/pref_warning_low_enabled"
             app:default_checked="true"
-            app:slider_max="100" />
+            app:default_progress="80"
+            app:key_progress="@string/pref_warning_high"
+            app:slider_max="100"
+            app:slider_min="60"
+            app:unit="%" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SliderPreference
             android:key="@string/pref_warning_high_enabled"
             app:default_checked="true"
-            app:slider_max="100" />
+            app:default_progress="20"
+            app:key_progress="@string/pref_warning_low"
+            app:slider_max="40"
+            app:unit="%" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/pref_ac_enabled"

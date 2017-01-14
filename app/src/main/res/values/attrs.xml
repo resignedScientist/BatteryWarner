@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SliderPreference">
-        <attr name="slider_max" format="integer" />
+        <attr name="key_progress" format="string" />
         <attr name="default_checked" format="boolean" />
+        <attr name="default_progress" format="integer" />
+        <attr name="slider_max" format="integer" />
+        <attr name="slider_min" format="integer" />
+        <attr name="unit" format="string" />
     </declare-styleable>
 </resources>
