@@ -14,11 +14,10 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
 
-public class NewSettingsFragment extends PreferenceFragment implements SliderPreference.OnCheckedChangeListener {
+public class NewSettingsFragment extends PreferenceFragment {
 
     private static final String TAG = "NewSettingsFragment";
-    SliderPreference sliderPreference_high;
-    SwitchPreference switch_ac, switch_usb, switch_wireless, switch_graphEnabled;
+    SwitchPreference switch_graphEnabled;
     PreferenceCategory category_graph;
 
     @Override
@@ -26,15 +25,9 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        sliderPreference_high = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
-        sliderPreference_high.setOnCheckedChangeListener(this);
-        switch_ac = (SwitchPreference) findPreference(getString(R.string.pref_ac_enabled));
-        switch_usb = (SwitchPreference) findPreference(getString(R.string.pref_usb_enabled));
-        switch_wireless = (SwitchPreference) findPreference(getString(R.string.pref_wireless_enabled));
-        switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
-        category_graph = (PreferenceCategory) findPreference("stats");
-
         if (!Contract.IS_PRO) {
+            switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
+            category_graph = (PreferenceCategory) findPreference("stats");
             switch_graphEnabled.setEnabled(false);
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
@@ -52,10 +45,5 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
             batteryAlarmManager.setDischargingAlarm(context);
             context.startService(new Intent(context, ChargingService.class));
         }
-    }
-
-    @Override
-    public void onCheckedChanged(boolean changedTo) {
-        //switch_ac.setEnabled(changedTo);
     }
 }
