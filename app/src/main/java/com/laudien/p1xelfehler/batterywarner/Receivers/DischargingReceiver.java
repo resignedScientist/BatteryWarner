@@ -11,7 +11,6 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragme
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
@@ -42,8 +41,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         // notify GraphFragment
         GraphFragment.notify(context);
 
-        // stop charging service and start discharging alarm
-        context.stopService(new Intent(context, ChargingService.class));
+        // start discharging alarm
         batteryAlarmManager.setDischargingAlarm(context);
     }
 }
