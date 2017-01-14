@@ -14,15 +14,21 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
 import java.util.Calendar;
 
-public class BatteryAlarmManager {
+public class BatteryAlarmManager implements SharedPreferences.OnSharedPreferenceChangeListener {
     // private static final String TAG = "BatteryAlarmManager";
     private static BatteryAlarmManager instance;
+    private final String pref_reset_graph, pref_last_percentage;
     private SharedPreferences sharedPreferences;
-    private int batteryLevel, temperature;
+    private int batteryLevel, temperature, warningHigh, warningLow;
     private long graphTime; // time since beginning of charging
 
     private BatteryAlarmManager(Context context) {
+        pref_reset_graph = context.getString(R.string.pref_reset_graph);
+        pref_last_percentage = context.getString(R.string.pref_last_percentage);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
     }
 
     public static BatteryAlarmManager getInstance(Context context) {
@@ -99,8 +105,6 @@ public class BatteryAlarmManager {
             if (graphTime < 100) graphTime = 0; // makes sure that every graph begins at 0 min
         }
 
-        int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
-        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
         if (batteryLevel >= warningHigh) { // warning high
             new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_HIGH);
         } else if (batteryLevel <= warningLow) { // warning low
@@ -112,18 +116,18 @@ public class BatteryAlarmManager {
         if (!Contract.IS_PRO) {
             return; // don't log if it's not the pro version
         }
-        int lastPercentage = sharedPreferences.getInt(context.getString(R.string.pref_last_percentage), Contract.NO_STATE);
+        int lastPercentage = sharedPreferences.getInt(pref_last_percentage, Contract.NO_STATE);
         if (batteryLevel == lastPercentage) {
             return; // don't log if the battery level did not change
         }
         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
         // if the graph is marked to be resetted -> reset it!
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_reset_graph), false)) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_reset_graph), false).apply();
+        if (sharedPreferences.getBoolean(pref_reset_graph, false)) {
+            sharedPreferences.edit().putBoolean(pref_reset_graph, false).apply();
             graphDbHelper.resetTable();
         }
         graphDbHelper.addValue(graphTime, batteryLevel, temperature);
-        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_percentage), batteryLevel).apply();
+        sharedPreferences.edit().putInt(pref_last_percentage, batteryLevel).apply();
         GraphFragment.notify(context);
     }
 
@@ -177,5 +181,17 @@ public class BatteryAlarmManager {
 
     public int getBatteryLevel() {
         return batteryLevel;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        switch (s) {
+            case Contract.PREF_WARNING_HIGH:
+                warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+                break;
+            case Contract.PREF_WARNING_LOW:
+                warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+                break;
+        }
     }
 }

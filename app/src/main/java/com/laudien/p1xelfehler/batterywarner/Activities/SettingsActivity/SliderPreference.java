@@ -7,7 +7,6 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -20,7 +19,7 @@ import java.util.Locale;
 
 public class SliderPreference extends Preference implements CompoundButton.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
-    private static final String TAG = "SliderPreference";
+    // private static final String TAG = "SliderPreference";
     private static final int DEFAULT_MAX = 100;
     private static final int DEFAULT_MIN = 0;
     private static final boolean DEFAULT_CHECKED = false;
@@ -37,6 +36,7 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     private CheckBox checkBox;
     private SeekBar seekBar;
     private TextView textView;
+    private OnCheckedChangeListener onCheckedChangeListener;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public SliderPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -107,8 +107,6 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(max - min);
 
-        Log.i(TAG, "progress = " + progress);
-
         if (initialized) {
             checkBox.setChecked(checked);
             seekBar.setProgress(progress - min);
@@ -129,6 +127,9 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
         seekBar.setEnabled(b);
         textView.setEnabled(b);
         persistBoolean(b);
+        if (onCheckedChangeListener != null) {
+            onCheckedChangeListener.onCheckedChanged(b);
+        }
     }
 
     @Override
@@ -149,5 +150,13 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    void setOnCheckedChangeListener(OnCheckedChangeListener onCheckedChangeListener) {
+        this.onCheckedChangeListener = onCheckedChangeListener;
+    }
+
+    interface OnCheckedChangeListener {
+        void onCheckedChanged(boolean changedTo);
     }
 }

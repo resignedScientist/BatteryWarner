@@ -1,7 +1,9 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
-
+    // Shared Preferences that are also needed here
+    public static final String PREF_WARNING_HIGH = "warningHigh";
+    public static final String PREF_WARNING_LOW = "warningLow";
     // min and max values
     public static final int WARNING_HIGH_MIN = 60;
     public static final int WARNING_LOW_MAX = 40;

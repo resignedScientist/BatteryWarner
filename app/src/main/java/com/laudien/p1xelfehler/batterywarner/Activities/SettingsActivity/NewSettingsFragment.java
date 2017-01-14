@@ -3,20 +3,29 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
-public class NewSettingsFragment extends PreferenceFragment {
+public class NewSettingsFragment extends PreferenceFragment implements SliderPreference.OnCheckedChangeListener {
 
-    // private static final String TAG = "NewSettingsFragment";
+    private static final String TAG = "NewSettingsFragment";
+    SliderPreference sliderPreference_high;
+    CheckBoxPreference checkBox_ac, checkBox_usb, checkBox_wireless;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        sliderPreference_high = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
+        sliderPreference_high.setOnCheckedChangeListener(this);
+        checkBox_ac = (CheckBoxPreference) findPreference(getString(R.string.pref_ac_enabled));
+        checkBox_usb = (CheckBoxPreference) findPreference(getString(R.string.pref_usb_enabled));
+        checkBox_wireless = (CheckBoxPreference) findPreference(getString(R.string.pref_wireless_enabled));
     }
 
     @Override
@@ -30,5 +39,10 @@ public class NewSettingsFragment extends PreferenceFragment {
             batteryAlarmManager.setDischargingAlarm(context);
             context.startService(new Intent(context, ChargingService.class));
         }
+    }
+
+    @Override
+    public void onCheckedChanged(boolean changedTo) {
+        //Log.i(TAG, "changedTo = " + changedTo);
     }
 }
