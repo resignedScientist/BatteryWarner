@@ -43,6 +43,6 @@ public class NewSettingsFragment extends PreferenceFragment implements SliderPre
 
     @Override
     public void onCheckedChanged(boolean changedTo) {
-        //Log.i(TAG, "changedTo = " + changedTo);
+        switch_ac.setEnabled(changedTo);
     }
 }

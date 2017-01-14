@@ -117,12 +117,6 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     }
 
     @Override
-    protected void onClick() {
-        super.onClick();
-        checkBox.setChecked(!checkBox.isChecked());
-    }
-
-    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         seekBar.setEnabled(b);
         textView.setEnabled(b);
