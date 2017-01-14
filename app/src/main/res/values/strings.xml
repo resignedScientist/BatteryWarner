@@ -1,28 +1,28 @@
 <resources>
     <!-- Shared Preference Keys -->
     <!-- Settings -->
-    <string name="pref_warning_low_enabled">warningLowEnabled</string>
-    <string name="pref_warning_high_enabled">warningHighEnabled</string>
-    <string name="pref_ac_enabled">acEnabled</string>
-    <string name="pref_usb_enabled">usbEnabled</string>
-    <string name="pref_wireless_enabled">wirelessEnabled</string>
-    <string name="pref_graph_enabled">graphEnabled</string>
-    <string name="pref_dark_theme_enabled">darkThemeEnabled</string>
-    <string name="pref_sound_uri">savedSoundUri</string>
-    <string name="pref_warning_low">warningLow</string>
-    <string name="pref_warning_high">warningHigh</string>
+    <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
+    <string name="pref_warning_high_enabled" translatable="false">warningHighEnabled</string>
+    <string name="pref_ac_enabled" translatable="false">acEnabled</string>
+    <string name="pref_usb_enabled" translatable="false">usbEnabled</string>
+    <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
+    <string name="pref_graph_enabled" translatable="false">graphEnabled</string>
+    <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
+    <string name="pref_sound_uri" translatable="false">savedSoundUri</string>
+    <string name="pref_warning_low" translatable="false">warningLow</string>
+    <string name="pref_warning_high" translatable="false">warningHigh</string>
     <!-- GraphFragment -->
-    <string name="pref_checkBox_percent">checkBoxPercent</string>
-    <string name="pref_checkBox_temperature">checkBoxTemperature</string>
+    <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
+    <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
     <!-- Main Switch -->
-    <string name="pref_is_enabled">isEnabled</string>
+    <string name="pref_is_enabled" translatable="false">isEnabled</string>
     <!-- Not directly changeable by user -->
-    <string name="pref_first_start">firstStart</string>
-    <string name="pref_last_percentage">lastPercentage</string>
-    <string name="pref_graph_time">graphTime</string>
-    <string name="pref_intent_time">intentTime</string>
-    <string name="pref_already_notified">alreadyNotified</string>
-    <string name="pref_reset_graph">resetGraph</string>
+    <string name="pref_first_start" translatable="false">firstStart</string>
+    <string name="pref_last_percentage" translatable="false">lastPercentage</string>
+    <string name="pref_graph_time" translatable="false">graphTime</string>
+    <string name="pref_intent_time" translatable="false">intentTime</string>
+    <string name="pref_already_notified" translatable="false">alreadyNotified</string>
+    <string name="pref_reset_graph" translatable="false">resetGraph</string>
 
     <!-- Other Strings -->
     <string name="app_name">Battery Warner</string>
