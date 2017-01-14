@@ -90,10 +90,6 @@ public class BatteryAlarmManager {
             return;
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
-            return; // return if already notified
-        }
-
         batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         if (Contract.IS_PRO) {
             temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
