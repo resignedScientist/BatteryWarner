@@ -2,10 +2,16 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.widget.Toast;
 
@@ -22,6 +28,7 @@ public class NewSettingsFragment extends PreferenceFragment implements Preferenc
     SwitchPreference switch_ac, switch_usb, switch_wireless, switch_graphEnabled, switch_darkTheme;
     SliderPreference slider_warningHigh;
     PreferenceCategory category_graph;
+    RingtonePreference ringtonePreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,16 @@ public class NewSettingsFragment extends PreferenceFragment implements Preferenc
         switch_wireless = (SwitchPreference) findPreference(getString(R.string.pref_wireless_enabled));
         switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         switch_darkTheme.setOnPreferenceChangeListener(this);
+        ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
+        ringtonePreference.setOnPreferenceChangeListener(this);
+
+        Context context = getActivity();
+        if (context != null) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            String sound = sharedPreferences.getString(getString(R.string.pref_sound_uri), "");
+            Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
+            ringtonePreference.setSummary(ringtone.getTitle(context));
+        }
 
         if (!Contract.IS_PRO) {
             switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
@@ -68,6 +85,12 @@ public class NewSettingsFragment extends PreferenceFragment implements Preferenc
                         getString(R.string.theme_activated_toast),
                         Toast.LENGTH_SHORT
                 ).show();
+            }
+        } else if (preference == ringtonePreference) {
+            Context context = getActivity();
+            if (context != null) {
+                Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(o.toString()));
+                ringtonePreference.setSummary(ringtone.getTitle(context));
             }
         }
         return true;
