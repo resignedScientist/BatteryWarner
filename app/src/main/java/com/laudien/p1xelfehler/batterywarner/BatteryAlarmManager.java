@@ -48,6 +48,9 @@ public class BatteryAlarmManager {
         if (!sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true)) {
             return false; // return false if all warnings are disabled
         }
+        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), true)) {
+            return false; // return false if warning high is disabled
+        }
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
         switch (chargingType) {
             case BatteryManager.BATTERY_PLUGGED_AC: // ac charging

@@ -251,9 +251,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         // restart discharging alarm and charging service
         batteryAlarmManager.cancelDischargingAlarm(context);
         batteryAlarmManager.setDischargingAlarm(context);
-        Intent chargingService = new Intent(context, ChargingService.class);
-        context.stopService(chargingService);
-        context.startService(chargingService);
+        context.startService(new Intent(context, ChargingService.class));
     }
 
     @Override

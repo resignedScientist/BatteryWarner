@@ -194,12 +194,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
                 batteryAlarmManager.setDischargingAlarm(context);
             }
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
-        } else { // turned off
-            if (isCharging) {
-                context.stopService(new Intent(context, ChargingService.class));
-            } else {
-                batteryAlarmManager.cancelDischargingAlarm(context);
-            }
+        } else if (!isCharging) { // turned off and discharging
+            batteryAlarmManager.cancelDischargingAlarm(context);
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
         // send broadcast

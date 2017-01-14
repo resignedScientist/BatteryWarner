@@ -68,9 +68,7 @@ public class OnOffTileService extends TileService {
 
         if (isActive) { // disable battery warnings
             tile.setState(Tile.STATE_INACTIVE);
-            if (isCharging) { // charging
-                stopService(new Intent(this, ChargingService.class));
-            } else { // discharging
+            if (!isCharging) { // discharging
                 batteryAlarmManager.cancelDischargingAlarm(this);
             }
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
