@@ -44,4 +44,9 @@ public class SettingsActivity extends BaseActivity {
         }
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public void onBackPressed() {
+        onNavigateUp();
+    }
 }
