@@ -141,8 +141,4 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
-
-    interface OnCheckedChangeListener {
-        void onCheckedChanged(boolean changedTo);
-    }
 }
