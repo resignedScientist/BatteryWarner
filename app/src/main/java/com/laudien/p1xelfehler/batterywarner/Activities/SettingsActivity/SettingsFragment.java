@@ -70,6 +70,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         // restart discharging alarm and charging service
         Context context = getActivity();
         if (context != null) {
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putBoolean(getString(R.string.pref_already_notified), false).apply();
             BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
             batteryAlarmManager.cancelDischargingAlarm(context);
             batteryAlarmManager.setDischargingAlarm(context);
