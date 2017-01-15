@@ -25,21 +25,17 @@ import java.util.Locale;
 public class NewSettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "NewSettingsFragment";
-    SwitchPreference switch_ac, switch_usb, switch_wireless, switch_graphEnabled, switch_darkTheme;
-    SliderPreference slider_warningHigh;
-    PreferenceCategory category_graph;
-    RingtonePreference ringtonePreference;
+    private SwitchPreference switch_graphEnabled, switch_darkTheme;
+    private PreferenceCategory category_graph;
+    private RingtonePreference ringtonePreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        slider_warningHigh = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
+        SliderPreference slider_warningHigh = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
         slider_warningHigh.setOnPreferenceChangeListener(this);
-        switch_ac = (SwitchPreference) findPreference(getString(R.string.pref_ac_enabled));
-        switch_usb = (SwitchPreference) findPreference(getString(R.string.pref_usb_enabled));
-        switch_wireless = (SwitchPreference) findPreference(getString(R.string.pref_wireless_enabled));
         switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         switch_darkTheme.setOnPreferenceChangeListener(this);
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
