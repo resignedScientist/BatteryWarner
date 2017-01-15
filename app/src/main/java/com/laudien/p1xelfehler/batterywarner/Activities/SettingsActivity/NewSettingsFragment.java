@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -25,8 +27,7 @@ import java.util.Locale;
 public class NewSettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
     private static final String TAG = "NewSettingsFragment";
-    private SwitchPreference switch_graphEnabled, switch_darkTheme;
-    private PreferenceCategory category_graph;
+    private SwitchPreference switch_darkTheme;
     private RingtonePreference ringtonePreference;
 
     @Override
@@ -50,9 +51,14 @@ public class NewSettingsFragment extends PreferenceFragment implements Preferenc
         }
 
         if (!Contract.IS_PRO) {
-            switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
-            category_graph = (PreferenceCategory) findPreference("stats");
-            switch_graphEnabled.setEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // lollipop and above
+                SwitchPreference switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
+                switch_graphEnabled.setEnabled(false);
+            } else { // kitkat
+                CheckBoxPreference checkBox_graphEnabled = (CheckBoxPreference) findPreference(getString(R.string.pref_graph_enabled));
+                checkBox_graphEnabled.setEnabled(false);
+            }
+            PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
         }
