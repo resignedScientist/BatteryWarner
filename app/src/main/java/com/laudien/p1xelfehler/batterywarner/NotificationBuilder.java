@@ -23,7 +23,6 @@ public class NotificationBuilder {
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
     private Context context;
-    private Uri notificationSound;
 
     public NotificationBuilder(Context context) {
         this.context = context;
@@ -92,15 +91,12 @@ public class NotificationBuilder {
     }
 
     private Uri getNotificationSound() {
-        if (notificationSound == null) {
-            String uri = PreferenceManager.getDefaultSharedPreferences(context)
-                    .getString(context.getString(R.string.pref_sound_uri), "");
-            if (!uri.equals("")) {
-                notificationSound = Uri.parse(uri); // saved URI
-            } else {// default URI
-                notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            }
+        String uri = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.pref_sound_uri), "");
+        if (!uri.equals("")) {
+            return Uri.parse(uri); // saved URI
+        } else {// default URI
+            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         }
-        return notificationSound;
     }
 }
