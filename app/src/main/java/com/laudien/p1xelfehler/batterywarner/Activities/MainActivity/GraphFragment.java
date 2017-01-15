@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -42,7 +43,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    private int graphCounter;
+    private int graphCounter, color_percentage, color_percentageBackground, color_temperature;
     private CheckBox checkBox_percentage, checkBox_temp;
     private boolean graphEnabled;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
@@ -190,19 +191,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
         if (series != null) {
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = getContext().getTheme();
-            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-            int color = typedValue.data;
-            int backgroundColor = ColorUtils.setAlphaComponent(color, 64);
-            series[GraphDbHelper.TYPE_PERCENTAGE].setColor(color);
-            series[GraphDbHelper.TYPE_PERCENTAGE].setBackgroundColor(backgroundColor);
             series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
             series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
-            if (checkBox_percentage.isChecked())
+            setGraphColors();
+            if (checkBox_percentage.isChecked()) {
                 graph_chargeCurve.addSeries(series_chargeCurve);
-            if (checkBox_temp.isChecked())
+            }
+            if (checkBox_temp.isChecked()) {
                 graph_chargeCurve.addSeries(series_temp);
+            }
             double maxTime = series_chargeCurve.getHighestValueX();
             if (maxTime != 0) { // enough data
                 if (isChargingAndNotFull) {
@@ -241,6 +238,25 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return String.format(Locale.getDefault(), "%d min", (int) timeInMinutes);
             return String.format(Locale.getDefault(), "%.1f min", timeInMinutes);
         }
+    }
+
+    private void setGraphColors() {
+        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
+            // percentage
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = getContext().getTheme();
+            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+            color_percentage = typedValue.data;
+            color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+            // temperature
+            if (sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), false)) { // dark theme
+                series_temp.setColor(Color.GREEN);
+            } else {
+                series_temp.setColor(Color.BLUE);
+            }
+        }
+        series_chargeCurve.setColor(color_percentage);
+        series_chargeCurve.setBackgroundColor(color_percentageBackground);
     }
 
     @Override
