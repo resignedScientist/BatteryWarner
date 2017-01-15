@@ -16,6 +16,7 @@
             app:default_progress="20"
             app:key_progress="@string/pref_warning_low"
             app:slider_max="40"
+            app:slider_min="5"
             app:unit="%" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
