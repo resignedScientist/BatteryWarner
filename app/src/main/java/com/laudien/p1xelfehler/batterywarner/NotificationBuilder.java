@@ -7,11 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment;
 
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ public class NotificationBuilder {
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
     private Context context;
+    private Uri notificationSound;
 
     public NotificationBuilder(Context context) {
         this.context = context;
@@ -77,7 +79,7 @@ public class NotificationBuilder {
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setSound(SettingsFragment.getNotificationSound(context))
+                .setSound(getNotificationSound())
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
@@ -87,5 +89,18 @@ public class NotificationBuilder {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());
+    }
+
+    private Uri getNotificationSound() {
+        if (notificationSound == null) {
+            String uri = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(context.getString(R.string.pref_sound_uri), "");
+            if (!uri.equals("")) {
+                notificationSound = Uri.parse(uri); // saved URI
+            } else {// default URI
+                notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
+        return notificationSound;
     }
 }
