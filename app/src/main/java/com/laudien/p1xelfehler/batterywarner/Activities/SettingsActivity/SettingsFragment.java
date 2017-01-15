@@ -26,9 +26,10 @@ import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
-    private static final String TAG = "SettingsFragment";
+    // private static final String TAG = "SettingsFragment";
     private SwitchPreference switch_darkTheme;
     private RingtonePreference ringtonePreference;
+    private SliderPreference slider_warningLow;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         SliderPreference slider_warningHigh = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
         slider_warningHigh.setOnPreferenceChangeListener(this);
+        slider_warningLow = (SliderPreference) findPreference(getString(R.string.pref_warning_low_enabled));
+        slider_warningLow.setOnPreferenceChangeListener(this);
         switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         switch_darkTheme.setOnPreferenceChangeListener(this);
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
@@ -94,8 +97,13 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(o.toString()));
                 ringtonePreference.setSummary(ringtone.getTitle(context));
             }
+        } else if (preference == slider_warningLow) {
+            Context context = getActivity();
+            if (context != null) {
+                PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                        .putBoolean(getString(R.string.pref_already_notified), false).apply();
+            }
         }
-
         return true;
     }
 }
