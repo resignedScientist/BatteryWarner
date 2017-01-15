@@ -95,8 +95,8 @@ public class NotificationBuilder {
                 .getString(context.getString(R.string.pref_sound_uri), "");
         if (!uri.equals("")) {
             return Uri.parse(uri); // saved URI
-        } else {// default URI
-            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        } else {
+            return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // default URI
         }
     }
 }
