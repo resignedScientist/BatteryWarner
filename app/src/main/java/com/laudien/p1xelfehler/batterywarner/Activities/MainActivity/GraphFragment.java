@@ -39,13 +39,14 @@ import java.util.Locale;
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     //private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
+    private String timeFormat, timeFormat_underHour, timeFormat_underMinute;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
     private int graphCounter, color_percentage, color_percentageBackground, color_temperature;
     private CheckBox checkBox_percentage, checkBox_temp;
-    private boolean graphEnabled;
+    private boolean graphEnabled, useSeconds = false;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -69,6 +70,25 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true);
+        timeFormat = sharedPreferences.getString(getString(R.string.pref_time_format), "0");
+        switch (timeFormat) {
+            case "0":
+                timeFormat = "%d h %.0f min";
+                timeFormat_underHour = "%.0f min";
+                timeFormat_underMinute = "%.0f min";
+                break;
+            case "1":
+                timeFormat = "%d h %.1f min";
+                timeFormat_underHour = "%.1f min";
+                timeFormat_underMinute = "%.2f min";
+                break;
+            case "2":
+                timeFormat = "%d h %.0f min %.0f s";
+                timeFormat_underHour = "%.0f min %.0f s";
+                timeFormat_underMinute = "%.0f s";
+                useSeconds = true;
+                break;
+        }
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
@@ -211,14 +231,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             } else { // not enough data
                 viewport_chargeCurve.setMaxX(1);
                 if (isChargingAndNotFull) {
-                    textView_chargingTime.setText(String.format("%s (0 min)", getString(R.string.charging)));
+                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), getTimeString(0)));
                 } else {
                     textView_chargingTime.setText(getString(R.string.not_enough_data));
                 }
             }
         } else { // empty database
             if (isChargingAndNotFull) {
-                textView_chargingTime.setText(String.format("%s (0 min)", getString(R.string.charging)));
+                textView_chargingTime.setText(String.format("%s (%s)", getTimeString(0), getString(R.string.charging)));
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));
             }
@@ -226,17 +246,26 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     private String getTimeString(double timeInMinutes) { // returns "hours h minutes min" or "minutes min"
-        double minutes;
         if (timeInMinutes > 60) { // over an hour
             long hours = (long) timeInMinutes / 60;
-            minutes = (timeInMinutes - hours * 60);
-            if ((int) minutes == minutes) // if it is an .0 number
-                return String.format(Locale.getDefault(), "%d h %d min", hours, (int) minutes);
-            return String.format(Locale.getDefault(), "%d h %.1f min", hours, minutes);
-        } else { // under an hour
-            if ((int) timeInMinutes == timeInMinutes)
-                return String.format(Locale.getDefault(), "%d min", (int) timeInMinutes);
-            return String.format(Locale.getDefault(), "%.1f min", timeInMinutes);
+            double minutes = (timeInMinutes - hours * 60);
+            int seconds = (int) minutes * 60 - (int) (minutes * 60);
+            if (useSeconds) {
+                return String.format(Locale.getDefault(), timeFormat, hours, minutes, seconds);
+            }
+            return String.format(Locale.getDefault(), timeFormat, hours, minutes);
+        } else if (timeInMinutes > 1) { // under an hour, over a minute
+            int minutes = (int) timeInMinutes;
+            if (useSeconds) {
+                double seconds = timeInMinutes * 60 - minutes * 60;
+                return String.format(Locale.getDefault(), timeFormat_underHour, timeInMinutes, seconds);
+            }
+            return String.format(Locale.getDefault(), timeFormat_underHour, timeInMinutes);
+        } else { // under a minute
+            if (useSeconds) {
+                return String.format(Locale.getDefault(), timeFormat_underMinute, timeInMinutes * 60);
+            }
+            return String.format(Locale.getDefault(), timeFormat_underMinute, timeInMinutes);
         }
     }
 
