@@ -13,7 +13,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
-import android.preference.TwoStatePreference;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
@@ -50,8 +49,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         }
 
         if (!Contract.IS_PRO) {
-            TwoStatePreference pref_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
+            Preference pref_graphEnabled = findPreference(getString(R.string.pref_graph_enabled));
             pref_graphEnabled.setEnabled(false);
+            Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
+            pref_timeFormat.setEnabled(false);
             PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));

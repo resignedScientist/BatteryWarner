@@ -52,6 +52,7 @@
             android:entries="@array/timeFormats"
             android:entryValues="@array/timeFormats_values"
             android:key="@string/pref_time_format"
+            android:summary="%s"
             android:title="@string/time_format_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/theming">
