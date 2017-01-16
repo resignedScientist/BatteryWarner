@@ -78,8 +78,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 timeFormat_underMinute = "%.0f min";
                 break;
             case "1":
-                timeFormat = "%d h %.1f min";
-                timeFormat_underHour = "%.1f min";
+                timeFormat = "%d h %.2f min";
+                timeFormat_underHour = "%.2f min";
                 timeFormat_underMinute = "%.2f min";
                 break;
             case "2":
@@ -249,16 +249,17 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (timeInMinutes > 60) { // over an hour
             long hours = (long) timeInMinutes / 60;
             double minutes = (timeInMinutes - hours * 60);
-            int seconds = (int) minutes * 60 - (int) (minutes * 60);
             if (useSeconds) {
-                return String.format(Locale.getDefault(), timeFormat, hours, minutes, seconds);
+                double minutes_floor = Math.floor(minutes);
+                double seconds = (minutes - minutes_floor) * 60;
+                return String.format(Locale.getDefault(), timeFormat, hours, minutes_floor, seconds);
             }
             return String.format(Locale.getDefault(), timeFormat, hours, minutes);
         } else if (timeInMinutes > 1) { // under an hour, over a minute
-            int minutes = (int) timeInMinutes;
             if (useSeconds) {
-                double seconds = timeInMinutes * 60 - minutes * 60;
-                return String.format(Locale.getDefault(), timeFormat_underHour, timeInMinutes, seconds);
+                double minutes = Math.floor(timeInMinutes);
+                double seconds = (timeInMinutes - minutes) * 60;
+                return String.format(Locale.getDefault(), timeFormat_underHour, minutes, seconds);
             }
             return String.format(Locale.getDefault(), timeFormat_underHour, timeInMinutes);
         } else { // under a minute
