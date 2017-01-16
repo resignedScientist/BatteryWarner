@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="timeFormats">
+        <item>1 h 30 min</item>
+        <item>1 h 30,5 min</item>
+        <item>1 h 30 min 30 s</item>
+    </string-array>
+</resources>

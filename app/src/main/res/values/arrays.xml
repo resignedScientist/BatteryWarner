@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="timeFormats">
+        <item>1 h 30 min</item>
+        <item>1 h 30.5 min</item>
+        <item>1 h 30 min 30 s</item>
+    </string-array>
+    <string-array name="timeFormats_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>
