@@ -5,12 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -35,10 +40,15 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    //private static final String TAG = "GraphFragment";
+    private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private String timeFormat, timeFormat_underHour, timeFormat_underMinute;
     private GraphView graph_chargeCurve;
@@ -183,8 +193,58 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             }
         } else if (item.getItemId() == R.id.menu_open_history) {
             startActivity(new Intent(getContext(), HistoryActivity.class));
+        } else if (item.getItemId() == R.id.menu_save_to_history) {
+            saveGraph();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveGraph() {
+        // check for permission
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    Contract.PERMISSION_STORAGE_WRITE
+            );
+            return;
+        }
+        // load graph
+        Context applicationContext = getActivity().getApplicationContext();
+        Calendar calender = Calendar.getInstance();
+        String outputFileDir = String.format(
+                Locale.getDefault(),
+                "%s/%d_%d_%d_%d_%d.db",
+                Environment.getExternalStorageDirectory(),
+                calender.get(Calendar.YEAR),
+                calender.get(Calendar.MONTH),
+                calender.get(Calendar.DAY_OF_MONTH),
+                calender.get(Calendar.HOUR_OF_DAY),
+                calender.get(Calendar.MINUTE)
+        );
+        String inputFileDir = String.format(
+                Locale.getDefault(),
+                "/data/data/%s/databases/%s",
+                Contract.PACKAGE_NAME_PRO,
+                GraphDbHelper.DATABASE_NAME
+        );
+        File inputFile = new File(inputFileDir);
+        try {
+            FileInputStream inputStream = new FileInputStream(inputFile);
+            FileOutputStream outputStream = new FileOutputStream(outputFileDir, false);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+            Toast.makeText(applicationContext, "The graph was saved to history!", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(applicationContext, "There was an Error!", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     public void reloadChargeCurve() {
@@ -310,5 +370,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             graph_chargeCurve.addSeries(series);
         else
             graph_chargeCurve.removeSeries(series);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Contract.PERMISSION_STORAGE_WRITE) {
+            saveGraph();
+        }
     }
 }

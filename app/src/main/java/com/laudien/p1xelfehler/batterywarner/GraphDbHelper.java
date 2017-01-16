@@ -14,7 +14,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     // private static final String TAG = "GraphDbHelper";
     public static final int TYPE_PERCENTAGE = 0;
     public static final int TYPE_TEMPERATURE = 1;
-    private static final String DATABASE_NAME = "ChargeCurveDB";
+    public static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     private static final String TABLE_NAME = "ChargeCurve";
     private static final String TABLE_COLUMN_TIME = "time";

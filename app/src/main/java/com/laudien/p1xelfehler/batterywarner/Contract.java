@@ -1,6 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 public final class Contract {
+    // permission request codes
+    public static final int PERMISSION_STORAGE_WRITE = 10;
     // default values
     public static final int DEF_WARNING_LOW = 20;
     public static final int DEF_WARNING_HIGH = 80;
