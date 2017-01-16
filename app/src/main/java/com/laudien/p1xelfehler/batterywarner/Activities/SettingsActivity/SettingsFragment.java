@@ -35,7 +35,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        SliderPreference slider_warningHigh = (SliderPreference) findPreference(getString(R.string.pref_warning_high_enabled));
+        SeekBarPreference slider_warningHigh = (SeekBarPreference) findPreference(getString(R.string.pref_warning_high_enabled));
         slider_warningHigh.setOnPreferenceChangeListener(this);
         switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         switch_darkTheme.setOnPreferenceChangeListener(this);

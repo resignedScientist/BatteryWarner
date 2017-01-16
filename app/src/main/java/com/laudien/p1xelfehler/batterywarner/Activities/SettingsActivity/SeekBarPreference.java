@@ -17,9 +17,9 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
-public class SliderPreference extends Preference implements CompoundButton.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
+public class SeekBarPreference extends Preference implements CompoundButton.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
-    // private static final String TAG = "SliderPreference";
+    // private static final String TAG = "SeekBarPreference";
     private static final int DEFAULT_MAX = 100;
     private static final int DEFAULT_MIN = 0;
     private static final boolean DEFAULT_CHECKED = false;
@@ -33,27 +33,26 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     private boolean initialized = false;
     private int progress;
     private int defaultProgress;
-    private CheckBox checkBox;
     private SeekBar seekBar;
     private TextView textView;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public SliderPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs);
     }
 
-    public SliderPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
-    public SliderPreference(Context context, AttributeSet attrs) {
+    public SeekBarPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public SliderPreference(Context context) {
+    public SeekBarPreference(Context context) {
         super(context);
         init(context, null);
     }
@@ -61,19 +60,19 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     private void init(Context context, AttributeSet attrs) {
         setLayoutResource(R.layout.preference_slider);
         if (attrs != null) {
-            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SliderPreference);
-            unit = a.getString(R.styleable.SliderPreference_unit);
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
+            unit = a.getString(R.styleable.SeekBarPreference_unit);
             if (unit == null) {
                 unit = "";
             }
-            key_progress = a.getString(R.styleable.SliderPreference_key_progress);
+            key_progress = a.getString(R.styleable.SeekBarPreference_key_progress);
             if (key_progress == null) {
                 key_progress = "";
             }
-            max = a.getInt(R.styleable.SliderPreference_slider_max, DEFAULT_MAX);
-            min = a.getInt(R.styleable.SliderPreference_slider_min, DEFAULT_MIN);
-            defaultChecked = a.getBoolean(R.styleable.SliderPreference_default_checked, DEFAULT_CHECKED);
-            defaultProgress = a.getInt(R.styleable.SliderPreference_default_progress, DEFAULT_PROGRESS);
+            max = a.getInt(R.styleable.SeekBarPreference_slider_max, DEFAULT_MAX);
+            min = a.getInt(R.styleable.SeekBarPreference_slider_min, DEFAULT_MIN);
+            defaultChecked = a.getBoolean(R.styleable.SeekBarPreference_default_checked, DEFAULT_CHECKED);
+            defaultProgress = a.getInt(R.styleable.SeekBarPreference_default_progress, DEFAULT_PROGRESS);
             a.recycle();
         } else {
             min = DEFAULT_MIN;
@@ -99,7 +98,7 @@ public class SliderPreference extends Preference implements CompoundButton.OnChe
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         checkBox.setOnCheckedChangeListener(this);
         textView = (TextView) view.findViewById(R.id.textView);
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
