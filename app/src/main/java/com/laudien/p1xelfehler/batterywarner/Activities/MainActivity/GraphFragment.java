@@ -29,6 +29,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
@@ -180,6 +181,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             } else {
                 Toast.makeText(applicationContext, "Sorry! :(", Toast.LENGTH_SHORT).show();
             }
+        } else if (item.getItemId() == R.id.menu_open_history) {
+            startActivity(new Intent(getContext(), HistoryActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

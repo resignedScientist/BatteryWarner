@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -28,13 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         isAppInstalled();
 
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (Contract.IS_PRO) {
-            toolbar.setTitle(getString(R.string.app_name) + " Pro");
-        } else {
-            toolbar.setTitle(getString(R.string.app_name));
-        }
-        setSupportActionBar(toolbar);
+        setToolbarTitle();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
