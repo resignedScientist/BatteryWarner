@@ -8,10 +8,10 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.ViewPagerAd
 
 import java.util.ArrayList;
 
-public class HistoryPagerAdapter extends ViewPagerAdapter {
-    ArrayList<Fragment> fragments;
+class HistoryPagerAdapter extends ViewPagerAdapter {
+    private ArrayList<Fragment> fragments;
 
-    public HistoryPagerAdapter(Context context, FragmentManager fm) {
+    HistoryPagerAdapter(Context context, FragmentManager fm) {
         super(context, fm);
         fragments = new ArrayList<>();
     }
@@ -26,7 +26,7 @@ public class HistoryPagerAdapter extends ViewPagerAdapter {
         return fragments.size();
     }
 
-    public void addItem(Fragment fragment) {
+    void addItem(Fragment fragment) {
         fragments.add(fragment);
         notifyDataSetChanged();
     }
