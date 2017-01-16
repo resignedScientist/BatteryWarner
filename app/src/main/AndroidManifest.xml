@@ -21,7 +21,9 @@
         </activity>
         <activity android:name=".Activities.IntroActivity.IntroActivity" />
         <activity android:name=".Activities.MainActivity.MainActivity" />
-        <activity android:name=".Activities.HistoryActivity.HistoryActivity" />
+        <activity
+            android:name=".Activities.HistoryActivity.HistoryActivity"
+            android:parentActivityName=".Activities.MainActivity.MainActivity" />
         <activity
             android:name=".Activities.SettingsActivity.SettingsActivity"
             android:parentActivityName=".Activities.MainActivity.MainActivity" />
@@ -59,7 +61,7 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-        <service android:name=".Services.ChargingService"/>
+        <service android:name=".Services.ChargingService" />
     </application>
 
 </manifest>

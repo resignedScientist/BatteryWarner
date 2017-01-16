@@ -38,7 +38,6 @@ public class SettingsActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.settings));
         }
         return super.onCreateOptionsMenu(menu);
     }

@@ -29,15 +29,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
     }
-
-    protected void setToolbarTitle(String title) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
-    }
-
-    protected void setToolbarTitle(String title, String subtitle) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(title);
-        toolbar.setSubtitle(subtitle);
-    }
 }
