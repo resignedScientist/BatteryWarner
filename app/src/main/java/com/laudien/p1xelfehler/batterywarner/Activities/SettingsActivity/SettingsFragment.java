@@ -6,15 +6,14 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
+import android.preference.TwoStatePreference;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
@@ -51,13 +50,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         }
 
         if (!Contract.IS_PRO) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // lollipop and above
-                SwitchPreference switch_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
-                switch_graphEnabled.setEnabled(false);
-            } else { // kitkat
-                CheckBoxPreference checkBox_graphEnabled = (CheckBoxPreference) findPreference(getString(R.string.pref_graph_enabled));
-                checkBox_graphEnabled.setEnabled(false);
-            }
+            TwoStatePreference pref_graphEnabled = (SwitchPreference) findPreference(getString(R.string.pref_graph_enabled));
+            pref_graphEnabled.setEnabled(false);
             PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
