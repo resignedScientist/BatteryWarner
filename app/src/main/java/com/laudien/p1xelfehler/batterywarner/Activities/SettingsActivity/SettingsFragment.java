@@ -35,8 +35,10 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
         SeekBarPreference slider_warningHigh = (SeekBarPreference) findPreference(getString(R.string.pref_warning_high_enabled));
         slider_warningHigh.setOnPreferenceChangeListener(this);
-        switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
-        switch_darkTheme.setOnPreferenceChangeListener(this);
+        if (getActivity() instanceof SettingsActivity) {
+            switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
+            switch_darkTheme.setOnPreferenceChangeListener(this);
+        }
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
         ringtonePreference.setOnPreferenceChangeListener(this);
 
