@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +38,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    // private static final String TAG = "GraphFragment";
+    private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
@@ -242,6 +243,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
     private void setGraphColors() {
         if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
+            Log.i(TAG, "loading new values");
             // percentage
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = getContext().getTheme();
@@ -250,13 +252,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
             // temperature
             if (sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), false)) { // dark theme
-                series_temp.setColor(Color.GREEN);
-            } else {
-                series_temp.setColor(Color.BLUE);
+                color_temperature = Color.GREEN;
+            } else { // default theme
+                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                color_temperature = typedValue.data;
             }
         }
         series_chargeCurve.setColor(color_percentage);
         series_chargeCurve.setBackgroundColor(color_percentageBackground);
+        series_temp.setColor(color_temperature);
     }
 
     @Override
