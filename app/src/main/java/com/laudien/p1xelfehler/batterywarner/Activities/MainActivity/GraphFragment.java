@@ -12,7 +12,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +37,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
-    private static final String TAG = "GraphFragment";
+    //private static final String TAG = "GraphFragment";
     private SharedPreferences sharedPreferences;
     private GraphView graph_chargeCurve;
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
@@ -243,7 +242,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
     private void setGraphColors() {
         if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
-            Log.i(TAG, "loading new values");
             // percentage
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = getContext().getTheme();
