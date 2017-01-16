@@ -78,9 +78,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 timeFormat_underMinute = "%.0f min";
                 break;
             case "1":
-                timeFormat = "%d h %.2f min";
-                timeFormat_underHour = "%.2f min";
-                timeFormat_underMinute = "%.2f min";
+                timeFormat = "%d h %.1f min";
+                timeFormat_underHour = "%.1f min";
+                timeFormat_underMinute = "%.1f min";
                 break;
             case "2":
                 timeFormat = "%d h %.0f min %.0f s";
