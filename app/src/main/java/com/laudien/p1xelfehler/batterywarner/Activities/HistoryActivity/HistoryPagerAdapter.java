@@ -18,6 +18,9 @@ class HistoryPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        if (fragments.size() < position + 1) {
+            return null;
+        }
         return fragments.get(position);
     }
 
@@ -28,6 +31,11 @@ class HistoryPagerAdapter extends ViewPagerAdapter {
 
     void addItem(Fragment fragment) {
         fragments.add(fragment);
+        notifyDataSetChanged();
+    }
+
+    void removeItem(int position) {
+        fragments.remove(position);
         notifyDataSetChanged();
     }
 }

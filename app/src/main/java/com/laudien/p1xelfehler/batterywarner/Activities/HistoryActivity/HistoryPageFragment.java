@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -61,5 +62,15 @@ public class HistoryPageFragment extends Fragment {
 
     public void addGraphsFromFile(File file) {
         this.file = file;
+    }
+
+    public void deleteFile() {
+        if (file.delete()) {
+            Toast.makeText(getContext(), "File removed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String getFileName() {
+        return file.getName();
     }
 }

@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,7 +24,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HistoryFragment";
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
-    private TextView textView_nothingSaved;
+    private TextView textView_nothingSaved, textView_fileName;
+    private Button btn_delete;
 
     @Nullable
     @Override
@@ -33,6 +35,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         adapter = new HistoryPagerAdapter(getContext(), getFragmentManager());
         viewPager.setAdapter(adapter);
         textView_nothingSaved = (TextView) view.findViewById(R.id.textView_nothingSaved);
+        textView_fileName = (TextView) view.findViewById(R.id.textView_fileName);
 
         readGraphs();
 
@@ -40,6 +43,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         btn_next.setOnClickListener(this);
         ImageButton btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
+        btn_delete = (Button) view.findViewById(R.id.btn_delete);
+        btn_delete.setOnClickListener(this);
 
         return view;
     }
@@ -50,9 +55,26 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_next:
                 viewPager.setCurrentItem(currentPosition + 1, true);
+                HistoryPageFragment pageFragment = (HistoryPageFragment) adapter.getItem(currentPosition + 1);
+                if (pageFragment != null) {
+                    textView_fileName.setText(pageFragment.getFileName());
+                }
                 break;
             case R.id.btn_prev:
                 viewPager.setCurrentItem(currentPosition - 1, true);
+                break;
+            case R.id.btn_delete:
+                HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+                if (fragment == null) {
+                    return;
+                }
+                fragment.deleteFile();
+                adapter.removeItem(currentPosition);
+                if (adapter.getCount() == 0) {
+                    viewPager.setVisibility(View.INVISIBLE);
+                    textView_nothingSaved.setVisibility(View.VISIBLE);
+                    textView_fileName.setText("");
+                }
                 break;
         }
     }
@@ -79,6 +101,11 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
                 pageFragment.addGraphsFromFile(file);
                 adapter.addItem(pageFragment);
+            }
+            if (files.length == 0) {
+                textView_nothingSaved.setVisibility(View.VISIBLE);
+            } else {
+                textView_fileName.setText(files[files.length - 1].getName());
             }
         } else {
             textView_nothingSaved.setVisibility(View.VISIBLE);
