@@ -20,15 +20,21 @@ import java.io.File;
 
 public class HistoryPageFragment extends Fragment {
 
-    private static final String TAG = "HistoryPageFragment";
+    //private static final String TAG = "HistoryPageFragment";
     private int graphCounter;
     private File file;
+    private GraphView graphView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history_page, container, false);
-        GraphView graphView = (GraphView) view.findViewById(R.id.graphView);
+        graphView = (GraphView) view.findViewById(R.id.graphView);
+        initGraphView();
+        return view;
+    }
+
+    private void initGraphView() {
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         for (Series s : series) {
@@ -57,8 +63,6 @@ public class HistoryPageFragment extends Fragment {
                 return super.formatLabel(value, false);
             }
         });
-
-        return view;
     }
 
     public void addGraphsFromFile(File file) {
@@ -68,6 +72,8 @@ public class HistoryPageFragment extends Fragment {
     public void deleteFile() {
         if (file.delete()) {
             Toast.makeText(getContext(), getString(R.string.success_delete_graph), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Error deleting the file!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -77,6 +83,10 @@ public class HistoryPageFragment extends Fragment {
 
     public void renameFile(String newName) {
         File newFile = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
-        file.renameTo(newFile);
+        if (file.renameTo(newFile)) {
+            Toast.makeText(getContext(), "Renamed File!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "Error renaming the file!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

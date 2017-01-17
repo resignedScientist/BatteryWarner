@@ -5,9 +5,6 @@ import android.os.Environment;
 public final class Contract {
     // Database
     public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
-    // permission request codes
-    public static final int REQUEST_SAVE_GRAPH = 10;
-    public static final int REQUEST_LOAD_GRAPH = 20;
     // default values
     public static final int DEF_WARNING_LOW = 20;
     public static final int DEF_WARNING_HIGH = 80;

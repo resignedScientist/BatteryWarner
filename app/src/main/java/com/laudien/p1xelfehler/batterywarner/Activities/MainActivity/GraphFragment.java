@@ -44,6 +44,8 @@ import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "GraphFragment";
+    private static final int REQUEST_SAVE_GRAPH = 10;
+    private static final int REQUEST_LOAD_GRAPH = 20;
     private SharedPreferences sharedPreferences;
     private String timeFormat, timeFormat_underHour, timeFormat_underMinute;
     private GraphView graph_chargeCurve;
@@ -221,10 +223,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return;
             }
         }
-        if (requestCode == Contract.REQUEST_SAVE_GRAPH) {
+        if (requestCode == REQUEST_SAVE_GRAPH) {
             // restart the saving of the graph
             saveGraph();
-        } else if (requestCode == Contract.REQUEST_LOAD_GRAPH) {
+        } else if (requestCode == REQUEST_LOAD_GRAPH) {
             openHistory();
         }
     }
@@ -237,7 +239,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                     },
-                    Contract.REQUEST_LOAD_GRAPH
+                    REQUEST_LOAD_GRAPH
             );
             return;
         }
@@ -258,7 +260,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                     },
-                    Contract.REQUEST_SAVE_GRAPH
+                    REQUEST_SAVE_GRAPH
             );
             return;
         }
