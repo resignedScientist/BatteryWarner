@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -51,24 +52,18 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void onClick(View v) {
-        int currentPosition = viewPager.getCurrentItem();
-        HistoryPageFragment fragment;
         switch (v.getId()) {
             case R.id.btn_next:
-                viewPager.setCurrentItem(currentPosition + 1, true);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
                 break;
             case R.id.btn_prev:
-                viewPager.setCurrentItem(currentPosition - 1, true);
+                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
                 break;
             case R.id.btn_delete:
                 showDeleteDialog();
                 break;
             case R.id.btn_rename:
-                fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
-                if (!fragment.renameFile("blubb")) {
-                    return;
-                }
-                textView_fileName.setText(fragment.getFileName());
+                showRenameDialog();
                 break;
         }
     }
@@ -100,6 +95,35 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         }
                     }
                 }).setNegativeButton("Cancel", null)
+                .create().show();
+    }
+
+    private void showRenameDialog() {
+        final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
+        if (fragment == null) {
+            return;
+        }
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_rename, null);
+        final EditText editText = (EditText) view.findViewById(R.id.editText);
+        editText.setText(fragment.getFileName());
+        new AlertDialog.Builder(getActivity())
+                .setCancelable(true)
+                .setTitle("Rename graph")
+                .setMessage("New name:")
+                .setView(view)
+                .setNegativeButton("Cancel", null)
+                .setIcon(R.mipmap.ic_launcher)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String newName = editText.getText().toString();
+                        if (!fragment.renameFile(newName)) {
+                            return;
+                        }
+                        textView_fileName.setText(fragment.getFileName());
+                    }
+                })
                 .create().show();
     }
 
