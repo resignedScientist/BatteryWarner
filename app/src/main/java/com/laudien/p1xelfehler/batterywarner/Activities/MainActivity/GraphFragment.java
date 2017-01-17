@@ -215,7 +215,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return;
         }
 
-        // load graph
+        // save graph
         Context applicationContext = getActivity().getApplicationContext();
         Calendar calender = Calendar.getInstance();
         String outputFileDir = String.format(
@@ -234,10 +234,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         try {
             File directory = new File(Contract.DATABASE_HISTORY_PATH);
             if (!directory.exists()) {
-                directory.mkdir();
+                directory.mkdirs();
             }
             FileInputStream inputStream = new FileInputStream(inputFile);
-            new FileOutputStream(outputFileDir, false).close();
             FileOutputStream outputStream = new FileOutputStream(outputFileDir, false);
             byte[] buffer = new byte[1024];
             int length;
