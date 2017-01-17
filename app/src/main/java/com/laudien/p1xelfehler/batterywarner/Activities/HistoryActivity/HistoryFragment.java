@@ -1,9 +1,11 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +52,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void onClick(View v) {
         int currentPosition = viewPager.getCurrentItem();
-        HistoryPageFragment fragment = null;
+        HistoryPageFragment fragment;
         switch (v.getId()) {
             case R.id.btn_next:
                 viewPager.setCurrentItem(currentPosition + 1, true);
@@ -59,19 +61,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 viewPager.setCurrentItem(currentPosition - 1, true);
                 break;
             case R.id.btn_delete:
-                fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
-                if (fragment != null) {
-                    if (!fragment.deleteFile()) {
-                        return;
-                    }
-                    adapter.removeItem(currentPosition);
-                    if (adapter.getCount() == 0) {
-                        viewPager.setVisibility(View.INVISIBLE);
-                        textView_nothingSaved.setVisibility(View.VISIBLE);
-                        textView_fileName.setText("");
-                        return;
-                    }
-                }
+                showDeleteDialog();
                 break;
             case R.id.btn_rename:
                 fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
@@ -81,10 +71,36 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 textView_fileName.setText(fragment.getFileName());
                 break;
         }
-        if (adapter.getCount() < 2) {
-            btn_next.setEnabled(false);
-            btn_prev.setEnabled(false);
+    }
+
+    private void showDeleteDialog() {
+        final int currentPosition = viewPager.getCurrentItem();
+        final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+        if (fragment == null) {
+            return;
         }
+        new AlertDialog.Builder(getContext()).setCancelable(true)
+                .setTitle("Are you sure?")
+                .setMessage("Do you really want to delete that graph?")
+                .setIcon(R.mipmap.ic_launcher)
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (!fragment.deleteFile()) {
+                            return;
+                        }
+                        adapter.removeItem(currentPosition);
+                        if (adapter.getCount() == 0) {
+                            viewPager.setVisibility(View.INVISIBLE);
+                            textView_nothingSaved.setVisibility(View.VISIBLE);
+                            textView_fileName.setText("");
+                        } else if (adapter.getCount() < 2) {
+                            btn_next.setEnabled(false);
+                            btn_prev.setEnabled(false);
+                        }
+                    }
+                }).setNegativeButton("Cancel", null)
+                .create().show();
     }
 
     private void readGraphs() {
