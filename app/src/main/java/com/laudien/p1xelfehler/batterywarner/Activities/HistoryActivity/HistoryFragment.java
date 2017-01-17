@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -25,6 +26,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "HistoryFragment";
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
+    private TextView textView_nothingSaved;
 
     @Nullable
     @Override
@@ -33,6 +35,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         adapter = new HistoryPagerAdapter(getContext(), getFragmentManager());
         viewPager.setAdapter(adapter);
+        textView_nothingSaved = (TextView) view.findViewById(R.id.textView_nothingSaved);
 
         readGraphs();
 
@@ -78,11 +81,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         if (files != null) {
             for (File file : files) {
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
-                adapter.addItem(pageFragment);
                 LineGraphSeries<DataPoint>[] series =
                         dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
                 pageFragment.addGraphs(series);
+                adapter.addItem(pageFragment);
             }
+        } else {
+            textView_nothingSaved.setVisibility(View.VISIBLE);
         }
     }
 }
