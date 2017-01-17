@@ -12,6 +12,7 @@ import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -72,5 +73,10 @@ public class HistoryPageFragment extends Fragment {
 
     public String getFileName() {
         return file.getName();
+    }
+
+    public void renameFile(String newName) {
+        File newFile = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
+        file.renameTo(newFile);
     }
 }

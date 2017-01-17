@@ -213,13 +213,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         Calendar calender = Calendar.getInstance();
         String outputFileDir = String.format(
                 Locale.getDefault(),
-                "%s/%d_%d_%d_%d_%d.db",
+                "%s/history_%d",
                 Contract.DATABASE_HISTORY_PATH,
-                calender.get(Calendar.YEAR),
-                calender.get(Calendar.MONTH),
-                calender.get(Calendar.DAY_OF_MONTH),
-                calender.get(Calendar.HOUR_OF_DAY),
-                calender.get(Calendar.MINUTE)
+                calender.getTimeInMillis()
         );
         String inputFileDir = String.format(
                 Locale.getDefault(),
