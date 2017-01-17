@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.Series;
@@ -16,6 +17,7 @@ public class HistoryPageFragment extends Fragment {
 
     private static final String TAG = "HistoryPageFragment";
     private Series[] series;
+    private int graphCounter;
 
     @Nullable
     @Override
@@ -31,6 +33,24 @@ public class HistoryPageFragment extends Fragment {
         viewport.setMaxX(series[0].getHighestValueX());
         viewport.setMinX(0);
         viewport.setMaxY(100);
+        viewport.setMinY(0);
+
+        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) { // X-axis (time)
+                    if (value == 0) {
+                        graphCounter = 1;
+                        return "0 min";
+                    }
+                    if (graphCounter++ % 3 == 0)
+                        return super.formatLabel(value, true) + " min";
+                    return "";
+                }
+                return super.formatLabel(value, false);
+            }
+        });
+
         return view;
     }
 

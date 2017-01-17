@@ -32,6 +32,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                     + TABLE_COLUMN_TEMP + " INTEGER);";
     private static GraphDbHelper instance;
     private int color_percentage, color_percentageBackground, color_temperature;
+    private boolean darkThemeEnabled = false;
 
     private GraphDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -104,11 +105,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             close();
 
             // styling
-            output[TYPE_PERCENTAGE].setDrawBackground(true);
-            loadGraphColors(context);
-            output[TYPE_PERCENTAGE].setColor(color_percentage);
-            output[TYPE_PERCENTAGE].setBackgroundColor(color_percentageBackground);
-            output[TYPE_TEMPERATURE].setBackgroundColor(color_temperature);
+            output = setGraphColors(context, output);
 
             return output;
         } else {
@@ -122,8 +119,11 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         return getGraphs(context, getReadableDatabase());
     }
 
-    private void loadGraphColors(Context context) {
-        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
+    private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(Contract.PREF_DARK_THEME_ENABLED, false);
+        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0 ||
+                darkThemeEnabled != readDarkThemeEnabled) {
             // percentage
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = context.getTheme();
@@ -131,24 +131,26 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             color_percentage = typedValue.data;
             color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
             // temperature
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), false)) { // dark theme
+            if (sharedPreferences.getBoolean(Contract.PREF_DARK_THEME_ENABLED, false)) { // dark theme
                 color_temperature = Color.GREEN;
             } else { // default theme
                 theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
                 color_temperature = typedValue.data;
             }
+            darkThemeEnabled = readDarkThemeEnabled;
         }
+        output[TYPE_PERCENTAGE].setDrawBackground(true);
+        output[TYPE_PERCENTAGE].setColor(color_percentage);
+        output[TYPE_PERCENTAGE].setBackgroundColor(color_percentageBackground);
+        output[TYPE_TEMPERATURE].setColor(color_temperature);
+        return output;
     }
 
     public SQLiteDatabase getReadableDatabase(String fileName) {
-        return SQLiteDatabase.openDatabase(fileName, null,
-                SQLiteDatabase.OPEN_READWRITE
-                        | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-        /*return SQLiteDatabase.openDatabase(
-                Contract.DATABASE_HISTORY_PATH + "/" + fileName,
+        return SQLiteDatabase.openDatabase(
+                fileName,
                 null,
                 SQLiteDatabase.OPEN_READONLY
-        );*/
+        );
     }
 }
