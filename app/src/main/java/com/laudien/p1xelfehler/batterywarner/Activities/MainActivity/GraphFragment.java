@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -188,30 +187,79 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 Toast.makeText(applicationContext, "Sorry! :(", Toast.LENGTH_SHORT).show();
             }
         } else if (item.getItemId() == R.id.menu_open_history) {
-            startActivity(new Intent(getContext(), HistoryActivity.class));
+            openHistory();
         } else if (item.getItemId() == R.id.menu_save_to_history) {
             saveGraph();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void saveGraph() {
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        LineGraphSeries series = null;
+        switch (compoundButton.getId()) {
+            case R.id.checkbox_percentage:
+                series = series_chargeCurve;
+                break;
+            case R.id.checkBox_temp:
+                series = series_temp;
+                break;
+        }
+        if (series == null) return;
+        if (b)
+            graph_chargeCurve.addSeries(series);
+        else
+            graph_chargeCurve.removeSeries(series);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // first check if all permissions were granted
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        if (requestCode == Contract.REQUEST_SAVE_GRAPH) {
+            // restart the saving of the graph
+            saveGraph();
+        } else if (requestCode == Contract.REQUEST_LOAD_GRAPH) {
+            openHistory();
+        }
+    }
+
+    private void openHistory() {
         // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    getActivity(),
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
                     new String[]{
                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.READ_EXTERNAL_STORAGE
                     },
-                    Contract.PERMISSION_STORAGE_WRITE
+                    Contract.REQUEST_LOAD_GRAPH
             );
             return;
         }
+        startActivity(new Intent(getContext(), HistoryActivity.class));
+    }
 
+    private void saveGraph() {
         // check if a graph is present and has enough data
         if (graph_chargeCurve.getSeries().size() == 0 || series_chargeCurve.getHighestValueX() == 0) {
             Toast.makeText(getContext(), "There is nothing to save!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // check for permission
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    Contract.REQUEST_SAVE_GRAPH
+            );
             return;
         }
 
@@ -335,32 +383,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return String.format(Locale.getDefault(), timeFormat_underMinute, timeInMinutes * 60);
             }
             return String.format(Locale.getDefault(), timeFormat_underMinute, timeInMinutes);
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        LineGraphSeries series = null;
-        switch (compoundButton.getId()) {
-            case R.id.checkbox_percentage:
-                series = series_chargeCurve;
-                break;
-            case R.id.checkBox_temp:
-                series = series_temp;
-                break;
-        }
-        if (series == null) return;
-        if (b)
-            graph_chargeCurve.addSeries(series);
-        else
-            graph_chargeCurve.removeSeries(series);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Contract.PERMISSION_STORAGE_WRITE) {
-            saveGraph();
         }
     }
 }

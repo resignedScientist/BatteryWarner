@@ -1,12 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,19 +80,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void readGraphs() {
-        // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    getActivity(),
-                    new String[]{
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    Contract.PERMISSION_STORAGE_WRITE
-            );
-            return;
-        }
-
         // do the job
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
