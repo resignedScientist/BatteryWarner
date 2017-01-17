@@ -208,6 +208,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             );
             return;
         }
+
+        // check if a graph is present and has enough data
+        if (graph_chargeCurve.getSeries().size() == 0 || series_chargeCurve.getHighestValueX() == 0) {
+            Toast.makeText(getContext(), "There is nothing to save!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // load graph
         Context applicationContext = getActivity().getApplicationContext();
         Calendar calender = Calendar.getInstance();
