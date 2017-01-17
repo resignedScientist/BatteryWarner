@@ -11,19 +11,24 @@ import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+
+import java.io.File;
 
 public class HistoryPageFragment extends Fragment {
 
     private static final String TAG = "HistoryPageFragment";
-    private Series[] series;
     private int graphCounter;
+    private File file;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history_page, container, false);
         GraphView graphView = (GraphView) view.findViewById(R.id.graphView);
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         for (Series s : series) {
             graphView.addSeries(s);
         }
@@ -54,7 +59,7 @@ public class HistoryPageFragment extends Fragment {
         return view;
     }
 
-    public void addGraphs(Series[] series) {
-        this.series = series;
+    public void addGraphsFromFile(File file) {
+        this.file = file;
     }
 }

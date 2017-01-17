@@ -14,10 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
@@ -75,15 +72,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         }
 
         // do the job
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         if (files != null) {
             for (File file : files) {
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
-                LineGraphSeries<DataPoint>[] series =
-                        dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
-                pageFragment.addGraphs(series);
+                pageFragment.addGraphsFromFile(file);
                 adapter.addItem(pageFragment);
             }
         } else {
