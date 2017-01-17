@@ -102,7 +102,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 output[TYPE_TEMPERATURE].appendData(new DataPoint(time, temperature), true, 1000);
             } while (cursor.moveToNext()); // while the cursor has data
             cursor.close();
-            close();
+            database.close();
 
             // styling
             output = setGraphColors(context, output);
@@ -110,7 +110,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             return output;
         } else {
             cursor.close();
-            close();
+            database.close();
             return null;
         }
     }
