@@ -1,18 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.ViewPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
-class HistoryPagerAdapter extends ViewPagerAdapter {
+class HistoryPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<Fragment> fragments;
 
-    HistoryPagerAdapter(Context context, FragmentManager fm) {
-        super(context, fm);
+    HistoryPagerAdapter(FragmentManager fm) {
+        super(fm);
         fragments = new ArrayList<>();
     }
 
@@ -37,5 +35,15 @@ class HistoryPagerAdapter extends ViewPagerAdapter {
     void removeItem(int position) {
         fragments.remove(position);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        int position = fragments.indexOf(object);
+        if (position == -1) { // item not in the list
+            return POSITION_NONE;
+        } else {
+            return position;
+        }
     }
 }

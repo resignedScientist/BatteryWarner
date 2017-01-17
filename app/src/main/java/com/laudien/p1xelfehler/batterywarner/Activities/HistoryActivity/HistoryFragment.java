@@ -26,14 +26,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
-    private Button btn_delete;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-        adapter = new HistoryPagerAdapter(getContext(), getFragmentManager());
+        adapter = new HistoryPagerAdapter(getFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
         textView_nothingSaved = (TextView) view.findViewById(R.id.textView_nothingSaved);
@@ -42,7 +41,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         btn_next.setOnClickListener(this);
         btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
-        btn_delete = (Button) view.findViewById(R.id.btn_delete);
+        Button btn_delete = (Button) view.findViewById(R.id.btn_delete);
         btn_delete.setOnClickListener(this);
 
         readGraphs();
