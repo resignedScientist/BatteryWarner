@@ -99,4 +99,7 @@
     <string name="success_saving">The graph was saved to history!</string>
     <string name="delete">Delete</string>
     <string name="success_delete_graph">Graph removed!</string>
+    <string name="error_deleting">Deleting failed!</string>
+    <string name="error_renaming">Renaming failed!</string>
+    <string name="success_renaming">File renamed!</string>
 </resources>

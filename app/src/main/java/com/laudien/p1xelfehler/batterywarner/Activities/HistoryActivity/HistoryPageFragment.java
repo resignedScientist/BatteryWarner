@@ -73,7 +73,7 @@ public class HistoryPageFragment extends Fragment {
         if (file.delete()) {
             Toast.makeText(getContext(), getString(R.string.success_delete_graph), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Error deleting the file!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_deleting), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -84,9 +84,9 @@ public class HistoryPageFragment extends Fragment {
     public void renameFile(String newName) {
         File newFile = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
         if (file.renameTo(newFile)) {
-            Toast.makeText(getContext(), "Renamed File!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.success_renaming), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "Error renaming the file!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.error_renaming), Toast.LENGTH_SHORT).show();
         }
     }
 }
