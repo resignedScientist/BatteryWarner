@@ -2,10 +2,15 @@ package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
+import android.support.v4.graphics.ColorUtils;
+import android.util.TypedValue;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -26,6 +31,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                     + TABLE_COLUMN_PERCENTAGE + " INTEGER,"
                     + TABLE_COLUMN_TEMP + " INTEGER);";
     private static GraphDbHelper instance;
+    private int color_percentage, color_percentageBackground, color_temperature;
 
     private GraphDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -58,7 +64,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         close();
     }
 
-    public void resetTable() {
+    void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
         close();
     }
@@ -73,11 +79,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         super.close();
     }
 
-    public LineGraphSeries<DataPoint>[] getGraphs() {
+    public LineGraphSeries<DataPoint>[] getGraphs(Context context, SQLiteDatabase database) {
         LineGraphSeries<DataPoint>[] output = new LineGraphSeries[2];
         output[TYPE_PERCENTAGE] = new LineGraphSeries<>();
         output[TYPE_TEMPERATURE] = new LineGraphSeries<>();
-        SQLiteDatabase database = getReadableDatabase();
         String[] columns = {
                 GraphDbHelper.TABLE_COLUMN_TIME,
                 GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
@@ -97,13 +102,53 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext()); // while the cursor has data
             cursor.close();
             close();
+
+            // styling
             output[TYPE_PERCENTAGE].setDrawBackground(true);
-            output[TYPE_TEMPERATURE].setColor(Color.GREEN);
+            loadGraphColors(context);
+            output[TYPE_PERCENTAGE].setColor(color_percentage);
+            output[TYPE_PERCENTAGE].setBackgroundColor(color_percentageBackground);
+            output[TYPE_TEMPERATURE].setBackgroundColor(color_temperature);
+
             return output;
         } else {
             cursor.close();
             close();
             return null;
         }
+    }
+
+    public LineGraphSeries<DataPoint>[] getGraphs(Context context) {
+        return getGraphs(context, getReadableDatabase());
+    }
+
+    private void loadGraphColors(Context context) {
+        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
+            // percentage
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = context.getTheme();
+            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+            color_percentage = typedValue.data;
+            color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+            // temperature
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), false)) { // dark theme
+                color_temperature = Color.GREEN;
+            } else { // default theme
+                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                color_temperature = typedValue.data;
+            }
+        }
+    }
+
+    public SQLiteDatabase getReadableDatabase(String fileName) {
+        return SQLiteDatabase.openDatabase(fileName, null,
+                SQLiteDatabase.OPEN_READWRITE
+                        | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+        /*return SQLiteDatabase.openDatabase(
+                Contract.DATABASE_HISTORY_PATH + "/" + fileName,
+                null,
+                SQLiteDatabase.OPEN_READONLY
+        );*/
     }
 }

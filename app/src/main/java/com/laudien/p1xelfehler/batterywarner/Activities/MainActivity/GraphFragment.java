@@ -1,23 +1,19 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,9 +51,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
     private Viewport viewport_chargeCurve;
     private TextView textView_chargingTime;
-    private int graphCounter, color_percentage, color_percentageBackground, color_temperature;
     private CheckBox checkBox_percentage, checkBox_temp;
     private boolean graphEnabled, useSeconds = false;
+    private int graphCounter;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -204,7 +200,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     getActivity(),
-                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
                     Contract.PERMISSION_STORAGE_WRITE
             );
             return;
@@ -215,7 +214,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         String outputFileDir = String.format(
                 Locale.getDefault(),
                 "%s/%d_%d_%d_%d_%d.db",
-                Environment.getExternalStorageDirectory(),
+                Contract.DATABASE_HISTORY_PATH,
                 calender.get(Calendar.YEAR),
                 calender.get(Calendar.MONTH),
                 calender.get(Calendar.DAY_OF_MONTH),
@@ -230,7 +229,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         );
         File inputFile = new File(inputFileDir);
         try {
+            File directory = new File(Contract.DATABASE_HISTORY_PATH);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
             FileInputStream inputStream = new FileInputStream(inputFile);
+            new FileOutputStream(outputFileDir, false).close();
             FileOutputStream outputStream = new FileOutputStream(outputFileDir, false);
             byte[] buffer = new byte[1024];
             int length;
@@ -272,11 +276,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
                 && sharedPreferences.getBoolean(getContext().getString(R.string.pref_is_enabled), true);
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs();
+        LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs(getContext());
         if (series != null) {
             series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
             series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
-            setGraphColors();
             if (checkBox_percentage.isChecked()) {
                 graph_chargeCurve.addSeries(series_chargeCurve);
             }
@@ -331,27 +334,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             }
             return String.format(Locale.getDefault(), timeFormat_underMinute, timeInMinutes);
         }
-    }
-
-    private void setGraphColors() {
-        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0) {
-            // percentage
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = getContext().getTheme();
-            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-            color_percentage = typedValue.data;
-            color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
-            // temperature
-            if (sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), false)) { // dark theme
-                color_temperature = Color.GREEN;
-            } else { // default theme
-                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
-                color_temperature = typedValue.data;
-            }
-        }
-        series_chargeCurve.setColor(color_percentage);
-        series_chargeCurve.setBackgroundColor(color_percentageBackground);
-        series_temp.setColor(color_temperature);
     }
 
     @Override

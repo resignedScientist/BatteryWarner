@@ -1,6 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner;
 
+import android.os.Environment;
+
 public final class Contract {
+    // Database
+    public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     // permission request codes
     public static final int PERMISSION_STORAGE_WRITE = 10;
     // default values
