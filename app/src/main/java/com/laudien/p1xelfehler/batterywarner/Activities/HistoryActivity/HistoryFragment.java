@@ -52,30 +52,35 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int currentPosition = viewPager.getCurrentItem();
+        HistoryPageFragment fragment = null;
         switch (v.getId()) {
             case R.id.btn_next:
                 viewPager.setCurrentItem(currentPosition + 1, true);
-                HistoryPageFragment pageFragment = (HistoryPageFragment) adapter.getItem(currentPosition + 1);
-                if (pageFragment != null) {
-                    textView_fileName.setText(pageFragment.getFileName());
-                }
+                fragment = (HistoryPageFragment) adapter.getItem(currentPosition + 1);
                 break;
             case R.id.btn_prev:
                 viewPager.setCurrentItem(currentPosition - 1, true);
+                fragment = (HistoryPageFragment) adapter.getItem(currentPosition - 1);
                 break;
             case R.id.btn_delete:
-                HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
-                if (fragment == null) {
-                    return;
-                }
-                fragment.deleteFile();
-                adapter.removeItem(currentPosition);
-                if (adapter.getCount() == 0) {
-                    viewPager.setVisibility(View.INVISIBLE);
-                    textView_nothingSaved.setVisibility(View.VISIBLE);
-                    textView_fileName.setText("");
+                fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+                if (fragment != null) {
+                    fragment.deleteFile();
+                    adapter.removeItem(currentPosition);
+                    if (adapter.getCount() == 0) {
+                        viewPager.setVisibility(View.INVISIBLE);
+                        textView_nothingSaved.setVisibility(View.VISIBLE);
+                        textView_fileName.setText("");
+                        return;
+                    } else {
+                        currentPosition = viewPager.getCurrentItem();
+                        fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+                    }
                 }
                 break;
+        }
+        if (fragment != null) {
+            textView_fileName.setText(fragment.getFileName());
         }
     }
 

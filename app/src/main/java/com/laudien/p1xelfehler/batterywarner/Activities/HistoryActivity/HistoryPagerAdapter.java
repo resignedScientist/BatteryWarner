@@ -18,7 +18,7 @@ class HistoryPagerAdapter extends ViewPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        if (fragments.size() < position + 1) {
+        if (fragments.size() < position + 1 || position < 0) {
             return null;
         }
         return fragments.get(position);
