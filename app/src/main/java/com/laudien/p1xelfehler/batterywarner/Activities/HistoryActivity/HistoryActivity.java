@@ -14,7 +14,7 @@ public class HistoryActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        setToolbarTitle("History");
+        setToolbarTitle(getString(R.string.history_title));
         getSupportFragmentManager().beginTransaction().replace(R.id.container_layout, new HistoryFragment()).commit();
     }
 }

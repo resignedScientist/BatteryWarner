@@ -91,4 +91,12 @@
     <string name="notification_sound">Notification sound</string>
     <string name="theme_activated_toast">The theme will be enabled when you close the settings!</string>
     <string name="time_format_title">Time format</string>
+    <string name="history_title">History</string>
+    <string name="open_history">Open history</string>
+    <string name="save_to_history">Save to history</string>
+    <string name="nothing_to_save">There is nothing to save!</string>
+    <string name="error_saving">Saving failed!</string>
+    <string name="success_saving">The graph was saved to history!</string>
+    <string name="delete">Delete</string>
+    <string name="success_delete_graph">Graph removed!</string>
 </resources>

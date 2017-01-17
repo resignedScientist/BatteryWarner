@@ -247,7 +247,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private void saveGraph() {
         // check if a graph is present and has enough data
         if (graph_chargeCurve.getSeries().size() == 0 || series_chargeCurve.getHighestValueX() == 0) {
-            Toast.makeText(getContext(), "There is nothing to save!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -294,9 +294,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            Toast.makeText(applicationContext, "The graph was saved to history!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, getString(R.string.success_saving), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(applicationContext, "There was an Error!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, getString(R.string.error_saving), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

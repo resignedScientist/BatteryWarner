@@ -67,7 +67,7 @@ public class HistoryPageFragment extends Fragment {
 
     public void deleteFile() {
         if (file.delete()) {
-            Toast.makeText(getContext(), "File removed!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.success_delete_graph), Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -65,4 +65,12 @@
     <string name="notification_sound">Benachrichtigunston</string>
     <string name="theme_activated_toast">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
     <string name="time_format_title">Zeit-Format</string>
+    <string name="history_title">Gespeicherte Graphen</string>
+    <string name="open_history">Gespeicherte Graphen</string>
+    <string name="save_to_history">Graph speichern</string>
+    <string name="nothing_to_save">Hier gibt es nichts zum Speichern!</string>
+    <string name="error_saving">Speichern fehlgeschlagen!</string>
+    <string name="success_saving">Der Graph wurde gespeichert!</string>
+    <string name="delete">Löschen</string>
+    <string name="success_delete_graph">Graph gelöscht!</string>
 </resources>

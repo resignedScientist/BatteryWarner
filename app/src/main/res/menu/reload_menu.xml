@@ -8,10 +8,10 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_save_to_history"
-        android:title="Save to history"
+        android:title="@string/save_to_history"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_open_history"
-        android:title="Open history"
+        android:title="@string/open_history"
         app:showAsAction="never" />
 </menu>
