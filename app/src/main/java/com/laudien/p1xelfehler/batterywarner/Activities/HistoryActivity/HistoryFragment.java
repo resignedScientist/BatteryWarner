@@ -20,8 +20,9 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
 
-public class HistoryFragment extends Fragment implements View.OnClickListener {
+public class HistoryFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "HistoryFragment";
+    ImageButton btn_next, btn_prev;
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
@@ -34,17 +35,17 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         adapter = new HistoryPagerAdapter(getContext(), getFragmentManager());
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(this);
         textView_nothingSaved = (TextView) view.findViewById(R.id.textView_nothingSaved);
         textView_fileName = (TextView) view.findViewById(R.id.textView_fileName);
-
-        readGraphs();
-
-        ImageButton btn_next = (ImageButton) view.findViewById(R.id.btn_next);
+        btn_next = (ImageButton) view.findViewById(R.id.btn_next);
         btn_next.setOnClickListener(this);
-        ImageButton btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
+        btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
         btn_delete = (Button) view.findViewById(R.id.btn_delete);
         btn_delete.setOnClickListener(this);
+
+        readGraphs();
 
         return view;
     }
@@ -56,11 +57,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_next:
                 viewPager.setCurrentItem(currentPosition + 1, true);
-                fragment = (HistoryPageFragment) adapter.getItem(currentPosition + 1);
                 break;
             case R.id.btn_prev:
                 viewPager.setCurrentItem(currentPosition - 1, true);
-                fragment = (HistoryPageFragment) adapter.getItem(currentPosition - 1);
                 break;
             case R.id.btn_delete:
                 fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
@@ -73,14 +72,15 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
                         textView_fileName.setText("");
                         return;
                     } else {
-                        currentPosition = viewPager.getCurrentItem();
-                        fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+                        fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
+                        textView_fileName.setText(fragment.getFileName());
                     }
                 }
                 break;
         }
-        if (fragment != null) {
-            textView_fileName.setText(fragment.getFileName());
+        if (adapter.getCount() < 2) {
+            btn_next.setEnabled(false);
+            btn_prev.setEnabled(false);
         }
     }
 
@@ -110,10 +110,30 @@ public class HistoryFragment extends Fragment implements View.OnClickListener {
             if (files.length == 0) {
                 textView_nothingSaved.setVisibility(View.VISIBLE);
             } else {
-                textView_fileName.setText(files[files.length - 1].getName());
+                textView_fileName.setText(files[0].getName());
             }
         } else {
             textView_nothingSaved.setVisibility(View.VISIBLE);
         }
+        if (adapter.getCount() < 2) {
+            btn_next.setEnabled(false);
+            btn_prev.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        HistoryPageFragment currentFragment = (HistoryPageFragment) adapter.getItem(position);
+        textView_fileName.setText(currentFragment.getFileName());
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
