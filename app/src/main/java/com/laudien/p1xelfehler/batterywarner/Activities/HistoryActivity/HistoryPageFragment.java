@@ -3,7 +3,6 @@ package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,8 +84,14 @@ public class HistoryPageFragment extends Fragment {
     }
 
     public boolean renameFile(String newName) {
+        if (this.file.getName().equals(newName)) {
+            return false;
+        }
         File file = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
-        Log.i(TAG, Contract.DATABASE_HISTORY_PATH + "/" + newName);
+        if (file.exists()) {
+            Toast.makeText(getContext(), "There already is a graph named '" + newName + "'!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         boolean successful = this.file.renameTo(file);
         if (successful) {
             Toast.makeText(getContext(), getString(R.string.success_renaming), Toast.LENGTH_SHORT).show();
