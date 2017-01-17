@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import java.io.File;
 
 public class HistoryPageFragment extends Fragment {
 
-    //private static final String TAG = "HistoryPageFragment";
+    private static final String TAG = "HistoryPageFragment";
     private int graphCounter;
     private File file;
     private GraphView graphView;
@@ -69,24 +70,30 @@ public class HistoryPageFragment extends Fragment {
         this.file = file;
     }
 
-    public void deleteFile() {
-        if (file.delete()) {
+    public boolean deleteFile() {
+        boolean successful = file.delete();
+        if (successful) {
             Toast.makeText(getContext(), getString(R.string.success_delete_graph), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), getString(R.string.error_deleting), Toast.LENGTH_SHORT).show();
         }
+        return successful;
     }
 
     public String getFileName() {
         return file.getName();
     }
 
-    public void renameFile(String newName) {
-        File newFile = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
-        if (file.renameTo(newFile)) {
+    public boolean renameFile(String newName) {
+        File file = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
+        Log.i(TAG, Contract.DATABASE_HISTORY_PATH + "/" + newName);
+        boolean successful = this.file.renameTo(file);
+        if (successful) {
             Toast.makeText(getContext(), getString(R.string.success_renaming), Toast.LENGTH_SHORT).show();
+            this.file = file;
         } else {
             Toast.makeText(getContext(), getString(R.string.error_renaming), Toast.LENGTH_SHORT).show();
         }
+        return successful;
     }
 }

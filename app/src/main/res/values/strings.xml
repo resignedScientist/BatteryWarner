@@ -102,4 +102,5 @@
     <string name="error_deleting">Deleting failed!</string>
     <string name="error_renaming">Renaming failed!</string>
     <string name="success_renaming">File renamed!</string>
+    <string name="rename">Rename</string>
 </resources>

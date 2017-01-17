@@ -39,6 +39,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         btn_prev.setOnClickListener(this);
         Button btn_delete = (Button) view.findViewById(R.id.btn_delete);
         btn_delete.setOnClickListener(this);
+        Button btn_rename = (Button) view.findViewById(R.id.btn_rename);
+        btn_rename.setOnClickListener(this);
 
         readGraphs();
 
@@ -59,18 +61,24 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             case R.id.btn_delete:
                 fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
                 if (fragment != null) {
-                    fragment.deleteFile();
+                    if (!fragment.deleteFile()) {
+                        return;
+                    }
                     adapter.removeItem(currentPosition);
                     if (adapter.getCount() == 0) {
                         viewPager.setVisibility(View.INVISIBLE);
                         textView_nothingSaved.setVisibility(View.VISIBLE);
                         textView_fileName.setText("");
                         return;
-                    } else {
-                        fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
-                        textView_fileName.setText(fragment.getFileName());
                     }
                 }
+                break;
+            case R.id.btn_rename:
+                fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
+                if (!fragment.renameFile("blubb")) {
+                    return;
+                }
+                textView_fileName.setText(fragment.getFileName());
                 break;
         }
         if (adapter.getCount() < 2) {

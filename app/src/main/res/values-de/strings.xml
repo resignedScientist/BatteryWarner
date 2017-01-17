@@ -76,4 +76,5 @@
     <string name="error_deleting">Löschen fehlgeschlagen!</string>
     <string name="error_renaming">Umbenennen fehlgeschlagen!</string>
     <string name="success_renaming">Datei umbenannt!</string>
+    <string name="rename">Umbenennen</string>
 </resources>
