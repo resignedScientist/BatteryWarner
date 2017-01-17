@@ -23,7 +23,6 @@ public final class Contract {
     // Shared Preferences that are also needed here
     static final String PREF_WARNING_HIGH = "warningHigh";
     static final String PREF_WARNING_LOW = "warningLow";
-    static final String PREF_DARK_THEME_ENABLED = "darkThemeEnabled";
     // charge checking intervals
     static final int INTERVAL_DISCHARGING_VERY_LONG = 3600000; // 1 hour
     static final int INTERVAL_DISCHARGING_LONG = 1800000; // 30 minutes
