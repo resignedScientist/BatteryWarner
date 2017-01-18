@@ -61,6 +61,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             case R.id.menu_delete:
                 showDeleteDialog();
                 break;
+            case R.id.menu_info:
+                ((HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem())).showInfo();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

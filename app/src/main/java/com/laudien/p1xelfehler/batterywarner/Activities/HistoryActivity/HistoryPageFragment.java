@@ -12,11 +12,14 @@ import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.DialogManager;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
+import java.util.List;
 
 public class HistoryPageFragment extends Fragment {
 
@@ -103,5 +106,14 @@ public class HistoryPageFragment extends Fragment {
             Toast.makeText(getContext(), getString(R.string.error_renaming), Toast.LENGTH_SHORT).show();
         }
         return successful;
+    }
+
+    public void showInfo() {
+        List<Series> series = graphView.getSeries();
+        DialogManager.getInstance().showInfoDialog(getActivity(), new InfoObject(
+                series.get(0).getHighestValueX(),
+                series.get(1).getHighestValueY(),
+                series.get(1).getLowestValueY()
+        ));
     }
 }
