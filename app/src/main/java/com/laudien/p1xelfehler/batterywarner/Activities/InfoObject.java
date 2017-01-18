@@ -10,10 +10,41 @@ import java.util.Locale;
 
 public class InfoObject {
     private double timeInMinutes, maxTemp, minTemp;
-    private boolean useSeconds = false;
 
     public InfoObject(double timeInMinutes, double maxTemp, double minTemp) {
         updateValues(timeInMinutes, maxTemp, minTemp);
+    }
+
+    private static String[] getTimeFormats(Context context) {
+        String[] formats = new String[4];
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String timeFormat = sharedPreferences.getString(context.getString(R.string.pref_time_format), "0");
+        switch (timeFormat) {
+            case "0":
+                formats[0] = "%d h %.0f min";
+                formats[1] = "%.0f min";
+                formats[2] = "%.0f min";
+                formats[3] = "false";
+                break;
+            case "1":
+                formats[0] = "%d h %.1f min";
+                formats[1] = "%.1f min";
+                formats[2] = "%.1f min";
+                formats[3] = "false";
+                break;
+            case "2":
+                formats[0] = "%d h %.0f min %.0f s";
+                formats[1] = "%.0f min %.0f s";
+                formats[2] = "%.0f s";
+                formats[3] = "true";
+                break;
+        }
+        return formats;
+    }
+
+    public static String getZeroTimeString(Context context) {
+        String[] formats = getTimeFormats(context);
+        return String.format(Locale.getDefault(), formats[2], 0f);
     }
 
     public void updateValues(double timeInMinutes, double maxTemp, double minTemp) {
@@ -22,33 +53,9 @@ public class InfoObject {
         this.minTemp = minTemp;
     }
 
-    private String[] getTimeFormats(Context context) {
-        String[] formats = new String[3];
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String timeFormat = sharedPreferences.getString(context.getString(R.string.pref_time_format), "0");
-        switch (timeFormat) {
-            case "0":
-                formats[0] = "%d h %.0f min";
-                formats[1] = "%.0f min";
-                formats[2] = "%.0f min";
-                break;
-            case "1":
-                formats[0] = "%d h %.1f min";
-                formats[1] = "%.1f min";
-                formats[2] = "%.1f min";
-                break;
-            case "2":
-                formats[0] = "%d h %.0f min %.0f s";
-                formats[1] = "%.0f min %.0f s";
-                formats[2] = "%.0f s";
-                useSeconds = true;
-                break;
-        }
-        return formats;
-    }
-
     public String getTimeString(Context context) {
         String[] formats = getTimeFormats(context);
+        boolean useSeconds = Boolean.valueOf(formats[3]);
         if (timeInMinutes > 60) { // over an hour
             long hours = (long) timeInMinutes / 60;
             double minutes = (timeInMinutes - hours * 60);
@@ -83,10 +90,5 @@ public class InfoObject {
 
     public double getTimeInMinutes() {
         return timeInMinutes;
-    }
-
-    public String getZeroTimeString(Context context) {
-        String[] formats = getTimeFormats(context);
-        return String.format(Locale.getDefault(), formats[2], 0f);
     }
 }

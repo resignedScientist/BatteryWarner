@@ -343,14 +343,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             } else { // not enough data
                 viewport_chargeCurve.setMaxX(1);
                 if (isChargingAndNotFull) {
-                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), infoObject.getZeroTimeString(getContext())));
+                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
                 } else {
                     textView_chargingTime.setText(getString(R.string.not_enough_data));
                 }
             }
         } else { // empty database
             if (isChargingAndNotFull) {
-                textView_chargingTime.setText(String.format("%s (%s)", infoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
+                textView_chargingTime.setText(String.format("%s (%s)", InfoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));
             }
