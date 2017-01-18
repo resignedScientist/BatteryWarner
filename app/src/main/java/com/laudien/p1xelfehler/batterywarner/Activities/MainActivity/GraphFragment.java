@@ -169,8 +169,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.reload_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.reload_menu, menu);
     }
 
     @Override

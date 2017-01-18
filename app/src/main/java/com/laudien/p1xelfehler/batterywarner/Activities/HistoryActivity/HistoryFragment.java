@@ -6,10 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,6 +29,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,14 +49,23 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         btn_next.setOnClickListener(this);
         btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
-        Button btn_delete = (Button) view.findViewById(R.id.btn_delete);
-        btn_delete.setOnClickListener(this);
-        Button btn_rename = (Button) view.findViewById(R.id.btn_rename);
-        btn_rename.setOnClickListener(this);
 
         readGraphs();
 
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_rename:
+                showRenameDialog();
+                break;
+            case R.id.menu_delete:
+                showDeleteDialog();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -58,12 +76,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 break;
             case R.id.btn_prev:
                 viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
-                break;
-            case R.id.btn_delete:
-                showDeleteDialog();
-                break;
-            case R.id.btn_rename:
-                showRenameDialog();
                 break;
         }
     }
@@ -169,5 +181,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.i(TAG, "Hello");
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.history_menu, menu);
     }
 }
