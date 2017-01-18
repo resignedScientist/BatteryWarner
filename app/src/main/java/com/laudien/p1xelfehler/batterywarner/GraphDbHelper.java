@@ -52,6 +52,15 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_QUERY);
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+
+    }
+
+    @Override
+    public synchronized void close() {
+        super.close();
+    }
 
     void addValue(long time, int percentage, int temperature) {
         ContentValues contentValues = new ContentValues();
@@ -70,16 +79,6 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
         close();
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
-    }
-
-    @Override
-    public synchronized void close() {
-        super.close();
     }
 
     public LineGraphSeries<DataPoint>[] getGraphs(Context context, SQLiteDatabase database) {

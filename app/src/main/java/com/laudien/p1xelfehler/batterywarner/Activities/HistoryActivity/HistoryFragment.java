@@ -77,6 +77,28 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         }
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        HistoryPageFragment currentFragment = (HistoryPageFragment) adapter.getItem(position);
+        textView_fileName.setText(currentFragment.getFileName());
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.history_menu, menu);
+    }
+
     private void showDeleteDialog() {
         final int currentPosition = viewPager.getCurrentItem();
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
@@ -154,6 +176,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         if (files != null) {
             for (File file : files) {
+                // check if the file is a valid database file
                 if (!dbHelper.isValidDatabase(file.getPath())) {
                     if (file == files[firstGoodFile]) {
                         firstGoodFile++;
@@ -177,27 +200,5 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             btn_next.setEnabled(false);
             btn_prev.setEnabled(false);
         }
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        HistoryPageFragment currentFragment = (HistoryPageFragment) adapter.getItem(position);
-        textView_fileName.setText(currentFragment.getFileName());
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.history_menu, menu);
     }
 }
