@@ -35,6 +35,9 @@ public class HistoryPageFragment extends Fragment {
     }
 
     private void initGraphView() {
+        if (file == null) {
+            return;
+        }
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         for (Series s : series) {
