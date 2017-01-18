@@ -76,4 +76,13 @@ public class InfoObject {
     public double getMinTemp() {
         return minTemp;
     }
+
+    public double getTimeInMinutes() {
+        return timeInMinutes;
+    }
+
+    public String getZeroTimeString(Context context) {
+        String[] formats = getTimeFormats(context);
+        return String.format(Locale.getDefault(), formats[2], 0f);
+    }
 }
