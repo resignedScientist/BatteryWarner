@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -117,7 +119,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         View view = inflater.inflate(R.layout.dialog_rename, null);
         final EditText editText = (EditText) view.findViewById(R.id.editText);
         editText.setText(fragment.getFileName());
-        new AlertDialog.Builder(getActivity())
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
                 .setTitle("Rename graph")
                 .setMessage("New name:")
@@ -134,7 +136,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         textView_fileName.setText(fragment.getFileName());
                     }
                 })
-                .create().show();
+                .create();
+        Window window = dialog.getWindow();
+        if (window != null) { // show keyboard
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+        dialog.show();
     }
 
     private void readGraphs() {
