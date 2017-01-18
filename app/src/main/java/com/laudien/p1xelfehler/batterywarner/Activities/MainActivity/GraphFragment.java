@@ -176,11 +176,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         } else if (item.getItemId() == R.id.menu_save_to_history) {
             saveGraph();
         } else if (item.getItemId() == R.id.menu_info) {
-            DialogManager.getInstance().showInfoDialog(getActivity(), new InfoObject(
-                    series_chargeCurve.getHighestValueX(),
-                    series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY()
-            ));
+            if (infoObject != null) {
+                DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
+            } else {
+                Toast.makeText(getContext(), "There is no data!", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
