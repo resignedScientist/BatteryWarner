@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
@@ -148,16 +149,26 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         // do the job
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
+        int goodFiles = 0;
+        int firstGoodFile = 0;
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         if (files != null) {
             for (File file : files) {
+                if (!dbHelper.isValidDatabase(file.getPath())) {
+                    if (file == files[firstGoodFile]) {
+                        firstGoodFile++;
+                    }
+                    continue;
+                }
+                goodFiles++;
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
                 pageFragment.addGraphsFromFile(file);
                 adapter.addItem(pageFragment);
             }
-            if (files.length == 0) {
+            if (goodFiles == 0) {
                 textView_nothingSaved.setVisibility(View.VISIBLE);
             } else {
-                textView_fileName.setText(files[0].getName());
+                textView_fileName.setText(files[firstGoodFile].getName());
             }
         } else {
             textView_nothingSaved.setVisibility(View.VISIBLE);

@@ -15,6 +15,8 @@ import android.util.TypedValue;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.FileReader;
+
 public class GraphDbHelper extends SQLiteOpenHelper {
     // private static final String TAG = "GraphDbHelper";
     public static final int TYPE_PERCENTAGE = 0;
@@ -152,5 +154,17 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 null,
                 SQLiteDatabase.OPEN_READONLY
         );
+    }
+
+    public boolean isValidDatabase(String fileName) {
+        try (FileReader fileReader = new FileReader(fileName)) {
+            char[] buffer = new char[16];
+            fileReader.read(buffer, 0, 16); // read first 16 bytes
+            String string = String.valueOf(buffer);
+            return string.equals("SQLite format 3\u0000");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
