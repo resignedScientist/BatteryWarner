@@ -327,11 +327,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             if (checkBox_temp.isChecked()) {
                 graph_chargeCurve.addSeries(series_temp);
             }
-            infoObject = new InfoObject(
-                    series_chargeCurve.getHighestValueX(),
-                    series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY()
-            );
+            updateInfoObject();
             String timeString = infoObject.getTimeString(getContext());
             if (infoObject.getTimeInMinutes() != 0) { // enough data
                 if (isChargingAndNotFull) {
@@ -354,6 +350,22 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));
             }
+        }
+    }
+
+    private void updateInfoObject() {
+        if (infoObject == null) {
+            infoObject = new InfoObject(
+                    series_chargeCurve.getHighestValueX(),
+                    series_temp.getHighestValueY(),
+                    series_temp.getLowestValueY()
+            );
+        } else {
+            infoObject.updateValues(
+                    series_chargeCurve.getHighestValueX(),
+                    series_temp.getHighestValueY(),
+                    series_temp.getLowestValueY()
+            );
         }
     }
 }

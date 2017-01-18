@@ -13,6 +13,10 @@ public class InfoObject {
     private boolean useSeconds = false;
 
     public InfoObject(double timeInMinutes, double maxTemp, double minTemp) {
+        updateValues(timeInMinutes, maxTemp, minTemp);
+    }
+
+    public void updateValues(double timeInMinutes, double maxTemp, double minTemp) {
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
