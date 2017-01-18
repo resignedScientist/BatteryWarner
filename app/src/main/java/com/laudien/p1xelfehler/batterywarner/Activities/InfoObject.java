@@ -76,8 +76,4 @@ public class InfoObject {
     public double getMinTemp() {
         return minTemp;
     }
-
-    public double getTimeInMinutes() {
-        return timeInMinutes;
-    }
 }
