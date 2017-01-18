@@ -89,7 +89,11 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                             viewPager.setVisibility(View.INVISIBLE);
                             textView_nothingSaved.setVisibility(View.VISIBLE);
                             textView_fileName.setText("");
-                        } else if (adapter.getCount() < 2) {
+                        } else { // min 1 item is there
+                            HistoryPageFragment newFragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
+                            textView_fileName.setText(newFragment.getFileName());
+                        }
+                        if (adapter.getCount() < 2) {
                             btn_next.setEnabled(false);
                             btn_prev.setEnabled(false);
                         }
