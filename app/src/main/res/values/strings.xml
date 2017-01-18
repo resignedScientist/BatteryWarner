@@ -103,4 +103,9 @@
     <string name="error_renaming">Renaming failed!</string>
     <string name="success_renaming">File renamed!</string>
     <string name="rename">Rename</string>
+    <string name="graph_info">Graph information</string>
+    <string name="max_temp">Highest temperature</string>
+    <string name="min_temp">Lowest temperature</string>
+    <string name="no_graphs_saved">No Graphs saved!</string>
+    <string name="rename_graph">Rename graph</string>
 </resources>

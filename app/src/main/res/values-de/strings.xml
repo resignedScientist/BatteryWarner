@@ -77,4 +77,9 @@
     <string name="error_renaming">Umbenennen fehlgeschlagen!</string>
     <string name="success_renaming">Datei umbenannt!</string>
     <string name="rename">Umbenennen</string>
+    <string name="graph_info">Graphen-Informationen</string>
+    <string name="max_temp">Maximale Temperatur</string>
+    <string name="min_temp">Minimale Temperatur</string>
+    <string name="no_graphs_saved">Keine Graphen gefunden!</string>
+    <string name="rename_graph">Graphen umbenennen</string>
 </resources>

@@ -67,7 +67,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 if (fragment != null) {
                     fragment.showInfo();
                 } else {
-                    Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -112,7 +112,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         final int currentPosition = viewPager.getCurrentItem();
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
         if (fragment == null) {
-            Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
             return;
         }
         new AlertDialog.Builder(getContext()).setCancelable(true)
@@ -146,7 +146,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private void showRenameDialog() {
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
         if (fragment == null) {
-            Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
             return;
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -155,7 +155,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         editText.setText(fragment.getFileName());
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
-                .setTitle("Rename graph")
+                .setTitle(getString(R.string.rename_graph))
                 .setView(view)
                 .setNegativeButton("Cancel", null)
                 .setIcon(R.mipmap.ic_launcher)

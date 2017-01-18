@@ -47,7 +47,7 @@
         android:id="@+id/textView_nothingSaved"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Graphs saved!"
+        android:text="@string/no_graphs_saved"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintLeft_toLeftOf="@+id/viewPager"

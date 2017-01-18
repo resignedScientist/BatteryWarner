@@ -158,29 +158,33 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
-            Context applicationContext = getActivity().getApplicationContext();
-            if (Contract.IS_PRO) {
+        int id = item.getItemId();
+        if (!Contract.IS_PRO && id != R.id.menu_open_history) {
+            Toast.makeText(getContext(), getString(R.string.pro_only_short), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        switch (id) {
+            case R.id.menu_refresh:
                 if (graphEnabled) {
                     reloadChargeCurve();
-                    Toast.makeText(applicationContext, getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(applicationContext, getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
                 }
                 return true;
-            } else {
-                Toast.makeText(applicationContext, "Sorry! :(", Toast.LENGTH_SHORT).show();
-            }
-        } else if (item.getItemId() == R.id.menu_open_history) {
-            openHistory();
-        } else if (item.getItemId() == R.id.menu_save_to_history) {
-            saveGraph();
-        } else if (item.getItemId() == R.id.menu_info) {
-            if (infoObject != null) {
-                DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
-            } else {
-                Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
-            }
+            case R.id.menu_open_history:
+                openHistory();
+                return true;
+            case R.id.menu_save_to_history:
+                saveGraph();
+                return true;
+            case R.id.menu_info:
+                if (infoObject != null) {
+                    DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

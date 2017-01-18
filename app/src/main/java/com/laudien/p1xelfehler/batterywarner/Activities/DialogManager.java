@@ -32,12 +32,12 @@ public class DialogManager {
                 activity.getString(R.string.charging_time), infoObject.getTimeString(activity)));
         TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(Locale.getDefault(), "%s: %.1f°C",
-                "Maximale Temperatur", infoObject.getMaxTemp()));
+                activity.getString(R.string.max_temp), infoObject.getMaxTemp()));
         TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(Locale.getDefault(), "%s: %.1f°C",
-                "Minimale Temperatur", infoObject.getMinTemp()));
+                activity.getString(R.string.min_temp), infoObject.getMinTemp()));
         new AlertDialog.Builder(activity)
-                .setTitle("Graph info")
+                .setTitle(activity.getString(R.string.graph_info))
                 .setView(view)
                 .setCancelable(true)
                 .setPositiveButton("Close", null)
