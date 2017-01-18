@@ -179,7 +179,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             if (infoObject != null) {
                 DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
             } else {
-                Toast.makeText(getContext(), "There is no data!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);

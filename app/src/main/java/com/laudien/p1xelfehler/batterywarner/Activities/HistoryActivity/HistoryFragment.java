@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
@@ -62,7 +63,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 showDeleteDialog();
                 break;
             case R.id.menu_info:
-                ((HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem())).showInfo();
+                HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
+                if (fragment != null) {
+                    fragment.showInfo();
+                } else {
+                    Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -106,6 +112,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         final int currentPosition = viewPager.getCurrentItem();
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
         if (fragment == null) {
+            Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
             return;
         }
         new AlertDialog.Builder(getContext()).setCancelable(true)
@@ -139,6 +146,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private void showRenameDialog() {
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
         if (fragment == null) {
+            Toast.makeText(getContext(), "No Graphs saved!", Toast.LENGTH_SHORT).show();
             return;
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
