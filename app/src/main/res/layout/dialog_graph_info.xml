@@ -13,19 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ladezeit: 1 h 30 min"
-        android:textSize="14sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textView_maxTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Maximale Temperatur: 35°C"
-        android:textSize="14sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textView_minTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Minimale Temperatur: 20°C"
-        android:textSize="14sp" />
+        android:textSize="18sp" />
 </LinearLayout>
