@@ -27,6 +27,7 @@ public class HistoryPageFragment extends Fragment {
     private int graphCounter;
     private File file;
     private GraphView graphView;
+    private InfoObject infoObject;
 
     @Nullable
     @Override
@@ -53,6 +54,12 @@ public class HistoryPageFragment extends Fragment {
         viewport.setMinX(0);
         viewport.setMaxY(100);
         viewport.setMinY(0);
+
+        infoObject = new InfoObject(
+                series[0].getHighestValueX(),
+                series[1].getHighestValueY(),
+                series[1].getLowestValueY()
+        );
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
@@ -110,10 +117,6 @@ public class HistoryPageFragment extends Fragment {
 
     public void showInfo() {
         List<Series> series = graphView.getSeries();
-        DialogManager.getInstance().showInfoDialog(getActivity(), new InfoObject(
-                series.get(0).getHighestValueX(),
-                series.get(1).getHighestValueY(),
-                series.get(1).getLowestValueY()
-        ));
+        DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
     }
 }
