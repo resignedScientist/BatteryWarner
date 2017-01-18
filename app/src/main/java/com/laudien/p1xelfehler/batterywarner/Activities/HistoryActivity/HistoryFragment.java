@@ -148,7 +148,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
                 .setTitle("Rename graph")
-                .setMessage("New name:")
                 .setView(view)
                 .setNegativeButton("Cancel", null)
                 .setIcon(R.mipmap.ic_launcher)
