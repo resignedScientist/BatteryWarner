@@ -41,6 +41,7 @@ public class DialogManager {
                 .setView(view)
                 .setCancelable(true)
                 .setPositiveButton("Close", null)
+                .setIcon(R.mipmap.ic_launcher)
                 .create()
                 .show();
     }

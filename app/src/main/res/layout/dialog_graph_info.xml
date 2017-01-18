@@ -12,17 +12,20 @@
         android:id="@+id/textView_totalTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ladezeit: 1 h 30 min" />
+        android:text="Ladezeit: 1 h 30 min"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/textView_maxTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Maximale Temperatur: 35°C" />
+        android:text="Maximale Temperatur: 35°C"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/textView_minTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Minimale Temperatur: 20°C" />
+        android:text="Minimale Temperatur: 20°C"
+        android:textSize="14sp" />
 </LinearLayout>
