@@ -30,8 +30,10 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.DialogManager;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -192,6 +194,12 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             openHistory();
         } else if (item.getItemId() == R.id.menu_save_to_history) {
             saveGraph();
+        } else if (item.getItemId() == R.id.menu_info) {
+            DialogManager.getInstance().showInfoDialog(getActivity(), new InfoObject(
+                    series_chargeCurve.getHighestValueX(),
+                    series_temp.getHighestValueY(),
+                    series_temp.getLowestValueY()
+            ));
         }
         return super.onOptionsItemSelected(item);
     }
