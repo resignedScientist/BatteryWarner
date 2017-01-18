@@ -82,4 +82,10 @@
     <string name="min_temp">Minimale Temperatur</string>
     <string name="no_graphs_saved">Keine Graphen gefunden!</string>
     <string name="rename_graph">Graphen umbenennen</string>
+    <string name="are_you_sure">Sind Sie sicher?</string>
+    <string name="question_delete_graph">Möchten Sie den Graphen wirklich löschen?</string>
+    <string name="yes">Ja</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="ok">Ok</string>
+    <string name="close">Schließen</string>
 </resources>

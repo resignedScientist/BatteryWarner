@@ -116,10 +116,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             return;
         }
         new AlertDialog.Builder(getContext()).setCancelable(true)
-                .setTitle("Are you sure?")
-                .setMessage("Do you really want to delete that graph?")
+                .setTitle(getString(R.string.are_you_sure))
+                .setMessage(getString(R.string.question_delete_graph))
                 .setIcon(R.mipmap.ic_launcher)
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (!fragment.deleteFile()) {
@@ -139,7 +139,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                             btn_prev.setEnabled(false);
                         }
                     }
-                }).setNegativeButton("Cancel", null)
+                }).setNegativeButton(getString(R.string.cancel), null)
                 .create().show();
     }
 
@@ -157,9 +157,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 .setCancelable(true)
                 .setTitle(getString(R.string.rename_graph))
                 .setView(view)
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton(getString(R.string.cancel), null)
                 .setIcon(R.mipmap.ic_launcher)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String newName = editText.getText().toString();

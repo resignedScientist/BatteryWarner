@@ -40,7 +40,7 @@ public class DialogManager {
                 .setTitle(activity.getString(R.string.graph_info))
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton("Close", null)
+                .setPositiveButton(activity.getString(R.string.close), null)
                 .setIcon(R.mipmap.ic_launcher)
                 .create()
                 .show();

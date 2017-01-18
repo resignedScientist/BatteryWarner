@@ -108,4 +108,10 @@
     <string name="min_temp">Lowest temperature</string>
     <string name="no_graphs_saved">No Graphs saved!</string>
     <string name="rename_graph">Rename graph</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="question_delete_graph">Do you really want to delete that graph?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="close">Close</string>
 </resources>
