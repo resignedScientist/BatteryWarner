@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,15 +28,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         adapter = new HistoryPagerAdapter(getFragmentManager());
@@ -185,7 +179,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.i(TAG, "Hello");
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.history_menu, menu);
     }
