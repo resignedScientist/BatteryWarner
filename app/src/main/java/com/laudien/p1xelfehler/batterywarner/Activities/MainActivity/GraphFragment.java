@@ -29,11 +29,11 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.Activities.DialogManager;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.DialogManager;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 

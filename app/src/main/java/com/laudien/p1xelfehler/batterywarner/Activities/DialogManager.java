@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner;
+package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
