@@ -183,16 +183,16 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         // do the job
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
-        Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                return -Long.compare(o1.lastModified(), o2.lastModified());
-            }
-        });
         int goodFiles = 0;
         int firstGoodFile = 0;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         if (files != null) {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return -Long.compare(o1.lastModified(), o2.lastModified());
+                }
+            });
             for (File file : files) {
                 // check if the file is a valid database file
                 if (!dbHelper.isValidDatabase(file.getPath())) {
