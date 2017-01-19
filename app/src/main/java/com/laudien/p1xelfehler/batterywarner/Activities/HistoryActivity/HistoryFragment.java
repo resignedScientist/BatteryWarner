@@ -24,6 +24,8 @@ import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class HistoryFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "HistoryFragment";
@@ -181,6 +183,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         // do the job
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
+        Arrays.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return -Long.compare(o1.lastModified(), o2.lastModified());
+            }
+        });
         int goodFiles = 0;
         int firstGoodFile = 0;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
