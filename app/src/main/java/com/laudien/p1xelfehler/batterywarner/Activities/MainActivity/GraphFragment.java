@@ -267,6 +267,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 Contract.DATABASE_HISTORY_PATH,
                 calender.getTimeInMillis()
         );
+        // test
         String inputFileDir = String.format(
                 Locale.getDefault(),
                 "/data/data/%s/databases/%s",
