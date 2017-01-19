@@ -274,6 +274,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 Contract.PACKAGE_NAME_PRO,
                 GraphDbHelper.DATABASE_NAME
         );
+        // test
         File inputFile = new File(inputFileDir);
         try {
             File directory = new File(Contract.DATABASE_HISTORY_PATH);
