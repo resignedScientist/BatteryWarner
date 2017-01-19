@@ -228,7 +228,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 public int compare(File o1, File o2) {
                     return -Long.compare(o1.lastModified(), o2.lastModified());
                 }
-            });
+            }); // test
             for (File file : files) {
                 // check if the file is a valid database file
                 if (!dbHelper.isValidDatabase(file.getPath())) {
