@@ -362,13 +362,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             infoObject = new InfoObject(
                     series_chargeCurve.getHighestValueX(),
                     series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY()
+                    series_temp.getLowestValueY(),
+                    series_chargeCurve.getHighestValueY() - series_chargeCurve.getLowestValueY()
             );
         } else {
             infoObject.updateValues(
                     series_chargeCurve.getHighestValueX(),
                     series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY()
+                    series_temp.getLowestValueY(),
+                    series_chargeCurve.getHighestValueY() - series_chargeCurve.getLowestValueY()
             );
         }
     }

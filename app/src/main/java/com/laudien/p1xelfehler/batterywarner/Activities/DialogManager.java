@@ -36,6 +36,10 @@ public class DialogManager {
         TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(Locale.getDefault(), "%s: %.1f°C",
                 activity.getString(R.string.min_temp), infoObject.getMinTemp()));
+        TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
+        textView_speed.setText(String.format(Locale.getDefault(), "%s: %.2f%%/h",
+                activity.getString(R.string.charging_speed),
+                infoObject.getPercentCharged() * 60 / infoObject.getTimeInMinutes()));
         new AlertDialog.Builder(activity)
                 .setTitle(activity.getString(R.string.graph_info))
                 .setView(view)

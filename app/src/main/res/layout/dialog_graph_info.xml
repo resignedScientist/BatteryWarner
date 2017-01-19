@@ -16,6 +16,13 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/textView_speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ladegeschwindigkeit: 70%/h"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/textView_maxTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

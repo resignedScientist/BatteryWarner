@@ -9,10 +9,10 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 public class InfoObject {
-    private double timeInMinutes, maxTemp, minTemp;
+    private double timeInMinutes, maxTemp, minTemp, percentCharged;
 
-    public InfoObject(double timeInMinutes, double maxTemp, double minTemp) {
-        updateValues(timeInMinutes, maxTemp, minTemp);
+    public InfoObject(double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        updateValues(timeInMinutes, maxTemp, minTemp, percentCharged);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -47,10 +47,11 @@ public class InfoObject {
         return String.format(Locale.getDefault(), formats[2], 0f);
     }
 
-    public void updateValues(double timeInMinutes, double maxTemp, double minTemp) {
+    public void updateValues(double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
+        this.percentCharged = percentCharged;
     }
 
     public String getTimeString(Context context) {
@@ -90,5 +91,9 @@ public class InfoObject {
 
     public double getTimeInMinutes() {
         return timeInMinutes;
+    }
+
+    public double getPercentCharged() {
+        return percentCharged;
     }
 }

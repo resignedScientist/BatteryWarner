@@ -58,7 +58,8 @@ public class HistoryPageFragment extends Fragment {
         infoObject = new InfoObject(
                 series[0].getHighestValueX(),
                 series[1].getHighestValueY(),
-                series[1].getLowestValueY()
+                series[1].getLowestValueY(),
+                series[0].getHighestValueY() - series[0].getLowestValueY()
         );
 
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
