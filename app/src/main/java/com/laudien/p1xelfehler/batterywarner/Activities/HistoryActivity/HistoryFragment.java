@@ -33,6 +33,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
+    private File path;
 
     @Nullable
     @Override
@@ -63,6 +64,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 break;
             case R.id.menu_delete:
                 showDeleteDialog();
+                break;
+            case R.id.menu_delete_all:
+                showDeleteAllDialog();
                 break;
             case R.id.menu_info:
                 HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
@@ -145,6 +149,38 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 .create().show();
     }
 
+    private void showDeleteAllDialog() {
+        if (adapter.getCount() == 0) {
+            Toast.makeText(getContext(), R.string.no_graphs_saved, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.mipmap.ic_launcher)
+                .setTitle(R.string.are_you_sure)
+                .setMessage("Do you really want to delete ALL graphs?")
+                .setCancelable(true)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        adapter.removeAll();
+                        textView_nothingSaved.setVisibility(View.VISIBLE);
+                        textView_fileName.setText("");
+                        File[] files = path.listFiles();
+                        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+                        for (File file : files) {
+                            if (dbHelper.isValidDatabase(file.getPath())) {
+                                if (!file.delete()) {
+                                    Toast.makeText(getContext(), R.string.error_deleting, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        Toast.makeText(getContext(), "All Graphs were deleted successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                }).create()
+                .show();
+    }
+
     private void showRenameDialog() {
         final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
         if (fragment == null) {
@@ -181,7 +217,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     private void readGraphs() {
         // do the job
-        File path = new File(Contract.DATABASE_HISTORY_PATH);
+        path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         int goodFiles = 0;
         int firstGoodFile = 0;
