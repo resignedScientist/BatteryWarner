@@ -37,7 +37,7 @@ public class ChargingReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 // check if the charging notification for the current method is enabled
-                if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
+                if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
                     return;
                 }
 
