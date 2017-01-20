@@ -89,4 +89,5 @@
     <string name="ok">Ok</string>
     <string name="close">Schließen</string>
     <string name="charging_speed">Ladegeschwindigkeit</string>
+    <string name="autosave">Automatisch speichern</string>
 </resources>

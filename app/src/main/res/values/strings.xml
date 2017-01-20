@@ -7,6 +7,7 @@
     <string name="pref_usb_enabled" translatable="false">usbEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
     <string name="pref_graph_enabled" translatable="false">graphEnabled</string>
+    <string name="pref_graph_autosave" translatable="false">graphAutoSave</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
     <string name="pref_sound_uri" translatable="false">savedSoundUri</string>
     <string name="pref_warning_low" translatable="false">warningLow</string>
@@ -115,4 +116,5 @@
     <string name="ok">Ok</string>
     <string name="close">Close</string>
     <string name="charging_speed">Charging speed</string>
+    <string name="autosave">Autosave</string>
 </resources>
