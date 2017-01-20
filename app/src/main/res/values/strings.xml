@@ -118,5 +118,5 @@
     <string name="close">Close</string>
     <string name="charging_speed">Charging speed</string>
     <string name="autosave">Save automatically</string>
-    <string name="get_pro">Get Pro</string>
+    <string name="get_pro">Click here to get pro version!</string>
 </resources>
