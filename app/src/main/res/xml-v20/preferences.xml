@@ -49,7 +49,7 @@
             android:title="@string/enable_charging_curve" />
         <SwitchPreference
             android:defaultValue="false"
-            android:key="pref_graph_autosave"
+            android:key="@string/pref_graph_autosave"
             android:title="@string/autosave" />
         <ListPreference
             android:defaultValue="0"

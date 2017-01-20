@@ -26,22 +26,26 @@ public class DischargingReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
-        if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
-            return; // return if discharging notification is disabled
+        // only if discharging notification is enabled
+        if (BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
+            // set already shown to false
+            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+
+            // send notification if under lowWarning
+            BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+            batteryAlarmManager.checkAndNotify(context);
+            batteryAlarmManager.setDischargingAlarm(context);
+
+            // notify GraphFragment
+            GraphFragment.notify(context);
+
+            // start discharging alarm
+            batteryAlarmManager.setDischargingAlarm(context);
         }
 
-        // set already shown to false
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-
-        // send notification if under lowWarning
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        batteryAlarmManager.checkAndNotify(context);
-        batteryAlarmManager.setDischargingAlarm(context);
-
-        // notify GraphFragment
-        GraphFragment.notify(context);
-
-        // start discharging alarm
-        batteryAlarmManager.setDischargingAlarm(context);
+        // auto save if enabled in settings
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
+            GraphFragment.saveGraph(context);
+        }
     }
 }
