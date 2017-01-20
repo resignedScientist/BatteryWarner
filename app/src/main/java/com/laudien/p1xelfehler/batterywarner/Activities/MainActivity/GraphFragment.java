@@ -268,6 +268,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 Contract.DATABASE_HISTORY_PATH,
                 DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
         );
+        // rename the file if it already exists
         File outputFile = new File(outputFileDir);
         int i = 0;
         String baseFileDir = outputFileDir;
