@@ -56,6 +56,19 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
             return false; // return false if warning high is disabled
         }
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_chargingType), chargingType).apply();
+        return checkChargingType(context, sharedPreferences, chargingType);
+    }
+
+    public static boolean checkChargingType(Context context, SharedPreferences sharedPreferences) {
+        int chargingType = PreferenceManager.getDefaultSharedPreferences(context).getInt(
+                context.getString(R.string.pref_last_chargingType),
+                BatteryManager.BATTERY_PLUGGED_AC
+        );
+        return checkChargingType(context, sharedPreferences, chargingType);
+    }
+
+    private static boolean checkChargingType(Context context, SharedPreferences sharedPreferences, int chargingType) {
         switch (chargingType) {
             case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
                 if (!sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), true)) {

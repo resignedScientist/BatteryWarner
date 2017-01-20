@@ -43,9 +43,11 @@ public class DischargingReceiver extends BroadcastReceiver {
             batteryAlarmManager.setDischargingAlarm(context);
         }
 
-        // auto save if enabled in settings
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
-            GraphFragment.saveGraph(context);
+        // auto save if enabled in settings and last charging type is enabled
+        if (BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+            if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
+                GraphFragment.saveGraph(context);
+            }
         }
     }
 }
