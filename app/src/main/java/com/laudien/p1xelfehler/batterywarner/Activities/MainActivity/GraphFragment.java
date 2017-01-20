@@ -74,6 +74,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     public static void saveGraph(Context context) {
         // return if permissions are not granted
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    .putBoolean(context.getString(R.string.pref_graph_autosave), false)
+                    .apply();
             return;
         }
         Calendar calender = Calendar.getInstance();
