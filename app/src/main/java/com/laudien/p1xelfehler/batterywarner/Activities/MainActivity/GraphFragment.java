@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -263,18 +264,24 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         Calendar calender = Calendar.getInstance();
         String outputFileDir = String.format(
                 Locale.getDefault(),
-                "%s/history_%d",
+                "%s/%s",
                 Contract.DATABASE_HISTORY_PATH,
-                calender.getTimeInMillis()
+                DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
         );
-        // test
+        File outputFile = new File(outputFileDir);
+        int i = 0;
+        String baseFileDir = outputFileDir;
+        while (outputFile.exists()) {
+            i++;
+            outputFileDir = baseFileDir + " (" + i + ")";
+            outputFile = new File(outputFileDir);
+        }
         String inputFileDir = String.format(
                 Locale.getDefault(),
                 "/data/data/%s/databases/%s",
                 Contract.PACKAGE_NAME_PRO,
                 GraphDbHelper.DATABASE_NAME
         );
-        // test
         File inputFile = new File(inputFileDir);
         try {
             File directory = new File(Contract.DATABASE_HISTORY_PATH);
@@ -282,7 +289,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 directory.mkdirs();
             }
             FileInputStream inputStream = new FileInputStream(inputFile);
-            FileOutputStream outputStream = new FileOutputStream(outputFileDir, false);
+            FileOutputStream outputStream = new FileOutputStream(outputFile, false);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
