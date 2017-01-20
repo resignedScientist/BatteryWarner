@@ -71,6 +71,56 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         context.sendBroadcast(intent);
     }
 
+    public static void saveGraph(Context context) {
+        // return if permissions are not granted
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Calendar calender = Calendar.getInstance();
+        String outputFileDir = String.format(
+                Locale.getDefault(),
+                "%s/%s",
+                Contract.DATABASE_HISTORY_PATH,
+                DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
+        );
+        // rename the file if it already exists
+        File outputFile = new File(outputFileDir);
+        int i = 0;
+        String baseFileDir = outputFileDir;
+        while (outputFile.exists()) {
+            i++;
+            outputFileDir = baseFileDir + " (" + i + ")";
+            outputFile = new File(outputFileDir);
+        }
+        String inputFileDir = String.format(
+                Locale.getDefault(),
+                "/data/data/%s/databases/%s",
+                Contract.PACKAGE_NAME_PRO,
+                GraphDbHelper.DATABASE_NAME
+        );
+        File inputFile = new File(inputFileDir);
+        try {
+            File directory = new File(Contract.DATABASE_HISTORY_PATH);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            FileInputStream inputStream = new FileInputStream(inputFile);
+            FileOutputStream outputStream = new FileOutputStream(outputFile, false);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+            Toast.makeText(context, R.string.success_saving, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(context, R.string.error_saving, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -246,7 +296,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             Toast.makeText(getContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
             return;
         }
-
         // check for permission
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
@@ -258,51 +307,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             );
             return;
         }
-
         // save graph
-        Calendar calender = Calendar.getInstance();
-        String outputFileDir = String.format(
-                Locale.getDefault(),
-                "%s/%s",
-                Contract.DATABASE_HISTORY_PATH,
-                DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
-        );
-        // rename the file if it already exists
-        File outputFile = new File(outputFileDir);
-        int i = 0;
-        String baseFileDir = outputFileDir;
-        while (outputFile.exists()) {
-            i++;
-            outputFileDir = baseFileDir + " (" + i + ")";
-            outputFile = new File(outputFileDir);
-        }
-        String inputFileDir = String.format(
-                Locale.getDefault(),
-                "/data/data/%s/databases/%s",
-                Contract.PACKAGE_NAME_PRO,
-                GraphDbHelper.DATABASE_NAME
-        );
-        File inputFile = new File(inputFileDir);
-        try {
-            File directory = new File(Contract.DATABASE_HISTORY_PATH);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            FileInputStream inputStream = new FileInputStream(inputFile);
-            FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
-            }
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-            Toast.makeText(getContext(), R.string.success_saving, Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(getContext(), R.string.error_saving, Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+        saveGraph(getContext());
     }
 
     public void reloadChargeCurve() {
