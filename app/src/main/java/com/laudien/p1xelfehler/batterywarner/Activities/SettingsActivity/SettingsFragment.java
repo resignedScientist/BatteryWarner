@@ -18,6 +18,9 @@ import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
@@ -60,6 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         }
 
         if (!Contract.IS_PRO) {
+            setHasOptionsMenu(true);
             Preference pref_graphEnabled = findPreference(getString(R.string.pref_graph_enabled));
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
@@ -69,6 +73,24 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.settings_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_pro) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Contract.PACKAGE_NAME_PRO)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + Contract.PACKAGE_NAME_PRO)));
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
