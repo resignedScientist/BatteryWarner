@@ -260,7 +260,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
 
         // save graph
-        Context applicationContext = getActivity().getApplicationContext();
         Calendar calender = Calendar.getInstance();
         String outputFileDir = String.format(
                 Locale.getDefault(),
@@ -299,9 +298,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            Toast.makeText(applicationContext, getString(R.string.success_saving), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(applicationContext, getString(R.string.error_saving), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error_saving, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
