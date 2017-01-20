@@ -268,6 +268,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 Contract.DATABASE_HISTORY_PATH,
                 DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
         );
+        File outputFile = new File(outputFileDir);
+        int i = 0;
+        String baseFileDir = outputFileDir;
+        while (outputFile.exists()) {
+            i++;
+            outputFileDir = baseFileDir + " (" + i + ")";
+            outputFile = new File(outputFileDir);
+        }
         String inputFileDir = String.format(
                 Locale.getDefault(),
                 "/data/data/%s/databases/%s",
@@ -281,7 +289,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 directory.mkdirs();
             }
             FileInputStream inputStream = new FileInputStream(inputFile);
-            FileOutputStream outputStream = new FileOutputStream(outputFileDir, false);
+            FileOutputStream outputStream = new FileOutputStream(outputFile, false);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
