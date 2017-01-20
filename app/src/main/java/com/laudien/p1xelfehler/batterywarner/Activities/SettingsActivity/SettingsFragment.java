@@ -55,6 +55,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
             pref_timeFormat.setEnabled(false);
+            Preference pref_autoSave = findPreference(getString(R.string.pref_graph_autosave));
+            pref_autoSave.setEnabled(false);
             PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
             category_graph.setTitle(String.format(Locale.getDefault(),
                     "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
