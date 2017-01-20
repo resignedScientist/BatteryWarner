@@ -9,6 +9,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -44,10 +45,10 @@ public class DischargingReceiver extends BroadcastReceiver {
         }
 
         // auto save if enabled in settings and last charging type is enabled
-        if (BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
-            if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
-                GraphFragment.saveGraph(context);
-            }
+        if (Contract.IS_PRO
+                && BatteryAlarmManager.checkChargingType(context, sharedPreferences)
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
+            GraphFragment.saveGraph(context);
         }
     }
 }
