@@ -37,11 +37,6 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-    void removeAll() {
-        fragments.clear();
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemPosition(Object object) {
         int position = fragments.indexOf(object);
