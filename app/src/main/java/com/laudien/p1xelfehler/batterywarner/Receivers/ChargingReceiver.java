@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -33,34 +32,29 @@ public class ChargingReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // check if the charging notification for the current method is enabled
-                if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
-                    return;
-                }
+        // check if the charging notification for the current method is enabled
+        if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+            return;
+        }
 
-                // reset already notified
-                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+        // reset already notified
+        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
-                // reset graph values if graph is enabled
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true)) {
-                    sharedPreferences.edit().putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
-                            .putInt(context.getString(R.string.pref_last_percentage), -1)
-                            .putBoolean(context.getString(R.string.pref_reset_graph), true)
-                            .apply();
-                }
+        // reset graph values if graph is enabled
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true)) {
+            sharedPreferences.edit().putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
+                    .putInt(context.getString(R.string.pref_last_percentage), -1)
+                    .putBoolean(context.getString(R.string.pref_reset_graph), true)
+                    .apply();
+        }
 
-                // notify the graph fragment
-                GraphFragment.notify(context);
+        // notify the graph fragment
+        GraphFragment.notify(context);
 
-                // notify if silent/vibrate mode
-                new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
+        // notify if silent/vibrate mode
+        new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
 
-                // start charging service
-                context.startService(new Intent(context, ChargingService.class));
-            }
-        }, 2000);
+        // start charging service
+        context.startService(new Intent(context, ChargingService.class));
     }
 }
