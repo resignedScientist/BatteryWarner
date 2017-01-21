@@ -32,13 +32,13 @@ public class ChargingReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
+        // reset already notified
+        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+
         // check if the charging notification for the current method is enabled
         if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
             return;
         }
-
-        // reset already notified
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
         // reset graph values if graph is enabled
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true)) {

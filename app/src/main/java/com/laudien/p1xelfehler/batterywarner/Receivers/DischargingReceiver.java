@@ -27,10 +27,11 @@ public class DischargingReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
 
+        // reset already notified
+        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+
         // only if discharging notification is enabled
         if (BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
-            // set already shown to false
-            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
             // send notification if under lowWarning
             BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
