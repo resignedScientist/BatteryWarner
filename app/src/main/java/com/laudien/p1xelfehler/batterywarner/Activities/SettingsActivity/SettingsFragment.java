@@ -31,17 +31,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     // private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
-    TwoStatePreference pref_autoSave;
+    private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh;
+    private Preference pref_usb, pref_ac, pref_wireless;
     private SwitchPreference switch_darkTheme;
     private RingtonePreference ringtonePreference;
+    private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        SeekBarPreference slider_warningHigh = (SeekBarPreference) findPreference(getString(R.string.pref_warning_high_enabled));
-        slider_warningHigh.setOnPreferenceChangeListener(this);
         if (getActivity() instanceof SettingsActivity) {
             switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
             switch_darkTheme.setOnPreferenceChangeListener(this);
@@ -50,6 +50,15 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         ringtonePreference.setOnPreferenceChangeListener(this);
         pref_autoSave = (TwoStatePreference) findPreference(getString(R.string.pref_graph_autosave));
         pref_autoSave.setOnPreferenceChangeListener(this);
+        pref_warningLow = (TwoStatePreference) findPreference(getString(R.string.pref_warning_low_enabled));
+        pref_warningLow.setOnPreferenceChangeListener(this);
+        pref_warningHigh = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
+        pref_warningHigh.setOnPreferenceChangeListener(this);
+        pref_seekBarLow = (SeekBarPreference) findPreference(getString(R.string.pref_warning_low));
+        pref_seekBarHigh = (SeekBarPreference) findPreference(getString(R.string.pref_warning_high));
+        pref_usb = findPreference(getString(R.string.pref_usb_enabled));
+        pref_ac = findPreference(getString(R.string.pref_ac_enabled));
+        pref_wireless = findPreference(getString(R.string.pref_wireless_enabled));
 
         Context context = getActivity();
         if (context != null) {
@@ -83,6 +92,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             });
             category_graph.addPreference(pref_pro);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pref_seekBarLow.setEnabled(pref_warningLow.isChecked());
+        boolean highChecked = pref_warningHigh.isChecked();
+        pref_seekBarHigh.setEnabled(highChecked);
+        pref_usb.setEnabled(highChecked);
+        pref_ac.setEnabled(highChecked);
+        pref_wireless.setEnabled(highChecked);
     }
 
     @Override
@@ -128,6 +148,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     );
                 }
             }
+        } else if (preference == pref_warningLow) {
+            pref_seekBarLow.setEnabled((boolean) o);
+        } else if (preference == pref_warningHigh) {
+            boolean highChecked = (boolean) o;
+            pref_seekBarHigh.setEnabled(highChecked);
+            pref_usb.setEnabled(highChecked);
+            pref_ac.setEnabled(highChecked);
+            pref_wireless.setEnabled(highChecked);
         }
         return true;
     }

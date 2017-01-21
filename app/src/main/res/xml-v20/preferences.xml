@@ -10,21 +10,27 @@
             android:title="@string/btn_notification" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/low_battery_warning">
-        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="@string/pref_warning_low_enabled"
-            app:default_checked="true"
+            android:layout="@layout/preference_checkbox"
+            android:title="@string/enabled" />
+        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+            android:key="@string/pref_warning_low"
             app:default_progress="20"
-            app:key_progress="@string/pref_warning_low"
             app:slider_max="40"
             app:slider_min="5"
             app:unit="%" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
-        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+        <CheckBoxPreference
+            android:defaultValue="true"
             android:key="@string/pref_warning_high_enabled"
-            app:default_checked="true"
+            android:layout="@layout/preference_checkbox"
+            android:title="@string/enabled" />
+        <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+            android:key="@string/pref_warning_high"
             app:default_progress="80"
-            app:key_progress="@string/pref_warning_high"
             app:slider_min="60"
             app:unit="%" />
         <SwitchPreference
