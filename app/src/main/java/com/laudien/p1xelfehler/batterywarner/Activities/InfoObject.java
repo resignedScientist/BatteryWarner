@@ -69,6 +69,13 @@ public class InfoObject {
                 activity.getString(R.string.charging_time),
                 getTimeString(activity))
         );
+        TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
+        textView_speed.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.2f %%/h",
+                activity.getString(R.string.charging_speed),
+                percentCharged * 60 / timeInMinutes)
+        );
         TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
@@ -82,13 +89,6 @@ public class InfoObject {
                 "%s: %.1f°C",
                 activity.getString(R.string.min_temp),
                 minTemp)
-        );
-        TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
-        textView_speed.setText(String.format(
-                Locale.getDefault(),
-                "%s: %.2f %%/h",
-                activity.getString(R.string.charging_speed),
-                percentCharged * 60 / timeInMinutes)
         );
         new AlertDialog.Builder(activity)
                 .setTitle(activity.getString(R.string.graph_info))
