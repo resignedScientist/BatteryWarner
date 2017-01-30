@@ -29,7 +29,6 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.Activities.DialogManager;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
@@ -234,7 +233,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 return true;
             case R.id.menu_info:
                 if (infoObject != null) {
-                    DialogManager.getInstance().showInfoDialog(getActivity(), infoObject);
+                    infoObject.showDialog(getActivity());
                 } else {
                     Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 }

@@ -1,8 +1,13 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -81,19 +86,48 @@ public class InfoObject {
         }
     }
 
-    public double getMaxTemp() {
-        return maxTemp;
-    }
-
-    public double getMinTemp() {
-        return minTemp;
+    public void showDialog(Activity activity) {
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_graph_info, null);
+        TextView textView_totalTime = (TextView) view.findViewById(R.id.textView_totalTime);
+        textView_totalTime.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                activity.getString(R.string.charging_time),
+                getTimeString(activity))
+        );
+        TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
+        textView_maxTemp.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f°C",
+                activity.getString(R.string.max_temp),
+                maxTemp)
+        );
+        TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
+        textView_minTemp.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f°C",
+                activity.getString(R.string.min_temp),
+                minTemp)
+        );
+        TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
+        textView_speed.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.2f %%/h",
+                activity.getString(R.string.charging_speed),
+                percentCharged * 60 / timeInMinutes)
+        );
+        new AlertDialog.Builder(activity)
+                .setTitle(activity.getString(R.string.graph_info))
+                .setView(view)
+                .setCancelable(true)
+                .setPositiveButton(activity.getString(R.string.close), null)
+                .setIcon(R.mipmap.ic_launcher)
+                .create()
+                .show();
     }
 
     public double getTimeInMinutes() {
         return timeInMinutes;
-    }
-
-    public double getPercentCharged() {
-        return percentCharged;
     }
 }
