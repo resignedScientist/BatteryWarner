@@ -59,33 +59,6 @@ public class InfoObject {
         this.percentCharged = percentCharged;
     }
 
-    public String getTimeString(Context context) {
-        String[] formats = getTimeFormats(context);
-        boolean useSeconds = Boolean.valueOf(formats[3]);
-        if (timeInMinutes > 60) { // over an hour
-            long hours = (long) timeInMinutes / 60;
-            double minutes = (timeInMinutes - hours * 60);
-            if (useSeconds) {
-                double minutes_floor = Math.floor(minutes);
-                double seconds = (minutes - minutes_floor) * 60;
-                return String.format(Locale.getDefault(), formats[0], hours, minutes_floor, seconds);
-            }
-            return String.format(Locale.getDefault(), formats[0], hours, minutes);
-        } else if (timeInMinutes > 1) { // under an hour, over a minute
-            if (useSeconds) {
-                double minutes = Math.floor(timeInMinutes);
-                double seconds = (timeInMinutes - minutes) * 60;
-                return String.format(Locale.getDefault(), formats[1], minutes, seconds);
-            }
-            return String.format(Locale.getDefault(), formats[1], timeInMinutes);
-        } else { // under a minute
-            if (useSeconds) {
-                return String.format(Locale.getDefault(), formats[2], timeInMinutes * 60);
-            }
-            return String.format(Locale.getDefault(), formats[2], timeInMinutes);
-        }
-    }
-
     public void showDialog(Activity activity) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_graph_info, null);
@@ -125,6 +98,33 @@ public class InfoObject {
                 .setIcon(R.mipmap.ic_launcher)
                 .create()
                 .show();
+    }
+
+    public String getTimeString(Context context) {
+        String[] formats = getTimeFormats(context);
+        boolean useSeconds = Boolean.valueOf(formats[3]);
+        if (timeInMinutes > 60) { // over an hour
+            long hours = (long) timeInMinutes / 60;
+            double minutes = (timeInMinutes - hours * 60);
+            if (useSeconds) {
+                double minutes_floor = Math.floor(minutes);
+                double seconds = (minutes - minutes_floor) * 60;
+                return String.format(Locale.getDefault(), formats[0], hours, minutes_floor, seconds);
+            }
+            return String.format(Locale.getDefault(), formats[0], hours, minutes);
+        } else if (timeInMinutes > 1) { // under an hour, over a minute
+            if (useSeconds) {
+                double minutes = Math.floor(timeInMinutes);
+                double seconds = (timeInMinutes - minutes) * 60;
+                return String.format(Locale.getDefault(), formats[1], minutes, seconds);
+            }
+            return String.format(Locale.getDefault(), formats[1], timeInMinutes);
+        } else { // under a minute
+            if (useSeconds) {
+                return String.format(Locale.getDefault(), formats[2], timeInMinutes * 60);
+            }
+            return String.format(Locale.getDefault(), formats[2], timeInMinutes);
+        }
     }
 
     public double getTimeInMinutes() {
