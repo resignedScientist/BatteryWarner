@@ -50,7 +50,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     }
 
     private void init(Context context, AttributeSet attrs) {
-        setLayoutResource(R.layout.preference_seek_bar);
+        setLayoutResource(R.layout.preference_seekbar);
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBarPreference);
             unit = a.getString(R.styleable.SeekBarPreference_unit);
