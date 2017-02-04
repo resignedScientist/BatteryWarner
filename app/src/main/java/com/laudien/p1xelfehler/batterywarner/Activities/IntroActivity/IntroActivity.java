@@ -14,8 +14,6 @@ import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
-import java.util.Calendar;
-
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
@@ -81,10 +79,7 @@ public class IntroActivity extends MaterialIntroActivity {
         if (batteryStatus != null) {
             // start the service if charging (if enabled in settings)
             if (BatteryAlarmManager.isChargingNotificationEnabled(this, sharedPreferences, batteryStatus)) {
-                sharedPreferences.edit().putLong(getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
-                        .putInt(getString(R.string.pref_last_percentage), -1)
-                        .apply();
-                startService(new Intent(this, ChargingService.class));
+                ChargingService.startService(this);
                 // set the alarm if discharging (if enabled in settings)
             } else if (BatteryAlarmManager.isDischargingNotificationEnabled(this, sharedPreferences)) {
                 batteryAlarmManager.setDischargingAlarm(this);

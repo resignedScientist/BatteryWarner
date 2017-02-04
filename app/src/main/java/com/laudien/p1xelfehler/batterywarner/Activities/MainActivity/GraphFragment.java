@@ -37,6 +37,7 @@ import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -82,6 +83,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         // return if the database is empty
         if (GraphDbHelper.getInstance(context).isTableEmpty()) {
+            return;
+        }
+
+        if (!BatteryAlarmManager.isGraphEnabled(context, PreferenceManager.getDefaultSharedPreferences(context))) {
             return;
         }
 
@@ -234,20 +239,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
                 return true;
             case R.id.menu_reset:
-                new AlertDialog.Builder(getContext())
-                        .setCancelable(true)
-                        .setTitle(R.string.are_you_sure)
-                        .setMessage(R.string.question_delete_graph)
-                        .setNegativeButton(R.string.cancel, null)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-                                dbHelper.resetTable();
-                                reloadChargeCurve();
-                                Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
-                            }
-                        }).create().show();
+                if (sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true)) {
+                    showResetDialog();
+                }
                 break;
             case R.id.menu_open_history:
                 openHistory();
@@ -414,5 +408,20 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     series_chargeCurve.getHighestValueY() - series_chargeCurve.getLowestValueY()
             );
         }
+    }
+
+    private void showResetDialog() {
+        new AlertDialog.Builder(getContext())
+                .setCancelable(true)
+                .setTitle(R.string.are_you_sure)
+                .setMessage(R.string.question_delete_graph)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChargingService.restartService(getContext());
+                        Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
+                    }
+                }).create().show();
     }
 }

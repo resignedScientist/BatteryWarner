@@ -12,9 +12,14 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.R;
+
+import java.util.Calendar;
 
 public class ChargingService extends Service {
 
@@ -50,6 +55,32 @@ public class ChargingService extends Service {
             }
         }
     };
+
+    public static void startService(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (BatteryAlarmManager.isGraphEnabled(context, sharedPreferences)) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
+            dbHelper.resetTable();
+            sharedPreferences.edit()
+                    .putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
+                    .putInt(context.getString(R.string.pref_last_percentage), -1)
+                    .apply();
+        }
+        if (BatteryAlarmManager.isCharging(BatteryAlarmManager.getBatteryStatus(context))) {
+            context.startService(new Intent(context, ChargingService.class));
+        } else {
+            GraphFragment.notify(context);
+        }
+    }
+
+    public static void stopService(Context context) {
+        context.stopService(new Intent(context, ChargingService.class));
+    }
+
+    public static void restartService(Context context) {
+        stopService(context);
+        startService(context);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

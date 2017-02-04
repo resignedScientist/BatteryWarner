@@ -3,12 +3,10 @@ package com.laudien.p1xelfehler.batterywarner.Receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -23,14 +21,14 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
 
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = BatteryAlarmManager.getBatteryStatus(context);
         if (batteryStatus == null) {
             return;
         }
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        boolean isCharging = BatteryAlarmManager.isCharging(batteryStatus);
         if (isCharging) { // charging
-            context.startService(new Intent(context, ChargingService.class)); // start charging service if charging
+            ChargingService.startService(context);
         } else { // discharging
             batteryAlarmManager.cancelDischargingAlarm(context);
             batteryAlarmManager.setDischargingAlarm(context);
