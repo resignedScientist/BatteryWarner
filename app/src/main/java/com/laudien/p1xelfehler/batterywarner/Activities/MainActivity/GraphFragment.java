@@ -179,6 +179,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                         graphCounter = 1;
                         return "0 min";
                     }
+                    if (value < 0.1) {
+                        return "";
+                    }
                     if (graphCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
@@ -376,7 +379,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
                 viewport_chargeCurve.setMaxX(infoObject.getTimeInMinutes());
             } else { // not enough data
-                viewport_chargeCurve.setMaxX(1);
+                viewport_chargeCurve.setMaxX(1.0);
                 if (isChargingAndNotFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
                 } else {
@@ -384,6 +387,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
             }
         } else { // empty database
+            viewport_chargeCurve.setMaxX(1.0);
             if (isChargingAndNotFull) {
                 textView_chargingTime.setText(String.format("%s (%s)", InfoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
             } else {
