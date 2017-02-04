@@ -105,7 +105,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         pref_usb.setEnabled(highChecked);
         pref_ac.setEnabled(highChecked);
         pref_wireless.setEnabled(highChecked);
-        pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
+        if (Contract.IS_PRO) {
+            pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
+        }
     }
 
     @Override
