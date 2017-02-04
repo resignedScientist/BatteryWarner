@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
-    // private static final String TAG = "SettingsFragment";
+    private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh;
     private Preference pref_usb, pref_ac, pref_wireless;
@@ -161,7 +162,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_AUTO_SAVE) {
             for (int result : grantResults) {

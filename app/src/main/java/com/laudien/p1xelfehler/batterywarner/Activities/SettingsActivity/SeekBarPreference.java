@@ -27,6 +27,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     private int progress;
     private int defaultProgress;
     private TextView textView;
+    private SeekBar seekBar;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -81,7 +82,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     protected void onBindView(View view) {
         super.onBindView(view);
         textView = (TextView) view.findViewById(R.id.textView);
-        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar);
+        seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(max - min);
 
@@ -95,7 +96,6 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         textView.setText(String.format(Locale.getDefault(), "%d%s", i + min, unit));
-        persistInt(i + min);
     }
 
     @Override
@@ -105,6 +105,19 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        persistInt(getValue());
+    }
 
+    public int getValue() {
+        if (seekBar == null) {
+            return min;
+        }
+        return seekBar.getProgress() + min;
+    }
+
+    public void setValue(int progress) {
+        if (seekBar != null) {
+            seekBar.setProgress(progress - min);
+        }
     }
 }
