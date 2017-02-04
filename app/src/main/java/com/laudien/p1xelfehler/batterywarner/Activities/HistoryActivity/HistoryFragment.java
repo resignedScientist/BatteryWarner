@@ -166,6 +166,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String newName = editText.getText().toString();
+                        if (newName.contains("/")) {
+                            Toast.makeText(getContext(), R.string.unallowed_character_renaming, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         if (!fragment.renameFile(newName)) {
                             return;
                         }

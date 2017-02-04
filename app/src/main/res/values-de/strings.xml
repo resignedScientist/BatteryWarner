@@ -92,4 +92,5 @@
     <string name="autosave">Automatisch speichern</string>
     <string name="get_pro">Hier gelangst du zur Pro-Version!</string>
     <string name="reset">Zurücksetzen</string>
+    <string name="unallowed_character_renaming">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
 </resources>

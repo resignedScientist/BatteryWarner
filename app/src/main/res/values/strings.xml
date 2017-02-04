@@ -120,4 +120,5 @@
     <string name="autosave">Save automatically</string>
     <string name="get_pro">Click here to get pro version!</string>
     <string name="reset">Reset</string>
+    <string name="unallowed_character_renaming">Unallowed character(s) used! Renaming failed!</string>
 </resources>
