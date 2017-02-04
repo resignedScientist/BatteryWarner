@@ -32,7 +32,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
 
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
-    private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh;
+    private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled;
     private Preference pref_usb, pref_ac, pref_wireless;
     private SwitchPreference switch_darkTheme;
     private RingtonePreference ringtonePreference;
@@ -51,6 +51,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         ringtonePreference.setOnPreferenceChangeListener(this);
         pref_autoSave = (TwoStatePreference) findPreference(getString(R.string.pref_graph_autosave));
         pref_autoSave.setOnPreferenceChangeListener(this);
+        pref_graphEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_graph_enabled));
+        pref_graphEnabled.setOnPreferenceChangeListener(this);
         pref_warningLow = (TwoStatePreference) findPreference(getString(R.string.pref_warning_low_enabled));
         pref_warningLow.setOnPreferenceChangeListener(this);
         pref_warningHigh = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
@@ -70,7 +72,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         }
 
         if (!Contract.IS_PRO) {
-            Preference pref_graphEnabled = findPreference(getString(R.string.pref_graph_enabled));
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
             pref_timeFormat.setEnabled(false);
@@ -104,6 +105,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         pref_usb.setEnabled(highChecked);
         pref_ac.setEnabled(highChecked);
         pref_wireless.setEnabled(highChecked);
+        pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
     }
 
     @Override
@@ -157,6 +159,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_usb.setEnabled(highChecked);
             pref_ac.setEnabled(highChecked);
             pref_wireless.setEnabled(highChecked);
+        } else if (preference == pref_graphEnabled) {
+            pref_autoSave.setEnabled((boolean) o);
         }
         return true;
     }
