@@ -42,6 +42,9 @@ public class HistoryPageFragment extends Fragment {
         }
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+        if (series == null) {
+            return;
+        }
         for (Series s : series) {
             graphView.addSeries(s);
         }
@@ -115,6 +118,8 @@ public class HistoryPageFragment extends Fragment {
     }
 
     public void showInfo() {
-        infoObject.showDialog(getActivity());
+        if (infoObject != null) {
+            infoObject.showDialog(getActivity());
+        }
     }
 }

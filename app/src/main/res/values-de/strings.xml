@@ -91,4 +91,5 @@
     <string name="charging_speed">Ladegeschwindigkeit</string>
     <string name="autosave">Automatisch speichern</string>
     <string name="get_pro">Hier gelangst du zur Pro-Version!</string>
+    <string name="reset">Zurücksetzen</string>
 </resources>

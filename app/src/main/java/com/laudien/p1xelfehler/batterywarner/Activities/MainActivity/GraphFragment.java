@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,12 +80,18 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     .apply();
             return;
         }
+        // return if the database is empty
+        if (GraphDbHelper.getInstance(context).isTableEmpty()) {
+            return;
+        }
+
         Calendar calender = Calendar.getInstance();
         String outputFileDir = String.format(
                 Locale.getDefault(),
                 "%s/%s",
                 Contract.DATABASE_HISTORY_PATH,
                 DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
+                        .replace("/", "_")
         );
         // rename the file if it already exists
         File outputFile = new File(outputFileDir);
@@ -225,6 +233,22 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            case R.id.menu_reset:
+                new AlertDialog.Builder(getContext())
+                        .setCancelable(true)
+                        .setTitle(R.string.are_you_sure)
+                        .setMessage(R.string.question_delete_graph)
+                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+                                dbHelper.resetTable();
+                                reloadChargeCurve();
+                                Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
+                            }
+                        }).create().show();
+                break;
             case R.id.menu_open_history:
                 openHistory();
                 return true;
@@ -295,7 +319,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private void saveGraph() {
         // check if a graph is present and has enough data
         if (graph_chargeCurve.getSeries().size() == 0 || series_chargeCurve.getHighestValueX() == 0) {
-            Toast.makeText(getContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.nothing_to_save, Toast.LENGTH_SHORT).show();
             return;
         }
         // check for permission

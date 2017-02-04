@@ -76,7 +76,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         close();
     }
 
-    void resetTable() {
+    public void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
         close();
     }
@@ -157,6 +157,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
 
     public boolean isValidDatabase(String fileName) {
         try (FileReader fileReader = new FileReader(fileName)) {
+            if (isTableEmpty(fileName)) {
+                return false;
+            }
             char[] buffer = new char[16];
             fileReader.read(buffer, 0, 16); // read first 16 bytes
             String string = String.valueOf(buffer);
@@ -165,5 +168,24 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean isTableEmpty(SQLiteDatabase db) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
+        cursor.moveToFirst();
+        if (cursor.getInt(0) == 0) {
+            close();
+            return true;
+        }
+        db.close();
+        return false;
+    }
+
+    public boolean isTableEmpty() {
+        return isTableEmpty(getReadableDatabase());
+    }
+
+    public boolean isTableEmpty(String fileName) {
+        return isTableEmpty(getReadableDatabase(fileName));
     }
 }

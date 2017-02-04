@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -193,15 +194,17 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 public int compare(File o1, File o2) {
                     return -Long.compare(o1.lastModified(), o2.lastModified());
                 }
-            }); // another test
+            });
             for (File file : files) {
                 // check if the file is a valid database file
                 if (!dbHelper.isValidDatabase(file.getPath())) {
                     if (file == files[firstGoodFile]) {
                         firstGoodFile++;
                     }
+                    Log.i(TAG, "ValidDatabase = false");
                     continue;
                 }
+                Log.i(TAG, "ValidDatabase = true");
                 goodFiles++;
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
                 pageFragment.addGraphsFromFile(file);
