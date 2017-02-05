@@ -13,15 +13,11 @@ import agency.tango.materialintroscreen.SlideFragment;
 
 public class PreferencesSlide extends SlideFragment {
 
-    //SettingsFragment settingsFragment;
-    SettingsFragment settingsFragment;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.slide_preferences, container, false);
-        settingsFragment = new SettingsFragment();
-        getActivity().getFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
+        getActivity().getFragmentManager().beginTransaction().replace(R.id.container_layout, new SettingsFragment()).commit();
         return view;
     }
 
@@ -43,9 +39,5 @@ public class PreferencesSlide extends SlideFragment {
     @Override
     public String cantMoveFurtherErrorMessage() {
         return null;
-    }
-
-    public void saveSettings() {
-        //settingsFragment.saveAll();
     }
 }

@@ -58,8 +58,7 @@ public class IntroActivity extends MaterialIntroActivity {
                 .build()
         );
 
-        preferencesSlide = new PreferencesSlide();
-        addSlide(preferencesSlide);
+        addSlide(new PreferencesSlide());
     }
 
     @Override
@@ -71,7 +70,6 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     public void onFinish() {
         super.onFinish();
-        preferencesSlide.saveSettings();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
