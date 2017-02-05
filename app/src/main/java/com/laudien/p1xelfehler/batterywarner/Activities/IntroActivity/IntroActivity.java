@@ -46,6 +46,8 @@ public class IntroActivity extends MaterialIntroActivity {
             bundle.putString(ImageSlide.BUNDLE_DESCRIPTION, "You won't regret it! :)");
             imageSlide.setArguments(bundle);
             addSlide(imageSlide);
+            // TODO: uninstall slide
+
             // preference slide
             addSlide(new PreferencesSlide());
         } else {
