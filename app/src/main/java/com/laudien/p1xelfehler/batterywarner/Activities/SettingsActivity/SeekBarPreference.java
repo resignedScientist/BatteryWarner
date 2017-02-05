@@ -111,6 +111,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         numberPicker.setMinValue(min);
         numberPicker.setMaxValue(max);
         numberPicker.setValue(getValue());
+        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setNegativeButton(R.string.cancel, null)
