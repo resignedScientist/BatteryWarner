@@ -16,21 +16,29 @@ import agency.tango.materialintroscreen.SlideFragment;
 
 public class ImageSlide extends SlideFragment {
 
-    TextView titleTextView, descriptionTextView;
-    ImageView imageView;
-    int backgroundColor = R.color.colorIntro1,
-            buttonsColor = R.color.colorButtons;
+    final static String BUNDLE_TITLE = "title";
+    final static String BUNDLE_DESCRIPTION = "description";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(agency.tango.materialintroscreen.R.layout.fragment_slide, container, false);
-        titleTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_title_slide);
-        titleTextView.setText(getContext().getString(R.string.intro_1_title));
-        descriptionTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_description_slide);
-        descriptionTextView.setText(getContext().getString(R.string.intro_1_description));
 
-        imageView = (ImageView) view.findViewById(agency.tango.materialintroscreen.R.id.image_slide);
+        String title, description;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            title = arguments.getString(BUNDLE_TITLE, getString(R.string.intro_1_title));
+            description = arguments.getString(BUNDLE_DESCRIPTION, getString(R.string.intro_1_description));
+        } else {
+            title = getString(R.string.intro_1_title);
+            description = getString(R.string.intro_1_description);
+        }
+
+        TextView titleTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_title_slide);
+        titleTextView.setText(title);
+        TextView descriptionTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_description_slide);
+        descriptionTextView.setText(description);
+        ImageView imageView = (ImageView) view.findViewById(agency.tango.materialintroscreen.R.id.image_slide);
         imageView.setImageResource(R.drawable.battery_status_full_white);
         Drawable drawable = imageView.getDrawable();
         drawable.setColorFilter(getContext().getResources().getColor(R.color.colorBatteryOk),
@@ -41,11 +49,11 @@ public class ImageSlide extends SlideFragment {
     }
 
     public int backgroundColor() {
-        return backgroundColor;
+        return R.color.colorIntro1;
     }
 
     public int buttonsColor() {
-        return buttonsColor;
+        return R.color.colorButtons;
     }
 
 }

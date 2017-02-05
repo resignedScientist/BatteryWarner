@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -37,27 +38,36 @@ public class IntroActivity extends MaterialIntroActivity {
                     }
                 });
 
-        addSlide(new ImageSlide());
-
-        addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.colorIntro2)
-                .buttonsColor(R.color.colorButtons)
-                .image(R.drawable.batteries)
-                .title(getString(R.string.slide_2_title))
-                .description(getString(R.string.slide_2_description))
-                .build()
-        );
-
-        addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.colorIntro3)
-                .buttonsColor(R.color.colorButtons)
-                .image(R.drawable.done_white_big)
-                .title(getString(R.string.slide_3_title))
-                .description(getString(R.string.slide_3_description))
-                .build()
-        );
-
-        addSlide(new PreferencesSlide());
+        if (Contract.IS_PRO) {
+            // first slide (thank you slide)
+            ImageSlide imageSlide = new ImageSlide();
+            Bundle bundle = new Bundle(2);
+            bundle.putString(ImageSlide.BUNDLE_TITLE, "Thank you for purchasing the pro Version!");
+            bundle.putString(ImageSlide.BUNDLE_DESCRIPTION, "You won't regret it! :)");
+            imageSlide.setArguments(bundle);
+            addSlide(imageSlide);
+            // preference slide
+            addSlide(new PreferencesSlide());
+        } else {
+            addSlide(new ImageSlide());
+            addSlide(new SlideFragmentBuilder()
+                    .backgroundColor(R.color.colorIntro2)
+                    .buttonsColor(R.color.colorButtons)
+                    .image(R.drawable.batteries)
+                    .title(getString(R.string.slide_2_title))
+                    .description(getString(R.string.slide_2_description))
+                    .build()
+            );
+            addSlide(new SlideFragmentBuilder()
+                    .backgroundColor(R.color.colorIntro3)
+                    .buttonsColor(R.color.colorButtons)
+                    .image(R.drawable.done_white_big)
+                    .title(getString(R.string.slide_3_title))
+                    .description(getString(R.string.slide_3_description))
+                    .build()
+            );
+            addSlide(new PreferencesSlide());
+        }
     }
 
     @Override

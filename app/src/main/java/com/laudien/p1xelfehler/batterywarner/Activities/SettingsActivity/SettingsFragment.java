@@ -186,18 +186,4 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             }
         }
     }
-
-    public void loadFromPreferences(Context context, SharedPreferences sharedPreferences) {
-        String sound = sharedPreferences.getString(getString(R.string.pref_sound_uri), "");
-        Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
-        ringtonePreference.setSummary(ringtone.getTitle(context));
-        pref_warningLow.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), true));
-        pref_seekBarLow.setValue(sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW));
-        pref_warningHigh.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), true));
-        pref_seekBarHigh.setValue(sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH));
-        pref_ac.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), true));
-        pref_usb.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), true));
-        pref_wireless.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), true));
-        switch_darkTheme.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), false));
-    }
 }
