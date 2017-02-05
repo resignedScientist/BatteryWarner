@@ -85,9 +85,9 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (GraphDbHelper.getInstance(context).isTableEmpty()) {
             return;
         }
-
-        if (!BatteryAlarmManager.isGraphEnabled(context, PreferenceManager.getDefaultSharedPreferences(context))) {
-            return;
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+        if (!batteryAlarmManager.isGraphEnabled()) {
+            return; // return if graph is disabled in settings
         }
 
         Calendar calender = Calendar.getInstance();

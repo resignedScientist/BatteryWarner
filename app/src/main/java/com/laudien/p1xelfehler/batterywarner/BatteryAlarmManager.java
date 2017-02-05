@@ -21,6 +21,7 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     private SharedPreferences sharedPreferences;
     private int batteryLevel, temperature, warningHigh, warningLow;
     private long graphTime; // time since beginning of charging
+    private boolean graphEnabled;
 
     private BatteryAlarmManager(Context context) {
         pref_last_percentage = context.getString(R.string.pref_last_percentage);
@@ -28,6 +29,7 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
         warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+        graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true);
     }
 
     public static BatteryAlarmManager getInstance(Context context) {
@@ -107,8 +109,12 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         return context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
-    public static boolean isGraphEnabled(Context context, SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true);
+    public boolean isGraphEnabled() {
+        return graphEnabled;
+    }
+
+    public void setGraphEnabled(boolean enabled) {
+        graphEnabled = enabled;
     }
 
     public void checkAndNotify(Context context) {
@@ -137,7 +143,7 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     }
 
     public void logInDatabase(Context context) {
-        if (!Contract.IS_PRO || !isGraphEnabled(context, sharedPreferences)) {
+        if (!Contract.IS_PRO || !graphEnabled) {
             return; // don't log if it's not the pro version or disabled
         }
         int lastPercentage = sharedPreferences.getInt(pref_last_percentage, Contract.NO_STATE);
@@ -206,10 +212,13 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         switch (s) {
             case Contract.PREF_WARNING_HIGH:
-                warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
+                warningHigh = sharedPreferences.getInt(s, Contract.DEF_WARNING_HIGH);
                 break;
             case Contract.PREF_WARNING_LOW:
-                warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
+                warningLow = sharedPreferences.getInt(s, Contract.DEF_WARNING_LOW);
+                break;
+            case Contract.PREF_GRAPH_ENABLED:
+                graphEnabled = sharedPreferences.getBoolean(s, true);
                 break;
         }
     }

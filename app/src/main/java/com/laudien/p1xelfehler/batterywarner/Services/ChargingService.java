@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 public class ChargingService extends Service {
 
-    // private final static String TAG = "ChargingService";
+    private final static String TAG = "ChargingService";
     private BatteryAlarmManager batteryAlarmManager;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
@@ -43,7 +43,8 @@ public class ChargingService extends Service {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences, batteryStatus)) {
+            if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences, batteryStatus)
+                    && !batteryAlarmManager.isGraphEnabled()) {
                 stopSelf();
                 return;
             }
@@ -57,11 +58,11 @@ public class ChargingService extends Service {
     };
 
     public static void startService(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (BatteryAlarmManager.isGraphEnabled(context, sharedPreferences)) {
+        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+        if (batteryAlarmManager.isGraphEnabled()) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
             dbHelper.resetTable();
-            sharedPreferences.edit()
+            PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
                     .putInt(context.getString(R.string.pref_last_percentage), -1)
                     .apply();

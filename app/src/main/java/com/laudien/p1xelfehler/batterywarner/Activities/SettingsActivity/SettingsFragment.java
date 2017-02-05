@@ -111,19 +111,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        // restart discharging alarm and charging service
-        Context context = getActivity();
-        if (context != null) {
-            BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-            batteryAlarmManager.cancelDischargingAlarm(context);
-            batteryAlarmManager.setDischargingAlarm(context);
-            context.startService(new Intent(context, ChargingService.class));
-        }
-    }
-
-    @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
         if (preference == switch_darkTheme) {
             Context context = getActivity();
@@ -155,14 +142,34 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             }
         } else if (preference == pref_warningLow) {
             pref_seekBarLow.setEnabled((boolean) o);
+            Context context = getActivity();
+            if (context != null) {
+                BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+                batteryAlarmManager.cancelDischargingAlarm(context);
+                batteryAlarmManager.setDischargingAlarm(context);
+            }
         } else if (preference == pref_warningHigh) {
             boolean highChecked = (boolean) o;
             pref_seekBarHigh.setEnabled(highChecked);
             pref_usb.setEnabled(highChecked);
             pref_ac.setEnabled(highChecked);
             pref_wireless.setEnabled(highChecked);
+            Context context = getActivity();
+            if (context != null && highChecked) {
+                // start service without resetting the graph
+                context.startService(new Intent(context, ChargingService.class));
+            }
         } else if (preference == pref_graphEnabled) {
-            pref_autoSave.setEnabled((boolean) o);
+            boolean checked = (boolean) o;
+            pref_autoSave.setEnabled(checked);
+            Context context = getActivity();
+            if (context != null && checked) {
+                if (BatteryAlarmManager.isCharging(BatteryAlarmManager.getBatteryStatus(context))) {
+                    BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+                    batteryAlarmManager.setGraphEnabled(true);
+                    ChargingService.startService(getActivity());
+                }
+            }
         }
         return true;
     }
