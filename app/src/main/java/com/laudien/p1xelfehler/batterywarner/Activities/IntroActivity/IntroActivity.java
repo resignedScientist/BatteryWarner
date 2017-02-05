@@ -19,8 +19,7 @@ import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
 public class IntroActivity extends MaterialIntroActivity {
 
-    // private static final String TAG = "IntroActivity";
-    private PreferencesSlide preferencesSlide;
+    private static final String TAG = "IntroActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
