@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -34,6 +35,16 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // check if the charging notification for the current method is enabled
         if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+            // if not check again in 10s to make sure it it correct
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+                        ChargingService.startService(context);
+                        new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
+                    }
+                }
+            }, 10000);
             return;
         }
 
