@@ -1,12 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.Preference;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -14,7 +18,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
-public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
+public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener {
 
     private static final String TAG = "SeekBarPreference";
     private static final int DEFAULT_MAX = 100;
@@ -82,6 +86,12 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     protected void onBindView(View view) {
         super.onBindView(view);
         textView = (TextView) view.findViewById(R.id.textView);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
+            }
+        });
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(max - min);
@@ -91,6 +101,25 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         } else {
             seekBar.setProgress(defaultProgress - min);
         }
+    }
+
+    private void showDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
+        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
+        numberPicker.setOnValueChangedListener(this);
+        numberPicker.setMinValue(min);
+        numberPicker.setMaxValue(max);
+        numberPicker.setValue(getValue());
+        new AlertDialog.Builder(getContext())
+                .setView(view)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).create().show();
     }
 
     @Override
@@ -119,5 +148,10 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         if (seekBar != null) {
             seekBar.setProgress(progress - min);
         }
+    }
+
+    @Override
+    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+        setValue(i1);
     }
 }
