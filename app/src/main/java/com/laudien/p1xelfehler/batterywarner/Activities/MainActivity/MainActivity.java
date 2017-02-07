@@ -73,7 +73,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         // both apps are installed:
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.uninstall_title))
+        builder.setCancelable(false)
+                .setTitle(getString(R.string.uninstall_title))
                 .setMessage(getString(R.string.uninstall_text))
                 .setNegativeButton(getString(R.string.uninstall_cancel), new DialogInterface.OnClickListener() {
                     @Override
