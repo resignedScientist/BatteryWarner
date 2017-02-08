@@ -44,7 +44,7 @@ public class ChargingService extends Service {
         public void onReceive(Context context, Intent batteryStatus) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences, batteryStatus)
-                    && !batteryAlarmManager.isGraphEnabled()) {
+                    || !batteryAlarmManager.isGraphEnabled()) {
                 stopSelf();
                 return;
             }
