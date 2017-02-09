@@ -76,13 +76,15 @@ public class NotificationBuilder {
     private void showNotification(String contentText, int id) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
+        bigTextStyle.bigText(contentText);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setSound(getNotificationSound())
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setContentText(contentText)
+                .setStyle(bigTextStyle)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
