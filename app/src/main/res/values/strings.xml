@@ -120,4 +120,6 @@
     <string name="get_pro">Click here to get pro version!</string>
     <string name="reset">Reset</string>
     <string name="unallowed_character_renaming">Unallowed character(s) used! Renaming failed!</string>
+    <string name="thank_you_pro_title">Thank you for purchasing the pro Version!</string>
+    <string name="thank_you_pro_subtitle">You won\'t regret it! :)</string>
 </resources>

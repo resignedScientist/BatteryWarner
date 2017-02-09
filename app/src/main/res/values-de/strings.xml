@@ -93,4 +93,6 @@
     <string name="get_pro">Hier gelangst du zur Pro-Version!</string>
     <string name="reset">Zurücksetzen</string>
     <string name="unallowed_character_renaming">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
+    <string name="thank_you_pro_subtitle">Du wirst es nicht bereuen! :)</string>
+    <string name="thank_you_pro_title">Vielen Dank für den Kauf der Pro-Version!</string>
 </resources>

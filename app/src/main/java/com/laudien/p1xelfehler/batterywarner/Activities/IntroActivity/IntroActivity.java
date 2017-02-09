@@ -42,8 +42,8 @@ public class IntroActivity extends MaterialIntroActivity {
             // first slide (thank you slide)
             ImageSlide imageSlide = new ImageSlide();
             Bundle bundle = new Bundle(2);
-            bundle.putString(ImageSlide.BUNDLE_TITLE, "Thank you for purchasing the pro Version!");
-            bundle.putString(ImageSlide.BUNDLE_DESCRIPTION, "You won't regret it! :)");
+            bundle.putString(ImageSlide.BUNDLE_TITLE, getString(R.string.thank_you_pro_title));
+            bundle.putString(ImageSlide.BUNDLE_DESCRIPTION, getString(R.string.thank_you_pro_subtitle));
             imageSlide.setArguments(bundle);
             addSlide(imageSlide);
             // TODO: uninstall slide
