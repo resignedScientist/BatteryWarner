@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -64,6 +65,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void isAppInstalled() {
         // checks if 2 versions (free + pro) are installed and tells you that you have to uninstall the free one
+        FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
+        if (config.getBoolean("dual_app_alex_supi_dupi_mode")) {
+            return;
+        }
         PackageManager packageManager = getPackageManager();
         try {
             packageManager.getPackageInfo(Contract.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);

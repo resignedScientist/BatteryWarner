@@ -7,8 +7,8 @@ android {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 77
-        versionName "1.74-pro"
+        versionCode 78
+        versionName "1.75-pro"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,5 +37,6 @@ dependencies {
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.google.firebase:firebase-crash:10.0.1'
+    compile 'com.google.firebase:firebase-config:10.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
