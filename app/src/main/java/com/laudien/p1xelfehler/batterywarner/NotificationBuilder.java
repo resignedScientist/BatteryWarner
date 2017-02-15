@@ -84,6 +84,7 @@ public class NotificationBuilder {
                 .setVibrate(new long[]{0, 300, 300, 300})
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(contentText)
                 .setStyle(bigTextStyle)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);

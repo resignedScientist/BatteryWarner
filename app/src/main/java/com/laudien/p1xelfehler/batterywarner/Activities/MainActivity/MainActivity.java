@@ -9,9 +9,11 @@ import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
@@ -19,13 +21,12 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
+    private static final String TAG = "MainActivity";
     private boolean backPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        isAppInstalled();
 
         setContentView(R.layout.activity_main);
         setToolbarTitle();
@@ -36,6 +37,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isAppInstalled();
     }
 
     @Override
@@ -65,6 +72,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void isAppInstalled() {
         // checks if 2 versions (free + pro) are installed and tells you that you have to uninstall the free one
+        Log.i(TAG, "Tag: " + FirebaseInstanceId.getInstance().getId());
+        Log.i(TAG, "Token: " + FirebaseInstanceId.getInstance().getToken());
         FirebaseRemoteConfig config = FirebaseRemoteConfig.getInstance();
         if (config.getBoolean("dual_app_alex_supi_dupi_mode")) {
             return;
