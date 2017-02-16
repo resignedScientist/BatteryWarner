@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
@@ -20,6 +22,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private boolean backPressed = false;
+    private int clickCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +80,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             return; // one of the app is not installed
         }
         // both apps are installed:
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false)
-                .setTitle(getString(R.string.uninstall_title))
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        TextView title = new TextView(this);
+        float scale = getResources().getDisplayMetrics().density;
+        int dp = (int) (scale + 0.5f);
+        title.setPadding(24 * dp, 8 * dp, 16 * dp, 0);
+        title.setText(getString(R.string.uninstall_title));
+        title.setTextSize(16);
+        title.setTypeface(null, Typeface.BOLD);
+        final AlertDialog dialog = builder.setCancelable(false)
+                .setCustomTitle(title)
                 .setMessage(getString(R.string.uninstall_text))
                 .setNegativeButton(getString(R.string.uninstall_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -95,6 +105,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         startActivity(uninstallIntent);
                     }
                 })
-                .show();
+                .setIcon(R.mipmap.ic_launcher)
+                .create();
+        dialog.show();
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clickCounter < 4) {
+                    clickCounter++;
+                } else {
+                    Toast.makeText(getApplicationContext(), "Hallo Alex, du Cheater!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            }
+        });
     }
 }
