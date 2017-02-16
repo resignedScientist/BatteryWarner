@@ -18,6 +18,7 @@ public final class Contract {
     public static final boolean IS_PRO = true;
     // the rest
     public static final int NO_STATE = -1;
+    public static final String PREF_ALEX_MODE_ENABLED = "alexMode";
     // Shared Preferences that are also needed here
     static final String PREF_WARNING_HIGH = "warningHigh";
     static final String PREF_WARNING_LOW = "warningLow";

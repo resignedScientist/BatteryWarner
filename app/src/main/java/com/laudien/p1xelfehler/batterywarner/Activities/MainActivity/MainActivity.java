@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -80,6 +81,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             return; // one of the app is not installed
         }
         // both apps are installed:
+        // check for alex mode:
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Contract.PREF_ALEX_MODE_ENABLED, false)) {
+            return;
+        }
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         TextView title = new TextView(this);
         float scale = getResources().getDisplayMetrics().density;
@@ -116,6 +121,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     Toast.makeText(getApplicationContext(), "Hallo Alex, du Cheater!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
+                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
+                            .edit()
+                            .putBoolean(Contract.PREF_ALEX_MODE_ENABLED, true)
+                            .apply();
                 }
             }
         });
