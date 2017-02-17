@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -82,7 +83,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         // both apps are installed:
         // check for alex mode:
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Contract.PREF_ALEX_MODE_ENABLED, false)) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPreferences.getBoolean(Contract.PREF_ALEX_MODE_ENABLED, false)) {
             return;
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -121,7 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 } else {
                     Toast.makeText(getApplicationContext(), "Hallo Alex, du Cheater!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
+                    sharedPreferences
                             .edit()
                             .putBoolean(Contract.PREF_ALEX_MODE_ENABLED, true)
                             .apply();
