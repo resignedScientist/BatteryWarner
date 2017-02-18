@@ -35,7 +35,7 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // check if the charging notification for the current method is enabled
         if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
-            // if not check again in 10s to make sure it it correct
+            // if not check again in 10s to make sure it is correct
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -45,13 +45,11 @@ public class ChargingReceiver extends BroadcastReceiver {
                     }
                 }
             }, 10000);
-            return;
+        } else {
+            // start service
+            ChargingService.startService(context);
+            // notify if silent/vibrate mode
+            new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
         }
-
-        // start service
-        ChargingService.startService(context);
-
-        // notify if silent/vibrate mode
-        new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_SILENT_MODE);
     }
 }
