@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
@@ -86,7 +85,6 @@ public class ChargingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(TAG, "Service started!");
         batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         registerReceiver(
                 ringerModeChangedReceiver,
@@ -102,7 +100,6 @@ public class ChargingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "Service destroyed!");
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
     }
@@ -116,7 +113,6 @@ public class ChargingService extends Service {
 
     @Override
     public boolean stopService(Intent name) {
-        Log.i(TAG, "Service stopped!");
         return super.stopService(name);
     }
 }
