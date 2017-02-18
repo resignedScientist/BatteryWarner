@@ -7,56 +7,41 @@
 
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="0dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline5"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_settings"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toRightOf="@+id/scrollView3" />
-
-    <Button
-        android:id="@+id/btn_settings"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/settings"
-        android:textAllCaps="false"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/toggleButton"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintTop_toTopOf="@+id/guideline6" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <ImageView
         android:id="@+id/img_battery"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline5"
-        app:srcCompat="@drawable/battery_status_full_white"
-        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintVertical_bias="1.0"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4" />
+        app:srcCompat="@drawable/battery_status_full_white" />
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
-        android:id="@+id/scrollView3"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="16dp">
+        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView_technology"
@@ -93,6 +78,13 @@
                 android:text="Spannung: 3,5V"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/textView_isCharging"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Charging: true"
+                android:textSize="18sp" />
+
         </LinearLayout>
 
     </ScrollView>
@@ -102,35 +94,35 @@
         android:layout_width="wrap_content"
         android:layout_height="359dp"
         android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.29"
         tools:layout_editor_absoluteX="172dp"
-        tools:layout_editor_absoluteY="0dp"
-        app:layout_constraintGuide_percent="0.29" />
+        tools:layout_editor_absoluteY="0dp" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
         android:layout_width="592dp"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline4"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteY="305dp"
+        app:layout_constraintGuide_percent="0.85"
         tools:layout_editor_absoluteX="0dp"
-        app:layout_constraintGuide_percent="0.85" />
+        tools:layout_editor_absoluteY="305dp" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline5"
         android:layout_width="592dp"
         android:layout_height="0dp"
-        android:id="@+id/guideline5"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.15"
-        tools:layout_editor_absoluteY="54dp"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="54dp" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline6"
         android:layout_width="592dp"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline6"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteY="180dp"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="180dp" />
 
 </android.support.constraint.ConstraintLayout>

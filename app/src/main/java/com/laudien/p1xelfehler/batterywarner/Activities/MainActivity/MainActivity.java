@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.Setting
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private boolean backPressed = false;
     private int clickCounter = 0;
@@ -45,15 +47,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         isAppInstalled();
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
-        }
     }
 
     @Override
@@ -130,5 +123,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

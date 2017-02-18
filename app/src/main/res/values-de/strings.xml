@@ -95,4 +95,5 @@
     <string name="unallowed_character_renaming">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
     <string name="thank_you_pro_subtitle">Du wirst es nicht bereuen! :)</string>
     <string name="thank_you_pro_title">Vielen Dank für den Kauf der Pro-Version!</string>
+    <string name="discharging">Kein Ladevorgang</string>
 </resources>

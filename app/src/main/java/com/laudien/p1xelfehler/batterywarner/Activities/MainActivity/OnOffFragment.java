@@ -7,21 +7,21 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -31,7 +31,7 @@ import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class OnOffFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     //private static final String TAG = "OnOffFragment";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
@@ -39,7 +39,8 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     private SharedPreferences sharedPreferences;
     private Context context;
     private BatteryAlarmManager batteryAlarmManager;
-    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage,
+            textView_isCharging;
     private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
@@ -57,6 +58,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
     };
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent intent) {
             String technology = intent.getStringExtra(android.os.BatteryManager.EXTRA_TECHNOLOGY);
@@ -66,6 +68,11 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            if (isCharging) {
+                textView_isCharging.setText(R.string.charging);
+            } else {
+                textView_isCharging.setText(R.string.discharging);
+            }
 
             switch (health) {
                 case android.os.BatteryManager.BATTERY_HEALTH_COLD:
@@ -131,8 +138,6 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         context = getContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        Button btn_settings = (Button) view.findViewById(R.id.btn_settings);
-        btn_settings.setOnClickListener(this);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
@@ -146,6 +151,7 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         textView_health = (TextView) view.findViewById(R.id.textView_health);
         textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
+        textView_isCharging = (TextView) view.findViewById(R.id.textView_isCharging);
         img_battery = (ImageView) view.findViewById(R.id.img_battery);
 
         onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
@@ -167,15 +173,6 @@ public class OnOffFragment extends Fragment implements View.OnClickListener, Com
         super.onPause();
         getActivity().unregisterReceiver(onOffChangedReceiver);
         getActivity().unregisterReceiver(batteryChangedReceiver);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_settings:
-                startActivity(new Intent(context, SettingsActivity.class));
-                break;
-        }
     }
 
     private void setImageColor(int color) {

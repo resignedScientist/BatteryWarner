@@ -122,4 +122,5 @@
     <string name="unallowed_character_renaming">Unallowed character(s) used! Renaming failed!</string>
     <string name="thank_you_pro_title">Thank you for purchasing the pro Version!</string>
     <string name="thank_you_pro_subtitle">You won\'t regret it! :)</string>
+    <string name="discharging">discharging</string>
 </resources>
