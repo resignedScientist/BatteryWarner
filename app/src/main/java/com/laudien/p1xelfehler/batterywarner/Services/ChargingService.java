@@ -5,16 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -42,16 +41,18 @@ public class ChargingService extends Service {
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences, batteryStatus)
-                    || !batteryAlarmManager.isGraphEnabled()) {
+            if (!BatteryAlarmManager.isCharging(batteryStatus) // if not charging
+                    || !batteryAlarmManager.isEnabled(context) // if not enabled
+                    || (!batteryAlarmManager.isGraphEnabled() && !batteryAlarmManager.isWarningHighEnabled(context))) // if not charging AND warningHigh is disabled
+            {
                 stopSelf();
                 return;
             }
             batteryAlarmManager.checkAndNotify(context, batteryStatus);
-            batteryAlarmManager.logInDatabase(context);
-            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
-            if (batteryLevel == 100) {
+            if (batteryAlarmManager.isGraphEnabled()) {
+                batteryAlarmManager.logInDatabase(context);
+            }
+            if (batteryAlarmManager.getBatteryLevel() == 100) {
                 stopSelf(); // stop service if battery is full
             }
         }
@@ -85,6 +86,7 @@ public class ChargingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "Service started!");
         batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         registerReceiver(
                 ringerModeChangedReceiver,
@@ -100,6 +102,7 @@ public class ChargingService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(TAG, "Service destroyed!");
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
     }
@@ -109,5 +112,11 @@ public class ChargingService extends Service {
     public IBinder onBind(Intent intent) {
         // not used, because i won't bind it to anything!
         return null;
+    }
+
+    @Override
+    public boolean stopService(Intent name) {
+        Log.i(TAG, "Service stopped!");
+        return super.stopService(name);
     }
 }

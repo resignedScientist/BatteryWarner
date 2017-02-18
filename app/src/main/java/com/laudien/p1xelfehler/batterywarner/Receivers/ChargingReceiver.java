@@ -14,7 +14,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 public class ChargingReceiver extends BroadcastReceiver {
-    //private static final String TAG = "ChargingReceiver";
+    private static final String TAG = "ChargingReceiver";
 
     @Override
     public void onReceive(final Context context, Intent intent) {

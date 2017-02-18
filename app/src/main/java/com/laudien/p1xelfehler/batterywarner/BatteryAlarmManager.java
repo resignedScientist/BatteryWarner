@@ -109,6 +109,14 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         return context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
+    public boolean isEnabled(Context context) {
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true);
+    }
+
+    public boolean isWarningHighEnabled(Context context) {
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), true);
+    }
+
     public boolean isGraphEnabled() {
         return graphEnabled;
     }
