@@ -78,13 +78,6 @@
                 android:text="Spannung: 3,5V"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/textView_isCharging"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Charging: true"
-                android:textSize="18sp" />
-
         </LinearLayout>
 
     </ScrollView>
