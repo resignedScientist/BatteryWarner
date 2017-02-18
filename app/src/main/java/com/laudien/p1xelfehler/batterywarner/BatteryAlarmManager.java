@@ -126,7 +126,6 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     }
 
     public void checkAndNotify(Context context) {
-
         checkAndNotify(context, getBatteryStatus(context));
     }
 
