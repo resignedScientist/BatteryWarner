@@ -35,7 +35,7 @@
             app:unit="%" />
         <SwitchPreference
             android:defaultValue="false"
-            android:key="stopCharging"
+            android:key="@string/pref_stop_charging"
             android:title="Automatically stop charging" />
         <SwitchPreference
             android:defaultValue="true"

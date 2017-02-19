@@ -64,7 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         pref_usb = (TwoStatePreference) findPreference(getString(R.string.pref_usb_enabled));
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
-        pref_stopCharging = (TwoStatePreference) findPreference("stopCharging");
+        pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
         pref_stopCharging.setOnPreferenceChangeListener(this);
 
         Context context = getActivity();
