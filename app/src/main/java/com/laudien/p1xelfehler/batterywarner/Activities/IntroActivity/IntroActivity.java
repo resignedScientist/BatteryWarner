@@ -13,7 +13,6 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivit
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
@@ -99,7 +98,6 @@ public class IntroActivity extends MaterialIntroActivity {
         }
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
-        RootChecker.isDeviceRooted();
     }
 
     private void enableFullscreen() {
