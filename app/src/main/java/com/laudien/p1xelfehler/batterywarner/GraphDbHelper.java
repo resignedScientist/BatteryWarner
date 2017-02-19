@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.graphics.ColorUtils;
-import android.util.Log;
 import android.util.TypedValue;
 
 import com.jjoe64.graphview.series.DataPoint;
@@ -55,13 +54,12 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 GraphDbHelper.TABLE_COLUMN_TEMP};
         Cursor cursor = db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        long result = 0;
         if (cursor.moveToLast()) {
-            long result = cursor.getLong(0);
-            Log.d(TAG, "endTime = " + result);
-            return result;
-        } else {
-            return 0;
+            result = cursor.getLong(0);
         }
+        db.close();
+        return result;
     }
 
     @Override
