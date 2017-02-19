@@ -97,7 +97,7 @@ public class NotificationBuilder {
         }
     }
 
-    private void showNotification(String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
+    public void showNotification(String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent dismissIntent = null;

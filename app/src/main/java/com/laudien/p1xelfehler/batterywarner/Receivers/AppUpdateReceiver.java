@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
@@ -34,5 +36,13 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             batteryAlarmManager.setDischargingAlarm(context);
         }
         batteryAlarmManager.checkAndNotify(context, batteryStatus);
+
+        String pref_stop_charging = context.getString(R.string.pref_stop_charging);
+        if (sharedPreferences.getBoolean(pref_stop_charging, false)) {
+            if (!RootChecker.isDeviceRooted()) {
+                sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
+                new NotificationBuilder(context).showNotification("Please grant root access again!", 0, true, false);
+            }
+        }
     }
 }
