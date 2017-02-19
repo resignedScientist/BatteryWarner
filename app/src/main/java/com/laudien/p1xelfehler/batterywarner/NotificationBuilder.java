@@ -35,9 +35,11 @@ public class NotificationBuilder {
                 if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or not charging
                 }
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false))
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
                     return;
+                }
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
+                RootChecker.disableCharging();
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING
