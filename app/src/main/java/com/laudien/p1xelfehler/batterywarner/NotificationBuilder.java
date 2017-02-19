@@ -44,7 +44,9 @@ public class NotificationBuilder {
                 RootChecker.disableCharging(context);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        NOTIFICATION_ID_BATTERY_WARNING
+                        NOTIFICATION_ID_BATTERY_WARNING,
+                        true,
+                        false
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
@@ -57,7 +59,9 @@ public class NotificationBuilder {
                 int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        NOTIFICATION_ID_BATTERY_WARNING
+                        NOTIFICATION_ID_BATTERY_WARNING,
+                        true,
+                        false
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
@@ -70,7 +74,9 @@ public class NotificationBuilder {
                         || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
                     showNotification(
                             context.getString(R.string.notifications_are_off),
-                            NOTIFICATION_ID_SILENT_MODE
+                            NOTIFICATION_ID_SILENT_MODE,
+                            true,
+                            false
                     );
                 }
                 break;
@@ -79,7 +85,9 @@ public class NotificationBuilder {
                     if (!RootChecker.isChargingEnabled()) {
                         showNotification(
                                 "Dismiss the notification if the device is unplugged!",
-                                NOTIFICATION_ID_STOP_CHARGING
+                                NOTIFICATION_ID_STOP_CHARGING,
+                                false,
+                                true
                         );
                     }
                     break;
@@ -89,20 +97,26 @@ public class NotificationBuilder {
         }
     }
 
-    private void showNotification(String contentText, int id) {
+    private void showNotification(String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent dismissIntent = null;
-        if (id == NOTIFICATION_ID_STOP_CHARGING) {
+        if (dismissIntentEnabled) {
             dismissIntent = PendingIntent.getBroadcast(context, 0, new Intent(
                     context, NotificationDismissReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+        Uri soundUri = null;
+        long[] vibratePattern = null;
+        if (sound) {
+            soundUri = getNotificationSound();
+            vibratePattern = new long[]{0, 300, 300, 300};
         }
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
         bigTextStyle.bigText(contentText);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setSound(getNotificationSound())
-                .setVibrate(new long[]{0, 300, 300, 300})
+                .setSound(soundUri)
+                .setVibrate(vibratePattern)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(contentText)
