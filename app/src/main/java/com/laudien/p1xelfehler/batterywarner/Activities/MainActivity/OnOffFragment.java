@@ -157,7 +157,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         btn_on.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RootChecker.enableCharging();
+                RootChecker.enableCharging(context);
                 Toast.makeText(getContext(), "Laden aktiviert!", Toast.LENGTH_SHORT).show();
             }
         });
@@ -165,7 +165,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         btn_off.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RootChecker.disableCharging();
+                RootChecker.disableCharging(context);
                 Toast.makeText(getContext(), "Laden deaktiviert!", Toast.LENGTH_SHORT).show();
             }
         });

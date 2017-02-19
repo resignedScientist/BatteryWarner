@@ -39,7 +39,7 @@ public class NotificationBuilder {
                     return;
                 }
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
-                RootChecker.disableCharging();
+                RootChecker.disableCharging(context);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING

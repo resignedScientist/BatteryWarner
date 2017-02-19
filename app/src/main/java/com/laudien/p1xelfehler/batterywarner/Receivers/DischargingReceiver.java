@@ -25,7 +25,7 @@ public class DischargingReceiver extends BroadcastReceiver {
             return; // return if intro was not finished
 
         // (re)enable charging
-        RootChecker.enableCharging();
+        RootChecker.enableCharging(context);
 
         // cancel warning notifications
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
