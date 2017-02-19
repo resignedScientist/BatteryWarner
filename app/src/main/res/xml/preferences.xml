@@ -34,6 +34,10 @@
             app:slider_min="60"
             app:unit="%" />
         <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="stopCharging"
+            android:title="Automatically stop charging" />
+        <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/pref_ac_enabled"
             android:title="@string/enable_on_ac" />
