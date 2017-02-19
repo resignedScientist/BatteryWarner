@@ -31,4 +31,11 @@ public final class RootChecker {
         }
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
     }
+
+    public static boolean isChargingEnabled() throws NotRootedException {
+        if (!isDeviceRooted()) {
+            throw new NotRootedException();
+        }
+        return Integer.parseInt(Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled").get(0)) == 1;
+    }
 }

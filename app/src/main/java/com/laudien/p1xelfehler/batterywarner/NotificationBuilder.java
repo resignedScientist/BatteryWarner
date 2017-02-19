@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiver;
 
 import java.util.Locale;
 
@@ -20,6 +21,7 @@ public class NotificationBuilder {
     public static final int NOTIFICATION_SILENT_MODE = 2;
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
+    public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
     private Context context;
@@ -72,12 +74,29 @@ public class NotificationBuilder {
                     );
                 }
                 break;
+            case NOTIFICATION_ID_STOP_CHARGING:
+                try {
+                    if (!RootChecker.isChargingEnabled()) {
+                        showNotification(
+                                "Dismiss the notification if the device is unplugged!",
+                                NOTIFICATION_ID_STOP_CHARGING
+                        );
+                    }
+                    break;
+                } catch (NotRootedException e) {
+                    e.printStackTrace();
+                }
         }
     }
 
     private void showNotification(String contentText, int id) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent dismissIntent = null;
+        if (id == NOTIFICATION_ID_STOP_CHARGING) {
+            dismissIntent = PendingIntent.getBroadcast(context, 0, new Intent(
+                    context, NotificationDismissReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
         bigTextStyle.bigText(contentText);
         Notification.Builder builder = new Notification.Builder(context)
@@ -89,7 +108,8 @@ public class NotificationBuilder {
                 .setContentText(contentText)
                 .setStyle(bigTextStyle)
                 .setContentIntent(contentIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setDeleteIntent(dismissIntent);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(id, builder.build());

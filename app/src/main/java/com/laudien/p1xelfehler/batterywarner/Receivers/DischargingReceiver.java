@@ -10,8 +10,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotRootedException;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
@@ -26,6 +28,16 @@ public class DischargingReceiver extends BroadcastReceiver {
         // cancel warning notifications
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
+
+
+        // show the stop charging notification
+        try {
+            if (!RootChecker.isChargingEnabled()) {
+                new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING);
+            }
+        } catch (NotRootedException e) {
+            e.printStackTrace();
+        }
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
