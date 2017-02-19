@@ -42,12 +42,6 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-
-        if (RootChecker.isDeviceRooted()) {
-            Toast.makeText(getApplicationContext(), "Du hast root!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Du hast KEIN root!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

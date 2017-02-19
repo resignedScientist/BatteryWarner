@@ -7,8 +7,8 @@ android {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 82
-        versionName "1.82-pro"
+        versionCode 83
+        versionName "1.83-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -36,4 +36,5 @@ dependencies {
     compile 'agency.tango.android:material-intro-screen:0.0.4'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }
