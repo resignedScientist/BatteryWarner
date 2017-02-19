@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
 import android.util.TypedValue;
 
 import com.jjoe64.graphview.series.DataPoint;
@@ -18,10 +19,10 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.io.FileReader;
 
 public class GraphDbHelper extends SQLiteOpenHelper {
-    // private static final String TAG = "GraphDbHelper";
     public static final int TYPE_PERCENTAGE = 0;
     public static final int TYPE_TEMPERATURE = 1;
     public static final String DATABASE_NAME = "ChargeCurveDB";
+    private static final String TAG = "GraphDbHelper";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     private static final String TABLE_NAME = "ChargeCurve";
     private static final String TABLE_COLUMN_TIME = "time";
@@ -45,6 +46,22 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             instance = new GraphDbHelper(context);
         }
         return instance;
+    }
+
+    public static long getEndTime(SQLiteDatabase db) {
+        String[] columns = {
+                GraphDbHelper.TABLE_COLUMN_TIME,
+                GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
+                GraphDbHelper.TABLE_COLUMN_TEMP};
+        Cursor cursor = db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
+                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        if (cursor.moveToLast()) {
+            long result = cursor.getLong(0);
+            Log.d(TAG, "endTime = " + result);
+            return result;
+        } else {
+            return 0;
+        }
     }
 
     @Override

@@ -44,7 +44,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
@@ -60,6 +59,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private int graphCounter;
     private boolean graphEnabled;
     private InfoObject infoObject;
+    private long endTime;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -90,12 +90,13 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return; // return if graph is disabled in settings
         }
 
-        Calendar calender = Calendar.getInstance();
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
         String outputFileDir = String.format(
                 Locale.getDefault(),
                 "%s/%s",
                 Contract.DATABASE_HISTORY_PATH,
-                DateFormat.getDateInstance(DateFormat.SHORT).format(calender.getTimeInMillis())
+                DateFormat.getDateInstance(DateFormat.SHORT)
+                        .format(GraphDbHelper.getEndTime(dbHelper.getReadableDatabase()))
                         .replace("/", "_")
         );
         // rename the file if it already exists
@@ -397,8 +398,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     private void updateInfoObject() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         if (infoObject == null) {
+            endTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
             infoObject = new InfoObject(
+                    endTime,
                     series_chargeCurve.getHighestValueX(),
                     series_temp.getHighestValueY(),
                     series_temp.getLowestValueY(),
@@ -406,6 +410,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             );
         } else {
             infoObject.updateValues(
+                    endTime,
                     series_chargeCurve.getHighestValueX(),
                     series_temp.getHighestValueY(),
                     series_temp.getLowestValueY(),

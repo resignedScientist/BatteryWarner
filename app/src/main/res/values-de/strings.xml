@@ -96,4 +96,6 @@
     <string name="thank_you_pro_subtitle">Du wirst es nicht bereuen! :)</string>
     <string name="thank_you_pro_title">Vielen Dank für den Kauf der Pro-Version!</string>
     <string name="discharging">Kein Ladevorgang</string>
+    <string name="date">Datum</string>
+    <string name="unknown">Unbekannt</string>
 </resources>

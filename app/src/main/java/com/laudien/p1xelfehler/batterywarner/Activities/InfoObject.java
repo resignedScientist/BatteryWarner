@@ -11,13 +11,16 @@ import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.text.DateFormat;
 import java.util.Locale;
 
 public class InfoObject {
+    private static final String TAG = "InfoObject";
     private double timeInMinutes, maxTemp, minTemp, percentCharged;
+    private long endTime;
 
-    public InfoObject(double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        updateValues(timeInMinutes, maxTemp, minTemp, percentCharged);
+    public InfoObject(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -52,7 +55,8 @@ public class InfoObject {
         return String.format(Locale.getDefault(), formats[2], 0f);
     }
 
-    public void updateValues(double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+    public void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        this.endTime = endTime;
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
@@ -69,6 +73,17 @@ public class InfoObject {
                 activity.getString(R.string.charging_time),
                 getTimeString(activity))
         );
+        String date = "unknown";
+        if (endTime > 1000000000) {
+            date = DateFormat.getDateInstance(DateFormat.SHORT).format(endTime);
+        }
+        TextView textView_date = (TextView) view.findViewById(R.id.textView_date);
+        textView_date.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                activity.getString(R.string.date),
+                date
+        ));
         TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
         textView_speed.setText(String.format(
                 Locale.getDefault(),
