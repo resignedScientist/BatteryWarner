@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
@@ -33,7 +35,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled,
-            pref_usb, pref_ac, pref_wireless;
+            pref_usb, pref_ac, pref_wireless, pref_stopCharging;
     private SwitchPreference switch_darkTheme;
     private RingtonePreference ringtonePreference;
     private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
@@ -62,6 +64,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         pref_usb = (TwoStatePreference) findPreference(getString(R.string.pref_usb_enabled));
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
+        pref_stopCharging = (TwoStatePreference) findPreference("stopCharging");
+        pref_stopCharging.setOnPreferenceChangeListener(this);
 
         Context context = getActivity();
         if (context != null) {
@@ -169,6 +173,17 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                     batteryAlarmManager.setGraphEnabled(true);
                     ChargingService.startService(getActivity());
                 }
+            }
+        } else if (preference == pref_stopCharging) {
+            boolean checked = (boolean) o;
+            if (checked && !RootChecker.isDeviceRooted()) {
+                Toast.makeText(getActivity(), "You must be rooted for this!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pref_stopCharging.setChecked(false);
+                    }
+                }, 1000);
             }
         }
         return true;
