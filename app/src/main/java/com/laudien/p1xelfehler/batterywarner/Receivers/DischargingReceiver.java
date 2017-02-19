@@ -12,7 +12,6 @@ import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
@@ -23,9 +22,6 @@ public class DischargingReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
-
-        // (re)enable charging
-        RootChecker.enableCharging(context);
 
         // cancel warning notifications
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
