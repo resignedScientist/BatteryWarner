@@ -10,26 +10,28 @@ public final class RootChecker {
         return Shell.SU.available();
     }
 
-    public static void enableCharging(Context context) {
+    public static boolean enableCharging(Context context) {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
                 context.getString(R.string.pref_stop_charging), false)) {
-            return;
+            return false;
         }
         if (!isDeviceRooted()) {
-            return;
+            return false;
         }
         Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+        return true;
     }
 
-    public static void disableCharging(Context context) {
+    public static boolean disableCharging(Context context) {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
                 context.getString(R.string.pref_stop_charging), false)) {
-            return;
+            return false;
         }
         if (!isDeviceRooted()) {
-            return;
+            return false;
         }
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+        return true;
     }
 
     public static boolean isChargingEnabled() throws NotRootedException {
