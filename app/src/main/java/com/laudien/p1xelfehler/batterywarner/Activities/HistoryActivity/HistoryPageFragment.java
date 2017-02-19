@@ -56,8 +56,13 @@ public class HistoryPageFragment extends Fragment {
         viewport.setMaxY(100);
         viewport.setMinY(0);
 
+        long endTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
+        if (endTime < 1000000000) {
+            endTime = file.lastModified();
+        }
+
         infoObject = new InfoObject(
-                GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath())),
+                endTime,
                 series[0].getHighestValueX(),
                 series[1].getHighestValueY(),
                 series[1].getLowestValueY(),
