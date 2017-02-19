@@ -22,6 +22,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -41,6 +42,12 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        if (RootChecker.isDeviceRooted()) {
+            Toast.makeText(getApplicationContext(), "Du hast root!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Du hast KEIN root!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
