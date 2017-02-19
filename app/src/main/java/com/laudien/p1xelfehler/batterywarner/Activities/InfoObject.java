@@ -73,7 +73,7 @@ public class InfoObject {
                 activity.getString(R.string.charging_time),
                 getTimeString(activity))
         );
-        String date = "unknown";
+        String date = activity.getString(R.string.unknown);
         if (endTime > 1000000000) {
             date = DateFormat.getDateInstance(DateFormat.SHORT).format(endTime);
         }
