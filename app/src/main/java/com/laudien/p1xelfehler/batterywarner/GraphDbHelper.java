@@ -95,8 +95,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) { // if the cursor has data
             double time, temperature;
             int percentage;
+            long firstTime = cursor.getLong(0);
             do {
-                time = (double) cursor.getLong(0) / 60000;
+                time = (double) (cursor.getLong(0) - firstTime) / 60000;
                 percentage = cursor.getInt(1);
                 temperature = (double) cursor.getInt(2) / 10;
                 output[TYPE_PERCENTAGE].appendData(new DataPoint(time, percentage), true, 1000);

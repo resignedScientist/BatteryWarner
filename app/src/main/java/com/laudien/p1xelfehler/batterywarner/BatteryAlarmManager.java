@@ -20,7 +20,6 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     private final String pref_last_percentage;
     private SharedPreferences sharedPreferences;
     private int batteryLevel, temperature, warningHigh, warningLow;
-    private long graphTime; // time since beginning of charging
     private boolean graphEnabled;
 
     private BatteryAlarmManager(Context context) {
@@ -137,9 +136,6 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
         if (Contract.IS_PRO) {
             temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
-            long timeNow = Calendar.getInstance().getTimeInMillis();
-            graphTime = timeNow - sharedPreferences.getLong(context.getString(R.string.pref_graph_time), timeNow);
-            if (graphTime < 100) graphTime = 0; // makes sure that every graph begins at 0 min
         }
 
         if (batteryLevel >= warningHigh) { // warning high
@@ -158,7 +154,8 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
             return; // don't log if the battery level did not change
         }
         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
-        graphDbHelper.addValue(graphTime, batteryLevel, temperature);
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        graphDbHelper.addValue(timeNow, batteryLevel, temperature);
         sharedPreferences.edit().putInt(pref_last_percentage, batteryLevel).apply();
         GraphFragment.notify(context);
     }
