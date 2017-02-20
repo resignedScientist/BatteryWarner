@@ -107,6 +107,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         pref_seekBarLow.setEnabled(pref_warningLow.isChecked());
         boolean highChecked = pref_warningHigh.isChecked();
         pref_seekBarHigh.setEnabled(highChecked);
+        pref_stopCharging.setEnabled(highChecked);
         pref_usb.setEnabled(highChecked);
         pref_ac.setEnabled(highChecked);
         pref_wireless.setEnabled(highChecked);
@@ -159,6 +160,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_usb.setEnabled(highChecked);
             pref_ac.setEnabled(highChecked);
             pref_wireless.setEnabled(highChecked);
+            pref_stopCharging.setEnabled(highChecked);
+
             Context context = getActivity();
             if (context != null && highChecked) {
                 // start service without resetting the graph
