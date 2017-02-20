@@ -229,7 +229,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (!Contract.IS_PRO && id != R.id.menu_open_history) {
+        if (!Contract.IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
             Toast.makeText(getContext(), getString(R.string.pro_only_short), Toast.LENGTH_SHORT).show();
             return false;
         }
