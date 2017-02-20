@@ -131,4 +131,5 @@
     <string name="stop_charging_subtitle">Does not work with every Device (root)!</string>
     <string name="toast_not_rooted">You must be rooted for this!</string>
     <string name="dismiss_if_unplugged">Dismiss this notification after you unplug the device!</string>
+    <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
 </resources>

@@ -103,4 +103,5 @@
     <string name="stop_charging_subtitle">Funktioniert nicht mit jedem Gerät (root)!</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
     <string name="dismiss_if_unplugged">Entferne diese Benachrichtigung nachdem das Kabel vom Gerät getrennt wurde!</string>
+    <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
 </resources>
