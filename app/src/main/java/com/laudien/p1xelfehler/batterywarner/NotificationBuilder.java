@@ -93,7 +93,7 @@ public final class NotificationBuilder {
                         if (!RootChecker.isChargingEnabled()) {
                             showNotification(
                                     context,
-                                    "Dismiss the notification if the device is unplugged!",
+                                    context.getString(R.string.dismiss_if_unplugged),
                                     NOTIFICATION_ID_STOP_CHARGING,
                                     false,
                                     null,
@@ -112,7 +112,7 @@ public final class NotificationBuilder {
                         sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
                         showNotification(
                                 context,
-                                "Please grant root access again!",
+                                context.getString(R.string.grant_root_again),
                                 0,
                                 true,
                                 PendingIntent.getBroadcast(

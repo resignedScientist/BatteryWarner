@@ -98,4 +98,9 @@
     <string name="discharging">Kein Ladevorgang</string>
     <string name="date">Datum</string>
     <string name="unknown">Unbekannt</string>
+    <string name="grant_root_again">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
+    <string name="stop_charging_title">Laden automatisch abbrechen</string>
+    <string name="stop_charging_subtitle">Funktioniert nicht mit jedem Gerät (root)!</string>
+    <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
+    <string name="dismiss_if_unplugged">Entferne diese Benachrichtigung nachdem das Kabel vom Gerät getrennt wurde!</string>
 </resources>

@@ -177,7 +177,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         } else if (preference == pref_stopCharging) {
             boolean checked = (boolean) o;
             if (checked && !RootChecker.isDeviceRooted()) {
-                Toast.makeText(getActivity(), "You must be rooted for this!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

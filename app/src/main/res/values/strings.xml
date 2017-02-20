@@ -126,4 +126,9 @@
     <string name="discharging">discharging</string>
     <string name="date">Date</string>
     <string name="unknown">Unknown</string>
+    <string name="grant_root_again">The app was updated. Please click here to grant root access again!</string>
+    <string name="stop_charging_title">Automatically stop charging</string>
+    <string name="stop_charging_subtitle">Does not work with every Device (root)!</string>
+    <string name="toast_not_rooted">You must be rooted for this!</string>
+    <string name="dismiss_if_unplugged">Dismiss this notification after you unplug the device!</string>
 </resources>

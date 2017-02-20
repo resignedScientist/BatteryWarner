@@ -36,8 +36,8 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/pref_stop_charging"
-            android:summary="Does not work with every device and needs root!"
-            android:title="Automatically stop charging" />
+            android:summary="@string/stop_charging_subtitle"
+            android:title="@string/stop_charging_title" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="@string/pref_ac_enabled"
