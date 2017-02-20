@@ -52,18 +52,18 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     public static long getEndTime(SQLiteDatabase db) {
-        String[] columns = {
-                GraphDbHelper.TABLE_COLUMN_TIME,
-                GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
-                GraphDbHelper.TABLE_COLUMN_TEMP};
-        Cursor cursor = db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        Cursor cursor = getCursor(db);
         long result = 0;
         if (cursor.moveToLast()) {
             result = cursor.getLong(0);
         }
         db.close();
         return result;
+    }
+
+    private static Cursor getCursor(SQLiteDatabase db) {
+        return db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
+                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
     }
 
     @Override
@@ -104,8 +104,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         LineGraphSeries<DataPoint>[] output = new LineGraphSeries[2];
         output[TYPE_PERCENTAGE] = new LineGraphSeries<>();
         output[TYPE_TEMPERATURE] = new LineGraphSeries<>();
-        Cursor cursor = database.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        Cursor cursor = getCursor(database);
 
         if (cursor.moveToFirst()) { // if the cursor has data
             double time, temperature;
@@ -200,8 +199,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
 
     public boolean hasEnoughData() {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        Cursor cursor = getCursor(db);
         if (cursor.moveToFirst() && cursor.moveToNext()) {
             close();
             return true;
