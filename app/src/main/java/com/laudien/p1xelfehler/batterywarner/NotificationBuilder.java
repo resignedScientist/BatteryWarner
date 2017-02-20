@@ -42,7 +42,17 @@ public final class NotificationBuilder {
                     return;
                 }
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
-                RootChecker.disableCharging(context);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootChecker.disableCharging(context);
+                        } catch (RootChecker.NotRootedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
@@ -104,7 +114,7 @@ public final class NotificationBuilder {
                                             true
                                     );
                                 }
-                            } catch (NotRootedException e) {
+                            } catch (RootChecker.NotRootedException e) {
                                 e.printStackTrace();
                             }
                         }

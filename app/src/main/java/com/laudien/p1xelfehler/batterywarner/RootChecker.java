@@ -1,7 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -11,38 +10,26 @@ public final class RootChecker {
         return Shell.SU.available();
     }
 
-    public static boolean enableCharging(Context context) {
+    public static void enableCharging(Context context) throws NotRootedException {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
                 context.getString(R.string.pref_stop_charging), false)) {
-            return false;
+            return;
         }
         if (!isDeviceRooted()) {
-            return false;
+            throw new NotRootedException();
         }
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
-            }
-        });
-        return true;
+        Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
     }
 
-    public static boolean disableCharging(Context context) {
+    public static void disableCharging(Context context) throws NotRootedException {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
                 context.getString(R.string.pref_stop_charging), false)) {
-            return false;
+            return;
         }
         if (!isDeviceRooted()) {
-            return false;
+            throw new NotRootedException();
         }
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
-            }
-        });
-        return true;
+        Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
     }
 
     public static boolean isChargingEnabled() throws NotRootedException {
@@ -50,5 +37,11 @@ public final class RootChecker {
             throw new NotRootedException();
         }
         return Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled").get(0).equals("1");
+    }
+
+    public static class NotRootedException extends Exception {
+        public NotRootedException() {
+            super("The device is not rooted!");
+        }
     }
 }
