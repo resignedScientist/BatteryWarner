@@ -117,20 +117,18 @@ public final class NotificationBuilder {
                     AsyncTask.execute(new Runnable() { // run in another thread
                         @Override
                         public void run() {
-                            if (!RootChecker.isDeviceRooted()) {
-                                sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
-                                showNotification(
-                                        context,
-                                        context.getString(R.string.grant_root_again),
-                                        0,
-                                        true,
-                                        PendingIntent.getBroadcast(
-                                                context, 0, new Intent(context, GrantRootReceiver.class),
-                                                PendingIntent.FLAG_UPDATE_CURRENT
-                                        ),
-                                        false
-                                );
-                            }
+                            sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
+                            showNotification(
+                                    context,
+                                    context.getString(R.string.grant_root_again),
+                                    0,
+                                    true,
+                                    PendingIntent.getBroadcast(
+                                            context, 0, new Intent(context, GrantRootReceiver.class),
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    ),
+                                    false
+                            );
                         }
                     });
 
