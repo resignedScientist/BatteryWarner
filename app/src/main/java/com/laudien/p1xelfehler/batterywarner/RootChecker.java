@@ -9,7 +9,7 @@ import eu.chainfire.libsuperuser.Shell;
 public final class RootChecker {
     public static boolean isDeviceRooted() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            throw new NotInMainThreadException();
+            throw new InMainThreadException();
         }
         return Shell.SU.available();
     }
@@ -49,9 +49,9 @@ public final class RootChecker {
         }
     }
 
-    private static class NotInMainThreadException extends RuntimeException {
-        private NotInMainThreadException() {
-            super("Root calls must be done in the main thread!");
+    private static class InMainThreadException extends RuntimeException {
+        private InMainThreadException() {
+            super("Root calls must be done outside of the main thread!");
         }
     }
 }
