@@ -17,20 +17,18 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiv
 
 import java.util.Locale;
 
-public class NotificationBuilder {
+public final class NotificationBuilder {
     public static final int NOTIFICATION_SILENT_MODE = 2;
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
     public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
-    private Context context;
 
-    public NotificationBuilder(Context context) {
-        this.context = context;
+    private NotificationBuilder() {
     }
 
-    public void showNotification(int type) {
+    public static void showNotification(Context context, int type) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
             case NOTIFICATION_WARNING_HIGH:
@@ -43,6 +41,7 @@ public class NotificationBuilder {
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
                 RootChecker.disableCharging(context);
                 showNotification(
+                        context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
@@ -59,6 +58,7 @@ public class NotificationBuilder {
                 }
                 int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
                 showNotification(
+                        context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
@@ -74,6 +74,7 @@ public class NotificationBuilder {
                         || ringerMode == AudioManager.RINGER_MODE_SILENT
                         || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
                     showNotification(
+                            context,
                             context.getString(R.string.notifications_are_off),
                             NOTIFICATION_ID_SILENT_MODE,
                             true,
@@ -82,23 +83,26 @@ public class NotificationBuilder {
                 }
                 break;
             case NOTIFICATION_ID_STOP_CHARGING:
-                try {
-                    if (!RootChecker.isChargingEnabled()) {
-                        showNotification(
-                                "Dismiss the notification if the device is unplugged!",
-                                NOTIFICATION_ID_STOP_CHARGING,
-                                false,
-                                true
-                        );
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
+                    try {
+                        if (!RootChecker.isChargingEnabled()) {
+                            showNotification(
+                                    context,
+                                    "Dismiss the notification if the device is unplugged!",
+                                    NOTIFICATION_ID_STOP_CHARGING,
+                                    false,
+                                    true
+                            );
+                        }
+                        break;
+                    } catch (NotRootedException e) {
+                        e.printStackTrace();
                     }
-                    break;
-                } catch (NotRootedException e) {
-                    e.printStackTrace();
                 }
         }
     }
 
-    public void showNotification(String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
+    public static void showNotification(Context context, String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent dismissIntent = null;
@@ -109,7 +113,7 @@ public class NotificationBuilder {
         Uri soundUri = null;
         long[] vibratePattern = null;
         if (sound) {
-            soundUri = getNotificationSound();
+            soundUri = getNotificationSound(context);
             vibratePattern = new long[]{0, 300, 300, 300};
         }
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
@@ -130,7 +134,7 @@ public class NotificationBuilder {
         notificationManager.notify(id, builder.build());
     }
 
-    private Uri getNotificationSound() {
+    private static Uri getNotificationSound(Context context) {
         String uri = PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(context.getString(R.string.pref_sound_uri), "");
         if (!uri.equals("")) {

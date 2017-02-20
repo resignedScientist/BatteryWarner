@@ -139,9 +139,9 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         }
 
         if (batteryLevel >= warningHigh) { // warning high
-            new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_HIGH);
+            NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_WARNING_HIGH);
         } else if (batteryLevel <= warningLow) { // warning low
-            new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_WARNING_LOW);
+            NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_WARNING_LOW);
         }
     }
 

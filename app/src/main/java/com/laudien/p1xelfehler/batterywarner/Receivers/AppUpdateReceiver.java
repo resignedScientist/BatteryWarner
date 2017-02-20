@@ -41,7 +41,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(pref_stop_charging, false)) {
             if (!RootChecker.isDeviceRooted()) {
                 sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
-                new NotificationBuilder(context).showNotification("Please grant root access again!", 0, true, false);
+                NotificationBuilder.showNotification(context, "Please grant root access again!", 0, true, false);
             }
         }
     }
