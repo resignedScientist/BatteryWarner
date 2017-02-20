@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -18,7 +19,12 @@ public final class RootChecker {
         if (!isDeviceRooted()) {
             return false;
         }
-        Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+            }
+        });
         return true;
     }
 
@@ -30,7 +36,12 @@ public final class RootChecker {
         if (!isDeviceRooted()) {
             return false;
         }
-        Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+            }
+        });
         return true;
     }
 

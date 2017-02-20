@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -30,8 +31,8 @@ public final class NotificationBuilder {
     private NotificationBuilder() {
     }
 
-    public static void showNotification(Context context, int type) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    public static void showNotification(final Context context, int type) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
             case NOTIFICATION_WARNING_HIGH:
                 if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
@@ -89,39 +90,50 @@ public final class NotificationBuilder {
                 break;
             case NOTIFICATION_ID_STOP_CHARGING:
                 if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
-                    try {
-                        if (!RootChecker.isChargingEnabled()) {
-                            showNotification(
-                                    context,
-                                    context.getString(R.string.dismiss_if_unplugged),
-                                    NOTIFICATION_ID_STOP_CHARGING,
-                                    false,
-                                    null,
-                                    true
-                            );
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (!RootChecker.isChargingEnabled()) {
+                                    showNotification(
+                                            context,
+                                            context.getString(R.string.dismiss_if_unplugged),
+                                            NOTIFICATION_ID_STOP_CHARGING,
+                                            false,
+                                            null,
+                                            true
+                                    );
+                                }
+                            } catch (NotRootedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        break;
-                    } catch (NotRootedException e) {
-                        e.printStackTrace();
-                    }
+                    });
+                    break;
                 }
             case NOTIFICATION_ID_GRANT_ROOT:
-                String pref_stop_charging = context.getString(R.string.pref_stop_charging);
+                final String pref_stop_charging = context.getString(R.string.pref_stop_charging);
                 if (sharedPreferences.getBoolean(pref_stop_charging, false)) {
-                    if (!RootChecker.isDeviceRooted()) {
-                        sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
-                        showNotification(
-                                context,
-                                context.getString(R.string.grant_root_again),
-                                0,
-                                true,
-                                PendingIntent.getBroadcast(
-                                        context, 0, new Intent(context, GrantRootReceiver.class),
-                                        PendingIntent.FLAG_UPDATE_CURRENT
-                                ),
-                                false
-                        );
-                    }
+                    AsyncTask.execute(new Runnable() { // run in another thread
+                        @Override
+                        public void run() {
+                            if (!RootChecker.isDeviceRooted()) {
+                                sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
+                                showNotification(
+                                        context,
+                                        context.getString(R.string.grant_root_again),
+                                        0,
+                                        true,
+                                        PendingIntent.getBroadcast(
+                                                context, 0, new Intent(context, GrantRootReceiver.class),
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        ),
+                                        false
+                                );
+                            }
+                        }
+                    });
+
                 }
                 break;
         }

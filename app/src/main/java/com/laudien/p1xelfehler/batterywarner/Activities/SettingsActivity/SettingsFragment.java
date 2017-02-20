@@ -176,14 +176,16 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             }
         } else if (preference == pref_stopCharging) {
             boolean checked = (boolean) o;
-            if (checked && !RootChecker.isDeviceRooted()) {
-                Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+            if (checked) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        pref_stopCharging.setChecked(false);
+                        if (!RootChecker.isDeviceRooted()) {
+                            Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+                            pref_stopCharging.setChecked(false);
+                        }
                     }
-                }, 1000);
+                }, 500);
             }
         }
         return true;
