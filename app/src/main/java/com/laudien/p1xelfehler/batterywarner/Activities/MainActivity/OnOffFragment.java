@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ import android.widget.ToggleButton;
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
@@ -47,7 +45,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private int warningLow, warningHigh, currentColor;
     private IntentFilter onOffChangedFilter, batteryChangedFilter;
     private boolean isCharging;
-    private Button btn_on, btn_off;
 
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -152,25 +149,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
 
         onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
         batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-
-        btn_on = (Button) view.findViewById(R.id.btn_on);
-        btn_on.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (RootChecker.enableCharging(context)) {
-                    Toast.makeText(getContext(), "Laden aktiviert!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        btn_off = (Button) view.findViewById(R.id.btn_off);
-        btn_off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (RootChecker.disableCharging(context)) {
-                    Toast.makeText(getContext(), "Laden deaktiviert!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         return view;
     }
