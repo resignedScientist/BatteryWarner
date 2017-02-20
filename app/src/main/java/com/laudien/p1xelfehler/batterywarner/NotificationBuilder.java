@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiver;
 
 import java.util.Locale;
@@ -22,6 +23,7 @@ public final class NotificationBuilder {
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
     public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
+    public static final int NOTIFICATION_ID_GRANT_ROOT = 1340;
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
 
@@ -45,6 +47,7 @@ public final class NotificationBuilder {
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
+                        null,
                         false
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
@@ -62,6 +65,7 @@ public final class NotificationBuilder {
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
+                        null,
                         false
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
@@ -78,6 +82,7 @@ public final class NotificationBuilder {
                             context.getString(R.string.notifications_are_off),
                             NOTIFICATION_ID_SILENT_MODE,
                             true,
+                            null,
                             false
                     );
                 }
@@ -91,6 +96,7 @@ public final class NotificationBuilder {
                                     "Dismiss the notification if the device is unplugged!",
                                     NOTIFICATION_ID_STOP_CHARGING,
                                     false,
+                                    null,
                                     true
                             );
                         }
@@ -99,12 +105,33 @@ public final class NotificationBuilder {
                         e.printStackTrace();
                     }
                 }
+            case NOTIFICATION_ID_GRANT_ROOT:
+                String pref_stop_charging = context.getString(R.string.pref_stop_charging);
+                if (sharedPreferences.getBoolean(pref_stop_charging, false)) {
+                    if (!RootChecker.isDeviceRooted()) {
+                        sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
+                        showNotification(
+                                context,
+                                "Please grant root access again!",
+                                0,
+                                true,
+                                PendingIntent.getBroadcast(
+                                        context, 0, new Intent(context, GrantRootReceiver.class),
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                ),
+                                false
+                        );
+                    }
+                }
+                break;
         }
     }
 
-    public static void showNotification(Context context, String contentText, int id, boolean sound, boolean dismissIntentEnabled) {
-        PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+    public static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, boolean dismissIntentEnabled) {
+        if (contentIntent == null) {
+            contentIntent = PendingIntent.getActivity(
+                    context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         PendingIntent dismissIntent = null;
         if (dismissIntentEnabled) {
             dismissIntent = PendingIntent.getBroadcast(context, 0, new Intent(

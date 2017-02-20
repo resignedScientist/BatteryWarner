@@ -54,6 +54,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".Receivers.NotificationDismissReceiver" />
+        <receiver android:name=".Receivers.GrantRootReceiver" />
 
         <service
             android:name=".Services.OnOffTileService"
