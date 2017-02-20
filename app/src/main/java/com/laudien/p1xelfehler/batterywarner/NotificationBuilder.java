@@ -54,8 +54,9 @@ public class NotificationBuilder {
                 if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or charging
                 }
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false))
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
                     return;
+                }
                 int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
                 showNotification(
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),

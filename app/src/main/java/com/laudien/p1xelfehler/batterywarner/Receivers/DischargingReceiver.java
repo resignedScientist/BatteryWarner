@@ -31,12 +31,14 @@ public class DischargingReceiver extends BroadcastReceiver {
 
 
         // show the stop charging notification
-        try {
-            if (!RootChecker.isChargingEnabled()) {
-                new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
+            try {
+                if (!RootChecker.isChargingEnabled()) {
+                    new NotificationBuilder(context).showNotification(NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING);
+                }
+            } catch (NotRootedException e) {
+                e.printStackTrace();
             }
-        } catch (NotRootedException e) {
-            e.printStackTrace();
         }
 
         // reset already notified
