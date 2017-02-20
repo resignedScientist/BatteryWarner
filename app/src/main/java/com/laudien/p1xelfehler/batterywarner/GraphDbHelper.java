@@ -33,6 +33,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                     + TABLE_COLUMN_PERCENTAGE + " INTEGER,"
                     + TABLE_COLUMN_TEMP + " INTEGER);";
     private static GraphDbHelper instance;
+    private static String[] columns = {
+            GraphDbHelper.TABLE_COLUMN_TIME,
+            GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
+            GraphDbHelper.TABLE_COLUMN_TEMP};
     private int color_percentage, color_percentageBackground, color_temperature;
     private boolean darkThemeEnabled = false;
 
@@ -100,10 +104,6 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         LineGraphSeries<DataPoint>[] output = new LineGraphSeries[2];
         output[TYPE_PERCENTAGE] = new LineGraphSeries<>();
         output[TYPE_TEMPERATURE] = new LineGraphSeries<>();
-        String[] columns = {
-                GraphDbHelper.TABLE_COLUMN_TIME,
-                GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
-                GraphDbHelper.TABLE_COLUMN_TEMP};
         Cursor cursor = database.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
 
@@ -197,11 +197,20 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean isTableEmpty() {
-        return isTableEmpty(getReadableDatabase());
+    private boolean isTableEmpty(String fileName) {
+        return isTableEmpty(getReadableDatabase(fileName));
     }
 
-    public boolean isTableEmpty(String fileName) {
-        return isTableEmpty(getReadableDatabase(fileName));
+    public boolean hasEnoughData() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
+                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        if (cursor.moveToFirst() && cursor.moveToNext()) {
+            close();
+            return true;
+        } else {
+            close();
+            return false;
+        }
     }
 }

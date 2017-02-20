@@ -82,7 +82,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             return;
         }
         // return if the database is empty
-        if (GraphDbHelper.getInstance(context).isTableEmpty()) {
+        if (!GraphDbHelper.getInstance(context).hasEnoughData()) {
             return;
         }
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
