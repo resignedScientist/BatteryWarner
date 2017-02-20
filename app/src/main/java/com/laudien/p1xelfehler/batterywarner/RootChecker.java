@@ -1,12 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 
 import eu.chainfire.libsuperuser.Shell;
 
 public final class RootChecker {
     public static boolean isDeviceRooted() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw new NotInMainThreadException();
+        }
         return Shell.SU.available();
     }
 
@@ -42,6 +46,12 @@ public final class RootChecker {
     public static class NotRootedException extends Exception {
         public NotRootedException() {
             super("The device is not rooted!");
+        }
+    }
+
+    private static class NotInMainThreadException extends RuntimeException {
+        private NotInMainThreadException() {
+            super("Root calls must be done in the main thread!");
         }
     }
 }
