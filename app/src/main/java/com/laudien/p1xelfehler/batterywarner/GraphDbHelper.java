@@ -198,8 +198,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     public boolean hasEnoughData() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = getCursor(db);
+        Cursor cursor = getCursor(getReadableDatabase());
         if (cursor.moveToFirst() && cursor.moveToNext()) {
             close();
             return true;
