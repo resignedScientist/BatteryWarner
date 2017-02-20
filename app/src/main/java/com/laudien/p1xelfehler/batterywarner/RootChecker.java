@@ -38,6 +38,6 @@ public final class RootChecker {
         if (!isDeviceRooted()) {
             throw new NotRootedException();
         }
-        return Shell.SH.run("cat /sys/class/power_supply/battery/charging_enabled").get(0).equals("1");
+        return Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled").get(0).equals("1");
     }
 }
