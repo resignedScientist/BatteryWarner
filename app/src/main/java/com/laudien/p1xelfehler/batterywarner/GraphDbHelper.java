@@ -190,10 +190,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
         cursor.moveToFirst();
         if (cursor.getInt(0) == 0) {
-            close();
+            db.close();
             return true;
         }
-        close();
+        db.close();
         return false;
     }
 
