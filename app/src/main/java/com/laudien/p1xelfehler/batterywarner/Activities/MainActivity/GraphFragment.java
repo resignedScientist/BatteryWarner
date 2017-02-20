@@ -81,7 +81,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     .apply();
             return;
         }
-        // return if the database is empty
+        // return if the database has not enough data
         if (!GraphDbHelper.getInstance(context).hasEnoughData()) {
             return;
         }
