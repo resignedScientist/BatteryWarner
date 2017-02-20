@@ -161,7 +161,9 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_ac.setEnabled(highChecked);
             pref_wireless.setEnabled(highChecked);
             pref_stopCharging.setEnabled(highChecked);
-
+            if (!highChecked) {
+                pref_stopCharging.setChecked(false);
+            }
             Context context = getActivity();
             if (context != null && highChecked) {
                 // start service without resetting the graph
