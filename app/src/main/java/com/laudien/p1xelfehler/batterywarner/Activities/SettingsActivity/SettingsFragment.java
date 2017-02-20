@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -177,15 +178,26 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         } else if (preference == pref_stopCharging) {
             boolean checked = (boolean) o;
             if (checked) {
-                new Handler().postDelayed(new Runnable() {
+                new AsyncTask<Void, Void, Boolean>() {
                     @Override
-                    public void run() {
-                        if (!RootChecker.isDeviceRooted()) {
+                    protected Boolean doInBackground(Void... voids) {
+                        return RootChecker.isDeviceRooted();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        super.onPostExecute(aBoolean);
+                        if (!aBoolean) {
                             Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
-                            pref_stopCharging.setChecked(false);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pref_stopCharging.setChecked(false);
+                                }
+                            }, 500);
                         }
                     }
-                }, 500);
+                }.execute();
             }
         }
         return true;
