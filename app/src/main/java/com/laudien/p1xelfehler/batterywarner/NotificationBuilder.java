@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiver;
 
@@ -31,7 +32,7 @@ public final class NotificationBuilder {
     private NotificationBuilder() {
     }
 
-    public static void showNotification(final Context context, int type) {
+    public static void showNotification(final Context context, final int type) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
             case NOTIFICATION_WARNING_HIGH:
@@ -56,7 +57,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        NOTIFICATION_ID_BATTERY_WARNING,
+                        type,
                         true,
                         null,
                         false
@@ -74,7 +75,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        NOTIFICATION_ID_BATTERY_WARNING,
+                        type,
                         true,
                         null,
                         false
@@ -91,7 +92,7 @@ public final class NotificationBuilder {
                     showNotification(
                             context,
                             context.getString(R.string.notifications_are_off),
-                            NOTIFICATION_ID_SILENT_MODE,
+                            type,
                             true,
                             null,
                             false
@@ -108,7 +109,7 @@ public final class NotificationBuilder {
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
-                                            NOTIFICATION_ID_STOP_CHARGING,
+                                            type,
                                             false,
                                             null,
                                             true
@@ -116,6 +117,20 @@ public final class NotificationBuilder {
                                 }
                             } catch (RootChecker.NotRootedException e) {
                                 e.printStackTrace();
+                            } catch (RootChecker.BatteryFileNotFoundException e) {
+                                showNotification(
+                                        context,
+                                        context.getString(R.string.stop_charging_not_working),
+                                        0,
+                                        false,
+                                        PendingIntent.getActivity(
+                                                context,
+                                                type,
+                                                new Intent(context, SettingsActivity.class),
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        ),
+                                        false
+                                );
                             }
                         }
                     });

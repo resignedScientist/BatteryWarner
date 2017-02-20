@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 
+import java.util.List;
+
 import eu.chainfire.libsuperuser.Shell;
 
 public final class RootChecker {
@@ -36,15 +38,20 @@ public final class RootChecker {
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
     }
 
-    public static boolean isChargingEnabled() throws NotRootedException {
+    public static boolean isChargingEnabled() throws NotRootedException, BatteryFileNotFoundException {
         if (!isDeviceRooted()) {
             throw new NotRootedException();
         }
-        return Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled").get(0).equals("1");
+        List output = Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled");
+        if (output != null && !output.isEmpty()) {
+            return output.get(0).equals("1");
+        } else {
+            throw new BatteryFileNotFoundException();
+        }
     }
 
     public static class NotRootedException extends Exception {
-        public NotRootedException() {
+        private NotRootedException() {
             super("The device is not rooted!");
         }
     }
@@ -52,6 +59,12 @@ public final class RootChecker {
     private static class InMainThreadException extends RuntimeException {
         private InMainThreadException() {
             super("Root calls must be done outside of the main thread!");
+        }
+    }
+
+    public static class BatteryFileNotFoundException extends Exception {
+        private BatteryFileNotFoundException() {
+            super("The battery file was not found. Stop charging does not work with this device!");
         }
     }
 }
