@@ -186,19 +186,16 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    private boolean isTableEmpty(SQLiteDatabase db) {
+    private boolean isTableEmpty(String fileName) {
+        SQLiteDatabase db = getReadableDatabase(fileName);
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
         cursor.moveToFirst();
         if (cursor.getInt(0) == 0) {
             close();
             return true;
         }
-        db.close();
+        close();
         return false;
-    }
-
-    private boolean isTableEmpty(String fileName) {
-        return isTableEmpty(getReadableDatabase(fileName));
     }
 
     public boolean hasEnoughData() {
