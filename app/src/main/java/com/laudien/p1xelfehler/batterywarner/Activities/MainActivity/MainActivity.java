@@ -80,6 +80,13 @@ public class MainActivity extends BaseActivity {
         if (sharedPreferences.getBoolean(Contract.PREF_ALEX_MODE_ENABLED, false)) {
             return;
         }
+        // disable the free application
+        if (!Contract.IS_PRO) {
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
+        } else {
+            sendBroadcast(new Intent("com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED"));
+        }
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         TextView title = new TextView(this);
         float scale = getResources().getDisplayMetrics().density;

@@ -55,6 +55,11 @@
         </receiver>
         <receiver android:name=".Receivers.NotificationDismissReceiver" />
         <receiver android:name=".Receivers.GrantRootReceiver" />
+        <receiver android:name=".Receivers.BothAppsInstalledReceiver">
+            <intent-filter>
+                <action android:name="com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".Services.OnOffTileService"
