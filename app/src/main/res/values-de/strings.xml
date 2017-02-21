@@ -105,4 +105,5 @@
     <string name="dismiss_if_unplugged">Entferne diese Benachrichtigung nachdem das Kabel vom Gerät getrennt wurde!</string>
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
     <string name="stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
+    <string name="current">Stromstärke</string>
 </resources>

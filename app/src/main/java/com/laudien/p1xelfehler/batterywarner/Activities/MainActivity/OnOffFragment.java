@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,12 +40,13 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private SharedPreferences sharedPreferences;
     private Context context;
     private BatteryAlarmManager batteryAlarmManager;
-    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
+            textView_voltage, textView_current;
     private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
     private IntentFilter onOffChangedFilter, batteryChangedFilter;
-    private boolean isCharging;
+    private boolean isCharging, deviceSupportsCurrent;
 
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -67,6 +69,17 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+
+            if (deviceSupportsCurrent) {
+                BatteryManager batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
+                long currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                textView_current.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %d mA",
+                        getString(R.string.current),
+                        currentNow / -1000)
+                );
+            }
 
             switch (health) {
                 case android.os.BatteryManager.BATTERY_HEALTH_COLD:
@@ -145,10 +158,16 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         textView_health = (TextView) view.findViewById(R.id.textView_health);
         textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
+        textView_current = (TextView) view.findViewById(R.id.textView_current);
         img_battery = (ImageView) view.findViewById(R.id.img_battery);
 
         onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
         batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+
+        deviceSupportsCurrent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        if (!deviceSupportsCurrent) {
+            textView_current.setVisibility(View.GONE);
+        }
 
         return view;
     }

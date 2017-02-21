@@ -133,4 +133,5 @@
     <string name="dismiss_if_unplugged">Dismiss this notification after you unplug the device!</string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
     <string name="stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
+    <string name="current">Current</string>
 </resources>
