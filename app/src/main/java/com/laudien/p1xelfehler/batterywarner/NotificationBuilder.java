@@ -60,7 +60,7 @@ public final class NotificationBuilder {
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
                         null,
-                        false
+                        null
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
@@ -78,7 +78,7 @@ public final class NotificationBuilder {
                         NOTIFICATION_ID_BATTERY_WARNING,
                         true,
                         null,
-                        false
+                        null
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
@@ -95,7 +95,7 @@ public final class NotificationBuilder {
                             type,
                             true,
                             null,
-                            false
+                            null
                     );
                 }
                 break;
@@ -106,13 +106,15 @@ public final class NotificationBuilder {
                         public void run() {
                             try {
                                 if (!RootChecker.isChargingEnabled()) {
+                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(
+                                            context, NotificationDismissReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
                                             type,
                                             false,
-                                            null,
-                                            true
+                                            pendingIntent,
+                                            pendingIntent
                                     );
                                 }
                             } catch (RootChecker.NotRootedException e) {
@@ -129,7 +131,7 @@ public final class NotificationBuilder {
                                                 new Intent(context, SettingsActivity.class),
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         ),
-                                        false
+                                        null
                                 );
                             }
                         }
@@ -152,7 +154,7 @@ public final class NotificationBuilder {
                                             context, 0, new Intent(context, GrantRootReceiver.class),
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     ),
-                                    false
+                                    null
                             );
                         }
                     });
@@ -162,15 +164,10 @@ public final class NotificationBuilder {
         }
     }
 
-    public static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, boolean dismissIntentEnabled) {
+    public static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-        PendingIntent dismissIntent = null;
-        if (dismissIntentEnabled) {
-            dismissIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                    context, NotificationDismissReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
         Uri soundUri = null;
         long[] vibratePattern = null;
