@@ -46,7 +46,8 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
     private IntentFilter onOffChangedFilter, batteryChangedFilter;
-    private boolean isCharging, deviceSupportsCurrent;
+    private boolean isCharging;
+    private BatteryManager batteryManager;
 
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -70,8 +71,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
 
-            if (deviceSupportsCurrent) {
-                BatteryManager batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
+            if (batteryManager != null) {
                 long currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
                 textView_current.setText(String.format(
                         Locale.getDefault(),
@@ -164,8 +164,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
         batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
-        deviceSupportsCurrent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-        if (!deviceSupportsCurrent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
+        } else {
             textView_current.setVisibility(View.GONE);
         }
 
