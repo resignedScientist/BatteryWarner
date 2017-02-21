@@ -57,7 +57,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        type,
+                        NOTIFICATION_ID_BATTERY_WARNING,
                         true,
                         null,
                         false
@@ -75,7 +75,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        type,
+                        NOTIFICATION_ID_BATTERY_WARNING,
                         true,
                         null,
                         false
