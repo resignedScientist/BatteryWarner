@@ -26,6 +26,7 @@ public final class NotificationBuilder {
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
     public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
     public static final int NOTIFICATION_ID_GRANT_ROOT = 1340;
+    public static final int NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING = 1341;
     static final int NOTIFICATION_WARNING_HIGH = 0;
     static final int NOTIFICATION_WARNING_LOW = 1;
 
@@ -120,24 +121,27 @@ public final class NotificationBuilder {
                             } catch (RootChecker.NotRootedException e) {
                                 e.printStackTrace();
                             } catch (RootChecker.BatteryFileNotFoundException e) {
-                                showNotification(
-                                        context,
-                                        context.getString(R.string.stop_charging_not_working),
-                                        0,
-                                        false,
-                                        PendingIntent.getActivity(
-                                                context,
-                                                type,
-                                                new Intent(context, SettingsActivity.class),
-                                                PendingIntent.FLAG_UPDATE_CURRENT
-                                        ),
-                                        null
-                                );
+                                showNotification(context, NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING);
                             }
                         }
                     });
                     break;
                 }
+            case NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING:
+                showNotification(
+                        context,
+                        context.getString(R.string.stop_charging_not_working),
+                        0,
+                        false,
+                        PendingIntent.getActivity(
+                                context,
+                                type,
+                                new Intent(context, SettingsActivity.class),
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        ),
+                        null
+                );
+                break;
             case NOTIFICATION_ID_GRANT_ROOT:
                 final String pref_stop_charging = context.getString(R.string.pref_stop_charging);
                 if (sharedPreferences.getBoolean(pref_stop_charging, false)) {

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -184,15 +185,27 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             boolean checked = (boolean) o;
             if (checked) {
                 new AsyncTask<Void, Void, Boolean>() {
+                    // returns false if not rooted
                     @Override
                     protected Boolean doInBackground(Void... voids) {
-                        return RootChecker.isDeviceRooted();
+                        try {
+                            RootChecker.isChargingEnabled();
+                        } catch (RootChecker.NotRootedException e) {
+                            return false;
+                        } catch (RootChecker.BatteryFileNotFoundException e) {
+                            Context context = getActivity();
+                            if (context != null) {
+                                NotificationBuilder.showNotification(context,
+                                        NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING);
+                            }
+                        }
+                        return true;
                     }
 
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
                         super.onPostExecute(aBoolean);
-                        if (!aBoolean) {
+                        if (!aBoolean) { // show a toast if not rooted
                             Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
                             new Handler().postDelayed(new Runnable() {
                                 @Override

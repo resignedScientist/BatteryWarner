@@ -27,7 +27,7 @@ public final class RootChecker {
         Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
     }
 
-    public static void disableCharging(Context context) throws NotRootedException {
+    static void disableCharging(Context context) throws NotRootedException {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
                 context.getString(R.string.pref_stop_charging), false)) {
             return;
