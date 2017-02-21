@@ -28,66 +28,18 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/battery_status_full_white" />
 
-    <ScrollView
-        android:id="@+id/scrollView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <include
+        layout="@layout/battery_infos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView_technology"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Technologie: Li-Io"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView_temp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Temperatur: 25°C"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView_health"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Gesundheit: OK"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView_batteryLevel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Akkustand: 30%"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView_voltage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Spannung: 3,5V"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView_current"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Stromstärke: 1500mAh"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-
-    </ScrollView>
+        app:layout_constraintRight_toLeftOf="@+id/toggleButton"
+        app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
