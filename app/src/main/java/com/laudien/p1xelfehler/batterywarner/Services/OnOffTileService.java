@@ -85,8 +85,6 @@ public class OnOffTileService extends TileService {
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();
         tile.updateTile();
 
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(Contract.BROADCAST_ON_OFF_CHANGED);
-        sendBroadcast(broadcastIntent);
+        sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
     }
 }

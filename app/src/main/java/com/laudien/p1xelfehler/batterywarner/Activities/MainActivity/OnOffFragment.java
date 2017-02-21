@@ -209,8 +209,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
         // send broadcast
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(Contract.BROADCAST_ON_OFF_CHANGED);
-        context.sendBroadcast(broadcastIntent);
+        context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
     }
 }
