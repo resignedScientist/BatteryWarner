@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -17,16 +18,20 @@ public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
 
-        // cancel warning notifications
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // cancel warning notifications
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
+            }
+        }, 3000);
 
         // show the stop charging notification
         NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING);
