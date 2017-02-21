@@ -38,7 +38,7 @@ public class IntroActivity extends MaterialIntroActivity {
                     }
                 });
 
-        if (Contract.IS_PRO) {
+        if (Contract.IS_PRO) { // pro version
             // first slide (thank you slide)
             ImageSlide imageSlide = new ImageSlide();
             Bundle bundle = new Bundle(2);
@@ -46,11 +46,7 @@ public class IntroActivity extends MaterialIntroActivity {
             bundle.putString(ImageSlide.BUNDLE_DESCRIPTION, getString(R.string.thank_you_pro_subtitle));
             imageSlide.setArguments(bundle);
             addSlide(imageSlide);
-            // TODO: uninstall slide
-
-            // preference slide
-            addSlide(new PreferencesSlide());
-        } else {
+        } else { // free version
             addSlide(new ImageSlide());
             addSlide(new SlideFragmentBuilder()
                     .backgroundColor(R.color.colorIntro2)
@@ -68,8 +64,9 @@ public class IntroActivity extends MaterialIntroActivity {
                     .description(getString(R.string.slide_3_description))
                     .build()
             );
-            addSlide(new PreferencesSlide());
         }
+        // preference slide
+        addSlide(new PreferencesSlide());
     }
 
     @Override
