@@ -43,7 +43,7 @@ public final class NotificationBuilder {
                 if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {
                     return;
                 }
-                int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
+                int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -72,7 +72,7 @@ public final class NotificationBuilder {
                 if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {
                     return;
                 }
-                int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
+                int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),

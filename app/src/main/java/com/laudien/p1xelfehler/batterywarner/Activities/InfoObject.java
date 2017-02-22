@@ -26,7 +26,7 @@ public class InfoObject {
     private static String[] getTimeFormats(Context context) {
         String[] formats = new String[4];
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String timeFormat = sharedPreferences.getString(context.getString(R.string.pref_time_format), "0"); // TODO
+        String timeFormat = sharedPreferences.getString(context.getString(R.string.pref_time_format), context.getString(R.string.pref_time_format_default));
         switch (timeFormat) {
             case "0":
                 formats[0] = "%d h %.0f min";

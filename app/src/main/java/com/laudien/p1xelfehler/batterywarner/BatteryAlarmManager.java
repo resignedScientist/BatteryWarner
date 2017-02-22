@@ -17,17 +17,25 @@ import java.util.Calendar;
 public class BatteryAlarmManager implements SharedPreferences.OnSharedPreferenceChangeListener {
     // private static final String TAG = "BatteryAlarmManager";
     private static BatteryAlarmManager instance;
-    private final String pref_last_percentage;
+    private final String PREF_LAST_PERCENTAGE, PREF_WARNING_HIGH, PREF_WARNING_LOW, PREF_GRAPH_ENABLED;
+    private final int PREF_WARNING_HIGH_DEFAULT, PREF_WARNING_LOW_DEFAULT;
+    private final boolean PREF_GRAPH_ENABLED_DEFAULT;
     private SharedPreferences sharedPreferences;
     private int batteryLevel, temperature, warningHigh, warningLow;
     private boolean graphEnabled;
 
     private BatteryAlarmManager(Context context) {
-        pref_last_percentage = context.getString(R.string.pref_last_percentage);
+        PREF_LAST_PERCENTAGE = context.getString(R.string.pref_last_percentage);
+        PREF_WARNING_HIGH = context.getString(R.string.pref_warning_high);
+        PREF_WARNING_LOW = context.getString(R.string.pref_warning_low);
+        PREF_WARNING_HIGH_DEFAULT = context.getResources().getInteger(R.integer.pref_warning_high_default);
+        PREF_WARNING_LOW_DEFAULT = context.getResources().getInteger(R.integer.pref_warning_low_default);
+        PREF_GRAPH_ENABLED = context.getString(R.string.pref_graph_enabled);
+        PREF_GRAPH_ENABLED_DEFAULT = context.getResources().getBoolean(R.bool.pref_graph_enabled_default);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
-        warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
+        warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
+        warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
         graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
     }
 
@@ -56,14 +64,14 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
             return false; // return false if warning high is disabled
         }
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_chargingType), chargingType).apply(); // TODO
+        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_chargingType), chargingType).apply();
         return checkChargingType(context, sharedPreferences, chargingType);
     }
 
     public static boolean checkChargingType(Context context, SharedPreferences sharedPreferences) {
         int chargingType = PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 context.getString(R.string.pref_last_chargingType),
-                BatteryManager.BATTERY_PLUGGED_AC // TODO
+                BatteryManager.BATTERY_PLUGGED_AC
         );
         return checkChargingType(context, sharedPreferences, chargingType);
     }
@@ -149,14 +157,14 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         if (!Contract.IS_PRO || !graphEnabled) {
             return; // don't log if it's not the pro version or disabled
         }
-        int lastPercentage = sharedPreferences.getInt(pref_last_percentage, Contract.NO_STATE);
+        int lastPercentage = sharedPreferences.getInt(PREF_LAST_PERCENTAGE, Contract.NO_STATE);
         if (batteryLevel == lastPercentage) {
             return; // don't log if the battery level did not change
         }
         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
         long timeNow = Calendar.getInstance().getTimeInMillis();
         graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-        sharedPreferences.edit().putInt(pref_last_percentage, batteryLevel).apply();
+        sharedPreferences.edit().putInt(PREF_LAST_PERCENTAGE, batteryLevel).apply();
         GraphFragment.notify(context);
     }
 
@@ -166,15 +174,15 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         }
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int interval;
-        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
+        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
         if (batteryLevel <= warningLow + 5) {
-            interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
+            interval = context.getResources().getInteger(R.integer.interval_discharging_very_short);
         } else if (batteryLevel <= warningLow + 10) {
-            interval = Contract.INTERVAL_DISCHARGING_SHORT;
+            interval = context.getResources().getInteger(R.integer.interval_discharging_short);
         } else if (batteryLevel <= warningLow + 20) {
-            interval = Contract.INTERVAL_DISCHARGING_LONG;
+            interval = context.getResources().getInteger(R.integer.interval_discharging_long);
         } else {
-            interval = Contract.INTERVAL_DISCHARGING_VERY_LONG;
+            interval = context.getResources().getInteger(R.integer.interval_discharging_very_long);
         }
         Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -212,19 +220,14 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         return batteryLevel;
     }
 
-    // TODO change that to not depend on Contract class
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        switch (s) {
-            case Contract.PREF_WARNING_HIGH:
-                warningHigh = sharedPreferences.getInt(s, Contract.DEF_WARNING_HIGH);
-                break;
-            case Contract.PREF_WARNING_LOW:
-                warningLow = sharedPreferences.getInt(s, Contract.DEF_WARNING_LOW);
-                break;
-            case Contract.PREF_GRAPH_ENABLED:
-                graphEnabled = sharedPreferences.getBoolean(s, true);
-                break;
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String preference) {
+        if (preference.equals(PREF_WARNING_HIGH)) {
+            warningHigh = sharedPreferences.getInt(preference, PREF_WARNING_HIGH_DEFAULT);
+        } else if (preference.equals(PREF_WARNING_LOW)) {
+            warningLow = sharedPreferences.getInt(preference, PREF_WARNING_LOW_DEFAULT);
+        } else if (preference.equals(PREF_GRAPH_ENABLED)) {
+            graphEnabled = sharedPreferences.getBoolean(preference, PREF_GRAPH_ENABLED_DEFAULT);
         }
     }
 }

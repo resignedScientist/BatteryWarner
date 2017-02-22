@@ -146,8 +146,8 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);// TODO
-        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
+        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
 
         boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         toggleButton.setChecked(isChecked);

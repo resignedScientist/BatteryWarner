@@ -17,9 +17,9 @@
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
             android:key="@string/pref_warning_low"
-            app:default_progress="20"
-            app:slider_max="40"
-            app:slider_min="5"
+            app:default_progress="@integer/pref_warning_low_default"
+            app:slider_max="@integer/pref_slider_low_max"
+            app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
@@ -30,8 +30,8 @@
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
             android:key="@string/pref_warning_high"
-            app:default_progress="80"
-            app:slider_min="60"
+            app:default_progress="@integer/pref_warning_high_default"
+            app:slider_min="@integer/pref_slider_high_min"
             app:unit="%" />
         <SwitchPreference
             android:defaultValue="@bool/pref_stop_charging_default"
@@ -52,7 +52,7 @@
             android:title="@string/enable_on_wireless" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:key="stats"
+        android:key="@string/pref_stats_key"
         android:title="@string/stats">
         <SwitchPreference
             android:defaultValue="@bool/pref_graph_enabled_default"
@@ -63,7 +63,7 @@
             android:key="@string/pref_graph_autosave"
             android:title="@string/autosave" />
         <ListPreference
-            android:defaultValue="0"
+            android:defaultValue="@string/pref_time_format_default"
             android:entries="@array/timeFormats"
             android:entryValues="@array/timeFormats_values"
             android:key="@string/pref_time_format"
