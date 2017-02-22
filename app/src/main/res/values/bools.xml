@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="pref_warning_low_enabled_default">true</bool>
+    <bool name="pref_warning_high_enabled_default">true</bool>
+    <bool name="pref_stop_charging_default">false</bool>
+    <bool name="pref_ac_enabled_default">true</bool>
+    <bool name="pref_usb_enabled_default">true</bool>
+    <bool name="pref_wireless_enabled_default">true</bool>
+    <bool name="pref_graph_enabled_default">true</bool>
+    <bool name="pref_graph_autosave_default">false</bool>
+    <bool name="pref_dark_theme_enabled_default">false</bool>
+</resources>

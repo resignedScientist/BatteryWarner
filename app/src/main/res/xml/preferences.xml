@@ -11,7 +11,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/low_battery_warning">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_warning_low_enabled_default"
             android:key="@string/pref_warning_low_enabled"
             android:layout="@layout/preference_checkbox"
             android:title="@string/enabled" />
@@ -24,7 +24,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_warning_high_enabled_default"
             android:key="@string/pref_warning_high_enabled"
             android:layout="@layout/preference_checkbox"
             android:title="@string/enabled" />
@@ -34,20 +34,20 @@
             app:slider_min="60"
             app:unit="%" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="@bool/pref_stop_charging_default"
             android:key="@string/pref_stop_charging"
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/stop_charging_title" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_ac_enabled_default"
             android:key="@string/pref_ac_enabled"
             android:title="@string/enable_on_ac" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_usb_enabled_default"
             android:key="@string/pref_usb_enabled"
             android:title="@string/enable_on_usb" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_wireless_enabled_default"
             android:key="@string/pref_wireless_enabled"
             android:title="@string/enable_on_wireless" />
     </PreferenceCategory>
@@ -55,11 +55,11 @@
         android:key="stats"
         android:title="@string/stats">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_graph_enabled_default"
             android:key="@string/pref_graph_enabled"
             android:title="@string/enable_charging_curve" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="@bool/pref_graph_autosave_default"
             android:key="@string/pref_graph_autosave"
             android:title="@string/autosave" />
         <ListPreference
@@ -71,8 +71,8 @@
             android:title="@string/time_format_title" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/theming">
-        <SwitchPreference
-            android:defaultValue="false"
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_dark_theme_enabled_default"
             android:key="@string/pref_dark_theme_enabled"
             android:title="@string/enable_dark_theme" />
     </PreferenceCategory>

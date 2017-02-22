@@ -17,7 +17,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -37,8 +36,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled,
-            pref_usb, pref_ac, pref_wireless, pref_stopCharging;
-    private SwitchPreference switch_darkTheme;
+            pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme;
     private RingtonePreference ringtonePreference;
     private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
 
@@ -48,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         addPreferencesFromResource(R.xml.preferences);
 
         if (getActivity() instanceof SettingsActivity) {
-            switch_darkTheme = (SwitchPreference) findPreference(getString(R.string.pref_dark_theme_enabled));
+            switch_darkTheme = (TwoStatePreference) findPreference(getString(R.string.pref_dark_theme_enabled));
             switch_darkTheme.setOnPreferenceChangeListener(this);
         }
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
