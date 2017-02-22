@@ -22,8 +22,9 @@
         android:text="@string/slide_preferences_discription"
         android:textSize="18sp" />
 
-    <FrameLayout
-        android:id="@+id/container_layout"
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/textView2"

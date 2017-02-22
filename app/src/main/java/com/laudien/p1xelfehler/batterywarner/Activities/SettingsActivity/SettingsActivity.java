@@ -17,7 +17,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.frame_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.settings));
         try { // put version code in subtitle of the toolbar
@@ -28,8 +28,8 @@ public class SettingsActivity extends BaseActivity {
         }
         setSupportActionBar(toolbar);
 
-        SettingsFragment settingsFragment = new SettingsFragment();
-        getFragmentManager().beginTransaction().replace(R.id.container_layout, settingsFragment).commit();
+        // replace container layout with SettingsFragment
+        getFragmentManager().beginTransaction().replace(R.id.container_layout, new SettingsFragment()).commit();
     }
 
     @Override
