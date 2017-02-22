@@ -166,7 +166,7 @@ public final class NotificationBuilder {
         }
     }
 
-    public static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
+    private static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
