@@ -137,4 +137,7 @@
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
     <string name="stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="current">Current</string>
+    <string name="time_format_hours_minutes">1 h 30 min</string>
+    <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
+    <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
 </resources>

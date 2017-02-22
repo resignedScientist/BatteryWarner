@@ -106,4 +106,7 @@
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
     <string name="stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
     <string name="current">Stromstärke</string>
+    <string name="time_format_hours_minutes">1 h 30 min</string>
+    <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
+    <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
 </resources>
