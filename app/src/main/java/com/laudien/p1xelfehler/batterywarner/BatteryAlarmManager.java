@@ -176,13 +176,13 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         int interval;
         int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
         if (batteryLevel <= warningLow + 5) {
-            interval = context.getResources().getInteger(R.integer.interval_discharging_very_short);
+            interval = context.getResources().getInteger(R.integer.interval_very_short);
         } else if (batteryLevel <= warningLow + 10) {
-            interval = context.getResources().getInteger(R.integer.interval_discharging_short);
+            interval = context.getResources().getInteger(R.integer.interval_short);
         } else if (batteryLevel <= warningLow + 20) {
-            interval = context.getResources().getInteger(R.integer.interval_discharging_long);
+            interval = context.getResources().getInteger(R.integer.interval_long);
         } else {
-            interval = context.getResources().getInteger(R.integer.interval_discharging_very_long);
+            interval = context.getResources().getInteger(R.integer.interval_very_long);
         }
         Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(

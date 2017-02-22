@@ -5,8 +5,8 @@
     <integer name="pref_slider_low_min">5</integer>
     <integer name="pref_slider_low_max">40</integer>
     <integer name="pref_slider_high_min">60</integer>
-    <integer name="interval_discharging_very_long">3600000</integer> <!-- 1 hour -->
-    <integer name="interval_discharging_long">1800000</integer> <!-- 30 minutes -->
-    <integer name="interval_discharging_short">900000</integer> <!-- 15 minutes -->
-    <integer name="interval_discharging_very_short">60000</integer> <!-- 1 minute -->
+    <integer name="interval_very_long">3600000</integer> <!-- 1 hour -->
+    <integer name="interval_long">1800000</integer> <!-- 30 minutes -->
+    <integer name="interval_short">900000</integer> <!-- 15 minutes -->
+    <integer name="interval_very_short">60000</integer> <!-- 1 minute -->
 </resources>
