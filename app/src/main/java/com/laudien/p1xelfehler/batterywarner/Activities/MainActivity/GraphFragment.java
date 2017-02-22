@@ -60,6 +60,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private boolean graphEnabled;
     private InfoObject infoObject;
     private long endTime;
+    private BatteryAlarmManager batteryAlarmManager;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -85,8 +86,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (!GraphDbHelper.getInstance(context).hasEnoughData()) {
             return;
         }
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        if (!batteryAlarmManager.isGraphEnabled()) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default))) {
             return; // return if graph is disabled in settings
         }
 
@@ -143,6 +144,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        batteryAlarmManager = BatteryAlarmManager.getInstance(getContext());
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
@@ -354,11 +356,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         graph_chargeCurve.removeSeries(series_chargeCurve);
         graph_chargeCurve.removeSeries(series_temp);
         // load graph
-        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) return;
-        boolean isChargingAndNotFull = BatteryAlarmManager.isChargingNotificationEnabled(getContext(), sharedPreferences)
-                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
-                && sharedPreferences.getBoolean(getContext().getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
+        boolean isChargingAndNotFull = batteryAlarmManager.isChargingNotificationEnabled(getContext(), BatteryAlarmManager.getBatteryStatus(getContext()))
+                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100)
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs(getContext());
         if (series != null) {

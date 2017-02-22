@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ public class ChargingService extends Service {
 
     private final static String TAG = "ChargingService";
     private BatteryAlarmManager batteryAlarmManager;
+    private SharedPreferences sharedPreferences;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -40,15 +42,16 @@ public class ChargingService extends Service {
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            if (!BatteryAlarmManager.isCharging(batteryStatus) // if not charging
-                    || !batteryAlarmManager.isEnabled(context) // if not enabled
-                    || (!batteryAlarmManager.isGraphEnabled() && !batteryAlarmManager.isWarningHighEnabled(context))) // if not charging AND warningHigh is disabled
-            {
+            if (sharedPreferences == null) {
+                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            }
+            boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            if (!batteryAlarmManager.isChargingNotificationEnabled(context, batteryStatus)) {
                 stopSelf();
                 return;
             }
             batteryAlarmManager.checkAndNotify(context, batteryStatus);
-            if (batteryAlarmManager.isGraphEnabled()) {
+            if (graphEnabled) {
                 batteryAlarmManager.logInDatabase(context);
             }
             if (batteryAlarmManager.getBatteryLevel() == 100) {
@@ -58,11 +61,12 @@ public class ChargingService extends Service {
     };
 
     public static void startService(Context context) {
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-        if (batteryAlarmManager.isGraphEnabled()) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        if (graphEnabled) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
             dbHelper.resetTable();
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
+            sharedPreferences.edit()
                     .putLong(context.getString(R.string.pref_graph_time), Calendar.getInstance().getTimeInMillis())
                     .putInt(context.getString(R.string.pref_last_percentage), -1)
                     .apply();

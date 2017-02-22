@@ -64,7 +64,7 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
         if (Contract.IS_PRO
-                && BatteryAlarmManager.checkChargingType(context, sharedPreferences)
+                && BatteryAlarmManager.isChargingTypeEnabled(context, sharedPreferences)
                 && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), context.getResources().getBoolean(R.bool.pref_graph_autosave_default))) {
             GraphFragment.saveGraph(context);
         }

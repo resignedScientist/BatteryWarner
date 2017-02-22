@@ -84,7 +84,7 @@ public class IntroActivity extends MaterialIntroActivity {
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         if (batteryStatus != null) {
             // start the service if charging (if enabled in settings)
-            if (BatteryAlarmManager.isChargingNotificationEnabled(this, sharedPreferences, batteryStatus)) {
+            if (batteryAlarmManager.isChargingNotificationEnabled(this, batteryStatus)) {
                 ChargingService.startService(this);
                 // set the alarm if discharging (if enabled in settings)
             } else if (BatteryAlarmManager.isDischargingNotificationEnabled(this, sharedPreferences)) {

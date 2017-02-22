@@ -34,12 +34,12 @@ public class ChargingReceiver extends BroadcastReceiver {
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
         // check if the charging notification for the current method is enabled
-        if (!BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+        if (!BatteryAlarmManager.isChargingTypeEnabled(context, sharedPreferences)) {
             // if not check again in 10s to make sure it is correct
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
+                    if (BatteryAlarmManager.isChargingTypeEnabled(context, sharedPreferences)) {
                         ChargingService.startService(context);
                         NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
                     }
