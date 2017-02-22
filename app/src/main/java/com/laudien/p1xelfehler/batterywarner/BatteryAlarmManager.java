@@ -175,11 +175,11 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int interval;
         int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
-        if (batteryLevel <= warningLow + 5) {
+        if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_very_short)) {
             interval = context.getResources().getInteger(R.integer.interval_very_short);
-        } else if (batteryLevel <= warningLow + 10) {
+        } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_short)) {
             interval = context.getResources().getInteger(R.integer.interval_short);
-        } else if (batteryLevel <= warningLow + 20) {
+        } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_long)) {
             interval = context.getResources().getInteger(R.integer.interval_long);
         } else {
             interval = context.getResources().getInteger(R.integer.interval_very_long);
