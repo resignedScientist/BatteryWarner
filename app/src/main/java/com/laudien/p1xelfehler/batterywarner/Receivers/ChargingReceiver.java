@@ -26,9 +26,9 @@ public class ChargingReceiver extends BroadcastReceiver {
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         batteryAlarmManager.cancelDischargingAlarm(context); // cancel discharging alarm
 
-        // cancel warning notifications
+        // cancel warning low notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
+        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_WARNING_LOW);
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();

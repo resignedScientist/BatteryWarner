@@ -22,12 +22,11 @@ import java.util.Locale;
 
 public final class NotificationBuilder {
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
-    public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
-    public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
-    public static final int NOTIFICATION_ID_GRANT_ROOT = 1340;
-    public static final int NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING = 1341;
-    static final int NOTIFICATION_WARNING_HIGH = 0;
-    static final int NOTIFICATION_WARNING_LOW = 1;
+    public static final int NOTIFICATION_ID_WARNING_HIGH = 1338;
+    public static final int NOTIFICATION_ID_WARNING_LOW = 1339;
+    public static final int NOTIFICATION_ID_STOP_CHARGING = 1340;
+    public static final int NOTIFICATION_ID_GRANT_ROOT = 1341;
+    public static final int NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING = 1342;
 
     private NotificationBuilder() {
     }
@@ -35,7 +34,7 @@ public final class NotificationBuilder {
     public static void showNotification(final Context context, final int type) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
-            case NOTIFICATION_WARNING_HIGH:
+            case NOTIFICATION_ID_WARNING_HIGH:
                 if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or not charging
                 }
@@ -57,14 +56,14 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        NOTIFICATION_ID_BATTERY_WARNING,
+                        type,
                         true,
                         null,
                         null
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
-            case NOTIFICATION_WARNING_LOW:
+            case NOTIFICATION_ID_WARNING_LOW:
                 if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or charging
                 }
@@ -75,7 +74,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        NOTIFICATION_ID_BATTERY_WARNING,
+                        type,
                         true,
                         null,
                         null
