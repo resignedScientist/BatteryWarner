@@ -14,6 +14,9 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING;
+
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
 
@@ -24,17 +27,22 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
             return; // return if intro was not finished
 
+        // add a delay for the dismissing of the notification if stop charging is enabled
+        int delay = 0;
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
+            delay = 3000;
+            // show the stop charging notification
+            NotificationBuilder.showNotification(context, NOTIFICATION_ID_STOP_CHARGING);
+        }
+
+        // dismiss warning notifications
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // cancel warning notifications
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_BATTERY_WARNING);
+                notificationManager.cancel(NOTIFICATION_ID_BATTERY_WARNING);
             }
-        }, 3000);
-
-        // show the stop charging notification
-        NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING);
+        }, delay);
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
@@ -54,7 +62,7 @@ public class DischargingReceiver extends BroadcastReceiver {
             batteryAlarmManager.setDischargingAlarm(context);
         }
 
-        // auto save if enabled in settings and last charging type is enabled
+        // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
         if (Contract.IS_PRO
                 && BatteryAlarmManager.checkChargingType(context, sharedPreferences)
                 && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
