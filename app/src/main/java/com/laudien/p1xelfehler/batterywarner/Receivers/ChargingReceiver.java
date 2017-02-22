@@ -41,7 +41,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                 public void run() {
                     if (BatteryAlarmManager.checkChargingType(context, sharedPreferences)) {
                         ChargingService.startService(context);
-                        NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_SILENT_MODE);
+                        NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
                     }
                 }
             }, 10000);
@@ -49,7 +49,7 @@ public class ChargingReceiver extends BroadcastReceiver {
             // start service
             ChargingService.startService(context);
             // notify if silent/vibrate mode
-            NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_SILENT_MODE);
+            NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
         }
     }
 }

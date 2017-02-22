@@ -21,7 +21,6 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiv
 import java.util.Locale;
 
 public final class NotificationBuilder {
-    public static final int NOTIFICATION_SILENT_MODE = 2;
     public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
     public static final int NOTIFICATION_ID_BATTERY_WARNING = 1338;
     public static final int NOTIFICATION_ID_STOP_CHARGING = 1339;
@@ -83,7 +82,7 @@ public final class NotificationBuilder {
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                 break;
-            case NOTIFICATION_SILENT_MODE:
+            case NOTIFICATION_ID_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 int ringerMode = audioManager.getRingerMode();
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
