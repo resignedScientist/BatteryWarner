@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity {
         if (!Contract.IS_PRO) {
             sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)).apply();
         } else {
-            sendBroadcast(new Intent("com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED"));
+            sendBroadcast(new Intent(Contract.BROADCAST_BOTH_APPS_INSTALLED));
         }
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

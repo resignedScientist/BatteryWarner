@@ -11,7 +11,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 public class BothAppsInstalledReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED")
+        if (intent.getAction().equals(Contract.BROADCAST_BOTH_APPS_INSTALLED)
                 && Contract.IS_PRO) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(

@@ -8,6 +8,7 @@ public final class Contract {
     // custom broadcasts
     public static final String BROADCAST_ON_OFF_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_ON_OFF_CHANGED";
     public static final String BROADCAST_STATUS_CHANGED = "com.laudien.p1xelfehler.batterywarner.BROADCAST_STATUS_CHANGED";
+    public static final String BROADCAST_BOTH_APPS_INSTALLED = "com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED";
     // package names
     public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
