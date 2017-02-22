@@ -24,12 +24,12 @@ public class DischargingReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
             return; // return if intro was not finished
 
         // add a delay for the dismissing of the notification if stop charging is enabled
         int delay = 0;
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
             delay = 3000;
             // show the stop charging notification
             NotificationBuilder.showNotification(context, NOTIFICATION_ID_STOP_CHARGING);
@@ -65,7 +65,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
         if (Contract.IS_PRO
                 && BatteryAlarmManager.checkChargingType(context, sharedPreferences)
-                && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), false)) {
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), context.getResources().getBoolean(R.bool.pref_graph_autosave_default))) {
             GraphFragment.saveGraph(context);
         }
     }

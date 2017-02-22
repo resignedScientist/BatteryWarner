@@ -14,7 +14,7 @@ public class StartActivity extends BaseActivity {
         super.onStart();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), true);
+        boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
         if (firstStart) {
             startActivity(new Intent(this, IntroActivity.class));
         } else {

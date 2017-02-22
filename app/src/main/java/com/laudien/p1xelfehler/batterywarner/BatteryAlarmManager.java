@@ -26,9 +26,9 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         pref_last_percentage = context.getString(R.string.pref_last_percentage);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        warningHigh = sharedPreferences.getInt(Contract.PREF_WARNING_HIGH, Contract.DEF_WARNING_HIGH);
-        warningLow = sharedPreferences.getInt(Contract.PREF_WARNING_LOW, Contract.DEF_WARNING_LOW);
-        graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), true);
+        warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
+        warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
+        graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
     }
 
     public static BatteryAlarmManager getInstance(Context context) {
@@ -49,21 +49,21 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         if (!isCharging) {
             return false; // return false if not charging
         }
-        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true)) {
+        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default))) {
             return false; // return false if all warnings are disabled
         }
-        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), true)) {
+        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default))) {
             return false; // return false if warning high is disabled
         }
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
-        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_chargingType), chargingType).apply();
+        sharedPreferences.edit().putInt(context.getString(R.string.pref_last_chargingType), chargingType).apply(); // TODO
         return checkChargingType(context, sharedPreferences, chargingType);
     }
 
     public static boolean checkChargingType(Context context, SharedPreferences sharedPreferences) {
         int chargingType = PreferenceManager.getDefaultSharedPreferences(context).getInt(
                 context.getString(R.string.pref_last_chargingType),
-                BatteryManager.BATTERY_PLUGGED_AC
+                BatteryManager.BATTERY_PLUGGED_AC // TODO
         );
         return checkChargingType(context, sharedPreferences, chargingType);
     }
@@ -71,17 +71,17 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     private static boolean checkChargingType(Context context, SharedPreferences sharedPreferences, int chargingType) {
         switch (chargingType) {
             case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
-                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default))) {
                     return false;
                 }
                 break;
             case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
-                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default))) {
                     return false;
                 }
                 break;
             case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
-                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), true)) {
+                if (!sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default))) {
                     return false;
                 }
         }
@@ -96,8 +96,8 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         }
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         return !isCharging
-                && sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true)
-                && sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), true);
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default))
+                && sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
     }
 
     public static boolean isCharging(Intent batteryStatus) {
@@ -109,11 +109,11 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
     }
 
     public boolean isEnabled(Context context) {
-        return sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true);
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
     }
 
     public boolean isWarningHighEnabled(Context context) {
-        return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), true);
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
     }
 
     public boolean isGraphEnabled() {
@@ -166,7 +166,7 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         }
         long currentTime = Calendar.getInstance().getTimeInMillis();
         int interval;
-        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
+        int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
         if (batteryLevel <= warningLow + 5) {
             interval = Contract.INTERVAL_DISCHARGING_VERY_SHORT;
         } else if (batteryLevel <= warningLow + 10) {
@@ -212,6 +212,7 @@ public class BatteryAlarmManager implements SharedPreferences.OnSharedPreference
         return batteryLevel;
     }
 
+    // TODO change that to not depend on Contract class
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         switch (s) {

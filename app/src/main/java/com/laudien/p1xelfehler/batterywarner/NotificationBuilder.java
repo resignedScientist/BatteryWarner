@@ -40,10 +40,10 @@ public final class NotificationBuilder {
                 if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or not charging
                 }
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {
                     return;
                 }
-                int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
+                int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -69,10 +69,10 @@ public final class NotificationBuilder {
                 if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
                     return; // return if disabled in settings or charging
                 }
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), false)) {
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {
                     return;
                 }
-                int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
+                int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW); // TODO
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
@@ -81,7 +81,7 @@ public final class NotificationBuilder {
                         null,
                         null
                 );
-                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                 break;
             case NOTIFICATION_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -101,7 +101,7 @@ public final class NotificationBuilder {
                 }
                 break;
             case NOTIFICATION_ID_STOP_CHARGING:
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), false)) {
+                if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -144,7 +144,7 @@ public final class NotificationBuilder {
                 break;
             case NOTIFICATION_ID_GRANT_ROOT:
                 final String pref_stop_charging = context.getString(R.string.pref_stop_charging);
-                if (sharedPreferences.getBoolean(pref_stop_charging, false)) {
+                if (sharedPreferences.getBoolean(pref_stop_charging, context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
                     AsyncTask.execute(new Runnable() { // run in another thread
                         @Override
                         public void run() {

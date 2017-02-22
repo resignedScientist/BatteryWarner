@@ -54,7 +54,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         public void onReceive(Context context, Intent intent) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             toggleButton.setOnCheckedChangeListener(null); // disable the toasts
-            toggleButton.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), true));
+            toggleButton.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)));
             toggleButton.setOnCheckedChangeListener(OnOffFragment.this); // enable the toasts
         }
     };
@@ -146,10 +146,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);
-        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH);
+        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), Contract.DEF_WARNING_LOW);// TODO
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), Contract.DEF_WARNING_HIGH); // TODO
 
-        boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), true);
+        boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         toggleButton.setChecked(isChecked);
         toggleButton.setOnCheckedChangeListener(this);
 

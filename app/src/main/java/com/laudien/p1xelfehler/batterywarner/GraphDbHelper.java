@@ -137,7 +137,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
 
     private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), false);
+        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
         if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0 ||
                 darkThemeEnabled != readDarkThemeEnabled) {
             darkThemeEnabled = readDarkThemeEnabled;

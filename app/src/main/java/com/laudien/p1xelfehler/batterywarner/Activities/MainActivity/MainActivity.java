@@ -77,12 +77,12 @@ public class MainActivity extends BaseActivity {
         // both apps are installed:
         // check for alex mode:
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getBoolean(Contract.PREF_ALEX_MODE_ENABLED, false)) {
+        if (sharedPreferences.getBoolean(getString(R.string.pref_alex_mode), getResources().getBoolean(R.bool.pref_alex_mode_default))) {
             return;
         }
         // disable the free application
         if (!Contract.IS_PRO) {
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)).apply();
         } else {
             sendBroadcast(new Intent("com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED"));
         }
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity {
                     dialog.dismiss();
                     sharedPreferences
                             .edit()
-                            .putBoolean(Contract.PREF_ALEX_MODE_ENABLED, true)
+                            .putBoolean(getString(R.string.pref_alex_mode), true)
                             .apply();
                 }
             }

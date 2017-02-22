@@ -146,7 +146,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true);
+        graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
 
         // checkBoxes
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
@@ -157,8 +157,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             checkBox_temp.setEnabled(false);
         } else {
             Context context = getContext();
-            checkBox_percentage.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_percent), true));
-            checkBox_temp.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_temperature), false));
+            checkBox_percentage.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default)));
+            checkBox_temp.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default)));
             checkBox_percentage.setOnCheckedChangeListener(this);
             checkBox_temp.setOnCheckedChangeListener(this);
         }
@@ -243,7 +243,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
                 return true;
             case R.id.menu_reset:
-                if (sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), true)) {
+                if (sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default))) {
                     showResetDialog();
                 }
                 break;
@@ -358,7 +358,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         if (batteryStatus == null) return;
         boolean isChargingAndNotFull = BatteryAlarmManager.isChargingNotificationEnabled(getContext(), sharedPreferences)
                 && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100
-                && sharedPreferences.getBoolean(getContext().getString(R.string.pref_is_enabled), true);
+                && sharedPreferences.getBoolean(getContext().getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs(getContext());
         if (series != null) {

@@ -18,7 +18,7 @@ public final class RootChecker {
 
     public static void enableCharging(Context context) throws NotRootedException {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                context.getString(R.string.pref_stop_charging), false)) {
+                context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
             return;
         }
         if (!isDeviceRooted()) {
@@ -29,7 +29,7 @@ public final class RootChecker {
 
     static void disableCharging(Context context) throws NotRootedException {
         if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                context.getString(R.string.pref_stop_charging), false)) {
+                context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
             return;
         }
         if (!isDeviceRooted()) {

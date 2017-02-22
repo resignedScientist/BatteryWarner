@@ -28,8 +28,8 @@ public class OnOffTileService extends TileService {
         if (Contract.IS_PRO) { // pro version
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             // check if the intro was finished first
-            firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), true);
-            boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), true);
+            firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
+            boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
             if (firstStart) {
                 isEnabled = false;
             }

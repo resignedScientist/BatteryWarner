@@ -19,7 +19,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) return;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
             return; // return if intro was not finished
 
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -28,7 +28,7 @@ public class BootReceiver extends BroadcastReceiver {
         }
 
         // set already notified to false
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
 
         boolean isCharging = BatteryAlarmManager.isCharging(batteryStatus);
         BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
