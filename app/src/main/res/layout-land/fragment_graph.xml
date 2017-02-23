@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.jjoe64.graphview.GraphView
-        android:id="@+id/graph_chargeCurve"
+        android:id="@+id/graphView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toTopOf="@+id/textView_chargingTime"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/scrollView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_title" />
 
     <TextView
         android:id="@+id/textView_chargingTime"
@@ -45,8 +45,8 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintLeft_toLeftOf="@+id/graph_chargeCurve"
-        app:layout_constraintRight_toRightOf="@+id/graph_chargeCurve" />
+        app:layout_constraintLeft_toLeftOf="@+id/graphView"
+        app:layout_constraintRight_toRightOf="@+id/graphView" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -64,9 +64,9 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/graph_chargeCurve"
+        app:layout_constraintBottom_toBottomOf="@+id/graphView"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/graph_chargeCurve"
+        app:layout_constraintTop_toTopOf="@+id/graphView"
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout

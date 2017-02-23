@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -18,20 +21,35 @@ import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
+import java.util.Locale;
 
-public class HistoryPageFragment extends Fragment {
+import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
+import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
+
+public class HistoryPageFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "HistoryPageFragment";
     private int graphCounter;
     private File file;
-    private GraphView graphView;
     private InfoObject infoObject;
+    private GraphView graphView;
+    private CheckBox checkBox_percentage, checkBox_temp;
+    private TextView textView_chargingTime;
+    private Series[] series;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_history_page, container, false);
+        setHasOptionsMenu(false);
+        View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = (GraphView) view.findViewById(R.id.graphView);
+        TextView textView_title = (TextView) view.findViewById(R.id.textView_title);
+        textView_title.setVisibility(View.GONE);
+        textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
+        checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
+        checkBox_temp.setOnCheckedChangeListener(this);
+        checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
+        checkBox_percentage.setOnCheckedChangeListener(this);
         initGraphView();
         return view;
     }
@@ -41,7 +59,7 @@ public class HistoryPageFragment extends Fragment {
             return;
         }
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+        series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         if (series == null) {
             return;
         }
@@ -69,6 +87,13 @@ public class HistoryPageFragment extends Fragment {
                 series[0].getHighestValueY() - series[0].getLowestValueY()
         );
 
+        textView_chargingTime.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                getString(R.string.charging_time),
+                infoObject.getTimeString(getContext())
+        ));
+
         graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
@@ -77,9 +102,17 @@ public class HistoryPageFragment extends Fragment {
                         graphCounter = 1;
                         return "0 min";
                     }
+                    if (value < 0.1) {
+                        return "";
+                    }
                     if (graphCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
+                } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
+                    if (checkBox_percentage.isChecked())
+                        return super.formatLabel(value, false) + "%";
+                    if (checkBox_temp.isChecked())
+                        return super.formatLabel(value, false) + "°C";
                 }
                 return super.formatLabel(value, false);
             }
@@ -126,6 +159,23 @@ public class HistoryPageFragment extends Fragment {
     public void showInfo() {
         if (infoObject != null) {
             infoObject.showDialog(getActivity());
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        Series series = null;
+        if (compoundButton == checkBox_percentage) {
+            series = this.series[TYPE_PERCENTAGE];
+        } else if (compoundButton == checkBox_temp) {
+            series = this.series[TYPE_TEMPERATURE];
+        } else {
+            return;
+        }
+        if (checked) {
+            graphView.addSeries(series);
+        } else {
+            graphView.removeSeries(series);
         }
     }
 }

@@ -143,7 +143,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
+        graph_chargeCurve = (GraphView) view.findViewById(R.id.graphView);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
