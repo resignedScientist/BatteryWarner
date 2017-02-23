@@ -12,7 +12,7 @@ public class BothAppsInstalledReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Contract.BROADCAST_BOTH_APPS_INSTALLED)
-                && Contract.IS_PRO) {
+                && !Contract.IS_PRO) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(
                             context.getString(R.string.pref_is_enabled),
