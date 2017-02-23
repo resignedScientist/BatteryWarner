@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Locale;
 
+import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
 
 public class GraphFragment extends BasicGraphFragment {
@@ -72,7 +74,7 @@ public class GraphFragment extends BasicGraphFragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
         // return if not pro or graph disabled in settings or the database has not enough data
-        if (!Contract.IS_PRO || !graphEnabled || !GraphDbHelper.getInstance(context).hasEnoughData()) {
+        if (!IS_PRO || !graphEnabled || !GraphDbHelper.getInstance(context).hasEnoughData()) {
             return;
         }
 
@@ -128,8 +130,11 @@ public class GraphFragment extends BasicGraphFragment {
 
     @Override
     protected Series[] getSeries() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getGraphs(getContext());
+        if (IS_PRO) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+            return dbHelper.getGraphs(getContext());
+        }
+        return null;
     }
 
     @Override
@@ -147,7 +152,7 @@ public class GraphFragment extends BasicGraphFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (!Contract.IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
+        if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
             Toast.makeText(getContext(), getString(R.string.pro_only_short), Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -185,6 +190,18 @@ public class GraphFragment extends BasicGraphFragment {
         filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
         filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
         getActivity().registerReceiver(dbChangedReceiver, filter);
+    }
+
+    @Override
+    protected void loadSeries() {
+        if (IS_PRO) {
+            super.loadSeries();
+        } else {
+            textView_chargingTime.setText(getString(R.string.not_pro));
+            textView_chargingTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            checkBox_temp.setEnabled(false);
+            checkBox_percentage.setEnabled(false);
+        }
     }
 
     @Override
