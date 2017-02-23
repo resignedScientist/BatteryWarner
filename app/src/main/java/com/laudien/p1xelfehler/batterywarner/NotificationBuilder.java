@@ -5,11 +5,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -35,11 +37,16 @@ public final class NotificationBuilder {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
             case NOTIFICATION_ID_WARNING_HIGH:
-                if (!BatteryAlarmManager.isChargingNotificationEnabled(context, sharedPreferences)) {
-                    return; // return if disabled in settings or not charging
-                }
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {
+                Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                if (batteryStatus == null) {
                     return;
+                }
+                boolean isEnabled = isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
+                boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+                boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+                if (alreadyNotified || !isEnabled || !warningHighEnabled || !isCharging) {
+                    return; // return if disabled in settings or not charging or already notified
                 }
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
                 AsyncTask.execute(new Runnable() {
@@ -64,7 +71,16 @@ public final class NotificationBuilder {
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
             case NOTIFICATION_ID_WARNING_LOW:
-                if (!BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
+                Intent batteryStatus1 = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                if (batteryStatus1 == null) {
+                    return;
+                }
+                boolean isEnabled1 = isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
+                boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+                boolean isCharging1 = batteryStatus1.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                boolean alreadyNotified1 = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+
+                if (alreadyNotified1 || isCharging1 || !isEnabled1 || !warningLowEnabled) {
                     return; // return if disabled in settings or charging
                 }
                 if (sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default))) {

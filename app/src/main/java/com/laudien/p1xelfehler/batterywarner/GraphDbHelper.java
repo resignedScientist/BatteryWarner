@@ -81,7 +81,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         super.close();
     }
 
-    void addValue(long time, int percentage, int temperature) {
+    public void addValue(long time, int percentage, int temperature) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TABLE_COLUMN_TIME, time);
         contentValues.put(TABLE_COLUMN_PERCENTAGE, percentage);

@@ -5,9 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -30,13 +31,11 @@ public class BootReceiver extends BroadcastReceiver {
         // set already notified to false
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
 
-        boolean isCharging = BatteryAlarmManager.isCharging(batteryStatus);
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         if (isCharging) { // charging
             ChargingService.startService(context); // start charging service if enabled
         } else { // discharging
-            batteryAlarmManager.setDischargingAlarm(context); // start discharging alarm if enabled
+            context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
         }
-        batteryAlarmManager.checkAndNotify(context, batteryStatus); // check battery and notify
     }
 }

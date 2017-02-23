@@ -3,12 +3,14 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,10 +24,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -149,9 +151,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_seekBarLow.setEnabled((boolean) o);
             Context context = getActivity();
             if (context != null) {
-                BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-                batteryAlarmManager.cancelDischargingAlarm(context);
-                batteryAlarmManager.setDischargingAlarm(context);
+                DischargingAlarmReceiver.cancelDischargingAlarm(context);
+                context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
             }
         } else if (preference == pref_warningHigh) {
             boolean highChecked = (boolean) o;
@@ -173,10 +174,12 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             pref_autoSave.setEnabled(checked);
             Context context = getActivity();
             if (context != null && checked) {
-                if (BatteryAlarmManager.isCharging(BatteryAlarmManager.getBatteryStatus(context))) {
-                    BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-                    batteryAlarmManager.setGraphEnabled(true);
-                    ChargingService.startService(getActivity());
+                Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                if (batteryStatus != null) {
+                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                    if (isCharging) {
+                        ChargingService.startService(getActivity());
+                    }
                 }
             }
         } else if (preference == pref_stopCharging) {

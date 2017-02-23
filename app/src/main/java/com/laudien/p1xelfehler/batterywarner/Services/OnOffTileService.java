@@ -10,9 +10,9 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {
@@ -63,13 +63,11 @@ public class OnOffTileService extends TileService {
             return;
         }
         boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
-        batteryAlarmManager.checkAndNotify(this, batteryStatus);
 
         if (isActive) { // disable battery warnings
             tile.setState(Tile.STATE_INACTIVE);
             if (!isCharging) { // discharging
-                batteryAlarmManager.cancelDischargingAlarm(this);
+                DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
@@ -78,7 +76,7 @@ public class OnOffTileService extends TileService {
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging
-                batteryAlarmManager.setDischargingAlarm(this);
+                sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
             }
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
         }

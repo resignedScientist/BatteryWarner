@@ -23,9 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
@@ -39,7 +40,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private static final int NO_STATE = -1;
     private SharedPreferences sharedPreferences;
     private Context context;
-    private BatteryAlarmManager batteryAlarmManager;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
             textView_voltage, textView_current;
     private ToggleButton toggleButton;
@@ -126,7 +126,11 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
             }
             if (nextColor != currentColor) {
-                batteryAlarmManager.checkAndNotify(context);
+                if (nextColor == COLOR_RED) {
+                    NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_LOW);
+                } else if (nextColor == COLOR_ORANGE) {
+                    NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH);
+                }
                 currentColor = nextColor;
             }
         }
@@ -144,7 +148,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        batteryAlarmManager = BatteryAlarmManager.getInstance(context);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
@@ -194,18 +197,17 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        batteryAlarmManager.checkAndNotify(context);
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
         if (isChecked) { // turned on
             sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) {
                 context.startService(new Intent(context, ChargingService.class));
             } else {
-                batteryAlarmManager.setDischargingAlarm(context);
+                context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
             }
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
         } else if (!isCharging) { // turned off and discharging
-            batteryAlarmManager.cancelDischargingAlarm(context);
+            DischargingAlarmReceiver.cancelDischargingAlarm(context);
             Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
         }
         // send broadcast
