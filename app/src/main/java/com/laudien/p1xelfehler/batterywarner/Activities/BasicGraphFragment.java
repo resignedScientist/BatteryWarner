@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -40,10 +41,12 @@ public abstract class BasicGraphFragment extends Fragment {
             } else {
                 return;
             }
-            if (checked) {
-                graphView.addSeries(s);
-            } else {
-                graphView.removeSeries(s);
+            if (s != null) {
+                if (checked) {
+                    graphView.addSeries(s);
+                } else {
+                    graphView.removeSeries(s);
+                }
             }
         }
     };
@@ -56,39 +59,45 @@ public abstract class BasicGraphFragment extends Fragment {
         graphView = (GraphView) view.findViewById(R.id.graphView);
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
+        checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
+        checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
         textView_title = (TextView) view.findViewById(R.id.textView_title);
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         series = getSeries();
-        if (series == null) {
-            return view;
-        }
-        checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
-        checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
-        long endDate = getEndDate();
-        infoObject = new InfoObject(
-                endDate,
-                series[TYPE_PERCENTAGE].getHighestValueX(),
-                series[TYPE_TEMPERATURE].getHighestValueY(),
-                series[TYPE_TEMPERATURE].getLowestValueY(),
-                series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-        );
-        textView_chargingTime.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                getString(R.string.charging_time),
-                infoObject.getTimeString(getContext())
-        ));
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
-        for (Series s : series) {
-            graphView.addSeries(s);
-        }
+        loadSeries();
         return view;
     }
 
     protected abstract Series[] getSeries();
 
     protected abstract long getEndDate();
+
+    protected void loadSeries() {
+        if (series != null) {
+            for (Series s : series) {
+                graphView.addSeries(s);
+            }
+            long endDate = getEndDate();
+            infoObject = new InfoObject(
+                    endDate,
+                    series[TYPE_PERCENTAGE].getHighestValueX(),
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+            textView_chargingTime.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s",
+                    getString(R.string.charging_time),
+                    infoObject.getTimeString(getContext())
+            ));
+            graphView.getViewport().setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
+        } else {
+            graphView.getViewport().setMaxX(1);
+        }
+    }
 
     protected LabelFormatter getLabelFormatter() {
         return new DefaultLabelFormatter() {
@@ -120,7 +129,6 @@ public abstract class BasicGraphFragment extends Fragment {
         Viewport viewport = graphView.getViewport();
         viewport.setXAxisBoundsManual(true);
         viewport.setYAxisBoundsManual(true);
-        viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
         viewport.setMinX(0);
         viewport.setMaxY(100);
         viewport.setMinY(0);
@@ -128,8 +136,12 @@ public abstract class BasicGraphFragment extends Fragment {
 
     public void showInfo() {
         Activity activity = getActivity();
-        if (infoObject != null && activity != null) {
-            infoObject.showDialog(getActivity());
+        if (activity != null) {
+            if (infoObject != null) {
+                infoObject.showDialog(getActivity());
+            } else {
+                Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
