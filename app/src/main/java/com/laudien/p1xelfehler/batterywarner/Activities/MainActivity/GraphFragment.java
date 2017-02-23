@@ -125,7 +125,12 @@ public class GraphFragment extends BasicGraphFragment {
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        checkBox_percentage.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent),
+                getResources().getBoolean(R.bool.pref_checkBox_percent_default)));
+        checkBox_temp.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature),
+                getResources().getBoolean(R.bool.pref_checkBox_temperature_default)));
+        return view;
     }
 
     @Override
