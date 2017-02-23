@@ -33,7 +33,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
 
-public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
@@ -47,27 +47,18 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        if (getActivity() instanceof SettingsActivity) {
-            switch_darkTheme = (TwoStatePreference) findPreference(getString(R.string.pref_dark_theme_enabled));
-            switch_darkTheme.setOnPreferenceChangeListener(this);
-        }
+        switch_darkTheme = (TwoStatePreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
-        ringtonePreference.setOnPreferenceChangeListener(this);
         pref_autoSave = (TwoStatePreference) findPreference(getString(R.string.pref_graph_autosave));
-        pref_autoSave.setOnPreferenceChangeListener(this);
         pref_graphEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_graph_enabled));
-        pref_graphEnabled.setOnPreferenceChangeListener(this);
         pref_warningLow = (TwoStatePreference) findPreference(getString(R.string.pref_warning_low_enabled));
-        pref_warningLow.setOnPreferenceChangeListener(this);
         pref_warningHigh = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
-        pref_warningHigh.setOnPreferenceChangeListener(this);
         pref_seekBarLow = (SeekBarPreference) findPreference(getString(R.string.pref_warning_low));
         pref_seekBarHigh = (SeekBarPreference) findPreference(getString(R.string.pref_warning_high));
         pref_usb = (TwoStatePreference) findPreference(getString(R.string.pref_usb_enabled));
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
-        pref_stopCharging.setOnPreferenceChangeListener(this);
 
         Context context = getActivity();
         if (context != null) {
@@ -100,6 +91,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
             });
             category_graph.addPreference(pref_pro);
         }
+
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
     @Override
@@ -118,10 +117,24 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_AUTO_SAVE) {
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    pref_autoSave.setChecked(false);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference preference = findPreference(key);
         if (preference == switch_darkTheme) {
             Context context = getActivity();
-            if (context != null) {
+            if (context != null && context instanceof SettingsActivity) {
                 Toast.makeText(
                         context,
                         getString(R.string.theme_activated_toast),
@@ -131,7 +144,8 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
         } else if (preference == ringtonePreference) {
             Context context = getActivity();
             if (context != null) {
-                Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(o.toString()));
+                String chosenRingtone = sharedPreferences.getString(key, "");
+                Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(chosenRingtone));
                 ringtonePreference.setSummary(ringtone.getTitle(context));
             }
         } else if (preference == pref_autoSave && !pref_autoSave.isChecked()) {
@@ -148,14 +162,14 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 }
             }
         } else if (preference == pref_warningLow) {
-            pref_seekBarLow.setEnabled((boolean) o);
+            pref_seekBarLow.setEnabled(pref_warningLow.isChecked());
             Context context = getActivity();
             if (context != null) {
                 DischargingAlarmReceiver.cancelDischargingAlarm(context);
                 context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
             }
         } else if (preference == pref_warningHigh) {
-            boolean highChecked = (boolean) o;
+            boolean highChecked = pref_warningHigh.isChecked();
             pref_seekBarHigh.setEnabled(highChecked);
             pref_usb.setEnabled(highChecked);
             pref_ac.setEnabled(highChecked);
@@ -170,7 +184,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 context.startService(new Intent(context, ChargingService.class));
             }
         } else if (preference == pref_graphEnabled) {
-            boolean checked = (boolean) o;
+            boolean checked = pref_graphEnabled.isChecked();
             pref_autoSave.setEnabled(checked);
             Context context = getActivity();
             if (context != null && checked) {
@@ -183,7 +197,7 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                 }
             }
         } else if (preference == pref_stopCharging) {
-            boolean checked = (boolean) o;
+            boolean checked = pref_stopCharging.isChecked();
             if (checked) {
                 new AsyncTask<Void, Void, Boolean>() {
                     // returns false if not rooted
@@ -217,20 +231,6 @@ public class SettingsFragment extends PreferenceFragment implements Preference.O
                         }
                     }
                 }.execute();
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_AUTO_SAVE) {
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    pref_autoSave.setChecked(false);
-                    return;
-                }
             }
         }
     }
