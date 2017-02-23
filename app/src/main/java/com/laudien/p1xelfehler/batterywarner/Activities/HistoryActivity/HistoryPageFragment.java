@@ -2,88 +2,53 @@ package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.Series;
-import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
+import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
+import java.util.Calendar;
 
-public class HistoryPageFragment extends Fragment {
+public class HistoryPageFragment extends BasicGraphFragment {
 
     private static final String TAG = "HistoryPageFragment";
-    private int graphCounter;
     private File file;
-    private GraphView graphView;
-    private InfoObject infoObject;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_history_page, container, false);
-        graphView = (GraphView) view.findViewById(R.id.graphView);
-        initGraphView();
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        textView_title.setVisibility(View.GONE);
         return view;
     }
 
-    private void initGraphView() {
-        if (file == null) {
-            return;
+    @Override
+    protected Series[] getSeries() {
+        if (file != null) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+            return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         }
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        Series[] series = dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
-        if (series == null) {
-            return;
-        }
-        for (Series s : series) {
-            graphView.addSeries(s);
-        }
-        Viewport viewport = graphView.getViewport();
-        viewport.setXAxisBoundsManual(true);
-        viewport.setYAxisBoundsManual(true);
-        viewport.setMaxX(series[0].getHighestValueX());
-        viewport.setMinX(0);
-        viewport.setMaxY(100);
-        viewport.setMinY(0);
+        return null;
+    }
 
-        long endTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
-        if (endTime < 1000000000) {
-            endTime = file.lastModified();
-        }
-
-        infoObject = new InfoObject(
-                endTime,
-                series[0].getHighestValueX(),
-                series[1].getHighestValueY(),
-                series[1].getLowestValueY(),
-                series[0].getHighestValueY() - series[0].getLowestValueY()
-        );
-
-        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) { // X-axis (time)
-                    if (value == 0) {
-                        graphCounter = 1;
-                        return "0 min";
-                    }
-                    if (graphCounter++ % 3 == 0)
-                        return super.formatLabel(value, true) + " min";
-                    return "";
-                }
-                return super.formatLabel(value, false);
+    @Override
+    protected long getEndDate() {
+        if (file != null) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+            long endDate = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
+            if (endDate < 1000000000) {
+                endDate = file.lastModified();
             }
-        });
+            return endDate;
+        }
+        return Calendar.getInstance().getTimeInMillis();
     }
 
     public void addGraphsFromFile(File file) {
@@ -121,11 +86,5 @@ public class HistoryPageFragment extends Fragment {
             Toast.makeText(getContext(), getString(R.string.error_renaming), Toast.LENGTH_SHORT).show();
         }
         return successful;
-    }
-
-    public void showInfo() {
-        if (infoObject != null) {
-            infoObject.showDialog(getActivity());
-        }
     }
 }

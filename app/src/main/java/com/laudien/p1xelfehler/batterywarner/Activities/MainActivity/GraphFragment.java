@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,27 +12,20 @@ import android.content.pm.PackageManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -46,24 +40,20 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Locale;
 
-public class GraphFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
+
+public class GraphFragment extends BasicGraphFragment {
+
     private static final String TAG = "GraphFragment";
     private static final int REQUEST_SAVE_GRAPH = 10;
-    private static final int REQUEST_LOAD_GRAPH = 20;
-    private SharedPreferences sharedPreferences;
-    private GraphView graph_chargeCurve;
-    private LineGraphSeries<DataPoint> series_chargeCurve, series_temp;
-    private Viewport viewport_chargeCurve;
-    private TextView textView_chargingTime;
-    private CheckBox checkBox_percentage, checkBox_temp;
-    private int graphCounter;
+    private static final int REQUEST_OPEN_HISTORY = 20;
     private boolean graphEnabled;
-    private InfoObject infoObject;
-    private long endTime;
+    private SharedPreferences sharedPreferences;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reloadChargeCurve();
+            reload();
         }
     };
 
@@ -81,13 +71,11 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     .apply();
             return;
         }
-        // return if not pro or the database has not enough data
-        if (!Contract.IS_PRO || !GraphDbHelper.getInstance(context).hasEnoughData()) {
-            return;
-        }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default))) {
-            return; // return if graph is disabled in settings
+        boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        // return if not pro or graph disabled in settings or the database has not enough data
+        if (!IS_PRO || !graphEnabled || !GraphDbHelper.getInstance(context).hasEnoughData()) {
+            return;
         }
 
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
@@ -108,13 +96,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             outputFileDir = baseFileDir + " (" + i + ")";
             outputFile = new File(outputFileDir);
         }
-        String inputFileDir = String.format(
-                Locale.getDefault(),
-                "/data/data/%s/databases/%s",
-                Contract.PACKAGE_NAME_PRO,
-                GraphDbHelper.DATABASE_NAME
-        );
-        File inputFile = new File(inputFileDir);
+        File inputFile = context.getDatabasePath(GraphDbHelper.DATABASE_NAME);
         try {
             File directory = new File(Contract.DATABASE_HISTORY_PATH);
             if (!directory.exists()) {
@@ -140,84 +122,25 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_graph, container, false);
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
-        viewport_chargeCurve = graph_chargeCurve.getViewport();
-        textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-        // checkBoxes
-        checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
-        checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
-
-        if (!graphEnabled) { // disable checkboxes if the graph is disabled
-            checkBox_percentage.setEnabled(false);
-            checkBox_temp.setEnabled(false);
-        } else {
-            Context context = getContext();
-            checkBox_percentage.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default)));
-            checkBox_temp.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default)));
-            checkBox_percentage.setOnCheckedChangeListener(this);
-            checkBox_temp.setOnCheckedChangeListener(this);
+    @Override
+    protected Series[] getSeries() {
+        if (IS_PRO) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+            return dbHelper.getGraphs(getContext());
         }
-
-        // y bounds
-        viewport_chargeCurve.setYAxisBoundsManual(true);
-        viewport_chargeCurve.setMinY(0);
-        viewport_chargeCurve.setMaxY(100);
-
-        // x bounds
-        viewport_chargeCurve.setXAxisBoundsManual(true);
-        viewport_chargeCurve.setMinX(0);
-
-        graph_chargeCurve.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if (isValueX) { // X-axis (time)
-                    if (value == 0) {
-                        graphCounter = 1;
-                        return "0 min";
-                    }
-                    if (value < 0.1) {
-                        return "";
-                    }
-                    if (graphCounter++ % 3 == 0)
-                        return super.formatLabel(value, true) + " min";
-                    return "";
-                } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
-                    if (checkBox_percentage.isChecked())
-                        return super.formatLabel(value, false) + "%";
-                    if (checkBox_temp.isChecked())
-                        return super.formatLabel(value, false) + "°C";
-                }
-                return super.formatLabel(value, false);
-            }
-        });
-
-        return view;
+        return null;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        reloadChargeCurve();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
-        filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
-        getActivity().registerReceiver(dbChangedReceiver, filter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Context context = getContext();
-        sharedPreferences.edit()
-                .putBoolean(context.getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
-                .putBoolean(context.getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
-                .apply();
-        getActivity().unregisterReceiver(dbChangedReceiver);
+    protected long getEndDate() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
     }
 
     @Override
@@ -229,14 +152,14 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (!Contract.IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
+        if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
             Toast.makeText(getContext(), getString(R.string.pro_only_short), Toast.LENGTH_SHORT).show();
             return false;
         }
         switch (id) {
             case R.id.menu_refresh:
                 if (graphEnabled) {
-                    reloadChargeCurve();
+                    reload();
                     Toast.makeText(getContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
@@ -254,69 +177,49 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 saveGraph();
                 return true;
             case R.id.menu_info:
-                if (infoObject != null) {
-                    infoObject.showDialog(getActivity());
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
-                }
+                showInfo();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        LineGraphSeries series = null;
-        switch (compoundButton.getId()) {
-            case R.id.checkbox_percentage:
-                series = series_chargeCurve;
-                break;
-            case R.id.checkBox_temp:
-                series = series_temp;
-                break;
-        }
-        if (series == null) return;
-        if (b)
-            graph_chargeCurve.addSeries(series);
-        else
-            graph_chargeCurve.removeSeries(series);
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
+        filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
+        getActivity().registerReceiver(dbChangedReceiver, filter);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // first check if all permissions were granted
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-        }
-        if (requestCode == REQUEST_SAVE_GRAPH) {
-            // restart the saving of the graph
-            saveGraph();
-        } else if (requestCode == REQUEST_LOAD_GRAPH) {
-            openHistory();
+    protected void loadSeries() {
+        if (IS_PRO) {
+            super.loadSeries();
+        } else {
+            textView_chargingTime.setText(getString(R.string.not_pro));
+            textView_chargingTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            checkBox_temp.setEnabled(false);
+            checkBox_percentage.setEnabled(false);
         }
     }
 
-    private void openHistory() {
-        // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    REQUEST_LOAD_GRAPH
-            );
-            return;
+    @Override
+    public void onPause() {
+        super.onPause();
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.unregisterReceiver(dbChangedReceiver);
         }
-        startActivity(new Intent(getContext(), HistoryActivity.class));
+        sharedPreferences.edit()
+                .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
+                .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
+                .apply();
     }
 
     private void saveGraph() {
         // check if a graph is present and has enough data
-        if (graph_chargeCurve.getSeries().size() == 0 || series_chargeCurve.getHighestValueX() == 0) {
+        if (graphView.getSeries().size() == 0 || series[TYPE_PERCENTAGE].getHighestValueX() == 0) {
             Toast.makeText(getContext(), R.string.nothing_to_save, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -335,43 +238,15 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         saveGraph(getContext());
     }
 
-    public void reloadChargeCurve() {
-        // if not pro -> return
-        if (!Contract.IS_PRO) {
-            textView_chargingTime.setTextSize(20);
-            textView_chargingTime.setText(getString(R.string.not_pro));
-            checkBox_temp.setEnabled(false);
-            checkBox_percentage.setEnabled(false);
-            return;
-        }
-        // if graph disabled in settings -> return
-        if (!graphEnabled) {
-            textView_chargingTime.setTextSize(18);
-            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
-            return;
-        }
+    @Override
+    protected void setTimeText() {
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;
         }
-        // remove the series from the graph view
-        graph_chargeCurve.removeSeries(series_chargeCurve);
-        graph_chargeCurve.removeSeries(series_temp);
-        // load graph
         boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, Contract.NO_STATE) == BatteryManager.BATTERY_STATUS_FULL;
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs(getContext());
         if (series != null) {
-            series_chargeCurve = series[GraphDbHelper.TYPE_PERCENTAGE];
-            series_temp = series[GraphDbHelper.TYPE_TEMPERATURE];
-            if (checkBox_percentage.isChecked()) {
-                graph_chargeCurve.addSeries(series_chargeCurve);
-            }
-            if (checkBox_temp.isChecked()) {
-                graph_chargeCurve.addSeries(series_temp);
-            }
-            updateInfoObject();
             String timeString = infoObject.getTimeString(getContext());
             if (infoObject.getTimeInMinutes() != 0) { // enough data
                 if (isCharging && !isFull) {
@@ -379,9 +254,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 } else {
                     textView_chargingTime.setText(String.format("%s: %s", getString(R.string.charging_time), timeString));
                 }
-                viewport_chargeCurve.setMaxX(infoObject.getTimeInMinutes());
             } else { // not enough data
-                viewport_chargeCurve.setMaxX(1.0);
                 if (isCharging && !isFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
                 } else {
@@ -389,7 +262,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 }
             }
         } else { // empty database
-            viewport_chargeCurve.setMaxX(1.0);
             if (isCharging && !isFull) {
                 textView_chargingTime.setText(String.format("%s (%s)", InfoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
             } else {
@@ -398,31 +270,10 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         }
     }
 
-    private void updateInfoObject() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        if (infoObject == null) {
-            endTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
-            infoObject = new InfoObject(
-                    endTime,
-                    series_chargeCurve.getHighestValueX(),
-                    series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY(),
-                    series_chargeCurve.getHighestValueY() - series_chargeCurve.getLowestValueY()
-            );
-        } else {
-            infoObject.updateValues(
-                    endTime,
-                    series_chargeCurve.getHighestValueX(),
-                    series_temp.getHighestValueY(),
-                    series_temp.getLowestValueY(),
-                    series_chargeCurve.getHighestValueY() - series_chargeCurve.getLowestValueY()
-            );
-        }
-    }
-
-    private void showResetDialog() {
+    public void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
+                .setIcon(R.mipmap.ic_launcher)
                 .setTitle(R.string.are_you_sure)
                 .setMessage(R.string.question_delete_graph)
                 .setNegativeButton(R.string.cancel, null)
@@ -433,5 +284,20 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                         Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
                     }
                 }).create().show();
+    }
+
+    public void openHistory() {
+        // check for permission
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    REQUEST_OPEN_HISTORY
+            );
+            return;
+        }
+        startActivity(new Intent(getContext(), HistoryActivity.class));
     }
 }
