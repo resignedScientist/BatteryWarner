@@ -90,7 +90,6 @@ public abstract class BasicGraphFragment extends Fragment {
                     series[TYPE_TEMPERATURE].getLowestValueY(),
                     series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
             );
-            setTimeText();
             double highestValue = series[TYPE_PERCENTAGE].getHighestValueX();
             if (highestValue > 0) {
                 graphView.getViewport().setMaxX(highestValue);
@@ -100,15 +99,18 @@ public abstract class BasicGraphFragment extends Fragment {
         } else {
             graphView.getViewport().setMaxX(1);
         }
+        setTimeText();
     }
 
     protected void setTimeText() {
-        textView_chargingTime.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                getString(R.string.charging_time),
-                infoObject.getTimeString(getContext())
-        ));
+        if (infoObject != null) {
+            textView_chargingTime.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s",
+                    getString(R.string.charging_time),
+                    infoObject.getTimeString(getContext())
+            ));
+        }
     }
 
     protected void reload() {
