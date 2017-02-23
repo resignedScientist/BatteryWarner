@@ -64,7 +64,7 @@ public final class NotificationBuilder {
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
                         type,
-                        true,
+                        getNotificationSound(context),
                         null,
                         null
                 );
@@ -91,7 +91,7 @@ public final class NotificationBuilder {
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
                         type,
-                        true,
+                        getNotificationSound(context),
                         null,
                         null
                 );
@@ -108,7 +108,7 @@ public final class NotificationBuilder {
                             context,
                             context.getString(R.string.notifications_are_off),
                             type,
-                            true,
+                            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
                             null,
                             null
                     );
@@ -127,7 +127,7 @@ public final class NotificationBuilder {
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
                                             type,
-                                            false,
+                                            null,
                                             pendingIntent,
                                             pendingIntent
                                     );
@@ -146,7 +146,7 @@ public final class NotificationBuilder {
                         context,
                         context.getString(R.string.stop_charging_not_working),
                         0,
-                        false,
+                        null,
                         PendingIntent.getActivity(
                                 context,
                                 type,
@@ -167,7 +167,7 @@ public final class NotificationBuilder {
                                     context,
                                     context.getString(R.string.grant_root_again),
                                     0,
-                                    true,
+                                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
                                     PendingIntent.getBroadcast(
                                             context, 0, new Intent(context, GrantRootReceiver.class),
                                             PendingIntent.FLAG_UPDATE_CURRENT
@@ -182,15 +182,14 @@ public final class NotificationBuilder {
         }
     }
 
-    private static void showNotification(Context context, String contentText, int id, boolean sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
+    private static void showNotification(Context context, String contentText, int id, Uri sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
         Uri soundUri = null;
         long[] vibratePattern = null;
-        if (sound) {
-            soundUri = getNotificationSound(context);
+        if (sound != null) {
             vibratePattern = new long[]{0, 300, 300, 300};
         }
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
