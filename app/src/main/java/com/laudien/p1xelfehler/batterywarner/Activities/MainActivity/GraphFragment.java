@@ -222,12 +222,6 @@ public class GraphFragment extends BasicGraphFragment {
     }
 
     @Override
-    protected void loadSeries() {
-        super.loadSeries();
-        setTimeText();
-    }
-
-    @Override
     protected void setTimeText() {
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
