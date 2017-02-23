@@ -33,7 +33,7 @@ public abstract class BasicGraphFragment extends Fragment {
     protected CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-            Series s = null;
+            Series s;
             if (compoundButton == checkBox_percentage) {
                 s = series[TYPE_PERCENTAGE];
             } else if (compoundButton == checkBox_temp) {
@@ -76,8 +76,11 @@ public abstract class BasicGraphFragment extends Fragment {
 
     protected void loadSeries() {
         if (series != null) {
-            for (Series s : series) {
-                graphView.addSeries(s);
+            if (checkBox_percentage.isChecked()) {
+                graphView.addSeries(series[TYPE_PERCENTAGE]);
+            }
+            if (checkBox_temp.isChecked()) {
+                graphView.addSeries(series[TYPE_TEMPERATURE]);
             }
             long endDate = getEndDate();
             infoObject = new InfoObject(
@@ -87,16 +90,41 @@ public abstract class BasicGraphFragment extends Fragment {
                     series[TYPE_TEMPERATURE].getLowestValueY(),
                     series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
             );
-            textView_chargingTime.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %s",
-                    getString(R.string.charging_time),
-                    infoObject.getTimeString(getContext())
-            ));
-            graphView.getViewport().setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
+            setTimeText();
+            double highestValue = series[TYPE_PERCENTAGE].getHighestValueX();
+            if (highestValue > 0) {
+                graphView.getViewport().setMaxX(highestValue);
+            } else {
+                graphView.getViewport().setMaxX(1);
+            }
         } else {
             graphView.getViewport().setMaxX(1);
         }
+    }
+
+    protected void setTimeText() {
+        textView_chargingTime.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                getString(R.string.charging_time),
+                infoObject.getTimeString(getContext())
+        ));
+    }
+
+    protected void reload() {
+        if (series != null) {
+            for (Series s : series) {
+                graphView.removeSeries(s);
+            }
+        }
+        series = getSeries();
+        loadSeries();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        reload();
     }
 
     protected LabelFormatter getLabelFormatter() {
