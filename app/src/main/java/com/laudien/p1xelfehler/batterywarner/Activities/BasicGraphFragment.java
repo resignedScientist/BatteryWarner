@@ -29,7 +29,6 @@ public abstract class BasicGraphFragment extends Fragment {
     protected CheckBox checkBox_percentage, checkBox_temp;
     protected TextView textView_title, textView_chargingTime;
     protected Series[] series;
-    protected long endDate;
     protected CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -55,20 +54,17 @@ public abstract class BasicGraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = (GraphView) view.findViewById(R.id.graphView);
-        series = getSeries();
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
-        checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
-        checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
         textView_title = (TextView) view.findViewById(R.id.textView_title);
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        textView_chargingTime.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                getString(R.string.charging_time),
-                infoObject.getTimeString(getContext())
-        ));
-        endDate = getEndDate();
+        series = getSeries();
+        if (series == null) {
+            return view;
+        }
+        checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
+        checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
+        long endDate = getEndDate();
         infoObject = new InfoObject(
                 endDate,
                 series[TYPE_PERCENTAGE].getHighestValueX(),
@@ -76,6 +72,12 @@ public abstract class BasicGraphFragment extends Fragment {
                 series[TYPE_TEMPERATURE].getLowestValueY(),
                 series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
         );
+        textView_chargingTime.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                getString(R.string.charging_time),
+                infoObject.getTimeString(getContext())
+        ));
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
         for (Series s : series) {
