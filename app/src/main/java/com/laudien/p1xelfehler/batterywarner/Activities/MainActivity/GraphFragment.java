@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -33,7 +34,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -60,7 +60,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
     private boolean graphEnabled;
     private InfoObject infoObject;
     private long endTime;
-    private BatteryAlarmManager batteryAlarmManager;
     private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -144,7 +143,6 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        batteryAlarmManager = BatteryAlarmManager.getInstance(getContext());
         graph_chargeCurve = (GraphView) view.findViewById(R.id.graph_chargeCurve);
         viewport_chargeCurve = graph_chargeCurve.getViewport();
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
@@ -352,12 +350,16 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             textView_chargingTime.setText(getString(R.string.disabled_in_settings));
             return;
         }
+        Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) {
+            return;
+        }
         // remove the series from the graph view
         graph_chargeCurve.removeSeries(series_chargeCurve);
         graph_chargeCurve.removeSeries(series_temp);
         // load graph
-        boolean isChargingAndNotFull = batteryAlarmManager.isChargingNotificationEnabled(getContext(), BatteryAlarmManager.getBatteryStatus(getContext()))
-                && batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) != 100)
+        boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, Contract.NO_STATE) == BatteryManager.BATTERY_STATUS_FULL;
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         LineGraphSeries<DataPoint> series[] = dbHelper.getGraphs(getContext());
         if (series != null) {
@@ -372,7 +374,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             updateInfoObject();
             String timeString = infoObject.getTimeString(getContext());
             if (infoObject.getTimeInMinutes() != 0) { // enough data
-                if (isChargingAndNotFull) {
+                if (isCharging && !isFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), timeString));
                 } else {
                     textView_chargingTime.setText(String.format("%s: %s", getString(R.string.charging_time), timeString));
@@ -380,7 +382,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                 viewport_chargeCurve.setMaxX(infoObject.getTimeInMinutes());
             } else { // not enough data
                 viewport_chargeCurve.setMaxX(1.0);
-                if (isChargingAndNotFull) {
+                if (isCharging && !isFull) {
                     textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
                 } else {
                     textView_chargingTime.setText(getString(R.string.not_enough_data));
@@ -388,7 +390,7 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
             }
         } else { // empty database
             viewport_chargeCurve.setMaxX(1.0);
-            if (isChargingAndNotFull) {
+            if (isCharging && !isFull) {
                 textView_chargingTime.setText(String.format("%s (%s)", InfoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));

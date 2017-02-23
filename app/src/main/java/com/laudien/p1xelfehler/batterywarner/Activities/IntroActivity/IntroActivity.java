@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -81,17 +81,14 @@ public class IntroActivity extends MaterialIntroActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(this);
         if (batteryStatus != null) {
-            // start the service if charging (if enabled in settings)
-            if (batteryAlarmManager.isChargingNotificationEnabled(this, batteryStatus)) {
+            // start the service if charging
+            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            if (isCharging) {
                 ChargingService.startService(this);
-                // set the alarm if discharging (if enabled in settings)
-            } else if (BatteryAlarmManager.isDischargingNotificationEnabled(this, sharedPreferences)) {
-                batteryAlarmManager.setDischargingAlarm(this);
+            } else { // start the DischargingAlarmReceiver if discharging
+                sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
             }
-            // notify if enabled/necessary
-            batteryAlarmManager.checkAndNotify(this, batteryStatus);
         }
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));

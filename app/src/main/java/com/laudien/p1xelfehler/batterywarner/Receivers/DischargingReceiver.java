@@ -9,10 +9,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH;
@@ -47,26 +47,21 @@ public class DischargingReceiver extends BroadcastReceiver {
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
-        // only if discharging notification is enabled
-        if (BatteryAlarmManager.isDischargingNotificationEnabled(context, sharedPreferences)) {
-
-            // send notification if under lowWarning
-            BatteryAlarmManager batteryAlarmManager = BatteryAlarmManager.getInstance(context);
-            batteryAlarmManager.checkAndNotify(context);
-            batteryAlarmManager.setDischargingAlarm(context);
-
-            // notify GraphFragment
-            GraphFragment.notify(context);
-
-            // start discharging alarm
-            batteryAlarmManager.setDischargingAlarm(context);
-        }
+        // start DischargingReceiver which notifies or sets alarm
+        context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
 
         // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
-        if (Contract.IS_PRO
-                && BatteryAlarmManager.isChargingTypeEnabled(context, sharedPreferences)
-                && sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), context.getResources().getBoolean(R.bool.pref_graph_autosave_default))) {
-            GraphFragment.saveGraph(context);
+        if (Contract.IS_PRO) {
+            int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
+            boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
+            boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
+            boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+            boolean autoSaveEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), context.getResources().getBoolean(R.bool.pref_graph_autosave_default));
+
+            if (ChargingService.isChargingTypeEnabled(lastChargingType, acEnabled, usbEnabled, wirelessEnabled)
+                    && autoSaveEnabled) {
+                GraphFragment.saveGraph(context);
+            }
         }
     }
 }

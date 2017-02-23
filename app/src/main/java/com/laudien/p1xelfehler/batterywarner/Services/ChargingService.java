@@ -7,24 +7,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.os.BatteryManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.BatteryAlarmManager;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
-public class ChargingService extends Service {
+public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = "ChargingService";
-    private BatteryAlarmManager batteryAlarmManager;
     private SharedPreferences sharedPreferences;
+    private int lastPercentage = Contract.NO_STATE, warningHigh, lastChargingType;
+    private boolean graphEnabled, isEnabled, warningHighEnabled, acEnabled, usbEnabled, wirelessEnabled;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -42,20 +44,34 @@ public class ChargingService extends Service {
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            if (sharedPreferences == null) {
-                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            }
-            boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
-            if (!batteryAlarmManager.isChargingNotificationEnabled(context, batteryStatus)) {
+            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            if (!isCharging // if not charging
+                    || !isEnabled // if not enabled
+                    || !isChargingTypeEnabled(batteryStatus)
+                    || (!graphEnabled && !warningHighEnabled)) // if not charging AND warningHigh is disabled
+            {
                 stopSelf();
                 return;
             }
-            batteryAlarmManager.checkAndNotify(context, batteryStatus);
-            if (graphEnabled) {
-                batteryAlarmManager.logInDatabase(context);
+
+            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
+            if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
+                NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH);
             }
-            if (batteryAlarmManager.getBatteryLevel() == 100) {
-                stopSelf(); // stop service if battery is full
+
+            // log in database
+            int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, Contract.NO_STATE);
+            if (Contract.IS_PRO && graphEnabled && batteryLevel != lastPercentage && temperature != Contract.NO_STATE) {
+                GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
+                long timeNow = Calendar.getInstance().getTimeInMillis();
+                graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                lastPercentage = batteryLevel;
+                GraphFragment.notify(context);
+            }
+
+            // stop service if battery is full
+            if (batteryLevel == 100) {
+                stopSelf();
             }
         }
     };
@@ -71,10 +87,14 @@ public class ChargingService extends Service {
                     .putInt(context.getString(R.string.pref_last_percentage), -1)
                     .apply();
         }
-        if (BatteryAlarmManager.isCharging(BatteryAlarmManager.getBatteryStatus(context))) {
-            context.startService(new Intent(context, ChargingService.class));
-        } else {
-            GraphFragment.notify(context);
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus != null) {
+            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            if (isCharging) {
+                context.startService(new Intent(context, ChargingService.class));
+            } else {
+                GraphFragment.notify(context);
+            }
         }
     }
 
@@ -87,9 +107,58 @@ public class ChargingService extends Service {
         startService(context);
     }
 
+    public static boolean isChargingTypeEnabled(Context context, Intent batteryStatus) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+        boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
+        boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
+        boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+        return isChargingTypeEnabled(chargingType, acEnabled, usbEnabled, wirelessEnabled);
+    }
+
+    public static boolean isChargingTypeEnabled(int chargingType, boolean acEnabled, boolean usbEnabled, boolean wirelessEnabled) {
+        switch (chargingType) {
+            case BatteryManager.BATTERY_PLUGGED_AC: // ac charging
+                if (!acEnabled) {
+                    return false;
+                }
+                break;
+            case BatteryManager.BATTERY_PLUGGED_USB: // usb charging
+                if (!usbEnabled) {
+                    return false;
+                }
+                break;
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS: // wireless charging
+                if (!wirelessEnabled) {
+                    return false;
+                }
+        }
+        return true;
+    }
+
+    public boolean isChargingTypeEnabled(Intent batteryStatus) {
+        int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE);
+        if (chargingType != lastChargingType) {
+            lastChargingType = chargingType;
+            sharedPreferences.edit().putInt(getString(R.string.pref_last_chargingType), chargingType).apply();
+        }
+        return isChargingTypeEnabled(chargingType, acEnabled, usbEnabled, wirelessEnabled);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        batteryAlarmManager = BatteryAlarmManager.getInstance(this);
+        // load from sharedPreferences
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+        graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
+        warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        acEnabled = sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
+        usbEnabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
+        wirelessEnabled = sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+        lastChargingType = sharedPreferences.getInt(getString(R.string.pref_last_chargingType), Contract.NO_STATE);
+
         registerReceiver(
                 ringerModeChangedReceiver,
                 new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION)
@@ -106,6 +175,7 @@ public class ChargingService extends Service {
         super.onDestroy();
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Nullable
@@ -118,5 +188,25 @@ public class ChargingService extends Service {
     @Override
     public boolean stopService(Intent name) {
         return super.stopService(name);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String preference) {
+        this.sharedPreferences = sharedPreferences;
+        if (preference.equals(getString(R.string.warning_high))) {
+            warningHigh = sharedPreferences.getInt(preference, getResources().getInteger(R.integer.pref_warning_high_default));
+        } else if (preference.equals(getString(R.string.pref_warning_high_enabled))) {
+            warningHighEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_graph_enabled))) {
+            graphEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_is_enabled))) {
+            isEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_is_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_ac_enabled))) {
+            acEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_ac_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_usb_enabled))) {
+            usbEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_usb_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_wireless_enabled))) {
+            wirelessEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+        }
     }
 }
