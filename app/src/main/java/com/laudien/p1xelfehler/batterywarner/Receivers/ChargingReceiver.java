@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -46,7 +48,8 @@ public class ChargingReceiver extends BroadcastReceiver {
                     if (batteryStatus == null) {
                         return;
                     }
-                    if (ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
+                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                    if (isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
                         ChargingService.startService(context);
                         NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
                     }
