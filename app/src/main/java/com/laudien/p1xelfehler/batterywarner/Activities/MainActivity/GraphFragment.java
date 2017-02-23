@@ -81,8 +81,8 @@ public class GraphFragment extends Fragment implements CompoundButton.OnCheckedC
                     .apply();
             return;
         }
-        // return if the database has not enough data
-        if (!GraphDbHelper.getInstance(context).hasEnoughData()) {
+        // return if not pro or the database has not enough data
+        if (!Contract.IS_PRO || !GraphDbHelper.getInstance(context).hasEnoughData()) {
             return;
         }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
