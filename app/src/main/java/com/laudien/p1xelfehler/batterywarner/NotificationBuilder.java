@@ -187,7 +187,6 @@ public final class NotificationBuilder {
             contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         }
-        Uri soundUri = null;
         long[] vibratePattern = null;
         if (sound != null) {
             vibratePattern = new long[]{0, 300, 300, 300};
@@ -196,7 +195,7 @@ public final class NotificationBuilder {
         bigTextStyle.bigText(contentText);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setSound(soundUri)
+                .setSound(sound)
                 .setVibrate(vibratePattern)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setContentTitle(context.getString(R.string.app_name))
