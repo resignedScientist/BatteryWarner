@@ -216,6 +216,11 @@ public class GraphFragment extends BasicGraphFragment {
         if (activity != null) {
             activity.unregisterReceiver(dbChangedReceiver);
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         sharedPreferences.edit()
                 .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
                 .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
