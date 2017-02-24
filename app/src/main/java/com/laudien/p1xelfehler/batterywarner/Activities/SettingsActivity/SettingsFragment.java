@@ -148,7 +148,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(chosenRingtone));
                 ringtonePreference.setSummary(ringtone.getTitle(context));
             }
-        } else if (preference == pref_autoSave && !pref_autoSave.isChecked()) {
+        } else if (preference == pref_autoSave && pref_autoSave.isChecked()) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

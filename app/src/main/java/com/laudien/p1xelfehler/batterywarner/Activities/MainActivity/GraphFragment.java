@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -306,5 +307,22 @@ public class GraphFragment extends BasicGraphFragment {
             return;
         }
         startActivity(new Intent(getContext(), HistoryActivity.class));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // first check if all permissions were granted
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        if (requestCode == REQUEST_SAVE_GRAPH) {
+            // restart the saving of the graph
+            saveGraph();
+        } else if (requestCode == REQUEST_OPEN_HISTORY) {
+            openHistory();
+        }
     }
 }
