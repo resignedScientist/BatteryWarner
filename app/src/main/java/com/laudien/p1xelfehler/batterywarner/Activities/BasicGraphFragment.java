@@ -1,9 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,7 +31,6 @@ public abstract class BasicGraphFragment extends Fragment {
     protected CheckBox checkBox_percentage, checkBox_temp;
     protected TextView textView_title, textView_chargingTime;
     protected Series[] series;
-    private SharedPreferences sharedPreferences;
     protected CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -42,16 +39,10 @@ public abstract class BasicGraphFragment extends Fragment {
                 if (series != null) {
                     s = series[TYPE_PERCENTAGE];
                 }
-                sharedPreferences.edit()
-                        .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
-                        .apply();
             } else if (compoundButton == checkBox_temp) {
                 if (series != null) {
                     s = series[TYPE_TEMPERATURE];
                 }
-                sharedPreferences.edit()
-                        .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
-                        .apply();
             }
             if (s != null) {
                 if (checked) {
@@ -67,18 +58,11 @@ public abstract class BasicGraphFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = (GraphView) view.findViewById(R.id.graphView);
         checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
-        checkBox_percentage.setChecked(
-                sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
-        );
         checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
         checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
-        checkBox_temp.setChecked(
-                sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
-        );
         checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
         textView_title = (TextView) view.findViewById(R.id.textView_title);
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
