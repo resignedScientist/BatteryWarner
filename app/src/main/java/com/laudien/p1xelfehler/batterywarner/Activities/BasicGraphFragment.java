@@ -59,7 +59,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 } else {
                     graphView.removeSeries(s);
                 }
-                }
+            }
         }
     };
     private int graphCounter;
