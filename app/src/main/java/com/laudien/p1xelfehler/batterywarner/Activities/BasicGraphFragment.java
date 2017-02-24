@@ -33,19 +33,19 @@ public abstract class BasicGraphFragment extends Fragment {
     protected CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-            Series s;
-            if (compoundButton == checkBox_percentage) {
-                s = series[TYPE_PERCENTAGE];
-            } else if (compoundButton == checkBox_temp) {
-                s = series[TYPE_TEMPERATURE];
-            } else {
-                return;
-            }
-            if (s != null) {
-                if (checked) {
-                    graphView.addSeries(s);
-                } else {
-                    graphView.removeSeries(s);
+            if (series != null) {
+                Series s = null;
+                if (compoundButton == checkBox_percentage) {
+                    s = series[TYPE_PERCENTAGE];
+                } else if (compoundButton == checkBox_temp) {
+                    s = series[TYPE_TEMPERATURE];
+                }
+                if (s != null) {
+                    if (checked) {
+                        graphView.addSeries(s);
+                    } else {
+                        graphView.removeSeries(s);
+                    }
                 }
             }
         }
