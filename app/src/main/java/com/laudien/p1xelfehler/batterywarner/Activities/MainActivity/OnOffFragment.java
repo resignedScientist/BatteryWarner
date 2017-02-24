@@ -127,9 +127,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             }
             if (nextColor != currentColor) {
                 if (nextColor == COLOR_RED) {
-                    NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_LOW);
+                    NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_LOW);
                 } else if (nextColor == COLOR_ORANGE) {
-                    NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH);
+                    NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
                 }
                 currentColor = nextColor;
             }

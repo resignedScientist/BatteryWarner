@@ -38,7 +38,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         }
 
         // show notification if not rooted anymore
-        NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_GRANT_ROOT);
+        NotificationBuilder.showNotification(context, NotificationBuilder.ID_GRANT_ROOT);
 
         Log.d(TAG, "The app was updated!");
     }

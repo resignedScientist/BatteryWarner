@@ -211,7 +211,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                             Context context = getActivity();
                             if (context != null) {
                                 NotificationBuilder.showNotification(context,
-                                        NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING);
+                                        NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
                             }
                         }
                         return true;

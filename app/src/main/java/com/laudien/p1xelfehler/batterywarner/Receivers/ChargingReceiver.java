@@ -29,7 +29,7 @@ public class ChargingReceiver extends BroadcastReceiver {
 
         // cancel warning low notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_WARNING_LOW);
+        notificationManager.cancel(NotificationBuilder.ID_WARNING_LOW);
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
@@ -51,7 +51,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                     boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
                     if (isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
                         ChargingService.startService(context);
-                        NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
+                        NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
                     }
                 }
             }, 10000);
@@ -59,7 +59,7 @@ public class ChargingReceiver extends BroadcastReceiver {
             // start service
             ChargingService.startService(context);
             // notify if silent/vibrate mode
-            NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
+            NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
         }
     }
 }

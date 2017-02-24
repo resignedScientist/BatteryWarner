@@ -14,8 +14,8 @@ import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 
 public class DischargingReceiver extends BroadcastReceiver {
     //private static final String TAG = "DischargingReceiver";
@@ -32,7 +32,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
             delay = 3000;
             // show the stop charging notification
-            NotificationBuilder.showNotification(context, NOTIFICATION_ID_STOP_CHARGING);
+            NotificationBuilder.showNotification(context, ID_STOP_CHARGING);
         }
 
         // dismiss warning high notification
@@ -40,7 +40,7 @@ public class DischargingReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
+                notificationManager.cancel(ID_WARNING_HIGH);
             }
         }, delay);
 

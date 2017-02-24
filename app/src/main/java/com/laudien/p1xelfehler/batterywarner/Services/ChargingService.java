@@ -36,7 +36,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NotificationBuilder.NOTIFICATION_ID_SILENT_MODE);
+                notificationManager.cancel(NotificationBuilder.ID_SILENT_MODE);
             }
         }
     };
@@ -56,7 +56,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
             int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
             if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
-                NotificationBuilder.showNotification(context, NotificationBuilder.NOTIFICATION_ID_WARNING_HIGH);
+                NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
             }
 
             // log in database

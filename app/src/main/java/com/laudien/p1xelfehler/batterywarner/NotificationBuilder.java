@@ -23,12 +23,12 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiv
 import java.util.Locale;
 
 public final class NotificationBuilder {
-    public static final int NOTIFICATION_ID_SILENT_MODE = 1337;
-    public static final int NOTIFICATION_ID_WARNING_HIGH = 1338;
-    public static final int NOTIFICATION_ID_WARNING_LOW = 1339;
-    public static final int NOTIFICATION_ID_STOP_CHARGING = 1340;
-    public static final int NOTIFICATION_ID_GRANT_ROOT = 1341;
-    public static final int NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING = 1342;
+    public static final int ID_SILENT_MODE = 1337;
+    public static final int ID_WARNING_HIGH = 1338;
+    public static final int ID_WARNING_LOW = 1339;
+    public static final int ID_STOP_CHARGING = 1340;
+    public static final int ID_GRANT_ROOT = 1341;
+    public static final int ID_STOP_CHARGING_NOT_WORKING = 1342;
 
     private NotificationBuilder() {
     }
@@ -36,7 +36,7 @@ public final class NotificationBuilder {
     public static void showNotification(final Context context, final int type) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (type) {
-            case NOTIFICATION_ID_WARNING_HIGH:
+            case ID_WARNING_HIGH:
                 Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 if (batteryStatus == null) {
                     return;
@@ -70,7 +70,7 @@ public final class NotificationBuilder {
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
-            case NOTIFICATION_ID_WARNING_LOW:
+            case ID_WARNING_LOW:
                 Intent batteryStatus1 = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 if (batteryStatus1 == null) {
                     return;
@@ -97,7 +97,7 @@ public final class NotificationBuilder {
                 );
                 sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                 break;
-            case NOTIFICATION_ID_SILENT_MODE:
+            case ID_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 int ringerMode = audioManager.getRingerMode();
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -114,7 +114,7 @@ public final class NotificationBuilder {
                     );
                 }
                 break;
-            case NOTIFICATION_ID_STOP_CHARGING:
+            case ID_STOP_CHARGING:
                 if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
                     AsyncTask.execute(new Runnable() {
                         @Override
@@ -135,13 +135,13 @@ public final class NotificationBuilder {
                             } catch (RootChecker.NotRootedException e) {
                                 e.printStackTrace();
                             } catch (RootChecker.BatteryFileNotFoundException e) {
-                                showNotification(context, NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING);
+                                showNotification(context, ID_STOP_CHARGING_NOT_WORKING);
                             }
                         }
                     });
                     break;
                 }
-            case NOTIFICATION_ID_STOP_CHARGING_NOT_WORKING:
+            case ID_STOP_CHARGING_NOT_WORKING:
                 showNotification(
                         context,
                         context.getString(R.string.stop_charging_not_working),
@@ -156,7 +156,7 @@ public final class NotificationBuilder {
                         null
                 );
                 break;
-            case NOTIFICATION_ID_GRANT_ROOT:
+            case ID_GRANT_ROOT:
                 final String pref_stop_charging = context.getString(R.string.pref_stop_charging);
                 if (sharedPreferences.getBoolean(pref_stop_charging, context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
                     AsyncTask.execute(new Runnable() { // run in another thread
