@@ -29,9 +29,9 @@
     <string name="refresh">Actualiser</string>
     <string name="charging">En charge...</string>
     <string name="charging_time">Temps de charge</string>
-    <string name="technology">Technologie</string>
+    <string name="technology">Téchnologie</string>
     <string name="temperature">Température</string>
-    <string name="health">Etat</string>
+    <string name="health">État</string>
     <string name="battery_level">Niveau de batterie</string>
     <string name="voltage">Voltage</string>
     <string name="health_good">Bon</string>
