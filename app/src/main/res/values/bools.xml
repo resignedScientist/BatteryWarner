@@ -15,4 +15,5 @@
     <bool name="pref_is_enabled_default">true</bool>
     <bool name="pref_alex_mode_default">false</bool>
     <bool name="pref_already_notified_default">false</bool>
+    <bool name="pref_discharging_service_enabled_default">false</bool>
 </resources>

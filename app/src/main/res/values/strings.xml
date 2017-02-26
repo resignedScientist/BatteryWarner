@@ -15,6 +15,7 @@
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_discharging_service_enabled" translatable="false">dischargingServiceEnabled</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
