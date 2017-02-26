@@ -16,23 +16,30 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private boolean isScreenOn;
     private BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            isScreenOn = true;
         }
     };
     private BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
+            isScreenOn = false;
         }
     };
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             boolean isCharging = isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-            if (isCharging) {
+            if (!isCharging) {
+                if (isScreenOn) {
+                    // TODO: log in screen-on database table
+                } else {
+                    // TODO: log in screen-off database table
+                }
+            } else {
                 stopSelf();
             }
         }
