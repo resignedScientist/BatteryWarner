@@ -53,7 +53,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         Log.d(TAG, "Service started!");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-        if (serviceEnabled) {
+        boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
+        if (isEnabled && serviceEnabled) {
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             sharedPreferences.edit()
                     .putLong(getString(R.string.pref_time_screen_off), screenOffTime)
@@ -80,6 +81,9 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(getString(R.string.pref_discharging_service_enabled))
                 && !sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_discharging_service_enabled_default))) {
+            stopSelf();
+        } else if (s.equals(getString(R.string.pref_is_enabled))
+                && !sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_is_enabled_default))) {
             stopSelf();
         }
     }
