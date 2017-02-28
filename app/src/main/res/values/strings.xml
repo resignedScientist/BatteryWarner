@@ -30,6 +30,8 @@
     <string name="pref_last_chargingType" translatable="false">lastChargingType</string>
     <string name="pref_alex_mode" translatable="false">alexMode</string>
     <string name="pref_stats_key" translatable="false">stats</string>
+    <string name="pref_time_screen_on" translatable="false">timeScreenOn</string>
+    <string name="pref_time_screen_off" translatable="false">timeScreenOff</string>
 
     <!-- Other Strings -->
     <string name="app_name">Battery Warner</string>
