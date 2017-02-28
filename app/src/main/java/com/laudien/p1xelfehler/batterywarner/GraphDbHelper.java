@@ -193,6 +193,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             db.close();
             return true;
         }
+        cursor.close();
         db.close();
         return false;
     }
