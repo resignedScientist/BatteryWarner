@@ -14,6 +14,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivit
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
@@ -88,6 +89,10 @@ public class IntroActivity extends MaterialIntroActivity {
                 ChargingService.startService(this);
             } else { // start the DischargingAlarmReceiver if discharging
                 sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+                if (serviceEnabled) {
+                    startService(new Intent(this, DischargingService.class));
+                }
             }
         }
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();

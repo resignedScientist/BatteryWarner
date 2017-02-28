@@ -75,6 +75,7 @@
             </intent-filter>
         </service>
         <service android:name=".Services.ChargingService" />
+        <service android:name=".Services.DischargingService" />
     </application>
 
 </manifest>

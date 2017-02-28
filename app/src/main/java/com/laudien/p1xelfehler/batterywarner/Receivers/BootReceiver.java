@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 public class BootReceiver extends BroadcastReceiver {
 
@@ -36,6 +37,10 @@ public class BootReceiver extends BroadcastReceiver {
             ChargingService.startService(context); // start charging service if enabled
         } else { // discharging
             context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
+            boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+            if (serviceEnabled) {
+                context.startService(new Intent(context, DischargingService.class));
+            }
         }
     }
 }

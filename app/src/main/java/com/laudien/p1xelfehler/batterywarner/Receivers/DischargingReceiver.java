@@ -13,6 +13,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
@@ -46,6 +47,12 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+
+        // start discharging service if enabled
+        boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        if (serviceEnabled) {
+            context.startService(new Intent(context, DischargingService.class));
+        }
 
         // start DischargingReceiver which notifies or sets alarm
         context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));

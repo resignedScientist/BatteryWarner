@@ -13,6 +13,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
 
@@ -35,6 +36,10 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         } else { // discharging
             DischargingAlarmReceiver.cancelDischargingAlarm(context);
             context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+            boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+            if (serviceEnabled) {
+                context.startService(new Intent(context, DischargingService.class));
+            }
         }
 
         // show notification if not rooted anymore

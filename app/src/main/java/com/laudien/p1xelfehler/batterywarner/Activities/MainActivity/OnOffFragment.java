@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,23 +32,26 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import java.util.Locale;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    //private static final String TAG = "OnOffFragment";
+    private static final String TAG = "OnOffFragment";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final int NO_STATE = -1;
     private SharedPreferences sharedPreferences;
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
-            textView_voltage, textView_current;
+            textView_voltage, textView_current, textView_screenOn, textView_screenOff;
     private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
-    private IntentFilter onOffChangedFilter, batteryChangedFilter;
     private boolean isCharging;
     private BatteryManager batteryManager;
+    private long screenOnTime, screenOffTime;
+    private int lastPercentage;
 
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -70,6 +74,34 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+
+            if (!isCharging && dischargingServiceEnabled) {
+                Log.d(TAG, "screenOnTime = " + screenOnTime);
+                Log.d(TAG, "screenOffTime = " + screenOffTime);
+                long timeSum = screenOffTime + screenOnTime;
+                double screenOnFactor = (double) screenOnTime / (double) timeSum;
+                double screenOffFactor = 1 - screenOnFactor;
+                int percentDiff = lastPercentage - batteryLevel;
+                double screenOnHours = (double) screenOnTime / 3600000;
+                double screenOffHours = (double) screenOffTime / 3600000;
+                Log.d(TAG, "screenOnHours = " + screenOnHours);
+                Log.d(TAG, "screenOffHours = " + screenOffHours);
+                double timeSumHours = (double) timeSum / 3600000;
+                double screenOnPercentPerHour = percentDiff * screenOnFactor / timeSumHours;
+                double screenOffPercentPerHour = percentDiff * screenOffFactor / timeSumHours;
+                Log.d(TAG, "screenOnPercentPerHour = " + screenOnPercentPerHour);
+                Log.d(TAG, "screenOffPercentPerHour = " + screenOffPercentPerHour);
+                textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
+                        "Screen on", screenOnPercentPerHour));
+                textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
+                        "Screen off", screenOffPercentPerHour));
+                textView_screenOn.setVisibility(VISIBLE);
+                textView_screenOff.setVisibility(VISIBLE);
+            } else {
+                textView_screenOn.setVisibility(INVISIBLE);
+                textView_screenOff.setVisibility(INVISIBLE);
+            }
 
             if (batteryManager != null) {
                 long currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
@@ -151,6 +183,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+        lastPercentage = sharedPreferences.getInt(getString(R.string.pref_last_percentage), getResources().getInteger(R.integer.pref_last_percentage_default));
 
         boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         toggleButton.setChecked(isChecked);
@@ -162,10 +195,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
         textView_current = (TextView) view.findViewById(R.id.textView_current);
+        textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
+        textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
         img_battery = (ImageView) view.findViewById(R.id.img_battery);
-
-        onOffChangedFilter = new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED);
-        batteryChangedFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
@@ -179,14 +211,18 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(onOffChangedReceiver, onOffChangedFilter);
-        getActivity().registerReceiver(batteryChangedReceiver, batteryChangedFilter);
+        screenOnTime = sharedPreferences.getLong(getString(R.string.pref_time_screen_on), getResources().getInteger(R.integer.pref_time_screen_on_default));
+        screenOffTime = sharedPreferences.getLong(getString(R.string.pref_time_screen_off), getResources().getInteger(R.integer.pref_time_screen_off_default));
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        getActivity().registerReceiver(onOffChangedReceiver, new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED));
+        getActivity().registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         onOffChangedReceiver.onReceive(context, null);
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         getActivity().unregisterReceiver(onOffChangedReceiver);
         getActivity().unregisterReceiver(batteryChangedReceiver);
     }
@@ -212,5 +248,16 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         }
         // send broadcast
         context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (s.equals(getString(R.string.pref_last_percentage))) {
+            lastPercentage = sharedPreferences.getInt(s, getResources().getInteger(R.integer.pref_last_percentage_default));
+        } else if (s.equals(getString(R.string.pref_time_screen_on))) {
+            screenOnTime = sharedPreferences.getLong(s, getResources().getInteger(R.integer.pref_time_screen_on_default));
+        } else if (s.equals(getString(R.string.pref_time_screen_off))) {
+            screenOffTime = sharedPreferences.getLong(s, getResources().getInteger(R.integer.pref_time_screen_off_default));
+        }
     }
 }

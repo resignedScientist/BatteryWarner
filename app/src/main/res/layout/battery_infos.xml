@@ -54,6 +54,20 @@
                 android:text="Stromstärke: 1500mAh"
                 android:textSize="18sp" />
 
+            <TextView
+                android:id="@+id/textView_screenOn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Screen on: 33,33 %/h"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textView_screenOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Screen off: 33,33 %/h"
+                android:textSize="18sp" />
+
         </LinearLayout>
 
     </ScrollView>
