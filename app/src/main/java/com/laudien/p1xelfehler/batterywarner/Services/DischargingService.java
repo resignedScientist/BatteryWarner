@@ -59,6 +59,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         super.onDestroy();
         unregisterReceiver(screenOnReceiver);
         unregisterReceiver(screenOffReceiver);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         sharedPreferences.edit()
                 .putLong(getString(R.string.pref_time_screen_on), screenOnTime)
                 .putLong(getString(R.string.pref_time_screen_off), screenOffTime)
