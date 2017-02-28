@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,6 +31,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
@@ -38,7 +40,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled,
-            pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme;
+            pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme, pref_dischargingService;
     private RingtonePreference ringtonePreference;
     private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
 
@@ -59,6 +61,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
+        pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
 
         Context context = getActivity();
         if (context != null) {
@@ -231,6 +234,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         }
                     }
                 }.execute();
+            }
+        } else if (preference == pref_dischargingService) {
+            boolean checked = pref_dischargingService.isChecked();
+            if (checked) { // start service if checked
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.startService(new Intent(activity, DischargingService.class));
+                }
             }
         }
     }
