@@ -109,4 +109,8 @@
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
+    <string name="screen_off">Bildschirm aus</string>
+    <string name="screen_on">Bildschirm an</string>
+    <string name="log_percent_per_hour">Prozent pro Stunde erfassen</string>
+    <string name="discharging_summary">Dazu muss permanent ein Service laufen!</string>
 </resources>
