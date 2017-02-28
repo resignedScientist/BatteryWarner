@@ -77,6 +77,12 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
 
             if (!isCharging && dischargingServiceEnabled) {
+                if (lastPercentage < batteryLevel) {
+                    lastPercentage = batteryLevel;
+                    sharedPreferences.edit()
+                            .putInt(getString(R.string.pref_last_percentage), lastPercentage)
+                            .apply();
+                }
                 Log.d(TAG, "screenOnTime = " + screenOnTime);
                 Log.d(TAG, "screenOffTime = " + screenOffTime);
                 long timeSum = screenOffTime + screenOnTime;
