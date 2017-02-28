@@ -109,4 +109,8 @@
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
+    <string name="discharging_summary">Runs a service at any time in background!</string>
+    <string name="log_percent_per_hour">Log percent per hour</string>
+    <string name="screen_off">Screen off</string>
+    <string name="screen_on">Screen on</string>
 </resources>

@@ -24,7 +24,6 @@
         <CheckBoxPreference
             android:defaultValue="@bool/pref_discharging_service_enabled_default"
             android:key="@string/pref_discharging_service_enabled"
-            android:layout="@layout/preference_checkbox"
             android:summary="@string/discharging_summary"
             android:title="@string/log_percent_per_hour" />
     </PreferenceCategory>
