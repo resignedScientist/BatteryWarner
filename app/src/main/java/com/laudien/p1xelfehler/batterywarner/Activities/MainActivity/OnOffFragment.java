@@ -14,7 +14,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,21 +82,13 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                             .putInt(getString(R.string.pref_last_percentage), lastPercentage)
                             .apply();
                 }
-                Log.d(TAG, "screenOnTime = " + screenOnTime);
-                Log.d(TAG, "screenOffTime = " + screenOffTime);
                 long timeSum = screenOffTime + screenOnTime;
                 double screenOnFactor = (double) screenOnTime / (double) timeSum;
                 double screenOffFactor = 1 - screenOnFactor;
                 int percentDiff = lastPercentage - batteryLevel;
-                double screenOnHours = (double) screenOnTime / 3600000;
-                double screenOffHours = (double) screenOffTime / 3600000;
-                Log.d(TAG, "screenOnHours = " + screenOnHours);
-                Log.d(TAG, "screenOffHours = " + screenOffHours);
                 double timeSumHours = (double) timeSum / 3600000;
                 double screenOnPercentPerHour = percentDiff * screenOnFactor / timeSumHours;
                 double screenOffPercentPerHour = percentDiff * screenOffFactor / timeSumHours;
-                Log.d(TAG, "screenOnPercentPerHour = " + screenOnPercentPerHour);
-                Log.d(TAG, "screenOffPercentPerHour = " + screenOffPercentPerHour);
                 textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
                         "Screen on", screenOnPercentPerHour));
                 textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
