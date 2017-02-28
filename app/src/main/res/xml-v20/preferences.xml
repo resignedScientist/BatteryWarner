@@ -21,6 +21,11 @@
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_discharging_service_enabled_default"
+            android:key="@string/pref_discharging_service_enabled"
+            android:summary="Runs a service at any time in background!"
+            android:title="Log percent per hour" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
         <CheckBoxPreference
