@@ -84,14 +84,7 @@ public abstract class BasicGraphFragment extends Fragment {
             if (checkBox_temp.isChecked()) {
                 graphView.addSeries(series[TYPE_TEMPERATURE]);
             }
-            long endDate = getEndDate();
-            infoObject = new InfoObject(
-                    endDate,
-                    series[TYPE_PERCENTAGE].getHighestValueX(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
+            createOrUpdateInfoObject();
             double highestValue = series[TYPE_PERCENTAGE].getHighestValueX();
             if (highestValue > 0) {
                 graphView.getViewport().setMaxX(highestValue);
@@ -102,6 +95,27 @@ public abstract class BasicGraphFragment extends Fragment {
             graphView.getViewport().setMaxX(1);
         }
         setTimeText();
+    }
+
+    protected void createOrUpdateInfoObject() {
+        long endDate = getEndDate();
+        if (infoObject == null) {
+            infoObject = new InfoObject(
+                    endDate,
+                    series[TYPE_PERCENTAGE].getHighestValueX(),
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+        } else {
+            infoObject.updateValues(
+                    endDate,
+                    series[TYPE_PERCENTAGE].getHighestValueX(),
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+        }
     }
 
     protected void setTimeText() {
