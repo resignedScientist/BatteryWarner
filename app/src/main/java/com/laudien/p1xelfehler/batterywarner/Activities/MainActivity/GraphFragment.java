@@ -165,14 +165,6 @@ public class GraphFragment extends BasicGraphFragment {
             return false;
         }
         switch (id) {
-            case R.id.menu_refresh:
-                if (graphEnabled) {
-                    reload();
-                    Toast.makeText(getContext(), getString(R.string.graph_reloaded), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
-                }
-                return true;
             case R.id.menu_reset:
                 if (sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default))) {
                     showResetDialog();
@@ -225,27 +217,6 @@ public class GraphFragment extends BasicGraphFragment {
                 .apply();
     }
 
-    private void saveGraph() {
-        // check if a graph is present and has enough data
-        if (graphView.getSeries().size() == 0 || series[TYPE_PERCENTAGE].getHighestValueX() == 0) {
-            Toast.makeText(getContext(), R.string.nothing_to_save, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    REQUEST_SAVE_GRAPH
-            );
-            return;
-        }
-        // save graph
-        saveGraph(getContext());
-    }
-
     @Override
     protected void setTimeText() {
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -278,6 +249,44 @@ public class GraphFragment extends BasicGraphFragment {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // first check if all permissions were granted
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        if (requestCode == REQUEST_SAVE_GRAPH) {
+            // restart the saving of the graph
+            saveGraph();
+        } else if (requestCode == REQUEST_OPEN_HISTORY) {
+            openHistory();
+        }
+    }
+
+    private void saveGraph() {
+        // check if a graph is present and has enough data
+        if (graphView.getSeries().size() == 0 || series[TYPE_PERCENTAGE].getHighestValueX() == 0) {
+            Toast.makeText(getContext(), R.string.nothing_to_save, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // check for permission
+        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                    REQUEST_SAVE_GRAPH
+            );
+            return;
+        }
+        // save graph
+        saveGraph(getContext());
+    }
+
     public void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
@@ -307,22 +316,5 @@ public class GraphFragment extends BasicGraphFragment {
             return;
         }
         startActivity(new Intent(getContext(), HistoryActivity.class));
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // first check if all permissions were granted
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-        }
-        if (requestCode == REQUEST_SAVE_GRAPH) {
-            // restart the saving of the graph
-            saveGraph();
-        } else if (requestCode == REQUEST_OPEN_HISTORY) {
-            openHistory();
-        }
     }
 }
