@@ -1,8 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
@@ -39,30 +40,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
+import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
 
-public class GraphFragment extends BasicGraphFragment {
+public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.DatabaseChangedListener {
 
     private static final String TAG = "GraphFragment";
     private static final int REQUEST_SAVE_GRAPH = 10;
     private static final int REQUEST_OPEN_HISTORY = 20;
     private boolean graphEnabled;
     private SharedPreferences sharedPreferences;
-    private BroadcastReceiver dbChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            reload();
-        }
-    };
-
-    public static void notify(Context context) {
-        Intent intent = new Intent();
-        intent.setAction(Contract.BROADCAST_DB_CHANGED);
-        context.sendBroadcast(intent);
-    }
+    private GraphDbHelper graphDbHelper;
 
     public static void saveGraph(Context context) {
         // return if permissions are not granted
@@ -184,15 +176,6 @@ public class GraphFragment extends BasicGraphFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Contract.BROADCAST_DB_CHANGED);
-        filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
-        getActivity().registerReceiver(dbChangedReceiver, filter);
-    }
-
-    @Override
     protected void loadSeries() {
         if (IS_PRO) {
             super.loadSeries();
@@ -205,16 +188,24 @@ public class GraphFragment extends BasicGraphFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (IS_PRO) {
+            graphDbHelper = GraphDbHelper.getInstance(getContext());
+            graphDbHelper.setDatabaseChangedListener(this);
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        Activity activity = getActivity();
-        if (activity != null) {
-            activity.unregisterReceiver(dbChangedReceiver);
-        }
         sharedPreferences.edit()
                 .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
                 .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
                 .apply();
+        if (IS_PRO) {
+            graphDbHelper.setDatabaseChangedListener(null);
+        }
     }
 
     @Override
@@ -316,5 +307,31 @@ public class GraphFragment extends BasicGraphFragment {
             return;
         }
         startActivity(new Intent(getContext(), HistoryActivity.class));
+    }
+
+    @Override
+    public void onValueAdded(double timeInMinutes, int percentage, int temperature) {
+        if (series != null) {
+            ((LineGraphSeries<DataPoint>) series[TYPE_PERCENTAGE]).appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
+            ((LineGraphSeries<DataPoint>) series[TYPE_TEMPERATURE]).appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
+            Viewport viewport = graphView.getViewport();
+            viewport.setMinX(0);
+            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
+            infoObject.updateValues(
+                    Calendar.getInstance().getTimeInMillis(),
+                    timeInMinutes,
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+            setTimeText();
+        } else {
+            reload();
+        }
+    }
+
+    @Override
+    public void onDatabaseCleared() {
+        reload();
     }
 }

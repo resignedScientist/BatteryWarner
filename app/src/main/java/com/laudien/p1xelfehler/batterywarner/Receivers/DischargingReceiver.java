@@ -28,6 +28,8 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
             return; // return if intro was not finished
 
+        context.sendBroadcast(new Intent(Contract.BROADCAST_DB_CHANGED));
+
         // add a delay for the dismissing of the notification if stop charging is enabled
         int delay = 0;
         if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {

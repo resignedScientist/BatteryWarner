@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -50,7 +49,6 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         if (!isCharging && isEnabled && warningLowEnabled) {
-            GraphFragment.notify(context);
             batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
             warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             if (batteryLevel <= warningLow) { // warning low

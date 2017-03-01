@@ -39,6 +39,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             GraphDbHelper.TABLE_COLUMN_TEMP};
     private int color_percentage, color_percentageBackground, color_temperature;
     private boolean darkThemeEnabled = false;
+    private DatabaseChangedListener dbChangedListener;
 
     private GraphDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -66,6 +67,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
     }
 
+    public void setDatabaseChangedListener(DatabaseChangedListener dbChangedListener) {
+        this.dbChangedListener = dbChangedListener;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_QUERY);
@@ -76,21 +81,24 @@ public class GraphDbHelper extends SQLiteOpenHelper {
 
     }
 
-    @Override
-    public synchronized void close() {
-        super.close();
-    }
-
     public void addValue(long time, int percentage, int temperature) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TABLE_COLUMN_TIME, time);
         contentValues.put(TABLE_COLUMN_PERCENTAGE, percentage);
         contentValues.put(TABLE_COLUMN_TEMP, temperature);
+        SQLiteDatabase database = getWritableDatabase();
         try {
-            getWritableDatabase().insert(TABLE_NAME, null, contentValues);
+            database.insert(TABLE_NAME, null, contentValues);
         } catch (Exception e) {
-            getWritableDatabase().execSQL(CREATE_QUERY);
-            getWritableDatabase().insert(TABLE_NAME, null, contentValues);
+            database.execSQL(CREATE_QUERY);
+            database.insert(TABLE_NAME, null, contentValues);
+        }
+        if (dbChangedListener != null) {
+            Cursor cursor = getCursor(database);
+            cursor.moveToFirst();
+            long firstTime = cursor.getLong(0);
+            double timeInMinutes = (double) (time - firstTime) / 60000;
+            dbChangedListener.onValueAdded(timeInMinutes, percentage, temperature);
         }
         close();
     }
@@ -98,6 +106,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     public void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
         close();
+        if (dbChangedListener != null) {
+            dbChangedListener.onDatabaseCleared();
+        }
     }
 
     public LineGraphSeries<DataPoint>[] getGraphs(Context context, SQLiteDatabase database) {
@@ -207,5 +218,11 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             close();
             return false;
         }
+    }
+
+    public interface DatabaseChangedListener {
+        void onValueAdded(double timeInMinutes, int percentage, int temperature);
+
+        void onDatabaseCleared();
     }
 }

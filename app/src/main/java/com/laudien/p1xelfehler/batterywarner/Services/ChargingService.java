@@ -13,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -68,7 +67,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 long timeNow = Calendar.getInstance().getTimeInMillis();
                 graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 lastPercentage = batteryLevel;
-                GraphFragment.notify(context);
             }
 
             // stop service if battery is full
@@ -94,8 +92,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
             if (isCharging) {
                 context.startService(new Intent(context, ChargingService.class));
-            } else {
-                GraphFragment.notify(context);
             }
         }
     }
