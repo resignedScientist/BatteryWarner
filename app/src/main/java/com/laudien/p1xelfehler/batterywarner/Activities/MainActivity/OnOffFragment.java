@@ -82,13 +82,11 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                             .putInt(getString(R.string.pref_last_percentage), lastPercentage)
                             .apply();
                 }
-                long timeSum = screenOffTime + screenOnTime;
-                double screenOnFactor = (double) screenOnTime / (double) timeSum;
-                double screenOffFactor = 1 - screenOnFactor;
                 int percentDiff = lastPercentage - batteryLevel;
-                double timeSumHours = (double) timeSum / 3600000;
-                double screenOnPercentPerHour = percentDiff * screenOnFactor / timeSumHours;
-                double screenOffPercentPerHour = percentDiff * screenOffFactor / timeSumHours;
+                double screenOnTimeInHours = (double) screenOnTime / 3600000;
+                double screenOffTimeInHours = (double) screenOffTime / 3600000;
+                double screenOnPercentPerHour = 0;
+                double screenOffPercentPerHour = 0;
                 textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
                         getString(R.string.screen_on), screenOnPercentPerHour));
                 textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
