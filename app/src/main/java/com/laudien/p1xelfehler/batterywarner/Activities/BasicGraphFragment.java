@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATU
 
 public abstract class BasicGraphFragment extends Fragment {
 
+    protected final String TAG = getClass().getSimpleName();
     protected InfoObject infoObject;
     protected GraphView graphView;
     protected CheckBox checkBox_percentage, checkBox_temp;
@@ -69,6 +71,7 @@ public abstract class BasicGraphFragment extends Fragment {
         series = getSeries();
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
+        loadSeries();
         return view;
     }
 
@@ -130,6 +133,7 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     protected void reload() {
+        Log.d(TAG, "reload()");
         if (series != null) {
             for (Series s : series) {
                 graphView.removeSeries(s);
@@ -137,12 +141,6 @@ public abstract class BasicGraphFragment extends Fragment {
         }
         series = getSeries();
         loadSeries();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        reload();
     }
 
     protected LabelFormatter getLabelFormatter() {

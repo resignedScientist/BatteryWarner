@@ -132,6 +132,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         checkBox_temp.setChecked(
                 sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
         );
+        graphDbHelper = GraphDbHelper.getInstance(getContext());
         return view;
     }
 
@@ -199,8 +200,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         super.onResume();
         if (IS_PRO) {
             getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
-            graphDbHelper = GraphDbHelper.getInstance(getContext());
             graphDbHelper.setDatabaseChangedListener(this);
+            if (graphDbHelper.isDbChanged()) {
+                reload();
+            } else {
+                setTimeText();
+            }
         }
     }
 

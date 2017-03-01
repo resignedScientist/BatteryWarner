@@ -40,6 +40,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     private int color_percentage, color_percentageBackground, color_temperature;
     private boolean darkThemeEnabled = false;
     private DatabaseChangedListener dbChangedListener;
+    private boolean dbChanged = true; // saves if the database changed since last query from dbChangedListener
 
     private GraphDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -65,6 +66,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     private static Cursor getCursor(SQLiteDatabase db) {
         return db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+    }
+
+    public boolean isDbChanged() {
+        return dbChanged;
     }
 
     public void setDatabaseChangedListener(DatabaseChangedListener dbChangedListener) {
@@ -99,6 +104,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             long firstTime = cursor.getLong(0);
             double timeInMinutes = (double) (time - firstTime) / 60000;
             dbChangedListener.onValueAdded(timeInMinutes, percentage, temperature);
+            dbChanged = false;
+        } else {
+            dbChanged = true;
         }
         close();
     }
@@ -108,6 +116,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         close();
         if (dbChangedListener != null) {
             dbChangedListener.onDatabaseCleared();
+            dbChanged = false;
+        } else {
+            dbChanged = true;
         }
     }
 
@@ -143,7 +154,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     public LineGraphSeries<DataPoint>[] getGraphs(Context context) {
-        return getGraphs(context, getReadableDatabase());
+        LineGraphSeries<DataPoint>[] series = getGraphs(context, getReadableDatabase());
+        dbChanged = dbChangedListener == null;
+        return series;
     }
 
     private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
