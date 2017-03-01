@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +56,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     private boolean graphEnabled;
     private SharedPreferences sharedPreferences;
     private GraphDbHelper graphDbHelper;
+    private BroadcastReceiver dischargingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setTimeText();
+        }
+    };
 
     public static void saveGraph(Context context) {
         // return if permissions are not granted
@@ -191,6 +198,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public void onResume() {
         super.onResume();
         if (IS_PRO) {
+            getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             graphDbHelper = GraphDbHelper.getInstance(getContext());
             graphDbHelper.setDatabaseChangedListener(this);
         }
@@ -205,6 +213,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 .apply();
         if (IS_PRO) {
             graphDbHelper.setDatabaseChangedListener(null);
+            getContext().unregisterReceiver(dischargingReceiver);
         }
     }
 
@@ -233,7 +242,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             }
         } else { // empty database
             if (isCharging && !isFull) {
-                textView_chargingTime.setText(String.format("%s (%s)", InfoObject.getZeroTimeString(getContext()), getString(R.string.charging)));
+                textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
             } else {
                 textView_chargingTime.setText(getString(R.string.no_data));
             }
@@ -332,6 +341,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
     @Override
     public void onDatabaseCleared() {
-        reload();
+        for (Series s : series) {
+            graphView.removeSeries(s);
+        }
+        series = null;
     }
 }
