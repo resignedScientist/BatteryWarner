@@ -28,6 +28,7 @@ import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
@@ -235,6 +236,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 context.startService(new Intent(context, ChargingService.class));
             } else {
                 context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                context.startService(new Intent(context, DischargingService.class));
             }
             Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
         } else if (!isCharging) { // turned off and discharging

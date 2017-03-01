@@ -50,7 +50,6 @@ import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATU
 
 public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.DatabaseChangedListener {
 
-    private static final String TAG = "GraphFragment";
     private static final int REQUEST_SAVE_GRAPH = 10;
     private static final int REQUEST_OPEN_HISTORY = 20;
     private boolean graphEnabled;

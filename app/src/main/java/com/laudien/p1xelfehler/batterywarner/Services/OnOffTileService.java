@@ -34,10 +34,11 @@ public class OnOffTileService extends TileService {
                 isEnabled = false;
             }
             // set state from shared preferences
-            if (isEnabled)
+            if (isEnabled) {
                 tile.setState(Tile.STATE_ACTIVE);
-            else
+            } else {
                 tile.setState(Tile.STATE_INACTIVE);
+            }
 
         } else { // free version
             tile.setState(Tile.STATE_INACTIVE);
@@ -77,6 +78,7 @@ public class OnOffTileService extends TileService {
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging
                 sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                startService(new Intent(this, DischargingService.class));
             }
             Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
         }
