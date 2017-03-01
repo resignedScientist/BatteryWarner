@@ -68,7 +68,6 @@ public abstract class BasicGraphFragment extends Fragment {
         checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
         textView_title = (TextView) view.findViewById(R.id.textView_title);
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
-        series = getSeries();
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
         loadSeries();
@@ -80,6 +79,7 @@ public abstract class BasicGraphFragment extends Fragment {
     protected abstract long getEndDate();
 
     protected void loadSeries() {
+        series = getSeries();
         if (series != null) {
             if (checkBox_percentage.isChecked()) {
                 graphView.addSeries(series[TYPE_PERCENTAGE]);
@@ -134,12 +134,7 @@ public abstract class BasicGraphFragment extends Fragment {
 
     protected void reload() {
         Log.d(TAG, "reload()");
-        if (series != null) {
-            for (Series s : series) {
-                graphView.removeSeries(s);
-            }
-        }
-        series = getSeries();
+        graphView.removeAllSeries();
         loadSeries();
     }
 

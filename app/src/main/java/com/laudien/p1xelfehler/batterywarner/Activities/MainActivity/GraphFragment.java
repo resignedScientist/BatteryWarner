@@ -340,7 +340,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             );
             setTimeText();
         } else {
-            reload();
+            loadSeries();
         }
     }
 
