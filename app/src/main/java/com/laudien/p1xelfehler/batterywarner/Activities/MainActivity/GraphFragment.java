@@ -60,7 +60,7 @@ public class GraphFragment extends BasicGraphFragment {
 
     public static void notify(Context context) {
         Intent intent = new Intent();
-        intent.setAction(Contract.BROADCAST_STATUS_CHANGED);
+        intent.setAction(Contract.BROADCAST_DB_CHANGED);
         context.sendBroadcast(intent);
     }
 
@@ -187,7 +187,7 @@ public class GraphFragment extends BasicGraphFragment {
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Contract.BROADCAST_STATUS_CHANGED);
+        filter.addAction(Contract.BROADCAST_DB_CHANGED);
         filter.addAction(Contract.BROADCAST_ON_OFF_CHANGED);
         getActivity().registerReceiver(dbChangedReceiver, filter);
     }
