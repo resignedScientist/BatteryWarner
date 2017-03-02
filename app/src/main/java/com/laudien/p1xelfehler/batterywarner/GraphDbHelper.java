@@ -68,14 +68,6 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
     }
 
-    public boolean hasDbChanged() {
-        return dbChanged;
-    }
-
-    public void setDatabaseChangedListener(DatabaseChangedListener dbChangedListener) {
-        this.dbChangedListener = dbChangedListener;
-    }
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_QUERY);
@@ -84,6 +76,57 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    private boolean isTableEmpty(String fileName) {
+        SQLiteDatabase db = getReadableDatabase(fileName);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
+        cursor.moveToFirst();
+        if (cursor.getInt(0) == 0) {
+            db.close();
+            return true;
+        }
+        cursor.close();
+        db.close();
+        return false;
+    }
+
+    private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0 ||
+                darkThemeEnabled != readDarkThemeEnabled) {
+            darkThemeEnabled = readDarkThemeEnabled;
+            // percentage
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = context.getTheme();
+            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+            color_percentage = typedValue.data;
+            color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+            // temperature
+            if (darkThemeEnabled) { // dark theme
+                color_temperature = Color.GREEN;
+            } else { // default theme
+                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                color_temperature = typedValue.data;
+            }
+        }
+        output[TYPE_PERCENTAGE].setDrawBackground(true);
+        output[TYPE_PERCENTAGE].setColor(color_percentage);
+        output[TYPE_PERCENTAGE].setBackgroundColor(color_percentageBackground);
+        output[TYPE_TEMPERATURE].setColor(color_temperature);
+        return output;
+    }
+
+    public void resetTable() {
+        getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
+        close();
+        if (dbChangedListener != null) {
+            dbChangedListener.onDatabaseCleared();
+            dbChanged = false;
+        } else {
+            dbChanged = true;
+        }
     }
 
     public void addValue(long time, int percentage, int temperature) {
@@ -111,15 +154,8 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         close();
     }
 
-    public void resetTable() {
-        getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
-        close();
-        if (dbChangedListener != null) {
-            dbChangedListener.onDatabaseCleared();
-            dbChanged = false;
-        } else {
-            dbChanged = true;
-        }
+    public void setDatabaseChangedListener(DatabaseChangedListener dbChangedListener) {
+        this.dbChangedListener = dbChangedListener;
     }
 
     public LineGraphSeries<DataPoint>[] getGraphs(Context context, SQLiteDatabase database) {
@@ -159,39 +195,16 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         return series;
     }
 
-    private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
-        if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0 ||
-                darkThemeEnabled != readDarkThemeEnabled) {
-            darkThemeEnabled = readDarkThemeEnabled;
-            // percentage
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = context.getTheme();
-            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-            color_percentage = typedValue.data;
-            color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
-            // temperature
-            if (darkThemeEnabled) { // dark theme
-                color_temperature = Color.GREEN;
-            } else { // default theme
-                theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
-                color_temperature = typedValue.data;
-            }
-        }
-        output[TYPE_PERCENTAGE].setDrawBackground(true);
-        output[TYPE_PERCENTAGE].setColor(color_percentage);
-        output[TYPE_PERCENTAGE].setBackgroundColor(color_percentageBackground);
-        output[TYPE_TEMPERATURE].setColor(color_temperature);
-        return output;
-    }
-
     public SQLiteDatabase getReadableDatabase(String fileName) {
         return SQLiteDatabase.openDatabase(
                 fileName,
                 null,
                 SQLiteDatabase.OPEN_READONLY
         );
+    }
+
+    public boolean hasDbChanged() {
+        return dbChanged;
     }
 
     public boolean isValidDatabase(String fileName) {
@@ -207,19 +220,6 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private boolean isTableEmpty(String fileName) {
-        SQLiteDatabase db = getReadableDatabase(fileName);
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
-        cursor.moveToFirst();
-        if (cursor.getInt(0) == 0) {
-            db.close();
-            return true;
-        }
-        cursor.close();
-        db.close();
-        return false;
     }
 
     public boolean hasEnoughData() {
