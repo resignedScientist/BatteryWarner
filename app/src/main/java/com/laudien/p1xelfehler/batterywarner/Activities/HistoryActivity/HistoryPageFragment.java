@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.series.Series;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
@@ -30,7 +31,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     }
 
     @Override
-    protected Series[] getSeries() {
+    protected LineGraphSeries<DataPoint>[] getSeries() {
         if (file != null) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));

@@ -17,6 +17,8 @@ import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LabelFormatter;
 import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -32,7 +34,7 @@ public abstract class BasicGraphFragment extends Fragment {
     protected GraphView graphView;
     protected CheckBox checkBox_percentage, checkBox_temp;
     protected TextView textView_title, textView_chargingTime;
-    protected Series[] series;
+    protected LineGraphSeries<DataPoint>[] series;
     protected CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -74,7 +76,7 @@ public abstract class BasicGraphFragment extends Fragment {
         return view;
     }
 
-    protected abstract Series[] getSeries();
+    protected abstract LineGraphSeries<DataPoint>[] getSeries();
 
     protected abstract long getEndDate();
 

@@ -136,7 +136,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     }
 
     @Override
-    protected Series[] getSeries() {
+    protected LineGraphSeries<DataPoint>[] getSeries() {
         if (IS_PRO) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             return dbHelper.getGraphs(getContext());
@@ -325,8 +325,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onValueAdded(double timeInMinutes, int percentage, int temperature) {
         if (series != null) {
-            ((LineGraphSeries<DataPoint>) series[TYPE_PERCENTAGE]).appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
-            ((LineGraphSeries<DataPoint>) series[TYPE_TEMPERATURE]).appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
+            series[TYPE_PERCENTAGE].appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
+            series[TYPE_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
             Viewport viewport = graphView.getViewport();
             viewport.setMinX(0);
             viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
