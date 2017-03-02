@@ -61,7 +61,7 @@
     <string name="stats">Stats</string>
     <string name="charging_curve">Charging curve</string>
     <string name="refresh">Refresh</string>
-    <string name="charging">Charging...</string>
+    <string name="charging">Charging</string>
     <string name="charging_time">Charging time</string>
     <string name="technology">Technology</string>
     <string name="temperature">Temperature</string>

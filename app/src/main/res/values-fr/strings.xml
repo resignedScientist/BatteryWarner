@@ -27,7 +27,7 @@
     <string name="stats">Statistiques</string>
     <string name="charging_curve">Courbe de charge</string>
     <string name="refresh">Actualiser</string>
-    <string name="charging">En charge...</string>
+    <string name="charging">En charge</string>
     <string name="charging_time">Temps de charge</string>
     <string name="technology">Téchnologie</string>
     <string name="temperature">Température</string>

@@ -65,9 +65,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     private BroadcastReceiver chargingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!ChargingService.isChargingTypeEnabled(context)) {
-                disable(getString(R.string.charging_type_disabled), false);
-            }
+            setTimeText();
         }
     };
 
@@ -144,21 +142,28 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 );
                 graphDbHelper = GraphDbHelper.getInstance(getContext());
             } else {
-                disable(getString(R.string.disabled_in_settings), true);
+                setBigText(getString(R.string.disabled_in_settings), true);
             }
         } else {
-            disable(getString(R.string.not_pro), true);
+            setBigText(getString(R.string.not_pro), true);
         }
         return view;
     }
 
-    private void disable(String disableText, boolean disableCheckBoxes) {
+    private void setBigText(String disableText, boolean disableCheckBoxes) {
         textView_chargingTime.setText(disableText);
-        textView_chargingTime.setTextSize(SP, 18);
+        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
         if (disableCheckBoxes) {
             checkBox_temp.setEnabled(false);
             checkBox_percentage.setEnabled(false);
         }
+    }
+
+    private void setNormalText(String enableText) {
+        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
+        textView_chargingTime.setText(enableText);
+        checkBox_temp.setEnabled(true);
+        checkBox_percentage.setEnabled(true);
     }
 
     @Override
@@ -238,9 +243,6 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             } else {
                 setTimeText();
             }
-            if (!ChargingService.isChargingTypeEnabled(getContext())) {
-                disable(getString(R.string.charging_type_disabled), false);
-            }
         }
     }
 
@@ -266,28 +268,42 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         if (batteryStatus == null) {
             return;
         }
-        boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, Contract.NO_STATE) == BatteryManager.BATTERY_STATUS_FULL;
+        boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        if (series != null) {
-            String timeString = infoObject.getTimeString(getContext());
-            if (infoObject.getTimeInMinutes() != 0) { // enough data
-                if (isCharging && !isFull) {
-                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), timeString));
-                } else {
-                    textView_chargingTime.setText(String.format("%s: %s", getString(R.string.charging_time), timeString));
+        if (isCharging) { // charging
+            boolean isChargingTypeEnabled = ChargingService.isChargingTypeEnabled(getContext(), batteryStatus);
+            if (isChargingTypeEnabled) { // charging type enabled
+                if (isFull) { // fully charged
+                    showDischargingText();
+                } else { // not fully charged
+                    boolean isDatabaseEmpty = series == null;
+                    String timeString;
+                    if (isDatabaseEmpty) {
+                        timeString = InfoObject.getZeroTimeString(getContext());
+                    } else {
+                        timeString = infoObject.getTimeString(getContext());
+                    }
+                    setNormalText(String.format(Locale.getDefault(), "%s... (%s)", getString(R.string.charging), timeString));
                 }
-            } else { // not enough data
-                if (isCharging && !isFull) {
-                    textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
-                } else {
-                    textView_chargingTime.setText(getString(R.string.not_enough_data));
-                }
+            } else { // charging type disabled
+                setBigText(getString(R.string.charging_type_disabled), false);
             }
-        } else { // empty database
-            if (isCharging && !isFull) {
-                textView_chargingTime.setText(String.format("%s (%s)", getString(R.string.charging), InfoObject.getZeroTimeString(getContext())));
-            } else {
-                textView_chargingTime.setText(getString(R.string.no_data));
+        } else { // discharging
+            showDischargingText();
+        }
+    }
+
+    private void showDischargingText() {
+        boolean isDatabaseEmpty = series == null;
+        if (isDatabaseEmpty) { // no data yet (database is empty)
+            setBigText(getString(R.string.no_data), true);
+        } else { // database is not empty
+            boolean hasEnoughData = infoObject.getTimeInMinutes() != 0;
+            if (hasEnoughData) { // enough data
+                String timeString = infoObject.getTimeString(getContext());
+                setNormalText(String.format(Locale.getDefault(), "%s: %s", getString(R.string.charging_time), timeString));
+            } else { // not enough data
+                setBigText(getString(R.string.not_enough_data), true);
             }
         }
     }
