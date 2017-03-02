@@ -150,35 +150,35 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         return view;
     }
 
-    private void setBigText(String disableText, boolean disableCheckBoxes) {
-        textView_chargingTime.setText(disableText);
-        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
-        if (disableCheckBoxes) {
-            checkBox_temp.setEnabled(false);
-            checkBox_percentage.setEnabled(false);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (IS_PRO && graphEnabled) {
+            getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
+            getContext().registerReceiver(chargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
+            graphDbHelper.setDatabaseChangedListener(this);
+            if (graphDbHelper.hasDbChanged()) {
+                reload();
+            } else {
+                setTimeText();
+            }
         }
     }
 
-    private void setNormalText(String enableText) {
-        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
-        textView_chargingTime.setText(enableText);
-        checkBox_temp.setEnabled(true);
-        checkBox_percentage.setEnabled(true);
-    }
-
     @Override
-    protected LineGraphSeries<DataPoint>[] getSeries() {
-        if (IS_PRO) {
-            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-            return dbHelper.getGraphs(getContext());
+    public void onPause() {
+        super.onPause();
+        if (graphEnabled) {
+            sharedPreferences.edit()
+                    .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
+                    .apply();
+            if (IS_PRO) {
+                graphDbHelper.setDatabaseChangedListener(null);
+                getContext().unregisterReceiver(dischargingReceiver);
+                getContext().unregisterReceiver(chargingReceiver);
+            }
         }
-        return null;
-    }
-
-    @Override
-    protected long getEndDate() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
     }
 
     @Override
@@ -220,6 +220,38 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // first check if all permissions were granted
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        if (requestCode == REQUEST_SAVE_GRAPH) {
+            // restart the saving of the graph
+            saveGraph();
+        } else if (requestCode == REQUEST_OPEN_HISTORY) {
+            openHistory();
+        }
+    }
+
+    @Override
+    protected LineGraphSeries<DataPoint>[] getSeries() {
+        if (IS_PRO) {
+            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+            return dbHelper.getGraphs(getContext());
+        }
+        return null;
+    }
+
+    @Override
+    protected long getEndDate() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
+    }
+
+    @Override
     protected void loadSeries() {
         if (IS_PRO) {
             super.loadSeries();
@@ -228,37 +260,6 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             textView_chargingTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
             checkBox_temp.setEnabled(false);
             checkBox_percentage.setEnabled(false);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (IS_PRO && graphEnabled) {
-            getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
-            getContext().registerReceiver(chargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
-            graphDbHelper.setDatabaseChangedListener(this);
-            if (graphDbHelper.hasDbChanged()) {
-                reload();
-            } else {
-                setTimeText();
-            }
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (graphEnabled) {
-            sharedPreferences.edit()
-                    .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
-                    .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
-                    .apply();
-            if (IS_PRO) {
-                graphDbHelper.setDatabaseChangedListener(null);
-                getContext().unregisterReceiver(dischargingReceiver);
-                getContext().unregisterReceiver(chargingReceiver);
-            }
         }
     }
 
@@ -293,6 +294,38 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
+    @Override
+    public void onValueAdded(double timeInMinutes, int percentage, int temperature) {
+        if (series != null) {
+            series[TYPE_PERCENTAGE].appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
+            series[TYPE_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
+            Viewport viewport = graphView.getViewport();
+            viewport.setMinX(0);
+            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
+            infoObject.updateValues(
+                    Calendar.getInstance().getTimeInMillis(),
+                    timeInMinutes,
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+            setTimeText();
+        } else {
+            loadSeries();
+        }
+    }
+
+    @Override
+    public void onDatabaseCleared() {
+        if (series != null) {
+            for (Series s : series) {
+                graphView.removeSeries(s);
+            }
+            series = null;
+        }
+        setTimeText();
+    }
+
     private void showDischargingText() {
         boolean isDatabaseEmpty = series == null;
         if (isDatabaseEmpty) { // no data yet (database is empty)
@@ -308,21 +341,20 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // first check if all permissions were granted
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
+    private void setBigText(String disableText, boolean disableCheckBoxes) {
+        textView_chargingTime.setText(disableText);
+        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
+        if (disableCheckBoxes) {
+            checkBox_temp.setEnabled(false);
+            checkBox_percentage.setEnabled(false);
         }
-        if (requestCode == REQUEST_SAVE_GRAPH) {
-            // restart the saving of the graph
-            saveGraph();
-        } else if (requestCode == REQUEST_OPEN_HISTORY) {
-            openHistory();
-        }
+    }
+
+    private void setNormalText(String enableText) {
+        textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
+        textView_chargingTime.setText(enableText);
+        checkBox_temp.setEnabled(true);
+        checkBox_percentage.setEnabled(true);
     }
 
     private void saveGraph() {
@@ -375,37 +407,5 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             return;
         }
         startActivity(new Intent(getContext(), HistoryActivity.class));
-    }
-
-    @Override
-    public void onValueAdded(double timeInMinutes, int percentage, int temperature) {
-        if (series != null) {
-            series[TYPE_PERCENTAGE].appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
-            series[TYPE_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
-            Viewport viewport = graphView.getViewport();
-            viewport.setMinX(0);
-            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
-            infoObject.updateValues(
-                    Calendar.getInstance().getTimeInMillis(),
-                    timeInMinutes,
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
-            setTimeText();
-        } else {
-            loadSeries();
-        }
-    }
-
-    @Override
-    public void onDatabaseCleared() {
-        if (series != null) {
-            for (Series s : series) {
-                graphView.removeSeries(s);
-            }
-            series = null;
-        }
-        setTimeText();
     }
 }
