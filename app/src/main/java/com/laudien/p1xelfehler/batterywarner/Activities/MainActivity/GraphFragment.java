@@ -126,21 +126,29 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (graphEnabled) {
-            checkBox_percentage.setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
-            );
-            checkBox_temp.setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
-            );
-            graphDbHelper = GraphDbHelper.getInstance(getContext());
+        if (IS_PRO) {
+            if (graphEnabled) {
+                checkBox_percentage.setChecked(
+                        sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
+                );
+                checkBox_temp.setChecked(
+                        sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
+                );
+                graphDbHelper = GraphDbHelper.getInstance(getContext());
+            } else {
+                disable(getString(R.string.disabled_in_settings));
+            }
         } else {
-            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
-            textView_chargingTime.setTextSize(SP, 18);
-            checkBox_temp.setEnabled(false);
-            checkBox_percentage.setEnabled(false);
+            disable(getString(R.string.not_pro));
         }
         return view;
+    }
+
+    private void disable(String disableText) {
+        textView_chargingTime.setText(disableText);
+        textView_chargingTime.setTextSize(SP, 18);
+        checkBox_temp.setEnabled(false);
+        checkBox_percentage.setEnabled(false);
     }
 
     @Override
@@ -173,8 +181,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
         switch (id) {
             case R.id.menu_reset:
-                if (sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default))) {
+                if (graphEnabled) {
                     showResetDialog();
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.menu_open_history:
