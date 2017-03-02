@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -60,15 +62,19 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
             if (!isCharging) { // discharging
                 int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
-                if (batteryLevel != lastPercentage) {
-                    int diff = lastPercentage - batteryLevel;
+                if (lastPercentage == -1) { // first value -> take current percent
                     lastPercentage = batteryLevel;
-                    if (isScreenOn) { // screen is on
-                        screenOnDrain += diff;
-                        sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain).apply();
-                    } else { // screen is off
-                        screenOffDrain += diff;
-                        sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain).apply();
+                } else { // not the first value
+                    if (batteryLevel != lastPercentage) {
+                        int diff = lastPercentage - batteryLevel;
+                        lastPercentage = batteryLevel;
+                        if (isScreenOn) { // screen is on
+                            screenOnDrain += diff;
+                            sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain).apply();
+                        } else { // screen is off
+                            screenOffDrain += diff;
+                            sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain).apply();
+                        }
                     }
                 }
             } else { // charging
@@ -89,6 +95,12 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     .putLong(getString(R.string.value_time_screen_off), screenOffTime)
                     .putLong(getString(R.string.value_time_screen_on), screenOnTime)
                     .apply();
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // lollipop and higher
+                isScreenOn = powerManager.isInteractive();
+            } else { // kitKat
+                isScreenOn = powerManager.isScreenOn();
+            }
             registerReceiver(screenOnReceiver, new IntentFilter(ACTION_SCREEN_ON));
             registerReceiver(screenOffReceiver, new IntentFilter(ACTION_SCREEN_OFF));
             registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));

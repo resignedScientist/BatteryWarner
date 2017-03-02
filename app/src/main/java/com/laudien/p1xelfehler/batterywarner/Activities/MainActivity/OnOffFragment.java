@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,15 +82,27 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 double screenOffTimeInHours = (double) screenOffTime / 3600000;
                 double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
                 double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
-                textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
-                        getString(R.string.screen_on), screenOnPercentPerHour));
-                textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
-                        getString(R.string.screen_off), screenOffPercentPerHour));
-                textView_screenOn.setVisibility(VISIBLE);
-                textView_screenOff.setVisibility(VISIBLE);
+                Log.d(TAG, "screenOnDrain = " + screenOnDrain);
+                Log.d(TAG, "screenOffDrain = " + screenOffDrain);
+                Log.d(TAG, "screenOnTimeInHours = " + screenOnTimeInHours);
+                Log.d(TAG, "screenOffTimeInHours = " + screenOffTimeInHours);
+                Log.d(TAG, "screenOnPercentPerHour = " + screenOnPercentPerHour);
+                Log.d(TAG, "screenOffPercentPerHour = " + screenOffPercentPerHour);
+                if (screenOnPercentPerHour != 0.0 && !Double.isInfinite(screenOnPercentPerHour) && !Double.isNaN(screenOnPercentPerHour)
+                        && screenOffPercentPerHour != 0.0 && !Double.isInfinite(screenOffPercentPerHour) && !Double.isNaN(screenOffPercentPerHour)) {
+                    textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
+                            getString(R.string.screen_on), screenOnPercentPerHour));
+                    textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
+                            getString(R.string.screen_off), screenOffPercentPerHour));
+                    showPercentPerHour();
+                } else {
+                    textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s",
+                            getString(R.string.screen_on), getString(R.string.not_enough_data)));
+                    textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s",
+                            getString(R.string.screen_off), getString(R.string.not_enough_data)));
+                }
             } else {
-                textView_screenOn.setVisibility(INVISIBLE);
-                textView_screenOff.setVisibility(INVISIBLE);
+                hidePercentPerHour();
             }
 
             if (batteryManager != null) {
@@ -252,5 +265,15 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         } else if (s.equals(getString(R.string.value_drain_screen_off))) {
             screenOffDrain = sharedPreferences.getInt(s, 0);
         }
+    }
+
+    private void showPercentPerHour() {
+        textView_screenOn.setVisibility(VISIBLE);
+        textView_screenOff.setVisibility(VISIBLE);
+    }
+
+    private void hidePercentPerHour() {
+        textView_screenOn.setVisibility(INVISIBLE);
+        textView_screenOff.setVisibility(INVISIBLE);
     }
 }

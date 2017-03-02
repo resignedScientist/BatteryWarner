@@ -36,5 +36,5 @@ dependencies {
     compile 'agency.tango.android:material-intro-screen:0.0.4'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
 }
