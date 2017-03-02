@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -176,9 +175,8 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     public void showInfo() {
-        Activity activity = getActivity();
-        if (series != null && infoObject != null && activity != null) {
-            infoObject.showDialog(activity);
+        if (series != null && infoObject != null) {
+            infoObject.showDialog(getContext());
         } else {
             Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
         }

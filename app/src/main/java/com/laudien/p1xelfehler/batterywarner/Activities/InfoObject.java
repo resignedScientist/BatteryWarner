@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.Activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -19,7 +18,7 @@ public class InfoObject {
     private double timeInMinutes, maxTemp, minTemp, percentCharged;
     private long endTime;
 
-    public InfoObject(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+    InfoObject(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
         updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
     }
 
@@ -63,17 +62,17 @@ public class InfoObject {
         this.percentCharged = percentCharged;
     }
 
-    public void showDialog(Activity activity) {
-        LayoutInflater inflater = activity.getLayoutInflater();
+    void showDialog(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_graph_info, null);
         TextView textView_totalTime = (TextView) view.findViewById(R.id.textView_totalTime);
         textView_totalTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
-                activity.getString(R.string.charging_time),
-                getTimeString(activity))
+                context.getString(R.string.charging_time),
+                getTimeString(context))
         );
-        String date = activity.getString(R.string.unknown);
+        String date = context.getString(R.string.unknown);
         if (endTime > 1000000000) {
             date = DateFormat.getDateInstance(DateFormat.SHORT).format(endTime);
         }
@@ -81,35 +80,35 @@ public class InfoObject {
         textView_date.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
-                activity.getString(R.string.date),
+                context.getString(R.string.date),
                 date
         ));
         TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
         textView_speed.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.2f %%/h",
-                activity.getString(R.string.charging_speed),
+                context.getString(R.string.charging_speed),
                 percentCharged * 60 / timeInMinutes)
         );
         TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
-                activity.getString(R.string.max_temp),
+                context.getString(R.string.max_temp),
                 maxTemp)
         );
         TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
-                activity.getString(R.string.min_temp),
+                context.getString(R.string.min_temp),
                 minTemp)
         );
-        new AlertDialog.Builder(activity)
-                .setTitle(activity.getString(R.string.graph_info))
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.graph_info))
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton(activity.getString(R.string.close), null)
+                .setPositiveButton(context.getString(R.string.close), null)
                 .setIcon(R.mipmap.ic_launcher)
                 .create()
                 .show();
