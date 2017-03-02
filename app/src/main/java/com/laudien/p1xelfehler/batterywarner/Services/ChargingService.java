@@ -20,6 +20,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
+import static android.content.Intent.ACTION_BATTERY_CHANGED;
+import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -87,7 +89,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .putInt(context.getString(R.string.pref_last_percentage), -1)
                     .apply();
         }
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
             boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
             if (isCharging) {
@@ -168,11 +170,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
         registerReceiver(
                 ringerModeChangedReceiver,
-                new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION)
+                new IntentFilter(RINGER_MODE_CHANGED_ACTION)
         );
         registerReceiver(
                 batteryChangedReceiver,
-                new IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                new IntentFilter(ACTION_BATTERY_CHANGED)
         );
         return super.onStartCommand(intent, flags, startId);
     }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -15,36 +16,64 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
+import static android.content.Intent.ACTION_BATTERY_CHANGED;
+import static android.content.Intent.ACTION_SCREEN_OFF;
+import static android.content.Intent.ACTION_SCREEN_ON;
+import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+
 public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = "DischargingService";
     private SharedPreferences sharedPreferences;
     private long screenOnTime = 0, screenOffTime = 0;
     private long timeChanged = Calendar.getInstance().getTimeInMillis(); // time point when screen on/off was changed
+    private int lastPercentage = -1, // that is a different value as in sharedPreferences!!!
+            screenOnDrain = 0, screenOffDrain = 0;
+    private boolean isScreenOn;
     private BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "screen on received!");
+            isScreenOn = true;
             long timeNow = Calendar.getInstance().getTimeInMillis();
             long timeDifference = timeNow - timeChanged;
             timeChanged = timeNow;
             screenOffTime += timeDifference;
-            sharedPreferences.edit()
-                    .putLong(getString(R.string.pref_time_screen_off), screenOffTime)
-                    .apply();
+            sharedPreferences.edit().putLong(getString(R.string.value_time_screen_off), screenOffTime).apply();
         }
     };
     private BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "screen off received!");
+            isScreenOn = false;
             long timeNow = Calendar.getInstance().getTimeInMillis();
             long timeDifference = timeNow - timeChanged;
             timeChanged = timeNow;
             screenOnTime += timeDifference;
-            sharedPreferences.edit()
-                    .putLong(getString(R.string.pref_time_screen_on), screenOnTime)
-                    .apply();
+            sharedPreferences.edit().putLong(getString(R.string.value_time_screen_on), screenOnTime).apply();
+        }
+    };
+    private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent batteryStatus) {
+            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+            if (!isCharging) { // discharging
+                int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
+                if (batteryLevel != lastPercentage) {
+                    int diff = lastPercentage - batteryLevel;
+                    lastPercentage = batteryLevel;
+                    if (isScreenOn) { // screen is on
+                        screenOnDrain += diff;
+                        sharedPreferences.edit().putLong(getString(R.string.value_drain_screen_on), screenOnTime).apply();
+                    } else { // screen is off
+                        screenOffDrain += diff;
+                        sharedPreferences.edit().putLong(getString(R.string.value_drain_screen_off), screenOnTime).apply();
+                    }
+                }
+            } else { // charging
+                stopSelf();
+            }
         }
     };
 
@@ -57,11 +86,12 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         if (isEnabled && serviceEnabled) {
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             sharedPreferences.edit()
-                    .putLong(getString(R.string.pref_time_screen_off), screenOffTime)
-                    .putLong(getString(R.string.pref_time_screen_on), screenOnTime)
+                    .putLong(getString(R.string.value_time_screen_off), screenOffTime)
+                    .putLong(getString(R.string.value_time_screen_on), screenOnTime)
                     .apply();
-            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
-            registerReceiver(screenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+            registerReceiver(screenOnReceiver, new IntentFilter(ACTION_SCREEN_ON));
+            registerReceiver(screenOffReceiver, new IntentFilter(ACTION_SCREEN_OFF));
+            registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         } else {
             stopSelf();
         }
@@ -74,6 +104,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         super.onDestroy();
         unregisterReceiver(screenOnReceiver);
         unregisterReceiver(screenOffReceiver);
+        unregisterReceiver(batteryChangedReceiver);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 

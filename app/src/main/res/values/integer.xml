@@ -5,8 +5,6 @@
     <integer name="pref_slider_low_min">5</integer>
     <integer name="pref_slider_low_max">40</integer>
     <integer name="pref_slider_high_min">60</integer>
-    <integer name="pref_time_screen_on_default">0</integer>
-    <integer name="pref_time_screen_off_default">0</integer>
     <integer name="pref_last_percentage_default">-1</integer>
     <integer name="text_size_charging_text_normal">14</integer>
     <integer name="text_size_charging_text_big">18</integer>

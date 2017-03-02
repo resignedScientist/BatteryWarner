@@ -207,8 +207,8 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public void onResume() {
         super.onResume();
-        screenOnTime = sharedPreferences.getLong(getString(R.string.pref_time_screen_on), getResources().getInteger(R.integer.pref_time_screen_on_default));
-        screenOffTime = sharedPreferences.getLong(getString(R.string.pref_time_screen_off), getResources().getInteger(R.integer.pref_time_screen_off_default));
+        screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
+        screenOffTime = sharedPreferences.getLong(getString(R.string.value_time_screen_off), 0);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         getActivity().registerReceiver(onOffChangedReceiver, new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED));
         getActivity().registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -251,10 +251,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(getString(R.string.pref_last_percentage))) {
             lastPercentage = sharedPreferences.getInt(s, getResources().getInteger(R.integer.pref_last_percentage_default));
-        } else if (s.equals(getString(R.string.pref_time_screen_on))) {
-            screenOnTime = sharedPreferences.getLong(s, getResources().getInteger(R.integer.pref_time_screen_on_default));
-        } else if (s.equals(getString(R.string.pref_time_screen_off))) {
-            screenOffTime = sharedPreferences.getLong(s, getResources().getInteger(R.integer.pref_time_screen_off_default));
+        } else if (s.equals(getString(R.string.value_time_screen_on))) {
+            screenOnTime = sharedPreferences.getLong(s, 0);
+        } else if (s.equals(getString(R.string.value_time_screen_off))) {
+            screenOffTime = sharedPreferences.getLong(s, 0);
         }
     }
 }
