@@ -182,7 +182,11 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         switch (id) {
             case R.id.menu_reset:
                 if (graphEnabled) {
-                    showResetDialog();
+                    if (series != null) {
+                        showResetDialog();
+                    } else {
+                        Toast.makeText(getContext(), getString(R.string.nothing_to_delete), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
                 }
@@ -365,9 +369,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
     @Override
     public void onDatabaseCleared() {
-        for (Series s : series) {
-            graphView.removeSeries(s);
+        if (series != null) {
+            for (Series s : series) {
+                graphView.removeSeries(s);
+            }
+            series = null;
         }
-        series = null;
+        setTimeText();
     }
 }
