@@ -65,10 +65,10 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     lastPercentage = batteryLevel;
                     if (isScreenOn) { // screen is on
                         screenOnDrain += diff;
-                        sharedPreferences.edit().putLong(getString(R.string.value_drain_screen_on), screenOnTime).apply();
+                        sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain).apply();
                     } else { // screen is off
                         screenOffDrain += diff;
-                        sharedPreferences.edit().putLong(getString(R.string.value_drain_screen_off), screenOnTime).apply();
+                        sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain).apply();
                     }
                 }
             } else { // charging

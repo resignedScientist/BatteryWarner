@@ -51,7 +51,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private boolean isCharging;
     private BatteryManager batteryManager;
     private long screenOnTime, screenOffTime;
-    private int lastPercentage;
+    private int screenOnDrain, screenOffDrain;
 
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -77,17 +77,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
 
             if (!isCharging && dischargingServiceEnabled) {
-                if (lastPercentage < batteryLevel) {
-                    lastPercentage = batteryLevel;
-                    sharedPreferences.edit()
-                            .putInt(getString(R.string.pref_last_percentage), lastPercentage)
-                            .apply();
-                }
-                int percentDiff = lastPercentage - batteryLevel;
                 double screenOnTimeInHours = (double) screenOnTime / 3600000;
                 double screenOffTimeInHours = (double) screenOffTime / 3600000;
-                double screenOnPercentPerHour = 0;
-                double screenOffPercentPerHour = 0;
+                double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
+                double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
                 textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
                         getString(R.string.screen_on), screenOnPercentPerHour));
                 textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
@@ -177,9 +170,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         context = getContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
-        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        lastPercentage = sharedPreferences.getInt(getString(R.string.pref_last_percentage), getResources().getInteger(R.integer.pref_last_percentage_default));
 
         boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         toggleButton.setChecked(isChecked);
@@ -209,6 +199,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         super.onResume();
         screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
         screenOffTime = sharedPreferences.getLong(getString(R.string.value_time_screen_off), 0);
+        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+        screenOnDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_on), 0);
+        screenOffDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_off), 0);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         getActivity().registerReceiver(onOffChangedReceiver, new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED));
         getActivity().registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -249,12 +243,14 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(getString(R.string.pref_last_percentage))) {
-            lastPercentage = sharedPreferences.getInt(s, getResources().getInteger(R.integer.pref_last_percentage_default));
-        } else if (s.equals(getString(R.string.value_time_screen_on))) {
+        if (s.equals(getString(R.string.value_time_screen_on))) {
             screenOnTime = sharedPreferences.getLong(s, 0);
         } else if (s.equals(getString(R.string.value_time_screen_off))) {
             screenOffTime = sharedPreferences.getLong(s, 0);
+        } else if (s.equals(getString(R.string.value_drain_screen_on))) {
+            screenOnDrain = sharedPreferences.getInt(s, 0);
+        } else if (s.equals(getString(R.string.value_drain_screen_off))) {
+            screenOffDrain = sharedPreferences.getInt(s, 0);
         }
     }
 }
