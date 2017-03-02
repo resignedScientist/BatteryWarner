@@ -177,12 +177,10 @@ public abstract class BasicGraphFragment extends Fragment {
 
     public void showInfo() {
         Activity activity = getActivity();
-        if (activity != null) {
-            if (infoObject != null) {
-                infoObject.showDialog(getActivity());
-            } else {
-                Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
-            }
+        if (series != null && infoObject != null && activity != null) {
+            infoObject.showDialog(activity);
+        } else {
+            Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
         }
     }
 }
