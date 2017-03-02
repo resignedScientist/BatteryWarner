@@ -68,7 +68,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
                 "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
     }
 
-    public boolean isDbChanged() {
+    public boolean hasDbChanged() {
         return dbChanged;
     }
 

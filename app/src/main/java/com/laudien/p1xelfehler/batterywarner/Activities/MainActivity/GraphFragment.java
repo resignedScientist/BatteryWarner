@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.support.annotation.Dimension.SP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
@@ -52,9 +53,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
     private static final int REQUEST_SAVE_GRAPH = 10;
     private static final int REQUEST_OPEN_HISTORY = 20;
-    private boolean graphEnabled;
     private SharedPreferences sharedPreferences;
     private GraphDbHelper graphDbHelper;
+    private boolean graphEnabled;
     private BroadcastReceiver dischargingReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -125,13 +126,20 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        checkBox_percentage.setChecked(
-                sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
-        );
-        checkBox_temp.setChecked(
-                sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
-        );
-        graphDbHelper = GraphDbHelper.getInstance(getContext());
+        if (graphEnabled) {
+            checkBox_percentage.setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
+            );
+            checkBox_temp.setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
+            );
+            graphDbHelper = GraphDbHelper.getInstance(getContext());
+        } else {
+            textView_chargingTime.setText(getString(R.string.disabled_in_settings));
+            textView_chargingTime.setTextSize(SP, 18);
+            checkBox_temp.setEnabled(false);
+            checkBox_percentage.setEnabled(false);
+        }
         return view;
     }
 
@@ -197,10 +205,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onResume() {
         super.onResume();
-        if (IS_PRO) {
+        if (IS_PRO && graphEnabled) {
             getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             graphDbHelper.setDatabaseChangedListener(this);
-            if (graphDbHelper.isDbChanged()) {
+            if (graphDbHelper.hasDbChanged()) {
                 reload();
             } else {
                 setTimeText();
@@ -211,13 +219,15 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onPause() {
         super.onPause();
-        sharedPreferences.edit()
-                .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
-                .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
-                .apply();
-        if (IS_PRO) {
-            graphDbHelper.setDatabaseChangedListener(null);
-            getContext().unregisterReceiver(dischargingReceiver);
+        if (graphEnabled) {
+            sharedPreferences.edit()
+                    .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
+                    .apply();
+            if (IS_PRO) {
+                graphDbHelper.setDatabaseChangedListener(null);
+                getContext().unregisterReceiver(dischargingReceiver);
+            }
         }
     }
 
