@@ -134,6 +134,15 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         return true;
     }
 
+    public static boolean isChargingTypeEnabled(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int chargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), NO_STATE);
+        boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
+        boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
+        boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+        return isChargingTypeEnabled(chargingType, acEnabled, usbEnabled, wirelessEnabled);
+    }
+
     public boolean isChargingTypeEnabled(Intent batteryStatus) {
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
         if (chargingType != lastChargingType) {

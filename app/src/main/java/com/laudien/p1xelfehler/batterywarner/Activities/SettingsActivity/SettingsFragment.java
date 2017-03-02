@@ -243,6 +243,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     activity.startService(new Intent(activity, DischargingService.class));
                 }
             }
+        } else if ((preference == pref_ac && pref_ac.isChecked())
+                || (preference == pref_usb && pref_usb.isChecked())
+                || (preference == pref_wireless && pref_wireless.isChecked())) {
+            Context context = getActivity();
+            if (context != null) {
+                ChargingService.restartService(context);
+            }
         }
     }
 }

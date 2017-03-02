@@ -62,6 +62,14 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             setTimeText();
         }
     };
+    private BroadcastReceiver chargingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!ChargingService.isChargingTypeEnabled(context)) {
+                disable(getString(R.string.charging_type_disabled), false);
+            }
+        }
+    };
 
     public static void saveGraph(Context context) {
         // return if permissions are not granted
@@ -136,19 +144,21 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 );
                 graphDbHelper = GraphDbHelper.getInstance(getContext());
             } else {
-                disable(getString(R.string.disabled_in_settings));
+                disable(getString(R.string.disabled_in_settings), true);
             }
         } else {
-            disable(getString(R.string.not_pro));
+            disable(getString(R.string.not_pro), true);
         }
         return view;
     }
 
-    private void disable(String disableText) {
+    private void disable(String disableText, boolean disableCheckBoxes) {
         textView_chargingTime.setText(disableText);
         textView_chargingTime.setTextSize(SP, 18);
-        checkBox_temp.setEnabled(false);
-        checkBox_percentage.setEnabled(false);
+        if (disableCheckBoxes) {
+            checkBox_temp.setEnabled(false);
+            checkBox_percentage.setEnabled(false);
+        }
     }
 
     @Override
@@ -221,11 +231,15 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         super.onResume();
         if (IS_PRO && graphEnabled) {
             getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
+            getContext().registerReceiver(chargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
             graphDbHelper.setDatabaseChangedListener(this);
             if (graphDbHelper.hasDbChanged()) {
                 reload();
             } else {
                 setTimeText();
+            }
+            if (!ChargingService.isChargingTypeEnabled(getContext())) {
+                disable(getString(R.string.charging_type_disabled), false);
             }
         }
     }
@@ -241,6 +255,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             if (IS_PRO) {
                 graphDbHelper.setDatabaseChangedListener(null);
                 getContext().unregisterReceiver(dischargingReceiver);
+                getContext().unregisterReceiver(chargingReceiver);
             }
         }
     }
