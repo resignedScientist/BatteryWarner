@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -17,13 +18,14 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {
 
-    //private static final String TAG = "OnOffTileService";
+    private final String TAG = getClass().getSimpleName();
     private Tile tile;
     private boolean firstStart;
 
     @Override
     public void onStartListening() {
         super.onStartListening();
+        Log.d(TAG, "start listening!");
         tile = getQsTile();
         if (Contract.IS_PRO) { // pro version
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -49,6 +51,7 @@ public class OnOffTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
+        Log.d(TAG, "Tile clicked!");
         if (!Contract.IS_PRO) { // not pro
             Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
             return;
@@ -66,12 +69,14 @@ public class OnOffTileService extends TileService {
         boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
 
         if (isActive) { // disable battery warnings
+            Log.d(TAG, "Disabling battery warnings...");
             tile.setState(Tile.STATE_INACTIVE);
             if (!isCharging) { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
+            Log.d(TAG, "Enabling battery warnings...");
             tile.setState(Tile.STATE_ACTIVE);
             sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) { // charging

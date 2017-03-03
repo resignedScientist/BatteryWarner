@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
@@ -95,7 +96,7 @@ public final class NotificationBuilder {
                         null,
                         null
                 );
-                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
                 break;
             case ID_SILENT_MODE:
                 AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -183,6 +184,7 @@ public final class NotificationBuilder {
     }
 
     private static void showNotification(Context context, String contentText, int id, Uri sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
+        Log.d("NotificationBuilder", contentText);
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);

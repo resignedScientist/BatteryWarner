@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -17,7 +16,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "AppUpdateReceiver";
+    //private final String TAG = getClass().getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,7 +43,5 @@ public class AppUpdateReceiver extends BroadcastReceiver {
 
         // show notification if not rooted anymore
         NotificationBuilder.showNotification(context, NotificationBuilder.ID_GRANT_ROOT);
-
-        Log.d(TAG, "The app was updated!");
     }
 }

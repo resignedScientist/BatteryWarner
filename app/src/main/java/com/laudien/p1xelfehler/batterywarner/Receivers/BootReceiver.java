@@ -15,7 +15,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 public class BootReceiver extends BroadcastReceiver {
 
-    //private static final String TAG = "BootReceiver";
+    //private final String TAG = getClass().getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {

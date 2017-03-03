@@ -52,10 +52,9 @@ public class DischargingReceiver extends BroadcastReceiver {
         boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         if (serviceEnabled) {
             context.startService(new Intent(context, DischargingService.class));
+        } else { // else start DischargingReceiver which notifies or sets alarm
+            context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
         }
-
-        // start DischargingReceiver which notifies or sets alarm
-        context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
 
         // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
         if (Contract.IS_PRO) {

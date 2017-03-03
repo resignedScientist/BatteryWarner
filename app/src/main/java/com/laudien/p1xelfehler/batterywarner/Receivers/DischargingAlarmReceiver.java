@@ -18,6 +18,7 @@ import java.util.Calendar;
 
 public class DischargingAlarmReceiver extends BroadcastReceiver {
 
+    //private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private int warningLow, batteryLevel;
 
@@ -60,30 +61,33 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
     }
 
     public void setDischargingAlarm(Context context) {
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-        int interval;
-        if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_very_short)) {
-            interval = context.getResources().getInteger(R.integer.interval_very_short);
-        } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_short)) {
-            interval = context.getResources().getInteger(R.integer.interval_short);
-        } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_long)) {
-            interval = context.getResources().getInteger(R.integer.interval_long);
-        } else {
-            interval = context.getResources().getInteger(R.integer.interval_very_long);
+        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        if (!dischargingServiceEnabled) {
+            long currentTime = Calendar.getInstance().getTimeInMillis();
+            int interval;
+            if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_very_short)) {
+                interval = context.getResources().getInteger(R.integer.interval_very_short);
+            } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_short)) {
+                interval = context.getResources().getInteger(R.integer.interval_short);
+            } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_long)) {
+                interval = context.getResources().getInteger(R.integer.interval_long);
+            } else {
+                interval = context.getResources().getInteger(R.integer.interval_very_long);
+            }
+            Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    (int) currentTime + interval, // request code = alarm time
+                    batteryIntent,
+                    0
+            );
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExact(
+                    AlarmManager.RTC,
+                    currentTime + interval,
+                    pendingIntent
+            );
+            sharedPreferences.edit().putLong(context.getString(R.string.pref_intent_time), currentTime + interval).apply();
         }
-        Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context,
-                (int) currentTime + interval, // request code = alarm time
-                batteryIntent,
-                0
-        );
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(
-                AlarmManager.RTC,
-                currentTime + interval,
-                pendingIntent
-        );
-        sharedPreferences.edit().putLong(context.getString(R.string.pref_intent_time), currentTime + interval).apply();
     }
 }

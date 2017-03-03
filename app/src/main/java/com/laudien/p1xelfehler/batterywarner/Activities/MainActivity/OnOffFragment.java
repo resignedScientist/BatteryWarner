@@ -14,7 +14,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,9 +41,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "OnOffFragment";
     private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final int NO_STATE = -1;
+    private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
@@ -84,12 +83,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 double screenOffTimeInHours = (double) screenOffTime / 3600000;
                 double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
                 double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
-                Log.d(TAG, "screenOnDrain = " + screenOnDrain);
-                Log.d(TAG, "screenOffDrain = " + screenOffDrain);
-                Log.d(TAG, "screenOnTimeInHours = " + screenOnTimeInHours);
-                Log.d(TAG, "screenOffTimeInHours = " + screenOffTimeInHours);
-                Log.d(TAG, "screenOnPercentPerHour = " + screenOnPercentPerHour);
-                Log.d(TAG, "screenOffPercentPerHour = " + screenOffPercentPerHour);
                 if (screenOnPercentPerHour != 0.0 && !Double.isInfinite(screenOnPercentPerHour) && !Double.isNaN(screenOnPercentPerHour)
                         && screenOffPercentPerHour != 0.0 && !Double.isInfinite(screenOffPercentPerHour) && !Double.isNaN(screenOffPercentPerHour)) {
                     textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
@@ -159,10 +152,8 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
             }
             if (nextColor != currentColor) {
-                if (nextColor == COLOR_RED) {
+                if (dischargingServiceEnabled && nextColor == COLOR_RED) {
                     NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_LOW);
-                } else if (nextColor == COLOR_ORANGE) {
-                    NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
                 }
                 currentColor = nextColor;
             }

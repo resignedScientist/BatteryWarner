@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
@@ -26,7 +27,7 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final static String TAG = "ChargingService";
+    private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private int lastPercentage = NO_STATE, warningHigh, lastChargingType;
     private boolean graphEnabled, isEnabled, warningHighEnabled, acEnabled, usbEnabled, wirelessEnabled;
@@ -56,24 +57,24 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 stopSelf();
                 return;
             }
-
             int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
                 NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
             }
-
-            // log in database
-            int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
-            if (Contract.IS_PRO && graphEnabled && batteryLevel != lastPercentage && temperature != NO_STATE) {
-                GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
-                long timeNow = Calendar.getInstance().getTimeInMillis();
-                graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-                lastPercentage = batteryLevel;
-            }
-
-            // stop service if battery is full
-            if (batteryLevel == 100) {
-                stopSelf();
+            if (batteryLevel != lastPercentage) {
+                // stop service if battery is full
+                if (batteryLevel == 100) {
+                    stopSelf();
+                    return;
+                }
+                // log in database
+                int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
+                if (Contract.IS_PRO && graphEnabled && temperature != NO_STATE) {
+                    GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
+                    long timeNow = Calendar.getInstance().getTimeInMillis();
+                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                    lastPercentage = batteryLevel;
+                }
             }
         }
     };
@@ -136,15 +137,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         return true;
     }
 
-    public static boolean isChargingTypeEnabled(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int chargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), NO_STATE);
-        boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
-        boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
-        boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-        return isChargingTypeEnabled(chargingType, acEnabled, usbEnabled, wirelessEnabled);
-    }
-
     public boolean isChargingTypeEnabled(Intent batteryStatus) {
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
         if (chargingType != lastChargingType) {
@@ -156,6 +148,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "Service started!");
         // load from sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -182,6 +175,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "Service destroyed!");
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
@@ -197,11 +191,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     public IBinder onBind(Intent intent) {
         // not used, because i won't bind it to anything!
         return null;
-    }
-
-    @Override
-    public boolean stopService(Intent name) {
-        return super.stopService(name);
     }
 
     @Override
