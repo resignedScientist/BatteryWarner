@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Battery Warner</string>
     <string name="warning_high">Niveau de batterie au-dessus de</string>
@@ -109,11 +109,11 @@
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
-    <string name="discharging_summary">Runs a service at any time in background!</string>
-    <string name="log_percent_per_hour">Log percent per hour</string>
+    <string name="discharging_summary">Exécute en permanence un service en arrière-plan !</string>
+    <string name="log_percent_per_hour">Enregistreer consommation de la batterie (en % par h)</string>
     <string name="screen_off">Screen off</string>
     <string name="screen_on">Screen on</string>
-    <string name="nothing_to_delete">There is nothing to delete!</string>
-    <string name="button_on">Main switch: on</string>
-    <string name="button_off">Main switch: off</string>
+    <string name="nothing_to_delete">Il n\'y a rien à supprimer !</string>
+    <string name="button_on">Interrupteur principal : ON</string>
+    <string name="button_off">Interrupteur principal : OFF</string>
 </resources>
