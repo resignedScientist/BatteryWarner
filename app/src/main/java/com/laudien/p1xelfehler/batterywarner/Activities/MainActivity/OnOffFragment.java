@@ -98,10 +98,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                             getString(R.string.screen_off), screenOffPercentPerHour));
                     showPercentPerHour();
                 } else {
-                    textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s",
-                            getString(R.string.screen_on), getString(R.string.not_enough_data)));
-                    textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s",
-                            getString(R.string.screen_off), getString(R.string.not_enough_data)));
+                    showNoData();
                 }
             } else {
                 hidePercentPerHour();
@@ -227,6 +224,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                     .putLong(getString(R.string.value_time_screen_on), 0)
                     .putLong(getString(R.string.value_time_screen_off), 0)
                     .apply();
+            showNoData();
             // TODO: show toast message on success
         }
         return super.onOptionsItemSelected(item);
@@ -300,5 +298,12 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private void hidePercentPerHour() {
         textView_screenOn.setVisibility(INVISIBLE);
         textView_screenOff.setVisibility(INVISIBLE);
+    }
+
+    private void showNoData() {
+        textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s",
+                getString(R.string.screen_on), getString(R.string.not_enough_data)));
+        textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s",
+                getString(R.string.screen_off), getString(R.string.not_enough_data)));
     }
 }
