@@ -52,7 +52,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
-    private boolean isCharging;
+    private boolean isCharging, dischargingServiceEnabled;
     private BatteryManager batteryManager;
     private long screenOnTime, screenOffTime;
     private int screenOnDrain, screenOffDrain;
@@ -78,7 +78,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
 
             if (dischargingServiceEnabled) {
                 double screenOnTimeInHours = (double) screenOnTime / 3600000;
@@ -182,10 +181,11 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        setHasOptionsMenu(dischargingServiceEnabled);
+        View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
 
         boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
