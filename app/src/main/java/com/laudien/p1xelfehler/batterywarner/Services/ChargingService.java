@@ -23,6 +23,7 @@ import java.util.Calendar;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
+import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -60,6 +61,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
                 NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
+                if (!IS_PRO) {
+                    stopSelf();
+                    return;
+                }
             }
             if (batteryLevel != lastPercentage) {
                 // stop service if battery is full
