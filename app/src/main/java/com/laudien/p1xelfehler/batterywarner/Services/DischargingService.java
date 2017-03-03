@@ -88,8 +88,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         if (isEnabled && serviceEnabled) {
             screenOnDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_on), 0);
             screenOffDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_off), 0);
-            screenOnTime = sharedPreferences.getInt(getString(R.string.value_time_screen_on), 0);
-            screenOffTime = sharedPreferences.getInt(getString(R.string.value_time_screen_off), 0);
+            screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
+            screenOffTime = sharedPreferences.getLong(getString(R.string.value_time_screen_off), 0);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             sharedPreferences.edit()
                     .putLong(getString(R.string.value_time_screen_off), screenOffTime)

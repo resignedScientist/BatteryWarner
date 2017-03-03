@@ -220,7 +220,13 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_reset) {
-            // TODO: reset screen on/off percentages in sharedPreferences
+            // reset screen on/off percentages and times in sharedPreferences
+            sharedPreferences.edit()
+                    .putInt(getString(R.string.value_drain_screen_on), 0)
+                    .putInt(getString(R.string.value_drain_screen_off), 0)
+                    .putLong(getString(R.string.value_time_screen_on), 0)
+                    .putLong(getString(R.string.value_time_screen_off), 0)
+                    .apply();
             // TODO: show toast message on success
         }
         return super.onOptionsItemSelected(item);
