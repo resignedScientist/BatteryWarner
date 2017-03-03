@@ -107,7 +107,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onResume() {
         super.onResume();
-        pref_seekBarLow.setEnabled(pref_warningLow.isChecked());
+        //pref_seekBarLow.setEnabled(pref_warningLow.isChecked());
         boolean highChecked = pref_warningHigh.isChecked();
         pref_seekBarHigh.setEnabled(highChecked);
         pref_stopCharging.setEnabled(highChecked);

@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -18,7 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
-public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener, NumberPicker.OnValueChangeListener {
+public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
     private static final String TAG = "SeekBarPreference";
     private static final int DEFAULT_MAX = 100;
@@ -27,9 +28,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     private int max;
     private int min;
     private String unit = "";
-    private boolean initialized = false;
     private int progress;
-    private int defaultProgress;
     private TextView textView;
     private SeekBar seekBar;
 
@@ -54,6 +53,12 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         init(context, null);
     }
 
+    // only called if a default value is given
+    @Override
+    protected Object onGetDefaultValue(TypedArray a, int index) {
+        return a.getInt(index, DEFAULT_PROGRESS);
+    }
+
     private void init(Context context, AttributeSet attrs) {
         setLayoutResource(R.layout.preference_seekbar);
         if (attrs != null) {
@@ -64,27 +69,28 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
             }
             max = a.getInt(R.styleable.SeekBarPreference_slider_max, DEFAULT_MAX);
             min = a.getInt(R.styleable.SeekBarPreference_slider_min, DEFAULT_MIN);
-            defaultProgress = a.getInt(R.styleable.SeekBarPreference_default_progress, DEFAULT_PROGRESS);
             a.recycle();
         } else {
             min = DEFAULT_MIN;
             max = DEFAULT_MAX;
-            defaultProgress = DEFAULT_PROGRESS;
         }
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         super.onSetInitialValue(restorePersistedValue, defaultValue);
+        Log.d(TAG, "onSetInitialValue()");
         if (restorePersistedValue) { // load saved values
-            progress = getPersistedInt(defaultProgress);
-            initialized = true;
+            progress = getPersistedInt(DEFAULT_PROGRESS);
+        } else { // load default values
+            progress = (int) defaultValue;
         }
     }
 
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
+        Log.d(TAG, "onBindView()");
         textView = (TextView) view.findViewById(R.id.textView);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,32 +101,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         seekBar = (SeekBar) view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(max - min);
-
-        if (initialized) {
-            seekBar.setProgress(progress - min);
-        } else {
-            seekBar.setProgress(defaultProgress - min);
-        }
-    }
-
-    private void showDialog() {
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
-        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
-        numberPicker.setOnValueChangedListener(this);
-        numberPicker.setMinValue(min);
-        numberPicker.setMaxValue(max);
-        numberPicker.setValue(getValue());
-        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        new AlertDialog.Builder(getContext())
-                .setView(view)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                }).create().show();
+        seekBar.setProgress(progress - min);
     }
 
     @Override
@@ -138,21 +119,50 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         persistInt(getValue());
     }
 
-    public int getValue() {
+    @Override
+    protected boolean persistInt(int value) {
+        Log.d(TAG, "persistInt()");
+        progress = value;
+        return super.persistInt(value);
+    }
+
+    private void showDialog() {
+        Log.d(TAG, "showDialog()");
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
+        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                Log.d(TAG, "onValueChange()");
+                setValue(i1);
+            }
+        });
+        numberPicker.setMinValue(min);
+        numberPicker.setMaxValue(max);
+        numberPicker.setValue(getValue());
+        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        new AlertDialog.Builder(getContext())
+                .setView(view)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).create().show();
+    }
+
+    private int getValue() {
         if (seekBar == null) {
             return min;
         }
         return seekBar.getProgress() + min;
     }
 
-    public void setValue(int progress) {
+    private void setValue(int progress) {
         if (seekBar != null) {
             seekBar.setProgress(progress - min);
         }
-    }
-
-    @Override
-    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-        setValue(i1);
     }
 }

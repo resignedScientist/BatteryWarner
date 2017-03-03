@@ -16,8 +16,8 @@
             android:layout="@layout/preference_checkbox"
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+            android:defaultValue="@integer/pref_warning_low_default"
             android:key="@string/pref_warning_low"
-            app:default_progress="@integer/pref_warning_low_default"
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
@@ -34,8 +34,8 @@
             android:layout="@layout/preference_checkbox"
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+            android:defaultValue="80"
             android:key="@string/pref_warning_high"
-            app:default_progress="@integer/pref_warning_high_default"
             app:slider_min="@integer/pref_slider_high_min"
             app:unit="%" />
         <SwitchPreference
