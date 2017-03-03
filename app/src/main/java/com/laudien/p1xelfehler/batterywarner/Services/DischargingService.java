@@ -114,9 +114,13 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     public void onDestroy() {
         Log.d(TAG, "Service destroyed!");
         super.onDestroy();
-        unregisterReceiver(screenOnReceiver);
-        unregisterReceiver(screenOffReceiver);
-        unregisterReceiver(batteryChangedReceiver);
+        try {
+            unregisterReceiver(screenOnReceiver);
+            unregisterReceiver(screenOffReceiver);
+            unregisterReceiver(batteryChangedReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
