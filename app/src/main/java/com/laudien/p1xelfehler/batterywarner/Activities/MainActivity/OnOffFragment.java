@@ -77,7 +77,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
 
-            if (!isCharging && dischargingServiceEnabled) {
+            if (dischargingServiceEnabled) {
                 double screenOnTimeInHours = (double) screenOnTime / 3600000;
                 double screenOffTimeInHours = (double) screenOffTime / 3600000;
                 double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
