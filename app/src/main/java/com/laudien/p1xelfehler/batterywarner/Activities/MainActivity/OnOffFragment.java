@@ -16,6 +16,9 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -179,6 +182,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         context = getContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -208,6 +212,21 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.on_off_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_reset) {
+            // TODO: reset screen on/off percentages in sharedPreferences
+            // TODO: show toast message on success
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
@@ -228,10 +247,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         getActivity().unregisterReceiver(onOffChangedReceiver);
         getActivity().unregisterReceiver(batteryChangedReceiver);
-    }
-
-    private void setImageColor(int color) {
-        setImageColor(color, img_battery);
     }
 
     @Override
@@ -265,6 +280,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         } else if (s.equals(getString(R.string.value_drain_screen_off))) {
             screenOffDrain = sharedPreferences.getInt(s, 0);
         }
+    }
+
+    private void setImageColor(int color) {
+        setImageColor(color, img_battery);
     }
 
     private void showPercentPerHour() {
