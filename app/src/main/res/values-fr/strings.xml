@@ -114,4 +114,6 @@
     <string name="screen_off">Screen off</string>
     <string name="screen_on">Screen on</string>
     <string name="nothing_to_delete">There is nothing to delete!</string>
+    <string name="button_on">Main switch: on</string>
+    <string name="button_off">Main switch: off</string>
 </resources>
