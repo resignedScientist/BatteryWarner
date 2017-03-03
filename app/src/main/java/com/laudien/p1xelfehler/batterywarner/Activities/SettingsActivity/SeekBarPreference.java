@@ -8,7 +8,6 @@ import android.preference.Preference;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -21,7 +20,7 @@ import java.util.Locale;
 
 public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
 
-    private static final String TAG = "SeekBarPreference";
+    //private final String TAG = getClass().getSimpleName();
     private static final int DEFAULT_MAX = 100;
     private static final int DEFAULT_MIN = 0;
     private static final int DEFAULT_PROGRESS = 0;
@@ -79,7 +78,6 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         super.onSetInitialValue(restorePersistedValue, defaultValue);
-        Log.d(TAG, "onSetInitialValue()");
         if (restorePersistedValue) { // load saved values
             progress = getPersistedInt(DEFAULT_PROGRESS);
         } else { // load default values
@@ -90,7 +88,6 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        Log.d(TAG, "onBindView()");
         textView = (TextView) view.findViewById(R.id.textView);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,20 +118,17 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
     @Override
     protected boolean persistInt(int value) {
-        Log.d(TAG, "persistInt()");
         progress = value;
         return super.persistInt(value);
     }
 
     private void showDialog() {
-        Log.d(TAG, "showDialog()");
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
         NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
         numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                Log.d(TAG, "onValueChange()");
                 setValue(i1);
             }
         });
