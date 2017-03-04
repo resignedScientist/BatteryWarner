@@ -67,11 +67,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
             }
             if (batteryLevel != lastPercentage) {
-                // stop service if battery is full
-                if (batteryLevel == 100) {
-                    stopSelf();
-                    return;
-                }
                 // log in database
                 int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
                 if (Contract.IS_PRO && graphEnabled && temperature != NO_STATE) {
@@ -79,6 +74,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     long timeNow = Calendar.getInstance().getTimeInMillis();
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                     lastPercentage = batteryLevel;
+                }
+                // stop service if battery is full
+                if (batteryLevel == 100) {
+                    stopSelf();
                 }
             }
         }
