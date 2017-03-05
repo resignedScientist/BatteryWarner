@@ -39,11 +39,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        int position = fragments.indexOf(object);
-        if (position == -1) { // item not in the list
-            return POSITION_NONE;
-        } else {
-            return position;
-        }
+        // refresh all fragments when data set changed
+        return POSITION_NONE;
     }
 }
