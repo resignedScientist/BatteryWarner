@@ -199,42 +199,39 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     }
                 }
             }
-        } else if (preference == pref_stopCharging) {
-            boolean checked = pref_stopCharging.isChecked();
-            if (checked) {
-                new AsyncTask<Void, Void, Boolean>() {
-                    // returns false if not rooted
-                    @Override
-                    protected Boolean doInBackground(Void... voids) {
-                        try {
-                            RootChecker.isChargingEnabled();
-                        } catch (RootChecker.NotRootedException e) {
-                            return false;
-                        } catch (RootChecker.BatteryFileNotFoundException e) {
-                            Context context = getActivity();
-                            if (context != null) {
-                                NotificationBuilder.showNotification(context,
-                                        NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
-                            }
+        } else if (preference == pref_stopCharging && pref_stopCharging.isChecked()) {
+            new AsyncTask<Void, Void, Boolean>() {
+                // returns false if not rooted
+                @Override
+                protected Boolean doInBackground(Void... voids) {
+                    try {
+                        RootChecker.isChargingEnabled();
+                    } catch (RootChecker.NotRootedException e) {
+                        return false;
+                    } catch (RootChecker.BatteryFileNotFoundException e) {
+                        Context context = getActivity();
+                        if (context != null) {
+                            NotificationBuilder.showNotification(context,
+                                    NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
                         }
-                        return true;
                     }
+                    return true;
+                }
 
-                    @Override
-                    protected void onPostExecute(Boolean aBoolean) {
-                        super.onPostExecute(aBoolean);
-                        if (!aBoolean) { // show a toast if not rooted
-                            Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pref_stopCharging.setChecked(false);
-                                }
-                            }, 500);
-                        }
+                @Override
+                protected void onPostExecute(Boolean aBoolean) {
+                    super.onPostExecute(aBoolean);
+                    if (!aBoolean) { // show a toast if not rooted
+                        Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pref_stopCharging.setChecked(false);
+                            }
+                        }, 500);
                     }
-                }.execute();
-            }
+                }
+            }.execute();
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();
             if (checked) { // start service if checked
