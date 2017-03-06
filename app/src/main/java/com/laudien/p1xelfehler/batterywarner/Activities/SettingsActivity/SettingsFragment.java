@@ -40,7 +40,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled,
-            pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme, pref_dischargingService;
+            pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme, pref_dischargingService,
+            pref_usb_disabled;
     private RingtonePreference ringtonePreference;
     private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
 
@@ -62,6 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
         pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
+        pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
 
         Context context = getActivity();
         if (context != null) {
@@ -199,39 +201,42 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     }
                 }
             }
-        } else if (preference == pref_stopCharging && pref_stopCharging.isChecked()) {
-            new AsyncTask<Void, Void, Boolean>() {
-                // returns false if not rooted
-                @Override
-                protected Boolean doInBackground(Void... voids) {
-                    try {
-                        RootChecker.isChargingEnabled();
-                    } catch (RootChecker.NotRootedException e) {
-                        return false;
-                    } catch (RootChecker.BatteryFileNotFoundException e) {
-                        Context context = getActivity();
-                        if (context != null) {
-                            NotificationBuilder.showNotification(context,
-                                    NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
+        } else if (preference == pref_stopCharging || preference == pref_usb_disabled) {
+            final TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
+            if (twoStatePreference.isChecked()) {
+                new AsyncTask<Void, Void, Boolean>() {
+                    // returns false if not rooted
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        try {
+                            RootChecker.isChargingEnabled();
+                        } catch (RootChecker.NotRootedException e) {
+                            return false;
+                        } catch (RootChecker.BatteryFileNotFoundException e) {
+                            Context context = getActivity();
+                            if (context != null) {
+                                NotificationBuilder.showNotification(context,
+                                        NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
+                            }
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        super.onPostExecute(aBoolean);
+                        if (!aBoolean) { // show a toast if not rooted
+                            Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    twoStatePreference.setChecked(false);
+                                }
+                            }, 500);
                         }
                     }
-                    return true;
-                }
-
-                @Override
-                protected void onPostExecute(Boolean aBoolean) {
-                    super.onPostExecute(aBoolean);
-                    if (!aBoolean) { // show a toast if not rooted
-                        Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                pref_stopCharging.setChecked(false);
-                            }
-                        }, 500);
-                    }
-                }
-            }.execute();
+                }.execute();
+            }
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();
             if (checked) { // start service if checked
