@@ -41,9 +41,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int COLOR_RED = 0, COLOR_ORANGE = 1, COLOR_GREEN = 2;
     private static final int NO_STATE = -1;
     private final String TAG = getClass().getSimpleName();
+    private int COLOR_RED, COLOR_ORANGE, COLOR_GREEN;
     private SharedPreferences sharedPreferences;
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
@@ -143,19 +143,17 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
             int nextColor;
             if (batteryLevel <= warningLow) { // battery low
                 nextColor = COLOR_RED;
-                setImageColor(context.getResources().getColor(R.color.colorBatteryLow));
             } else if (batteryLevel < warningHigh) { // battery ok
                 nextColor = COLOR_GREEN;
-                setImageColor(context.getResources().getColor(R.color.colorBatteryOk));
             } else { // battery high
                 nextColor = COLOR_ORANGE;
-                setImageColor(context.getResources().getColor(R.color.colorBatteryHigh));
             }
             if (nextColor != currentColor) {
-                if (dischargingServiceEnabled && nextColor == COLOR_RED) {
+                currentColor = nextColor;
+                setImageColor(nextColor, img_battery);
+                if (!dischargingServiceEnabled && nextColor == COLOR_RED) {
                     NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_LOW);
                 }
-                currentColor = nextColor;
             }
         }
     };
@@ -173,6 +171,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         setHasOptionsMenu(dischargingServiceEnabled);
+        COLOR_GREEN = context.getResources().getColor(R.color.colorBatteryOk);
+        COLOR_RED = context.getResources().getColor(R.color.colorBatteryLow);
+        COLOR_ORANGE = context.getResources().getColor(R.color.colorBatteryHigh);
         View view = inflater.inflate(R.layout.fragment_on_off, container, false);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
 
@@ -277,10 +278,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         } else if (s.equals(getString(R.string.value_drain_screen_off))) {
             screenOffDrain = sharedPreferences.getInt(s, 0);
         }
-    }
-
-    private void setImageColor(int color) {
-        setImageColor(color, img_battery);
     }
 
     private void showPercentPerHour() {

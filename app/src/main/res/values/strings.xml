@@ -44,9 +44,9 @@
     <string name="low_battery_warning">Low battery warning:</string>
     <string name="high_battery_warning">High battery warning:</string>
     <string name="enabled">Enabled</string>
-    <string name="enable_on_ac">Enable on AC charging</string>
-    <string name="enable_on_usb">Enable on USB charging</string>
-    <string name="enable_on_wireless">Enable on wireless charging</string>
+    <string name="enable_on_ac">Warning on AC charging</string>
+    <string name="enable_on_usb">Warning on USB charging</string>
+    <string name="enable_on_wireless">Warning on wireless charging</string>
     <string name="settings_saved">Settings saved!</string>
     <string name="intro_1_title">Welcome to Battery Warner!</string>
     <string name="intro_1_description">It will help your battery to live longer!</string>
