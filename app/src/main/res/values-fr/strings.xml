@@ -116,4 +116,5 @@
     <string name="nothing_to_delete">Il n\'y a rien à supprimer !</string>
     <string name="button_on">Interrupteur principal : ON</string>
     <string name="button_off">Interrupteur principal : OFF</string>
+    <string name="advanced_features">Advanced features</string>
 </resources>

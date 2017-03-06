@@ -21,11 +21,6 @@
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_discharging_service_enabled_default"
-            android:key="@string/pref_discharging_service_enabled"
-            android:summary="@string/discharging_summary"
-            android:title="@string/log_percent_per_hour" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/high_battery_warning">
         <CheckBoxPreference
@@ -43,18 +38,6 @@
             android:key="@string/pref_stop_charging"
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/stop_charging_title" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_ac_enabled_default"
-            android:key="@string/pref_ac_enabled"
-            android:title="@string/enable_on_ac" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_usb_enabled_default"
-            android:key="@string/pref_usb_enabled"
-            android:title="@string/enable_on_usb" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_wireless_enabled_default"
-            android:key="@string/pref_wireless_enabled"
-            android:title="@string/enable_on_wireless" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_stats_key"
@@ -80,6 +63,25 @@
             android:defaultValue="@bool/pref_dark_theme_enabled_default"
             android:key="@string/pref_dark_theme_enabled"
             android:title="@string/enable_dark_theme" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/advanced_features">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_ac_enabled_default"
+            android:key="@string/pref_ac_enabled"
+            android:title="@string/enable_on_ac" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_usb_enabled_default"
+            android:key="@string/pref_usb_enabled"
+            android:title="@string/enable_on_usb" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_wireless_enabled_default"
+            android:key="@string/pref_wireless_enabled"
+            android:title="@string/enable_on_wireless" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_discharging_service_enabled_default"
+            android:key="@string/pref_discharging_service_enabled"
+            android:summary="@string/discharging_summary"
+            android:title="@string/log_percent_per_hour" />
     </PreferenceCategory>
 
 </PreferenceScreen>

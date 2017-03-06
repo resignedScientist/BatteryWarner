@@ -153,4 +153,5 @@
     <string name="nothing_to_delete">There is nothing to delete!</string>
     <string name="button_on">Main switch: on</string>
     <string name="button_off">Main switch: off</string>
+    <string name="advanced_features">Advanced features</string>
 </resources>
