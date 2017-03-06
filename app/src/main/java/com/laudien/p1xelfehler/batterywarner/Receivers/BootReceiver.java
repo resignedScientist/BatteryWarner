@@ -36,10 +36,11 @@ public class BootReceiver extends BroadcastReceiver {
         if (isCharging) { // charging
             ChargingService.startService(context); // start charging service if enabled
         } else { // discharging
-            context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
             boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             if (serviceEnabled) {
                 context.startService(new Intent(context, DischargingService.class));
+            } else {
+                context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
             }
         }
     }
