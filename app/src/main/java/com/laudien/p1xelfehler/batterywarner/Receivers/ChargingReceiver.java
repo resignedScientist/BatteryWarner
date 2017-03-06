@@ -39,7 +39,8 @@ public class ChargingReceiver extends BroadcastReceiver {
         if (batteryStatus == null) {
             return;
         }
-        if (!ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
+        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        if (!ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled) {
             // if not check again in 10s to make sure it is correct
             new Handler().postDelayed(new Runnable() {
                 @Override
