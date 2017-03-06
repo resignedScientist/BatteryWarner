@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
@@ -66,7 +67,12 @@ public class DischargingReceiver extends BroadcastReceiver {
 
             if (ChargingService.isChargingTypeEnabled(lastChargingType, acEnabled, usbEnabled, wirelessEnabled)
                     && autoSaveEnabled) {
-                GraphFragment.saveGraph(context);
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        GraphFragment.saveGraph(context);
+                    }
+                });
             }
         }
     }

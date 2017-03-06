@@ -8,13 +8,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,22 +72,26 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     };
 
-    public static void saveGraph(Context context) {
+    public static boolean saveGraph(Context context) {
+        Log.d("GraphSaver", "Saving graph...");
+        // throw exception if in main thread
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            throw new RuntimeException("Do not save the graph in main thread!");
+        }
         // return if permissions are not granted
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(context.getString(R.string.pref_graph_autosave), false)
                     .apply();
-            return;
+            return false;
         }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
-        // return if not pro or graph disabled in settings or the database has not enough data
-        if (!IS_PRO || !graphEnabled || !GraphDbHelper.getInstance(context).hasEnoughData()) {
-            return;
-        }
-
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
+        // return if not pro or graph disabled in settings or the database has not enough data
+        if (!IS_PRO || !graphEnabled || !dbHelper.hasEnoughData()) {
+            return false;
+        }
         String outputFileDir = String.format(
                 Locale.getDefault(),
                 "%s/%s",
@@ -118,11 +125,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            Toast.makeText(context, R.string.success_saving, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(context, R.string.error_saving, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            return false;
         }
+        Log.d("GraphSaver", "Graph saved!");
+        return true;
     }
 
     @Nullable
@@ -230,7 +238,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
         if (requestCode == REQUEST_SAVE_GRAPH) {
             // restart the saving of the graph
-            saveGraph();
+            new SaveGraphTask().execute();
         } else if (requestCode == REQUEST_OPEN_HISTORY) {
             openHistory();
         }
@@ -375,7 +383,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             return;
         }
         // save graph
-        saveGraph(getContext());
+        new SaveGraphTask().execute();
     }
 
     public void showResetDialog() {
@@ -407,5 +415,23 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             return;
         }
         startActivity(new Intent(getContext(), HistoryActivity.class));
+    }
+
+    private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            return saveGraph(getContext());
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            String message;
+            if (success) {
+                message = getString(R.string.success_saving);
+            } else {
+                message = getString(R.string.error_saving);
+            }
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
