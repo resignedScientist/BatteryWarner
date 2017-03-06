@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -18,11 +19,13 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 import java.util.Calendar;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
@@ -48,8 +51,24 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent batteryStatus) {
-            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+        public void onReceive(final Context context, Intent batteryStatus) {
+            int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
+            boolean isCharging = chargingType != 0;
+            boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+            // disable charging if usb charging is disabled
+            if (usbDisabled && chargingType == BatteryManager.BATTERY_PLUGGED_USB) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootChecker.disableCharging(context);
+                            stopSelf();
+                        } catch (RootChecker.NotRootedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
             if (!isCharging // if not charging
                     || !isEnabled // if not enabled
                     || !isChargingTypeEnabled(batteryStatus)
@@ -96,7 +115,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
-            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
+            boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE) != 0;
             if (isCharging) {
                 context.startService(new Intent(context, ChargingService.class));
             }
@@ -114,7 +133,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     public static boolean isChargingTypeEnabled(Context context, Intent batteryStatus) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
+        int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
         boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
         boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
         boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
@@ -142,7 +161,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     public boolean isChargingTypeEnabled(Intent batteryStatus) {
-        int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
+        int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
         if (chargingType != lastChargingType) {
             lastChargingType = chargingType;
             sharedPreferences.edit().putInt(getString(R.string.pref_last_chargingType), chargingType).apply();
