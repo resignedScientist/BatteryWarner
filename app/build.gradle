@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 101
-        versionName "1.97-beta"
+        versionName "1.97-beta1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
