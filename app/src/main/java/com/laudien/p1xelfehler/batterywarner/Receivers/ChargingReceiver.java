@@ -40,7 +40,30 @@ public class ChargingReceiver extends BroadcastReceiver {
             return;
         }
         boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-        if (!ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled) {
+        if (ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled) {
+            // start service
+            ChargingService.startService(context);
+            // notify if silent/vibrate mode
+            NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
+        } else {
+            // if not check again in 10s to make sure it is correct
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                    if (batteryStatus == null) {
+                        return;
+                    }
+                    boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                    if ((isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) || usbDisabled) {
+                        ChargingService.startService(context);
+                        NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
+                    }
+                }
+            }, 10000);
+        }
+        if (!ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
             // if not check again in 10s to make sure it is correct
             new Handler().postDelayed(new Runnable() {
                 @Override
