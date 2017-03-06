@@ -303,7 +303,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     }
 
     @Override
-    public void onValueAdded(double timeInMinutes, int percentage, int temperature) {
+    public void onValueAdded(double timeInMinutes, int percentage, double temperature) {
         if (series != null) {
             series[TYPE_PERCENTAGE].appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
             series[TYPE_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), true, 1000);

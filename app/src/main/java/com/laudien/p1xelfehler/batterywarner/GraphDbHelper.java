@@ -132,7 +132,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     public void addValue(long time, int percentage, int temperature) {
-        Log.d(TAG, "value added: " + time + " ms, " + percentage + "%, " + temperature + "°C");
+        Log.d(TAG, "value added: " + time + " ms, " + percentage + "%, " + temperature + "/10°C");
         ContentValues contentValues = new ContentValues();
         contentValues.put(TABLE_COLUMN_TIME, time);
         contentValues.put(TABLE_COLUMN_PERCENTAGE, percentage);
@@ -149,7 +149,8 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             long firstTime = cursor.getLong(0);
             double timeInMinutes = (double) (time - firstTime) / 60000;
-            dbChangedListener.onValueAdded(timeInMinutes, percentage, temperature);
+            double tempDouble = (double) temperature / 10;
+            dbChangedListener.onValueAdded(timeInMinutes, percentage, tempDouble);
             dbChanged = false;
         } else {
             dbChanged = true;
@@ -237,7 +238,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     public interface DatabaseChangedListener {
-        void onValueAdded(double timeInMinutes, int percentage, int temperature);
+        void onValueAdded(double timeInMinutes, int percentage, double temperature);
 
         void onDatabaseCleared();
     }
