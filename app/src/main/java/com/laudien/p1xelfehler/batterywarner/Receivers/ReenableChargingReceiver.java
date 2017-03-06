@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
-public class NotificationDismissReceiver extends BroadcastReceiver {
+public class ReenableChargingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         AsyncTask.execute(new Runnable() {

@@ -13,6 +13,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 public class ChargingReceiver extends BroadcastReceiver {
@@ -38,6 +39,14 @@ public class ChargingReceiver extends BroadcastReceiver {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;
+        }
+        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        if (usbDisabled) {
+            try {
+                RootChecker.disableCharging(context);
+            } catch (RootChecker.NotRootedException e) {
+                e.printStackTrace();
+            }
         }
         if (!ChargingService.isChargingTypeEnabled(context, batteryStatus)) {
             // if not check again in 10s to make sure it is correct

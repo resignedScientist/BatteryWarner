@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
@@ -31,7 +32,10 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // add a delay for the dismissing of the notification if stop charging is enabled
         int delay = 0;
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
+        int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
+        boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
             delay = 3000;
             // show the stop charging notification
             NotificationBuilder.showNotification(context, ID_STOP_CHARGING);
@@ -59,7 +63,6 @@ public class DischargingReceiver extends BroadcastReceiver {
 
         // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
         if (Contract.IS_PRO) {
-            int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
             boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
             boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
             boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));

@@ -18,10 +18,13 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
+import com.laudien.p1xelfehler.batterywarner.Receivers.DisableRootFeaturesReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
-import com.laudien.p1xelfehler.batterywarner.Receivers.NotificationDismissReceiver;
+import com.laudien.p1xelfehler.batterywarner.Receivers.ReenableChargingReceiver;
 
 import java.util.Locale;
+
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
 public final class NotificationBuilder {
     public static final int ID_SILENT_MODE = 1337;
@@ -123,7 +126,7 @@ public final class NotificationBuilder {
                             try {
                                 if (!RootChecker.isChargingEnabled()) {
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                                            context, NotificationDismissReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                                            context, ReenableChargingReceiver.class), FLAG_UPDATE_CURRENT);
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
@@ -152,32 +155,27 @@ public final class NotificationBuilder {
                                 context,
                                 type,
                                 new Intent(context, SettingsActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT
+                                FLAG_UPDATE_CURRENT
                         ),
                         null
                 );
                 break;
             case ID_GRANT_ROOT:
-                final String pref_stop_charging = context.getString(R.string.pref_stop_charging);
-                if (sharedPreferences.getBoolean(pref_stop_charging, context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
-                    AsyncTask.execute(new Runnable() { // run in another thread
-                        @Override
-                        public void run() {
-                            sharedPreferences.edit().putBoolean(pref_stop_charging, false).apply();
-                            showNotification(
-                                    context,
-                                    context.getString(R.string.grant_root_again),
-                                    0,
-                                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                                    PendingIntent.getBroadcast(
-                                            context, 0, new Intent(context, GrantRootReceiver.class),
-                                            PendingIntent.FLAG_UPDATE_CURRENT
-                                    ),
-                                    null
-                            );
-                        }
-                    });
-
+                boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+                boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                if (stopCharging || usbDisabled) {
+                    showNotification(
+                            context,
+                            context.getString(R.string.grant_root_again),
+                            0,
+                            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                            PendingIntent.getBroadcast(
+                                    context, 0, new Intent(context, GrantRootReceiver.class),
+                                    FLAG_UPDATE_CURRENT
+                            ),
+                            PendingIntent.getBroadcast(context, 0,
+                                    new Intent(context, DisableRootFeaturesReceiver.class), FLAG_UPDATE_CURRENT)
+                    );
                 }
                 break;
         }
@@ -187,7 +185,7 @@ public final class NotificationBuilder {
         Log.d("NotificationBuilder", contentText);
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(
-                    context, 0, new Intent(context, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                    context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
         }
         long[] vibratePattern = null;
         if (sound != null) {
