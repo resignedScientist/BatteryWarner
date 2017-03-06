@@ -50,22 +50,24 @@ public final class NotificationBuilder {
                 boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
                 boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
                 boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+                boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
                 if (alreadyNotified || !isEnabled || !warningHighEnabled || !isCharging) {
                     return; // return if disabled in settings or not charging or already notified
                 }
                 int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            RootChecker.disableCharging(context);
-                        } catch (RootChecker.NotRootedException e) {
-                            e.printStackTrace();
-                            showNotification(context, ID_NOT_ROOTED);
+                if (stopCharging) {
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                RootChecker.disableCharging(context);
+                            } catch (RootChecker.NotRootedException e) {
+                                e.printStackTrace();
+                                showNotification(context, ID_NOT_ROOTED);
+                            }
                         }
-                    }
-                });
-
+                    });
+                }
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
@@ -164,9 +166,9 @@ public final class NotificationBuilder {
                 );
                 break;
             case ID_GRANT_ROOT:
-                boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+                boolean stopCharging1 = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
                 boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                if (stopCharging || usbDisabled) {
+                if (stopCharging1 || usbDisabled) {
                     showNotification(
                             context,
                             context.getString(R.string.grant_root_again),
