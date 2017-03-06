@@ -28,6 +28,7 @@ import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -65,6 +66,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                             stopSelf();
                         } catch (RootChecker.NotRootedException e) {
                             e.printStackTrace();
+                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
                         }
                     }
                 });

@@ -33,6 +33,7 @@ public final class NotificationBuilder {
     public static final int ID_STOP_CHARGING = 1340;
     public static final int ID_GRANT_ROOT = 1341;
     public static final int ID_STOP_CHARGING_NOT_WORKING = 1342;
+    public static final int ID_NOT_ROOTED = 1343;
 
     private NotificationBuilder() {
     }
@@ -60,6 +61,7 @@ public final class NotificationBuilder {
                             RootChecker.disableCharging(context);
                         } catch (RootChecker.NotRootedException e) {
                             e.printStackTrace();
+                            showNotification(context, ID_NOT_ROOTED);
                         }
                     }
                 });
@@ -138,6 +140,7 @@ public final class NotificationBuilder {
                                 }
                             } catch (RootChecker.NotRootedException e) {
                                 e.printStackTrace();
+                                showNotification(context, ID_NOT_ROOTED);
                             } catch (RootChecker.BatteryFileNotFoundException e) {
                                 showNotification(context, ID_STOP_CHARGING_NOT_WORKING);
                             }
@@ -178,13 +181,27 @@ public final class NotificationBuilder {
                     );
                 }
                 break;
+            case ID_NOT_ROOTED:
+                showNotification(
+                        context,
+                        context.getString(R.string.not_rooted_notification),
+                        type,
+                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                        PendingIntent.getBroadcast(
+                                context, 0, new Intent(context, GrantRootReceiver.class),
+                                FLAG_UPDATE_CURRENT
+                        ),
+                        PendingIntent.getBroadcast(context, 0,
+                                new Intent(context, DisableRootFeaturesReceiver.class), FLAG_UPDATE_CURRENT)
+                );
+                break;
         }
     }
 
-    private static void showNotification(Context context, String contentText, int id, Uri sound, PendingIntent contentIntent, PendingIntent dismissIntent) {
+    private static void showNotification(Context context, String contentText, int id, Uri sound, PendingIntent clickIntent, PendingIntent dismissIntent) {
         Log.d("NotificationBuilder", contentText);
-        if (contentIntent == null) {
-            contentIntent = PendingIntent.getActivity(
+        if (clickIntent == null) {
+            clickIntent = PendingIntent.getActivity(
                     context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
         }
         long[] vibratePattern = null;
@@ -201,7 +218,7 @@ public final class NotificationBuilder {
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(contentText)
                 .setStyle(bigTextStyle)
-                .setContentIntent(contentIntent)
+                .setContentIntent(clickIntent)
                 .setAutoCancel(true)
                 .setDeleteIntent(dismissIntent);
         NotificationManager notificationManager = (NotificationManager)

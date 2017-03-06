@@ -118,4 +118,5 @@
     <string name="button_off">Hauptschalter: aus</string>
     <string name="advanced_features">Erweiterte Einstellungen</string>
     <string name="disable_usb_charging">USB-Laden deaktivieren</string>
+    <string name="not_rooted_notification">Die App hat keinen Root-Zugriff mehr! Clicke hier um wieder Root-Zugriff zu erlauben!</string>
 </resources>
