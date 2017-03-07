@@ -49,7 +49,7 @@ public class ChargingReceiver extends BroadcastReceiver {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    if (!RootChecker.isDeviceRooted()) { // show notification if the device is not rooted anymore!
+                    if (!RootChecker.isDeviceRooted()) { // show notification if the app has no root anymore!
                         NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
                     }
                 }
