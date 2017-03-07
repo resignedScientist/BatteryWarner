@@ -38,45 +38,44 @@ public class ChargingReceiver extends BroadcastReceiver {
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
 
-        // check if the charging notification for the current method is enabled
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) {
-            return;
-        }
-        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-        boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        if (usbDisabled || stopChargingEnabled) { // if any root feature is enabled
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (!RootChecker.isDeviceRooted()) { // show notification if the app has no root anymore!
-                        NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
-                    }
-                }
-            });
-        }
-        if (ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled) {
-            // start service
-            ChargingService.startService(context);
-            // notify if silent/vibrate mode
-            NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
-        } else {
-            // if not check again in 10s to make sure it is correct
+        if (!startService(context)) {
+            // if not enabled check again in 10s to make sure it is correct
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                    if (batteryStatus == null) {
-                        return;
-                    }
-                    boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-                    if ((isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) || usbDisabled) {
-                        ChargingService.startService(context);
-                        NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
-                    }
+                    startService(context);
                 }
             }, 10000);
+        }
+    }
+
+    // checks if enabled, asks for root, starts the service, shows the silent mode notification
+    // returns if charging type is disabled
+    private boolean startService(final Context context) {
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        if (batteryStatus == null) {
+            return false;
+        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+        if ((isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) || usbDisabled) {
+            if (usbDisabled || stopChargingEnabled) { // if any root feature is enabled
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!RootChecker.isDeviceRooted()) { // show notification if the app has no root anymore!
+                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                        }
+                    }
+                });
+            }
+            ChargingService.startService(context);
+            NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
+            return true;
+        } else {
+            return false;
         }
     }
 }
