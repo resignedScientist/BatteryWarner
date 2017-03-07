@@ -15,7 +15,8 @@ public class DisableRootFeaturesReceiver extends BroadcastReceiver {
         Toast.makeText(context, context.getString(R.string.toast_root_denied),
                 Toast.LENGTH_LONG).show();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_stop_charging), false)
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
                 .putBoolean(context.getString(R.string.pref_usb_charging_disabled), false)
                 .apply();
     }
