@@ -123,7 +123,8 @@ public final class NotificationBuilder {
                 }
                 break;
             case ID_STOP_CHARGING:
-                if (sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
+                boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+                if (stopChargingEnabled) {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -148,8 +149,8 @@ public final class NotificationBuilder {
                             }
                         }
                     });
-                    break;
                 }
+                break;
             case ID_STOP_CHARGING_NOT_WORKING:
                 showNotification(
                         context,
