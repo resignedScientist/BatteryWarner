@@ -26,8 +26,11 @@ public class ChargingReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         if (!intent.getAction().equals("android.intent.action.ACTION_POWER_CONNECTED")) return;
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
-            return; // return if intro was not finished
+        boolean firstStart = sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default));
+        boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
+        if (firstStart || !isEnabled) {
+            return; // return if intro was not finished or main switch is turned off
+        }
 
         DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
 
