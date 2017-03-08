@@ -18,10 +18,19 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.FileReader;
 
+/**
+ * This class helps reading to or writing from/to a graph database. You can ether use the database
+ * in the app folder or any other database with the correct format.
+ */
 public class GraphDbHelper extends SQLiteOpenHelper {
 
+    /**
+     * The array index of the battery level graph. You get the array with the getGraphs() method.
+     */
     public static final int TYPE_PERCENTAGE = 0;
+    /** The array index of the battery temperature graph. You get the array with the getGraphs() method. */
     public static final int TYPE_TEMPERATURE = 1;
+    /** The name of the database. */
     public static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
     private static final String TABLE_NAME = "ChargeCurve";
@@ -266,9 +275,15 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         return dbChanged;
     }
 
-    public boolean isValidDatabase(String fileName) {
-        try (FileReader fileReader = new FileReader(fileName)) {
-            if (isTableEmpty(fileName)) {
+    /**
+     * Checks the given file for the SQLite format.
+     *
+     * @param filePath The file path of the file to be checked.
+     * @return Returns true if the database is in SQLite format, false if not.
+     */
+    public boolean isValidDatabase(String filePath) {
+        try (FileReader fileReader = new FileReader(filePath)) {
+            if (isTableEmpty(filePath)) {
                 return false;
             }
             char[] buffer = new char[16];

@@ -20,7 +20,7 @@ public class GrantRootReceiver extends BroadcastReceiver {
 
             @Override
             protected Boolean doInBackground(Void... voids) {
-                return RootChecker.isDeviceRooted();
+                return RootChecker.isRootAvailable();
             }
 
             @Override

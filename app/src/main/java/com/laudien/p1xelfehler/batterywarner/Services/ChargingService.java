@@ -30,6 +30,12 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
+/**
+ * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
+ * and shows a notification if the battery level is above X% as defined in settings.
+ * It stops automatically after the device is fully charged, not charging anymore
+ * or nothing in the settings is enabled that need this service.
+ */
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -104,6 +110,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
     };
 
+    /**
+     * Resets the graph if the graph is enabled and starts the ChargingService if the device is charging.
+     *
+     * @param context An instance of the Context class.
+     */
     public static void startService(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
@@ -124,12 +135,12 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
     }
 
-    public static void stopService(Context context) {
-        context.stopService(new Intent(context, ChargingService.class));
-    }
-
+    /**
+     * Restarts the service with resetting the graph.
+     * @param context An instance of the Context class.
+     */
     public static void restartService(Context context) {
-        stopService(context);
+        context.stopService(new Intent(context, ChargingService.class));
         startService(context);
     }
 

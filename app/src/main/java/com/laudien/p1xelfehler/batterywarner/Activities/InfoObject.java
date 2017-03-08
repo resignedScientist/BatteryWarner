@@ -13,13 +13,24 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.text.DateFormat;
 import java.util.Locale;
 
+/**
+ * This Class saves information about the charging curve. It can show an info dialog to the user.
+ */
 public class InfoObject {
-    private static final String TAG = "InfoObject";
     private double timeInMinutes, maxTemp, minTemp, percentCharged;
-    private long endTime;
+    private long creationTime;
 
-    InfoObject(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
+    /**
+     * Constructor of the InfoObject. All values must be provided.
+     *
+     * @param creationTime   The time the graph was created.
+     * @param timeInMinutes  The time of charging in minutes.
+     * @param maxTemp        The maximal battery temperature while charging.
+     * @param minTemp        The minimal battery temperature while charging.
+     * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
+     */
+    InfoObject(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        updateValues(creationTime, timeInMinutes, maxTemp, minTemp, percentCharged);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -49,19 +60,37 @@ public class InfoObject {
         return formats;
     }
 
+    /**
+     * Returns the time string for zero seconds. Uses the time format set by the user in the settings.
+     * @param context An instance of the Context class.
+     * @return Returns the time string for zero seconds.
+     */
     public static String getZeroTimeString(Context context) {
         String[] formats = getTimeFormats(context);
         return String.format(Locale.getDefault(), formats[2], 0f);
     }
 
-    public void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        this.endTime = endTime;
+    /**
+     * With that method you can update this instance of the InfoObject without creating a new one.
+     *
+     * @param creationTime   The time the graph was created.
+     * @param timeInMinutes  The time of charging in minutes.
+     * @param maxTemp        The maximal battery temperature while charging.
+     * @param minTemp        The minimal battery temperature while charging.
+     * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
+     */
+    public void updateValues(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        this.creationTime = creationTime;
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
         this.percentCharged = percentCharged;
     }
 
+    /**
+     * Shows the info dialog with all the information of the charging curve to the user.
+     * @param context An instance of the Context class.
+     */
     void showDialog(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_graph_info, null);
@@ -73,8 +102,8 @@ public class InfoObject {
                 getTimeString(context))
         );
         String date = context.getString(R.string.unknown);
-        if (endTime > 1000000000) {
-            date = DateFormat.getDateInstance(DateFormat.SHORT).format(endTime);
+        if (creationTime > 1000000000) {
+            date = DateFormat.getDateInstance(DateFormat.SHORT).format(creationTime);
         }
         TextView textView_date = (TextView) view.findViewById(R.id.textView_date);
         textView_date.setText(String.format(
@@ -114,6 +143,11 @@ public class InfoObject {
                 .show();
     }
 
+    /**
+     * Returns the time string with the charging time. The format is defined by the user in the settings.
+     * @param context An instance of the Context class.
+     * @return Returns the time string with the charging time.
+     */
     public String getTimeString(Context context) {
         String[] formats = getTimeFormats(context);
         boolean useSeconds = Boolean.valueOf(formats[3]);
@@ -141,6 +175,10 @@ public class InfoObject {
         }
     }
 
+    /**
+     * Returns the time of charging in minutes.
+     * @return Returns the time of charging in minutes.
+     */
     public double getTimeInMinutes() {
         return timeInMinutes;
     }

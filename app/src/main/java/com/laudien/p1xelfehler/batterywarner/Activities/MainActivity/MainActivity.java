@@ -23,8 +23,10 @@ import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.Setting
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * The main activity that is shown to the user after opening the app (if he/she has finished the intro).
+ */
 public class MainActivity extends BaseActivity {
-    private static final String TAG = "MainActivity";
     private boolean backPressed = false;
     private int clickCounter = 0;
 

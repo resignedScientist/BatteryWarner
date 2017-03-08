@@ -40,7 +40,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     }
 
     @Override
-    protected long getEndDate() {
+    protected long getCreationTime() {
         if (file != null) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             long endDate = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));

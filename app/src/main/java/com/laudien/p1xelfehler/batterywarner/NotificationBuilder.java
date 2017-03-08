@@ -26,21 +26,42 @@ import java.util.Locale;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
+/**
+ * Helper class to show a notification with the given type. All notifications used in the app are listed here.
+ */
 public final class NotificationBuilder {
+    /**
+     * Notification id of the notification that warns if silent/vibrate mode is turned on.
+     */
     public static final int ID_SILENT_MODE = 1337;
+    /** Notification id of the notification that warns that the battery is above X%. */
     public static final int ID_WARNING_HIGH = 1338;
+    /** Notification id of the notification that warns that the battery is below Y%. */
     public static final int ID_WARNING_LOW = 1339;
+    /** Notification id of the notification that the user has to click/dismiss after the device is unplugged.
+     * Only shown if the stop charging feature is enabled. */
     public static final int ID_STOP_CHARGING = 1340;
+    /** Notification id of the notification that asks the user for root again after the app was updated. */
     public static final int ID_GRANT_ROOT = 1341;
+    /** Notification id of the notification that tells the user that the stop charging feature is not working
+     * on this device.
+     */
     public static final int ID_STOP_CHARGING_NOT_WORKING = 1342;
+    /** Notification id of the notification that asks for root again if app has no root rights anymore. */
     public static final int ID_NOT_ROOTED = 1343;
 
     private NotificationBuilder() {
     }
 
-    public static void showNotification(final Context context, final int type) {
+    /**
+     * Shows the notification with the given id.
+     *
+     * @param context        An instance of the Context class.
+     * @param notificationID The id of the notification - usually one of the id constants.
+     */
+    public static void showNotification(final Context context, final int notificationID) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        switch (type) {
+        switch (notificationID) {
             case ID_WARNING_HIGH:
                 Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 if (batteryStatus == null) {
@@ -71,7 +92,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh),
-                        type,
+                        notificationID,
                         getNotificationSound(context),
                         null,
                         null
@@ -98,7 +119,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow),
-                        type,
+                        notificationID,
                         getNotificationSound(context),
                         null,
                         null
@@ -115,7 +136,7 @@ public final class NotificationBuilder {
                     showNotification(
                             context,
                             context.getString(R.string.notifications_are_off),
-                            type,
+                            notificationID,
                             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
                             null,
                             null
@@ -135,7 +156,7 @@ public final class NotificationBuilder {
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
-                                            type,
+                                            notificationID,
                                             null,
                                             pendingIntent,
                                             pendingIntent
@@ -159,7 +180,7 @@ public final class NotificationBuilder {
                         null,
                         PendingIntent.getActivity(
                                 context,
-                                type,
+                                notificationID,
                                 new Intent(context, SettingsActivity.class),
                                 FLAG_UPDATE_CURRENT
                         ),
@@ -188,7 +209,7 @@ public final class NotificationBuilder {
                 showNotification(
                         context,
                         context.getString(R.string.not_rooted_notification),
-                        type,
+                        notificationID,
                         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
                         PendingIntent.getBroadcast(
                                 context, 0, new Intent(context, GrantRootReceiver.class),

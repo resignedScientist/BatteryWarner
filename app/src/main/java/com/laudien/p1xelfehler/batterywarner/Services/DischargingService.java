@@ -25,6 +25,11 @@ import static android.content.Intent.ACTION_SCREEN_ON;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_LOW;
 
+/**
+ * Background service that runs while discharging. It logs the percentage loss and times
+ * for screen on and off and saves it in the default shared preferences.
+ * It stops automatically if the user starts to charge or it is disabled in the settings.
+ */
 public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();

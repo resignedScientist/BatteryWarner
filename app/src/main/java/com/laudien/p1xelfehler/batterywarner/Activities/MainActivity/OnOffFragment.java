@@ -39,10 +39,13 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 
+/**
+ * Fragment that shows some information about the current battery status. Refreshes automatically.
+ * Contains a button for toggling all warnings or logging of the app.
+ */
 public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int NO_STATE = -1;
-    private final String TAG = getClass().getSimpleName();
     private int COLOR_RED, COLOR_ORANGE, COLOR_GREEN;
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -158,6 +161,12 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         }
     };
 
+    /**
+     * Helper method for setting a color filter to an image.
+     *
+     * @param color     The color the filter should have.
+     * @param imageView The ImageView the filter should be set to.
+     */
     public static void setImageColor(int color, ImageView imageView) {
         Drawable drawable = imageView.getDrawable();
         drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);

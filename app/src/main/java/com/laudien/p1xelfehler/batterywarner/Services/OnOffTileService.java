@@ -15,6 +15,10 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
+/**
+ * Handles the QS tile of the app. It works only on Android 7.0 and above and
+ * has the functionality to toggle all warnings and logging of the app.
+ */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OnOffTileService extends TileService {
 

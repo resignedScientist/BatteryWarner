@@ -7,11 +7,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
 
-    public ViewPagerAdapter(Context context, FragmentManager fm) {
+    ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         this.context = context;
     }

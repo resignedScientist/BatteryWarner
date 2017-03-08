@@ -12,6 +12,10 @@ import android.view.Menu;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * Super class for all activities in the app. It applies the theme,
+ * initializes the toolbar and sets its title.
+ */
 public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,6 +26,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets the toolbar title to the proper app name depending on if it is the pro version or not.
+     */
     protected void setToolbarTitle() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (Contract.IS_PRO) {
@@ -32,6 +39,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
+    /**
+     * Method to easily change the title of the toolbar.
+     *
+     * @param title Title to apply to the toolbar.
+     */
     protected void setToolbarTitle(String title) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(title);

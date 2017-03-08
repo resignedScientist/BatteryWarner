@@ -254,7 +254,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     }
 
     @Override
-    protected long getEndDate() {
+    protected long getCreationTime() {
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
     }
