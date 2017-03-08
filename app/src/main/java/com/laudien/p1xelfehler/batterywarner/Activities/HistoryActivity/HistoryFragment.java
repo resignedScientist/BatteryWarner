@@ -27,6 +27,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryPageFragment.EXTRA_FILE_PATH;
+
 public class HistoryFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
     private static final String TAG = "HistoryFragment";
     ImageButton btn_next, btn_prev;
@@ -185,7 +187,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void readGraphs() {
-        // do the job
         path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         int goodFiles = 0;
@@ -208,7 +209,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 }
                 goodFiles++;
                 HistoryPageFragment pageFragment = new HistoryPageFragment();
-                pageFragment.addGraphsFromFile(file);
+                Bundle bundle = new Bundle();
+                bundle.putString(EXTRA_FILE_PATH, file.getPath());
+                pageFragment.setArguments(bundle);
                 adapter.addItem(pageFragment);
             }
             if (goodFiles == 0) {

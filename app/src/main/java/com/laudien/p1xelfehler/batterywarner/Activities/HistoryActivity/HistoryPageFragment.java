@@ -17,14 +17,26 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.io.File;
 import java.util.Calendar;
 
+/**
+ *
+ */
 public class HistoryPageFragment extends BasicGraphFragment {
 
-    private static final String TAG = "HistoryPageFragment";
+    public static String EXTRA_FILE_PATH = "filePath";
     private File file;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            if (bundle.containsKey(EXTRA_FILE_PATH)) {
+                String filePath = bundle.getString(EXTRA_FILE_PATH);
+                if (filePath != null) {
+                    file = new File(filePath);
+                }
+            }
+        }
         View view = super.onCreateView(inflater, container, savedInstanceState);
         textView_title.setVisibility(View.GONE);
         return view;
@@ -35,8 +47,9 @@ public class HistoryPageFragment extends BasicGraphFragment {
         if (file != null) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -50,10 +63,6 @@ public class HistoryPageFragment extends BasicGraphFragment {
             return endDate;
         }
         return Calendar.getInstance().getTimeInMillis();
-    }
-
-    public void addGraphsFromFile(File file) {
-        this.file = file;
     }
 
     public boolean deleteFile() {

@@ -11,9 +11,14 @@ import android.support.v4.content.ContextCompat;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * Activity that shows all the charging curves that were saved.
+ * It is the frame for the HistoryFragment and only loads the fragment if the external storage
+ * permission is given. If not, it asks for the permission and loads the fragment if the
+ * user allows it.
+ */
 public class HistoryActivity extends BaseActivity {
 
-    //private static final String TAG = "HistoryActivity";
     private static final int PERMISSION_REQUEST_CODE = 60;
 
     @Override
@@ -32,10 +37,10 @@ public class HistoryActivity extends BaseActivity {
                     PERMISSION_REQUEST_CODE
             );
         }
-        loadFragments();
+        loadFragment();
     }
 
-    private void loadFragments() {
+    private void loadFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.container_layout, new HistoryFragment()).commit();
     }
 
@@ -49,7 +54,7 @@ public class HistoryActivity extends BaseActivity {
                     return;
                 }
             }
-            loadFragments();
+            loadFragment();
         }
     }
 }

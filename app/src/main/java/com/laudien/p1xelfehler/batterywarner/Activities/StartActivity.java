@@ -8,6 +8,9 @@ import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActiv
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * "Middle man" activity that starts either the IntroActivity or the MainActivity.
+ */
 public class StartActivity extends BaseActivity {
     @Override
     protected void onStart() {
