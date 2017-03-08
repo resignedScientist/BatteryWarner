@@ -35,9 +35,12 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
+/**
+ * A Fragment that shows the default settings and adds some functionality to some settings when
+ * they are changed.
+ */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "SettingsFragment";
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_graphEnabled,
             pref_usb, pref_ac, pref_wireless, pref_stopCharging, switch_darkTheme, pref_dischargingService,

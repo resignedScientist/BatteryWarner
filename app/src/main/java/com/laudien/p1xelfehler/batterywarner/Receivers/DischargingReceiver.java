@@ -20,8 +20,17 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 
+/**
+ * A BroadcastReceiver called by the system when the device stops to charge.
+ * It is also called when the app stops the charging.
+ * It dismisses the battery high notification of the app. If the user has the stop charge or the
+ * disable usb charging feature enabled, it triggers a notification where the user can turn on the
+ * charging again.
+ * Also, it starts the DischargingService or triggers the DischargingAlarm depending
+ * on the user preferences.
+ * If the pro version is used, it saves the graph using the static method in the GraphFragment.
+ */
 public class DischargingReceiver extends BroadcastReceiver {
-    //private static final String TAG = "DischargingReceiver";
 
     @Override
     public void onReceive(final Context context, Intent intent) {

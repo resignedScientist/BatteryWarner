@@ -16,12 +16,22 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
+/**
+ * A BroadcastReceiver called by the AlarmManager of the system.
+ * It sets itself in shorter and shorter time distances depending on the difference to the
+ * low battery warning percentage the user set in the settings.
+ * Triggers the battery low warning notification if the battery has reached the warning percentage.
+ */
 public class DischargingAlarmReceiver extends BroadcastReceiver {
 
-    //private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private int warningLow, batteryLevel;
 
+    /**
+     * Cancels the existing discharging alarm.
+     *
+     * @param context An instance of the Context class.
+     */
     public static void cancelDischargingAlarm(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         long intentTime = sharedPreferences.getLong(context.getString(R.string.pref_intent_time), Contract.NO_STATE);
@@ -60,7 +70,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    public void setDischargingAlarm(Context context) {
+    private void setDischargingAlarm(Context context) {
         boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         if (!dischargingServiceEnabled) {
             long currentTime = Calendar.getInstance().getTimeInMillis();

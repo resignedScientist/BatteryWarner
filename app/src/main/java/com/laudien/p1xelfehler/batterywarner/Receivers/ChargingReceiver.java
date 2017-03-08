@@ -19,8 +19,12 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
+/**
+ * A BroadcastReceiver that is called by the system if the device has been plugged in to charge.
+ * It cancels the battery low notification of the app, cancels the DischargingAlarm and
+ * starts the ChargingService depending on the user preferences.
+ */
 public class ChargingReceiver extends BroadcastReceiver {
-    //private final String TAG = getClass().getSimpleName();
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -52,8 +56,12 @@ public class ChargingReceiver extends BroadcastReceiver {
         }
     }
 
-    // checks if enabled, asks for root, starts the service, shows the silent mode notification
-    // returns if charging type is disabled
+    /**
+     * Checks if enabled, asks for root, starts the service and shows the silent mode notification.
+     *
+     * @param context An instance of the Context class.
+     * @return Returns true if the current charging type is enabled, false if not.
+     */
     private boolean startService(final Context context) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {

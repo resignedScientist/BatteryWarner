@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * A BroadcastReceiver called by the app which disables all the root features.
+ * It shows a toast to notify the user about it.
+ */
 public class DisableRootFeaturesReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

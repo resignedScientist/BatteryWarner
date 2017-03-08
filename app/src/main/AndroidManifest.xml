@@ -57,7 +57,7 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.ReenableChargingReceiver" />
+        <receiver android:name=".Receivers.EnableChargingReceiver" />
         <receiver android:name=".Receivers.DisableRootFeaturesReceiver" />
         <receiver android:name=".Receivers.GrantRootReceiver" />
         <receiver android:name=".Receivers.BothAppsInstalledReceiver">

@@ -19,8 +19,8 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DisableRootFeaturesReceiver;
+import com.laudien.p1xelfehler.batterywarner.Receivers.EnableChargingReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
-import com.laudien.p1xelfehler.batterywarner.Receivers.ReenableChargingReceiver;
 
 import java.util.Locale;
 
@@ -152,7 +152,7 @@ public final class NotificationBuilder {
                             try {
                                 if (!RootChecker.isChargingEnabled()) {
                                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                                            context, ReenableChargingReceiver.class), FLAG_UPDATE_CURRENT);
+                                            context, EnableChargingReceiver.class), FLAG_UPDATE_CURRENT);
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),

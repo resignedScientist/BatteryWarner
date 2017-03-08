@@ -13,6 +13,12 @@ import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 
+/**
+ * A BroadcastReceiver called by the app.
+ * It asks for root permissions again and triggers the correct notifications depending on the
+ * state in the battery file (which enables/disables the charging) and the battery state.
+ * If the user does not grant the root permission, it calls the DisableRootFeaturesReceiver.
+ */
 public class GrantRootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {

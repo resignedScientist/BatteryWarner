@@ -13,9 +13,11 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
+/**
+ * A BroadcastReceiver called by the System if the device finished booting.
+ * It starts some services if necessary. Does only work after the intro was finished.
+ */
 public class BootReceiver extends BroadcastReceiver {
-
-    //private final String TAG = getClass().getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {

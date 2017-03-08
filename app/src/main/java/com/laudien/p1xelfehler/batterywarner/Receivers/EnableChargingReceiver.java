@@ -10,7 +10,12 @@ import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
-public class ReenableChargingReceiver extends BroadcastReceiver {
+/**
+ * A BroadcastReceiver called by the app that enables the charging again.
+ * If the device is not rooted anymore, the notification with the id
+ * ID_NOT_ROOTED will be triggered.
+ */
+public class EnableChargingReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         AsyncTask.execute(new Runnable() {
