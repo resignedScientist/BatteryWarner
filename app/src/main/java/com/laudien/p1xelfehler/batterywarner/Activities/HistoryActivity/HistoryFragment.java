@@ -29,13 +29,19 @@ import java.util.Comparator;
 
 import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryPageFragment.EXTRA_FILE_PATH;
 
+/**
+ * Fragment that shows the history of the charging curves.
+ * It loads each database file in the external storage directory of the app
+ * in a separate HistoryPageFragment after checking if each database file in the directory
+ * is actually a SQLite database. The HistoryPageFragments are organized in a ViewPager using
+ * an instance of the HistoryPagerAdapter.
+ */
 public class HistoryFragment extends Fragment implements View.OnClickListener, ViewPager.OnPageChangeListener {
-    private static final String TAG = "HistoryFragment";
-    ImageButton btn_next, btn_prev;
+
+    private ImageButton btn_next, btn_prev;
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
-    private File path;
 
     @Nullable
     @Override
@@ -52,9 +58,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         btn_next.setOnClickListener(this);
         btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
-
         readGraphs();
-
         return view;
     }
 
@@ -187,7 +191,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void readGraphs() {
-        path = new File(Contract.DATABASE_HISTORY_PATH);
+        File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         int goodFiles = 0;
         int firstGoodFile = 0;

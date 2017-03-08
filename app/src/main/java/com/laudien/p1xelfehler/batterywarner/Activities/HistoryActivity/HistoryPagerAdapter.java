@@ -6,6 +6,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 
+/**
+ * A FragmentStatePagerAdapter that is used by the HistoryFragment to load HistoryPageFragments
+ * into a ViewPager.
+ */
 class HistoryPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<Fragment> fragments;
 
@@ -27,11 +31,20 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         return fragments.size();
     }
 
+    /**
+     * Adds a fragment to the ViewPager.
+     *
+     * @param fragment The fragment that should be added.
+     */
     void addItem(Fragment fragment) {
         fragments.add(fragment);
         notifyDataSetChanged();
     }
 
+    /**
+     * Removes a fragment at the given position in the ViewPager.
+     * @param position The position of the fragment that should be removed.
+     */
     void removeItem(int position) {
         fragments.remove(position);
         notifyDataSetChanged();

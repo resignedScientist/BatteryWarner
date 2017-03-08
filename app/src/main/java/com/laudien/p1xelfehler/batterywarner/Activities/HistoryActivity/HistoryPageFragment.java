@@ -18,10 +18,14 @@ import java.io.File;
 import java.util.Calendar;
 
 /**
- *
+ * Fragment that loads a charging curve from a file path given in the arguments.
+ * Provides some functionality to change or remove the file.
  */
 public class HistoryPageFragment extends BasicGraphFragment {
 
+    /**
+     * The key for the file path in the argument bundle.
+     */
     public static String EXTRA_FILE_PATH = "filePath";
     private File file;
 
@@ -42,6 +46,12 @@ public class HistoryPageFragment extends BasicGraphFragment {
         return view;
     }
 
+    /**
+     * Loads the graphs out of the database from that the file path was given in the arguments.
+     *
+     * @return Returns an array of the graphs in the database or null if there was no file path
+     * given in the arguments.
+     */
     @Override
     protected LineGraphSeries<DataPoint>[] getSeries() {
         if (file != null) {
@@ -52,19 +62,35 @@ public class HistoryPageFragment extends BasicGraphFragment {
         }
     }
 
+    /**
+     * Returns the date the graph was created in milliseconds.
+     * The difference between this method and the method in the super class is that if the time is
+     * older than 1000000000 ms (from 1970), it returns the date the file was last modified.
+     * This has been done because of back compatibility to older versions of the app where not the
+     * real time but the time difference was saved.
+     *
+     * @return Returns the date the graph was created in milliseconds or the current time if no
+     * file path was given in the arguments.
+     */
     @Override
     protected long getCreationTime() {
         if (file != null) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-            long endDate = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
-            if (endDate < 1000000000) {
-                endDate = file.lastModified();
+            long creationTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
+            if (creationTime < 1000000000) {
+                creationTime = file.lastModified();
             }
-            return endDate;
+            return creationTime;
         }
         return Calendar.getInstance().getTimeInMillis();
     }
 
+    /**
+     * Deletes the file that was given by the arguments.
+     * Shows a toast if the deletion failed.
+     *
+     * @return Returns true if the deletion was successful, false if not.
+     */
     public boolean deleteFile() {
         boolean successful = file.delete();
         if (successful) {
@@ -75,10 +101,21 @@ public class HistoryPageFragment extends BasicGraphFragment {
         return successful;
     }
 
+    /**
+     * Returns the file path of the file that was given by the arguments.
+     *
+     * @return Returns the file path of the file that was given by the arguments.
+     */
     public String getFileName() {
         return file.getName();
     }
 
+    /**
+     * Renames the file to the given name.
+     *
+     * @param newName The new name the file should be renamed to.
+     * @return Returns true if the renaming was successful, false if not.
+     */
     public boolean renameFile(String newName) {
         if (this.file.getName().equals(newName)) {
             return false;
