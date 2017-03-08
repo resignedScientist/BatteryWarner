@@ -24,7 +24,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 /**
- * The main activity that is shown to the user after opening the app (if he/she has finished the intro).
+ * The main activity that is shown to the user after opening the app if the intro is already finished.
  */
 public class MainActivity extends BaseActivity {
     private boolean backPressed = false;

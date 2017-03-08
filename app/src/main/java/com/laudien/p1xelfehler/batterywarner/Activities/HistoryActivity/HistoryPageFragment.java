@@ -64,9 +64,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     /**
      * Returns the date the graph was created in milliseconds.
-     * The difference between this method and the method in the super class is that if the time is
-     * older than 1000000000 ms (from 1970), it returns the date the file was last modified.
-     * This has been done because of back compatibility to older versions of the app where not the
+     * If the time is older than 1000000000 ms (from 1970), it returns the date the file was last modified.
+     * This is done because of back compatibility to older versions of the app where not the
      * real time but the time difference was saved.
      *
      * @return Returns the date the graph was created in milliseconds or the current time if no

@@ -7,6 +7,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
+/**
+ * A FragmentPagerAdapter that is used by the MainActivity with the ViewPager.
+ */
 class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private Context context;
@@ -18,16 +21,14 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new OnOffFragment();
-                break;
+                return new OnOffFragment();
             case 1:
-                fragment = new GraphFragment();
-                break;
+                return new GraphFragment();
+            default:
+                return null;
         }
-        return fragment;
     }
 
     @Override

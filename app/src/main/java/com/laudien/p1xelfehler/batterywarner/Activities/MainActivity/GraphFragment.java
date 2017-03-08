@@ -18,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,6 +51,11 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
 
+/**
+ * A Fragment that shows the latest charging curve.
+ * It loads the graphs from the database in the app directory and registers a DatabaseChangedListener
+ * to refresh automatically with the latest data.
+ */
 public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.DatabaseChangedListener {
 
     private static final int REQUEST_SAVE_GRAPH = 10;
@@ -72,6 +76,13 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     };
 
+    /**
+     * Saves the graph in the app directory to the database directory in the external storage.
+     * Can only run outside of the main/ui thread!
+     *
+     * @param context An instance of the Context class.
+     * @return Returns true if the saving process was successful, false if not.
+     */
     public static boolean saveGraph(Context context) {
         Log.d("GraphSaver", "Saving graph...");
         // throw exception if in main thread
@@ -244,6 +255,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
+    /**
+     * Loads the graphs out of the database from the database file in the app directory.
+     *
+     * @return Returns an array of the graphs in the database or null if it is not the pro version
+     * of the app.
+     */
     @Override
     protected LineGraphSeries<DataPoint>[] getSeries() {
         if (IS_PRO) {
@@ -253,24 +270,34 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         return null;
     }
 
+    /**
+     * Returns the date the graph was created in milliseconds.
+     *
+     * @return Returns the date the graph was created in milliseconds.
+     */
     @Override
     protected long getCreationTime() {
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
     }
 
+    /**
+     * Loads the graphs only if it is the pro version of the app. Otherwise it shows the
+     * not-pro text under the GraphView.
+     */
     @Override
     protected void loadSeries() {
         if (IS_PRO) {
             super.loadSeries();
         } else {
-            textView_chargingTime.setText(getString(R.string.not_pro));
-            textView_chargingTime.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-            checkBox_temp.setEnabled(false);
-            checkBox_percentage.setEnabled(false);
+            setBigText(getString(R.string.not_pro), true);
         }
     }
 
+    /**
+     * Sets the text under the GraphView depending on if the device is charging, fully charged or
+     * not charging. It also shows if there is no or not enough data to show any graph.
+     */
     @Override
     protected void setTimeText() {
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -302,6 +329,13 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
+    /**
+     * Comes from the DatabaseChangedListener. It adds the new value to the graphs in the GraphView.
+     *
+     * @param timeInMinutes The time difference between the time of the first point and this point in minutes.
+     * @param percentage    The battery level that was added.
+     * @param temperature   The battery temperature that was added.
+     */
     @Override
     public void onValueAdded(double timeInMinutes, int percentage, double temperature) {
         if (series != null) {
@@ -323,6 +357,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
+    /**
+     * Comes from the DatabaseChangedListener. It removes all graphs from the GraphView if there are
+     * any graphs and sets the text under the GraphView with the setTimeText() method.
+     */
     @Override
     public void onDatabaseCleared() {
         if (series != null) {
@@ -386,6 +424,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         new SaveGraphTask().execute();
     }
 
+    /**
+     * Shows the dialog to reset the graphs, meaning that the table in the
+     * app directory database will be cleared.
+     */
     public void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
@@ -402,6 +444,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 }).create().show();
     }
 
+    /**
+     * Starts the HistoryActivity after asking for the storage permission.
+     */
     public void openHistory() {
         // check for permission
         if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
