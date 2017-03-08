@@ -14,10 +14,20 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
+/**
+ * A custom slide for the app intro that uses a filter on the battery image to make it green.
+ * You can give arguments to change the texts under the image.
+ */
 public class ImageSlide extends SlideFragment {
 
-    final static String BUNDLE_TITLE = "title";
-    final static String BUNDLE_DESCRIPTION = "description";
+    /**
+     * Argument key for the title under the image.
+     */
+    public final static String BUNDLE_TITLE = "title";
+    /**
+     * Argument key for the description under the title.
+     */
+    public final static String BUNDLE_DESCRIPTION = "description";
 
     @Nullable
     @Override

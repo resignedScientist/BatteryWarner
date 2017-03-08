@@ -19,9 +19,11 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
+/**
+ * An Activity that shows the app intro. It shows a different intro for the pro and the free
+ * version of the app.
+ */
 public class IntroActivity extends MaterialIntroActivity {
-
-    private static final String TAG = "IntroActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

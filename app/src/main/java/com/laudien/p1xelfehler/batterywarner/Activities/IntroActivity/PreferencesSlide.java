@@ -10,6 +10,9 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
+/**
+ * A custom slide for the app intro that shows the SettingsFragment.
+ */
 public class PreferencesSlide extends SlideFragment {
 
     @Nullable
