@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
+import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
@@ -17,7 +18,7 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_
  * A BroadcastReceiver called by the app.
  * It asks for root permissions again and triggers the correct notifications depending on the
  * state in the battery file (which enables/disables the charging) and the battery state.
- * If the user does not grant the root permission, it calls the DisableRootFeaturesReceiver.
+ * If the user does not grant the root permission, it calls the DisableRootFeaturesService.
  */
 public class GrantRootReceiver extends BroadcastReceiver {
     @Override
@@ -57,7 +58,7 @@ public class GrantRootReceiver extends BroadcastReceiver {
                         }
                     }
                 } else { // user is stupid and keeps root disabled -> disable all root features
-                    context.sendBroadcast(new Intent(context, DisableRootFeaturesReceiver.class));
+                    context.startService(new Intent(context, DisableRootFeaturesService.class));
                 }
             }
         }.execute();

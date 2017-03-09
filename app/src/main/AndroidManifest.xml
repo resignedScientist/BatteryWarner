@@ -58,7 +58,6 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".Receivers.EnableChargingReceiver" />
-        <receiver android:name=".Receivers.DisableRootFeaturesReceiver" />
         <receiver android:name=".Receivers.GrantRootReceiver" />
         <receiver android:name=".Receivers.BothAppsInstalledReceiver">
             <intent-filter>
@@ -77,6 +76,7 @@
         </service>
         <service android:name=".Services.ChargingService" />
         <service android:name=".Services.DischargingService" />
+        <service android:name=".Services.DisableRootFeaturesService" />
     </application>
 
 </manifest>

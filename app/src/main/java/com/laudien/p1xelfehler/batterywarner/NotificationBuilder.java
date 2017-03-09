@@ -18,9 +18,9 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.Receivers.DisableRootFeaturesReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.EnableChargingReceiver;
 import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
+import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 
 import java.util.Locale;
 
@@ -200,8 +200,8 @@ public final class NotificationBuilder {
                                     context, 0, new Intent(context, GrantRootReceiver.class),
                                     FLAG_UPDATE_CURRENT
                             ),
-                            PendingIntent.getBroadcast(context, 0,
-                                    new Intent(context, DisableRootFeaturesReceiver.class), FLAG_UPDATE_CURRENT)
+                            PendingIntent.getService(context, 0,
+                                    new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT)
                     );
                 }
                 break;
@@ -215,8 +215,8 @@ public final class NotificationBuilder {
                                 context, 0, new Intent(context, GrantRootReceiver.class),
                                 FLAG_UPDATE_CURRENT
                         ),
-                        PendingIntent.getBroadcast(context, 0,
-                                new Intent(context, DisableRootFeaturesReceiver.class), FLAG_UPDATE_CURRENT)
+                        PendingIntent.getService(context, 0,
+                                new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT)
                 );
                 break;
         }
