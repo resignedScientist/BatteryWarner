@@ -1,10 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.Services;
 
 import android.app.IntentService;
-import android.app.Service;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -21,12 +18,6 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_R
 public class EnableChargingService extends IntentService {
     public EnableChargingService(String name) {
         super(name);
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     @Override
