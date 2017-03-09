@@ -4,17 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
@@ -28,7 +25,6 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNI
  * charging again.
  * Also, it starts the DischargingService or triggers the DischargingAlarm depending
  * on the user preferences.
- * If the pro version is used, it saves the graph using the static method in the GraphFragment.
  */
 public class DischargingReceiver extends BroadcastReceiver {
 
@@ -68,24 +64,6 @@ public class DischargingReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, DischargingService.class));
         } else { // else start DischargingReceiver which notifies or sets alarm
             context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
-        }
-
-        // auto save if enabled in settings and last charging type (usb/ac/wireless) is enabled
-        if (Contract.IS_PRO) {
-            boolean acEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
-            boolean usbEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
-            boolean wirelessEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-            boolean autoSaveEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_autosave), context.getResources().getBoolean(R.bool.pref_graph_autosave_default));
-
-            if (ChargingService.isChargingTypeEnabled(lastChargingType, acEnabled, usbEnabled, wirelessEnabled)
-                    && autoSaveEnabled) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        GraphFragment.saveGraph(context);
-                    }
-                });
-            }
         }
     }
 }

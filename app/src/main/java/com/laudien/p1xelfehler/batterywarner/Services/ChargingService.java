@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -35,6 +36,7 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_R
  * and shows a notification if the battery level is above X% as defined in settings.
  * It stops automatically after the device is fully charged, not charging anymore
  * or nothing in the settings is enabled that need this service.
+ * If the pro version is used, it saves the graph using the static method in the GraphFragment.
  */
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -211,7 +213,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Service destroyed!");
         unregisterReceiver(ringerModeChangedReceiver);
         unregisterReceiver(batteryChangedReceiver);
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
@@ -220,6 +221,16 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .putInt(getString(R.string.pref_last_percentage), lastPercentage)
                     .apply();
         }
+        // auto save if pro and last charging type was enabled
+        if (IS_PRO && isChargingTypeEnabled(lastChargingType, acEnabled, usbEnabled, wirelessEnabled)) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    GraphFragment.saveGraph(getApplicationContext());
+                }
+            });
+        }
+        Log.d(TAG, "Service destroyed!");
     }
 
     @Nullable
