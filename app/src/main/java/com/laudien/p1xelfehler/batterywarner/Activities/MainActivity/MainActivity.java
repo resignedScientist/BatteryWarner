@@ -6,12 +6,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +25,10 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.RootChecker;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -45,6 +52,39 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<String> alarms = RootChecker.getAlarms();
+                    String line;
+                    long start = 0, end = 0;
+                    for (int i = 0; i < alarms.size(); i++) {
+                        line = alarms.get(i);
+                        if (line.contains("deskclock") && line.contains("RTC_WAKEUP")) {
+                            String batchLine = alarms.get(i - 1);
+                            System.out.println(batchLine);
+                            String[] subStrings = batchLine.split(" ");
+                            for (String s : subStrings) {
+                                if (s.contains("start")) {
+                                    start = Long.parseLong(s.substring(6));
+                                }
+                                if (s.contains("end")) {
+                                    end = Long.parseLong(s.substring(4).replace("}:", ""));
+                                }
+                            }
+                            if (start == end && start != 0) {
+                                Date date = new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime() + start);
+                                Log.d("MainActivity", "time = " + date.toString());
+                            }
+                        }
+                    }
+                } catch (RootChecker.NotRootedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

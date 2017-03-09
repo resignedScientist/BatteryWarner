@@ -80,6 +80,13 @@ public final class RootChecker {
         }
     }
 
+    public static List<String> getAlarms() throws NotRootedException {
+        if (!isRootAvailable()) {
+            throw new NotRootedException();
+        }
+        return Shell.SU.run("dumpsys alarm");
+    }
+
     /**
      * Exception that is thrown if the app has no root permissions.
      */
