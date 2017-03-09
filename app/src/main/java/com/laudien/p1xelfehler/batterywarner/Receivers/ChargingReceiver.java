@@ -23,6 +23,7 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_R
  * A BroadcastReceiver that is called by the system if the device has been plugged in to charge.
  * It cancels the battery low notification of the app, cancels the DischargingAlarm and
  * starts the ChargingService depending on the user preferences.
+ * Does not work until the intro was finished.
  */
 public class ChargingReceiver extends BroadcastReceiver {
 

@@ -22,6 +22,8 @@ import agency.tango.materialintroscreen.SlideFragmentBuilder;
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
  * version of the app.
+ * After it finished, it starts either the ChargingService, DischargingService or triggers a
+ * DischargingAlarm depending on the user settings and starts the MainActivity.
  */
 public class IntroActivity extends MaterialIntroActivity {
 

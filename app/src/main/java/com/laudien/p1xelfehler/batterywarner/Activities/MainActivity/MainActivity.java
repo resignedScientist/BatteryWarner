@@ -25,6 +25,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
+ * It also checks if both apps are installed and sends a broadcast or disables app functionality
+ * depending on if this is the pro version or not. It tells the user to uninstall the free version.
  */
 public class MainActivity extends BaseActivity {
     private boolean backPressed = false;
@@ -84,7 +86,7 @@ public class MainActivity extends BaseActivity {
         }
         // disable the free application
         if (!Contract.IS_PRO) {
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)).apply();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
         } else {
             sendBroadcast(new Intent(Contract.BROADCAST_BOTH_APPS_INSTALLED));
         }
