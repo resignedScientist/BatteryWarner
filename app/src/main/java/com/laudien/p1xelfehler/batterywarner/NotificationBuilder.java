@@ -18,9 +18,9 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.Receivers.EnableChargingReceiver;
-import com.laudien.p1xelfehler.batterywarner.Receivers.GrantRootReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
+import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
+import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
 
 import java.util.Locale;
 
@@ -151,8 +151,8 @@ public final class NotificationBuilder {
                         public void run() {
                             try {
                                 if (!RootChecker.isChargingEnabled()) {
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(
-                                            context, EnableChargingReceiver.class), FLAG_UPDATE_CURRENT);
+                                    PendingIntent pendingIntent = PendingIntent.getService(context, 0, new Intent(
+                                            context, EnableChargingService.class), FLAG_UPDATE_CURRENT);
                                     showNotification(
                                             context,
                                             context.getString(R.string.dismiss_if_unplugged),
@@ -196,8 +196,8 @@ public final class NotificationBuilder {
                             context.getString(R.string.grant_root_again),
                             0,
                             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                            PendingIntent.getBroadcast(
-                                    context, 0, new Intent(context, GrantRootReceiver.class),
+                            PendingIntent.getService(
+                                    context, 0, new Intent(context, GrantRootService.class),
                                     FLAG_UPDATE_CURRENT
                             ),
                             PendingIntent.getService(context, 0,
@@ -211,8 +211,8 @@ public final class NotificationBuilder {
                         context.getString(R.string.not_rooted_notification),
                         notificationID,
                         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
-                        PendingIntent.getBroadcast(
-                                context, 0, new Intent(context, GrantRootReceiver.class),
+                        PendingIntent.getService(
+                                context, 0, new Intent(context, GrantRootService.class),
                                 FLAG_UPDATE_CURRENT
                         ),
                         PendingIntent.getService(context, 0,

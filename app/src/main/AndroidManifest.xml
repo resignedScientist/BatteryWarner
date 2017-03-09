@@ -57,8 +57,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.EnableChargingReceiver" />
-        <receiver android:name=".Receivers.GrantRootReceiver" />
         <receiver android:name=".Receivers.BothAppsInstalledReceiver">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED" />
@@ -77,6 +75,8 @@
         <service android:name=".Services.ChargingService" />
         <service android:name=".Services.DischargingService" />
         <service android:name=".Services.DisableRootFeaturesService" />
+        <service android:name=".Services.EnableChargingService" />
+        <service android:name=".Services.GrantRootService" />
     </application>
 
 </manifest>
