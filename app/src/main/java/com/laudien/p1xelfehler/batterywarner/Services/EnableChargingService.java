@@ -16,6 +16,9 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_R
  * It stops itself after it finished (like every IntentService does!).
  */
 public class EnableChargingService extends IntentService {
+    public EnableChargingService() {
+        super(null);
+    }
     public EnableChargingService(String name) {
         super(name);
     }

@@ -77,7 +77,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         boolean isCharging = chargingType != 0;
         final boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        if ((isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) || usbDisabled) {
+        if (isCharging && (ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled)) {
             if (usbDisabled && chargingType == BATTERY_PLUGGED_USB) { // usb charging - but disabled in settings
                 // disable charging
                 AsyncTask.execute(new Runnable() {

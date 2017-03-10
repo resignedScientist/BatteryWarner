@@ -20,6 +20,10 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_
  * It stops itself after it finished (like every IntentService does!).
  */
 public class GrantRootService extends IntentService {
+    public GrantRootService() {
+        super(null);
+    }
+
     public GrantRootService(String name) {
         super(name);
     }
