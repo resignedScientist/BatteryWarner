@@ -26,6 +26,7 @@ import java.util.Calendar;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
+import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
@@ -43,7 +44,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private int lastPercentage = NO_STATE, warningHigh, lastChargingType;
-    private boolean graphEnabled, isEnabled, warningHighEnabled, acEnabled, usbEnabled, wirelessEnabled;
+    private boolean graphEnabled, isEnabled, warningHighEnabled, acEnabled, usbEnabled, wirelessEnabled,
+            usbDisabled;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -63,22 +65,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         public void onReceive(final Context context, Intent batteryStatus) {
             int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
             boolean isCharging = chargingType != 0;
-            boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-            // disable charging if usb charging was disabled while the service is running
-            if (usbDisabled && chargingType == BatteryManager.BATTERY_PLUGGED_USB) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            RootChecker.disableCharging(context);
-                            stopSelf();
-                        } catch (RootChecker.NotRootedException e) {
-                            e.printStackTrace();
-                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
-                        }
-                    }
-                });
-            }
             if (!isCharging // if not charging
                     || !isEnabled // if not enabled
                     || !isChargingTypeEnabled(batteryStatus)
@@ -199,6 +185,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         usbEnabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
         wirelessEnabled = sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
         lastChargingType = sharedPreferences.getInt(getString(R.string.pref_last_chargingType), NO_STATE);
+        usbDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
 
         registerReceiver(
                 ringerModeChangedReceiver,
@@ -258,6 +245,23 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             usbEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_usb_enabled_default));
         } else if (preference.equals(getString(R.string.pref_wireless_enabled))) {
             wirelessEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_usb_charging_disabled)) && lastChargingType == BATTERY_PLUGGED_USB) {
+            // disable charging if usb charging was disabled while the service is running
+            usbDisabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+            if (usbDisabled) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootChecker.disableCharging(ChargingService.this);
+                            stopSelf();
+                        } catch (RootChecker.NotRootedException e) {
+                            e.printStackTrace();
+                            NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
+                        }
+                    }
+                });
+            }
         }
     }
 }
