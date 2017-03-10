@@ -35,8 +35,6 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
-
 /**
  * A Fragment that shows the default settings and adds some functionality to some settings when
  * they are changed.
@@ -49,7 +47,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_usb_disabled;
     private RingtonePreference ringtonePreference;
     private SeekBarPreference pref_seekBarLow, pref_seekBarHigh;
-    private boolean deviceIsRooted = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -232,7 +229,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     protected void onPostExecute(Boolean rooted) {
                         super.onPostExecute(rooted);
                         if (!rooted) { // show a toast if not rooted
-                            deviceIsRooted = false;
                             Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -243,23 +239,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         }
                     }
                 }.execute();
-            } else if (deviceIsRooted) { // unchecked (by user only)
-                // make sure charging is enabled (if rooted)
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Context context = getActivity();
-                        if (context != null) {
-                            try {
-                                RootChecker.enableCharging(context);
-                            } catch (RootChecker.NotRootedException e) { // show a notification if not rooted
-                                // it means, that root was disabled while in settings
-                                e.printStackTrace();
-                                NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
-                            }
-                        }
-                    }
-                });
             }
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();
