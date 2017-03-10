@@ -11,12 +11,14 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
+import static android.content.Intent.ACTION_BATTERY_CHANGED;
+import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
+import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
 /**
@@ -64,26 +66,44 @@ public class ChargingReceiver extends BroadcastReceiver {
      * @return Returns true if the current charging type is enabled, false if not.
      */
     private boolean startService(final Context context) {
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return false;
         }
+        final int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
-        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        boolean isCharging = chargingType != 0;
+        final boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
         if ((isCharging && ChargingService.isChargingTypeEnabled(context, batteryStatus)) || usbDisabled) {
-            if (usbDisabled || stopChargingEnabled) { // if any root feature is enabled
+            if (usbDisabled && chargingType == BATTERY_PLUGGED_USB) { // usb charging - but disabled in settings
+                // disable charging
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (!RootChecker.isRootAvailable()) { // show notification if the app has no root anymore!
+                        try {
+                            RootChecker.disableCharging(context);
+                        } catch (RootChecker.NotRootedException e) { // not rooted notification
+                            e.printStackTrace();
+                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                        }
+                    }
+                });
+                return false; // stop the method here, do repeat after 10s (= false)
+            } else if (stopChargingEnabled) { // if stop charging feature is enabled
+                // check/ask for root
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!RootChecker.isRootAvailable()) {
+                            // show notification if root is not available (or the user did not see the asking for it)
                             NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
                         }
                     }
                 });
             }
-            ChargingService.startService(context);
+            ChargingService.startService(context); // start the charging service
+            // show a notification if silent/vibrate mode is enabled
             NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
             return true;
         } else {
