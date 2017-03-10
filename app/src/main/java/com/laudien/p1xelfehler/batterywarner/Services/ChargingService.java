@@ -64,7 +64,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
             boolean isCharging = chargingType != 0;
             boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-            // disable charging if usb charging is disabled
+            // disable charging if usb charging was disabled while the service is running
             if (usbDisabled && chargingType == BatteryManager.BATTERY_PLUGGED_USB) {
                 AsyncTask.execute(new Runnable() {
                     @Override
@@ -139,6 +139,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     /**
      * Restarts the service with resetting the graph.
+     *
      * @param context An instance of the Context class.
      */
     public static void restartService(Context context) {
