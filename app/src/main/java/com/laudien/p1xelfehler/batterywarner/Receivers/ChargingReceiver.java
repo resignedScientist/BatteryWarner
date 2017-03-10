@@ -70,7 +70,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         if (batteryStatus == null) {
             return false;
         }
-        final int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
+        int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, NO_STATE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isCharging = chargingType != 0;
         final boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
