@@ -6,15 +6,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,13 +21,7 @@ import android.widget.Toast;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
-
-import java.util.List;
-
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -54,24 +45,6 @@ public class MainActivity extends BaseActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    List<Long> alarmList = RootChecker.getAlarmList();
-                    if (alarmList != null) {
-                        Log.d("TimeSinceBoot", String.valueOf(SystemClock.elapsedRealtime()));
-                        for (long item : alarmList) {
-                            Log.d("AlarmListItem", String.valueOf(item));
-                        }
-                    }
-                } catch (RootChecker.NotRootedException e) {
-                    e.printStackTrace();
-                    NotificationBuilder.showNotification(MainActivity.this, ID_NOT_ROOTED);
-                }
-            }
-        });
     }
 
     @Override
