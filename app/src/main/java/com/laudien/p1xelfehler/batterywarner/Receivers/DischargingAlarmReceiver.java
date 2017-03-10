@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
@@ -92,11 +93,19 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
                     0
             );
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.setExact(
-                    AlarmManager.RTC,
-                    currentTime + interval,
-                    pendingIntent
-            );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(
+                        AlarmManager.RTC,
+                        currentTime + interval,
+                        pendingIntent
+                );
+            } else {
+                alarmManager.set(
+                        AlarmManager.RTC,
+                        currentTime + interval,
+                        pendingIntent
+                );
+            }
             sharedPreferences.edit().putLong(context.getString(R.string.pref_intent_time), currentTime + interval).apply();
         }
     }
