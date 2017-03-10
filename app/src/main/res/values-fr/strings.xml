@@ -7,9 +7,6 @@
     <string name="low_battery_warning">Alerte de batterie faible :</string>
     <string name="high_battery_warning">Alerte de batterie haute :</string>
     <string name="enabled">activé</string>
-    <string name="enable_on_ac">Activer pour la charge secteur</string>
-    <string name="enable_on_usb">Activer pour la charge USB</string>
-    <string name="enable_on_wireless">Activer pour la charge sans fil</string>
     <string name="settings_saved">Paramètres sauvegardés !</string>
     <string name="intro_1_title">Bienvenue dans Battery Warner !</string>
     <string name="intro_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie !</string>
@@ -119,4 +116,7 @@
     <string name="advanced_features">Advanced features</string>
     <string name="disable_usb_charging">Disable USB charging</string>
     <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
+    <string name="enable_on_ac">Warning on AC charging</string>
+    <string name="enable_on_usb">Warning on USB charging</string>
+    <string name="enable_on_wireless">Warning on wireless charging</string>
 </resources>
