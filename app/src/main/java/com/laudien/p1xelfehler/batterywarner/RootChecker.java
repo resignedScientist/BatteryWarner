@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Looper;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -80,11 +81,38 @@ public final class RootChecker {
         }
     }
 
-    public static List<String> getAlarms() throws NotRootedException {
+    public static List<Long> getAlarmList() throws NotRootedException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        return Shell.SU.run("dumpsys alarm");
+        List<Long> alarmList = new ArrayList<>();
+        List<String> output = Shell.SU.run("dumpsys alarm");
+        String line;
+        long start = 0, end = 0;
+        for (int i = 0; i < output.size(); i++) {
+            line = output.get(i);
+            if (line.contains("deskclock") && line.contains("RTC_WAKEUP")) {
+                String batchLine = output.get(i - 1);
+                System.out.println(batchLine);
+                String[] subStrings = batchLine.split(" ");
+                for (String s : subStrings) {
+                    if (s.contains("start")) {
+                        start = Long.parseLong(s.substring(6));
+                    }
+                    if (s.contains("end")) {
+                        end = Long.parseLong(s.substring(4).replace("}:", ""));
+                    }
+                }
+                if (start == end && start != 0) {
+                    alarmList.add(start);
+                }
+            }
+        }
+        if (alarmList.isEmpty()) {
+            return null;
+        } else {
+            return alarmList;
+        }
     }
 
     /**

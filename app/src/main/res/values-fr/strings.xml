@@ -6,19 +6,19 @@
     <string name="settings">Paramètres</string>
     <string name="low_battery_warning">Alerte de batterie faible :</string>
     <string name="high_battery_warning">Alerte de batterie haute :</string>
-    <string name="enabled">activé</string>
+    <string name="enabled">activée</string>
     <string name="settings_saved">Paramètres sauvegardés !</string>
     <string name="intro_1_title">Bienvenue dans Battery Warner !</string>
     <string name="intro_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie !</string>
     <string name="enabled_info">Activation réussie !</string>
     <string name="disabled_info">Désactivation réussie !</string>
     <string name="btn_notification">Choisir la sonnerie de notification</string>
-    <string name="slide_preferences_title">Commençons !</string>
-    <string name="slide_preferences_discription">Modifiez vos paramètres ici !</string>
+    <string name="slide_preferences_title">C\'est parti !</string>
+    <string name="slide_preferences_discription">Modifiez les paramètres ici !</string>
     <string name="slide_2_title">Comment cela fonctionne ?</string>
-    <string name="slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement la batterie à 100% ou de ne pas la laisser se vider à 0% afin d\'allonger leur durée de vie.</string>
+    <string name="slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement à 100% la batterie ou de ne pas la laisser se vider à 0% afin d\'allonger sa durée de vie.</string>
     <string name="slide_3_title">Pour augmenter cette durée de vie, vous devez donc changer vos comportements habituels !</string>
-    <string name="slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0-100% !</string>
+    <string name="slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0-100%</string>
     <string name="intro_finish_toast">Faisons en sorte que votre batterie dure plus longtemps !</string>
     <string name="main_page">Accueil</string>
     <string name="stats">Statistiques</string>
@@ -26,11 +26,11 @@
     <string name="refresh">Actualiser</string>
     <string name="charging">En charge</string>
     <string name="charging_time">Temps de charge</string>
-    <string name="technology">Téchnologie</string>
-    <string name="temperature">Température</string>
-    <string name="health">État</string>
-    <string name="battery_level">Niveau de batterie</string>
-    <string name="voltage">Voltage</string>
+    <string name="technology">Technologie </string>
+    <string name="temperature">Température </string>
+    <string name="health">État </string>
+    <string name="battery_level">Niveau de batterie </string>
+    <string name="voltage">Voltage </string>
     <string name="health_good">Bon</string>
     <string name="health_unknown">Inconnue</string>
     <string name="health_cold">Froide</string>
@@ -58,7 +58,7 @@
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_cancel">Annuler</string>
     <string name="uninstall_go">Désinstallez-la !</string>
-    <string name="notifications_are_off">Attention ! Les notifications sont désactivées !</string>
+    <string name="notifications_are_off">Attention ! Les sonneries de notifications sont désactivées !</string>
     <string name="notification_sound">Sonnerie de notification</string>
     <string name="theme_activated_toast">Le thème sera activé à la fermeture des paramètres !</string>
     <string name="time_format_title">Format du temps</string>
@@ -67,7 +67,7 @@
     <string name="save_to_history">Enregistrer dans l\'historique</string>
     <string name="nothing_to_save">Il n\'y a rien à enregistrer !</string>
     <string name="error_saving">Echec de l\'enregistrement !</string>
-    <string name="success_saving">Le graphique a été enregistré dans l\'historique!</string>
+    <string name="success_saving">Le graphique a été enregistré dans l\'historique !</string>
     <string name="delete">Effacer</string>
     <string name="success_delete_graph">Graphique supprimé !</string>
     <string name="error_deleting">Échec de la suppression !</string>
@@ -100,23 +100,23 @@
     <string name="stop_charging_subtitle">Ne fonctionne pas avec tous les appareils (root) !</string>
     <string name="toast_not_rooted">Votre appareil doit être rooté !</string>
     <string name="dismiss_if_unplugged">Ignorer cette notification après avoir débranché l\'appareil !</string>
-    <string name="toast_root_denied">L\'accès root a été refusé ! Toutes les fonctions qui l\'utilisaient sont désactivées.</string>
+    <string name="toast_root_denied">L\'accès root a été refusé ! Toutes les fonctions qui l\'utilisaient sont désactivées</string>
     <string name="stop_charging_not_working">L\'arrêt auto de charge ne semble pas fonctionner avec votre appareil ! Vous pouvez désactiver cette fonctionnalité !</string>
-    <string name="current">Actuel</string>
+    <string name="current">Actuel </string>
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
     <string name="discharging_summary">Exécute en permanence un service en arrière-plan !</string>
-    <string name="log_percent_per_hour">Enregistreer consommation de la batterie (en % par h)</string>
-    <string name="screen_off">Screen off</string>
-    <string name="screen_on">Screen on</string>
+    <string name="log_percent_per_hour">Enregistrer conso batterie (en % par h)</string>
+    <string name="screen_off">Screen off </string>
+    <string name="screen_on">Screen on </string>
     <string name="nothing_to_delete">Il n\'y a rien à supprimer !</string>
     <string name="button_on">Interrupteur principal : ON</string>
     <string name="button_off">Interrupteur principal : OFF</string>
-    <string name="advanced_features">Advanced features</string>
-    <string name="disable_usb_charging">Disable USB charging</string>
-    <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
-    <string name="enable_on_ac">Warning on AC charging</string>
-    <string name="enable_on_usb">Warning on USB charging</string>
-    <string name="enable_on_wireless">Warning on wireless charging</string>
+    <string name="advanced_features">Fonctionnalités avancées</string>
+    <string name="disable_usb_charging">Désactiver la charge USB</string>
+    <string name="not_rooted_notification">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
+    <string name="enable_on_ac">Alerte sur charge secteur</string>
+    <string name="enable_on_usb">Alerte sur charge USB</string>
+    <string name="enable_on_wireless">Alerte sur charge sans fil</string>
 </resources>

@@ -24,11 +24,13 @@ import android.widget.Toast;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
-import java.util.Date;
 import java.util.List;
+
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -57,31 +59,16 @@ public class MainActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    List<String> alarms = RootChecker.getAlarms();
-                    String line;
-                    long start = 0, end = 0;
-                    for (int i = 0; i < alarms.size(); i++) {
-                        line = alarms.get(i);
-                        if (line.contains("deskclock") && line.contains("RTC_WAKEUP")) {
-                            String batchLine = alarms.get(i - 1);
-                            System.out.println(batchLine);
-                            String[] subStrings = batchLine.split(" ");
-                            for (String s : subStrings) {
-                                if (s.contains("start")) {
-                                    start = Long.parseLong(s.substring(6));
-                                }
-                                if (s.contains("end")) {
-                                    end = Long.parseLong(s.substring(4).replace("}:", ""));
-                                }
-                            }
-                            if (start == end && start != 0) {
-                                Date date = new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime() + start);
-                                Log.d("MainActivity", "time = " + date.toString());
-                            }
+                    List<Long> alarmList = RootChecker.getAlarmList();
+                    if (alarmList != null) {
+                        Log.d("TimeSinceBoot", String.valueOf(SystemClock.elapsedRealtime()));
+                        for (long item : alarmList) {
+                            Log.d("AlarmListItem", String.valueOf(item));
                         }
                     }
                 } catch (RootChecker.NotRootedException e) {
                     e.printStackTrace();
+                    NotificationBuilder.showNotification(MainActivity.this, ID_NOT_ROOTED);
                 }
             }
         });
