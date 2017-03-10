@@ -41,7 +41,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
         boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
-            delay = 3000;
+            delay = 5000;
             // show the stop charging notification
             NotificationBuilder.showNotification(context, ID_STOP_CHARGING);
         }
