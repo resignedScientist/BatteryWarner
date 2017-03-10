@@ -69,8 +69,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Checks if 2 versions (free + pro) are installed and tells the user to uninstall the free one.
+     */
     private void isAppInstalled() {
-        // checks if 2 versions (free + pro) are installed and tells you that you have to uninstall the free one
         PackageManager packageManager = getPackageManager();
         try {
             packageManager.getPackageInfo(Contract.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);

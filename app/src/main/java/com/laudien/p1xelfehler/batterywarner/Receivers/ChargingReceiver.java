@@ -63,7 +63,9 @@ public class ChargingReceiver extends BroadcastReceiver {
      * Checks if enabled, asks for root, starts the service and shows the silent mode notification.
      *
      * @param context An instance of the Context class.
-     * @return Returns true if the current charging type is enabled, false if not.
+     * @return Returns true if the current charging type is enabled, false if not. False will trigger
+     * a timer to double check in 10 seconds if everything is correct. This is done, because sometimes the
+     * BatteryManager does not know instantly with which charging type the device is charging.
      */
     private boolean startService(final Context context) {
         Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
