@@ -8,10 +8,17 @@
     android:paddingTop="8dp">
 
     <TextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title" />
+
+    <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_below="@android:id/title"
         android:layout_marginStart="8dp"
         android:text="100%" />
 
@@ -19,6 +26,7 @@
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@android:id/title"
         android:layout_toStartOf="@+id/textView" />
 
 </RelativeLayout>
