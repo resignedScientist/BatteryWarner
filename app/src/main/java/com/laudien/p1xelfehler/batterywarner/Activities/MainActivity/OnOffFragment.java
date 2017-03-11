@@ -35,8 +35,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
+import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -46,6 +45,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int NO_STATE = -1;
+    private final String KEY_COLOR = "key_color";
     private int COLOR_RED, COLOR_ORANGE, COLOR_GREEN;
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -58,7 +58,6 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private BatteryManager batteryManager;
     private long screenOnTime, screenOffTime;
     private int screenOnDrain, screenOffDrain;
-
     private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -92,12 +91,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                             getString(R.string.screen_on), screenOnPercentPerHour));
                     textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
                             getString(R.string.screen_off), screenOffPercentPerHour));
-                    showPercentPerHour();
                 } else {
                     showNoData();
                 }
-            } else {
-                hidePercentPerHour();
             }
 
             if (batteryManager != null) {
@@ -203,7 +199,20 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
         } else {
-            textView_current.setVisibility(View.GONE);
+            textView_current.setVisibility(GONE);
+        }
+
+        if (!dischargingServiceEnabled) {
+            textView_screenOn.setVisibility(GONE);
+            textView_screenOff.setVisibility(GONE);
+        }
+
+        // load last color (so that the battery is not white!)
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_COLOR)) {
+                currentColor = savedInstanceState.getInt(KEY_COLOR);
+                setImageColor(currentColor, img_battery);
+            }
         }
 
         return view;
@@ -289,14 +298,10 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         }
     }
 
-    private void showPercentPerHour() {
-        textView_screenOn.setVisibility(VISIBLE);
-        textView_screenOff.setVisibility(VISIBLE);
-    }
-
-    private void hidePercentPerHour() {
-        textView_screenOn.setVisibility(INVISIBLE);
-        textView_screenOff.setVisibility(INVISIBLE);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_COLOR, currentColor);
     }
 
     private void showNoData() {
