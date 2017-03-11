@@ -157,4 +157,5 @@
     <string name="advanced_features">Advanced features</string>
     <string name="disable_usb_charging">Disable USB charging</string>
     <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
+    <string name="toast_reset_data_success">The Data has been reset!</string>
 </resources>

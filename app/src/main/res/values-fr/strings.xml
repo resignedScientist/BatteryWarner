@@ -119,4 +119,5 @@
     <string name="enable_on_ac">Alerte sur charge secteur</string>
     <string name="enable_on_usb">Alerte sur charge USB</string>
     <string name="enable_on_wireless">Alerte sur charge sans fil</string>
+    <string name="toast_reset_data_success">The Data has been reset!</string>
 </resources>

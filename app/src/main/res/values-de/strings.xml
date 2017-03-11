@@ -119,4 +119,5 @@
     <string name="advanced_features">Erweiterte Einstellungen</string>
     <string name="disable_usb_charging">USB-Laden deaktivieren</string>
     <string name="not_rooted_notification">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
+    <string name="toast_reset_data_success">Die Daten wurden zurückgesetzt!</string>
 </resources>

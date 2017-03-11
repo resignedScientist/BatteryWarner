@@ -235,7 +235,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                     .putLong(getString(R.string.value_time_screen_off), 0)
                     .apply();
             showNoData();
-            // TODO: show toast message on success
+            Toast.makeText(getContext(), getString(R.string.toast_reset_data_success), Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
