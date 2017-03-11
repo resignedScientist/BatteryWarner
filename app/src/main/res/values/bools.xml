@@ -17,4 +17,5 @@
     <bool name="pref_already_notified_default">false</bool>
     <bool name="pref_discharging_service_enabled_default">false</bool>
     <bool name="pref_usb_charging_disabled_default">false</bool>
+    <bool name="pref_smart_charging_enabled_default">false</bool>
 </resources>

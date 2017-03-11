@@ -21,6 +21,12 @@
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
     <!-- Main Switch -->
     <string name="pref_is_enabled" translatable="false">isEnabled</string>
+    <!-- Smart Charging -->
+    <string name="pref_smart_charging_enabled">smartChargingEnabled</string>
+    <string name="pref_smart_charging_limit">smartChargingPercentMax</string>
+    <string name="pref_smart_charging_time">smartChargingTime</string>
+    <string name="pref_smart_charging_time_before">smartChargingTimeBefore</string>
+
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_last_percentage" translatable="false">lastPercentage</string>
