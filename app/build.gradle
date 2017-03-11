@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 105
         versionName "1.98-pro"
