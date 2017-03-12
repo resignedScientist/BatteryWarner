@@ -88,5 +88,6 @@
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/disable_usb_charging" />
     </PreferenceCategory>
+    <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.TimePickerPreference android:title="TimePickerPreference" />
 
 </PreferenceScreen>
