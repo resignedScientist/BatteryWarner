@@ -144,12 +144,16 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                             textView_fileName.setText(newFragment.getFileName());
                         }
                         if (adapter.getCount() < 2) {
-                            btn_next.setEnabled(false);
-                            btn_prev.setEnabled(false);
+                            disableButtons();
                         }
                     }
                 }).setNegativeButton(getString(R.string.cancel), null)
                 .create().show();
+    }
+
+    private void disableButtons() {
+        btn_next.setEnabled(false);
+        btn_prev.setEnabled(false);
     }
 
     private void showRenameDialog() {
@@ -227,8 +231,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             textView_nothingSaved.setVisibility(View.VISIBLE);
         }
         if (adapter.getCount() < 2) {
-            btn_next.setEnabled(false);
-            btn_prev.setEnabled(false);
+            disableButtons();
         }
     }
 }
