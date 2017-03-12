@@ -43,7 +43,21 @@ public class HistoryPageFragment extends BasicGraphFragment {
         }
         View view = super.onCreateView(inflater, container, savedInstanceState);
         textView_title.setVisibility(View.GONE);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(EXTRA_FILE_PATH)) {
+                String filePath = savedInstanceState.getString(EXTRA_FILE_PATH);
+                if (filePath != null && !filePath.equals("")) {
+                    file = new File(filePath);
+                }
+            }
+        }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_FILE_PATH, file.getPath());
     }
 
     /**
@@ -106,7 +120,11 @@ public class HistoryPageFragment extends BasicGraphFragment {
      * @return Returns the file path of the file that was given by the arguments.
      */
     public String getFileName() {
-        return file.getName();
+        if (file != null) {
+            return file.getName();
+        } else {
+            return null;
+        }
     }
 
     /**
