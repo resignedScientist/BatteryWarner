@@ -130,13 +130,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     private void showDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
-        NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                setValue(i1);
-            }
-        });
+        final NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
         numberPicker.setMinValue(min);
         numberPicker.setMaxValue(max);
         numberPicker.setValue(getValue());
@@ -147,7 +141,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        setValue(numberPicker.getValue());
                     }
                 }).create().show();
     }

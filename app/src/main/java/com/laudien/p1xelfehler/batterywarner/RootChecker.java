@@ -1,8 +1,12 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.preference.TwoStatePreference;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +116,40 @@ public final class RootChecker {
             return null;
         } else {
             return alarmList;
+        }
+    }
+
+    public static void handleRootDependingPreference(final Context context, final TwoStatePreference twoStatePreference) {
+        if (context != null && twoStatePreference.isChecked()) {
+            new AsyncTask<Void, Void, Boolean>() {
+                // returns false if not rooted
+                @Override
+                protected Boolean doInBackground(Void... voids) {
+                    try {
+                        RootChecker.isChargingEnabled();
+                    } catch (RootChecker.NotRootedException e) {
+                        return false;
+                    } catch (RootChecker.BatteryFileNotFoundException e) {
+                        NotificationBuilder.showNotification(context,
+                                NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
+                    }
+                    return true;
+                }
+
+                @Override
+                protected void onPostExecute(Boolean rooted) {
+                    super.onPostExecute(rooted);
+                    if (!rooted) { // show a toast if not rooted
+                        Toast.makeText(context, context.getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                twoStatePreference.setChecked(false);
+                            }
+                        }, 500);
+                    }
+                }
+            }.execute();
         }
     }
 

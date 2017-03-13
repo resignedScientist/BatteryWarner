@@ -30,20 +30,28 @@
         <activity
             android:name=".Activities.SettingsActivity.SettingsActivity"
             android:parentActivityName=".Activities.MainActivity.MainActivity" />
+        <activity
+            android:name=".Activities.SmartChargingActivity.SmartChargingActivity"
+            android:parentActivityName=".Activities.SettingsActivity.SettingsActivity">
+            <intent-filter>
+                <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.BootReceiver">
+        <receiver android:name=".Receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.ChargingReceiver">
+        <receiver android:name=".Receivers.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.DischargingReceiver">
+        <receiver android:name=".Receivers.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
@@ -53,7 +61,7 @@
                 <action android:name="com.laudien.p1xelfehler.batterywarner.DISCHARGING_ALARM" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.laudien.p1xelfehler.batterywarner.Receivers.AppUpdateReceiver">
+        <receiver android:name=".Receivers.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>

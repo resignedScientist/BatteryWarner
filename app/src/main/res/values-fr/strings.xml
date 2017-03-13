@@ -120,4 +120,8 @@
     <string name="enable_on_usb">Alerte sur charge USB</string>
     <string name="enable_on_wireless">Alerte sur charge sans fil</string>
     <string name="toast_reset_data_success">The Data has been reset!</string>
+    <string name="information">Information</string>
+    <string name="disabled">Disabled</string>
+    <string name="smart_charging_enabled">Smart Charging enabled</string>
+    <string name="smart_charging">Smart Charging [Root]</string>
 </resources>

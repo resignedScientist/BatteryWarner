@@ -120,4 +120,8 @@
     <string name="disable_usb_charging">USB-Laden deaktivieren</string>
     <string name="not_rooted_notification">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
     <string name="toast_reset_data_success">Die Daten wurden zurückgesetzt!</string>
+    <string name="information">Information</string>
+    <string name="disabled">Deaktiviert</string>
+    <string name="smart_charging_enabled">Smart Charging aktiviert</string>
+    <string name="smart_charging">Smart Charging [Root]</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
+package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
 
 import android.content.Context;
 import android.os.Build;

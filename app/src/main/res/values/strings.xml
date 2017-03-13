@@ -22,10 +22,10 @@
     <!-- Main Switch -->
     <string name="pref_is_enabled" translatable="false">isEnabled</string>
     <!-- Smart Charging -->
-    <string name="pref_smart_charging_enabled">smartChargingEnabled</string>
-    <string name="pref_smart_charging_limit">smartChargingPercentMax</string>
-    <string name="pref_smart_charging_time">smartChargingTime</string>
-    <string name="pref_smart_charging_time_before">smartChargingTimeBefore</string>
+    <string name="pref_smart_charging_enabled" translatable="false">smartChargingEnabled</string>
+    <string name="pref_smart_charging_limit" translatable="false">smartChargingPercentMax</string>
+    <string name="pref_smart_charging_time" translatable="false">smartChargingTime</string>
+    <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
 
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -164,4 +164,8 @@
     <string name="disable_usb_charging">Disable USB charging</string>
     <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
     <string name="toast_reset_data_success">The Data has been reset!</string>
+    <string name="information">Information</string>
+    <string name="disabled">Disabled</string>
+    <string name="smart_charging">Smart Charging [Root]</string>
+    <string name="smart_charging_enabled">Smart Charging enabled</string>
 </resources>

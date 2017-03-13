@@ -10,11 +10,9 @@ import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -26,7 +24,6 @@ import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
@@ -70,10 +67,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         Context context = getActivity();
         if (context != null) {
+            // set summary of ringtone preference
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             String sound = sharedPreferences.getString(getString(R.string.pref_sound_uri), "");
             Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
             ringtonePreference.setSummary(ringtone.getTitle(context));
+            // set summary of smart charging preference
+            Preference pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
+            boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+            pref_smart_charging.setSummary(smartChargingEnabled ? R.string.enabled : R.string.disabled);
         }
 
         if (!Contract.IS_PRO) {
@@ -205,41 +207,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled) {
-            final TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
-            if (twoStatePreference.isChecked()) {
-                new AsyncTask<Void, Void, Boolean>() {
-                    // returns false if not rooted
-                    @Override
-                    protected Boolean doInBackground(Void... voids) {
-                        try {
-                            RootChecker.isChargingEnabled();
-                        } catch (RootChecker.NotRootedException e) {
-                            return false;
-                        } catch (RootChecker.BatteryFileNotFoundException e) {
-                            Context context = getActivity();
-                            if (context != null) {
-                                NotificationBuilder.showNotification(context,
-                                        NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
-                            }
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Boolean rooted) {
-                        super.onPostExecute(rooted);
-                        if (!rooted) { // show a toast if not rooted
-                            Toast.makeText(getActivity(), getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    twoStatePreference.setChecked(false);
-                                }
-                            }, 500);
-                        }
-                    }
-                }.execute();
-            }
+            RootChecker.handleRootDependingPreference(getActivity(), (TwoStatePreference) preference);
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();
             if (checked) { // start service if checked
