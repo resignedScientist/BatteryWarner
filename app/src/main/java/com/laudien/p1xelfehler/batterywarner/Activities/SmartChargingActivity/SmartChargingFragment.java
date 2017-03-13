@@ -39,11 +39,15 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (getActivity() != null) {
-            if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
-                RootChecker.handleRootDependingPreference(getActivity(), (TwoStatePreference) findPreference(key));
-            }
+        if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
+            RootChecker.handleRootDependingPreference(getActivity(), (TwoStatePreference) findPreference(key));
         }
     }
 
