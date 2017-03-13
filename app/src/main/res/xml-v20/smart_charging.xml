@@ -23,6 +23,7 @@
         app:unit="%" />
     <com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.TimePickerPreference
         android:dependency="@string/pref_smart_charging_enabled"
+        android:key="@string/pref_smart_charging_time"
         android:title="Zeit" />
 
 </PreferenceScreen>
