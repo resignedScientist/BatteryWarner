@@ -21,5 +21,8 @@
         app:slider_max="@integer/pref_smart_charging_limit_max"
         app:slider_min="@integer/pref_smart_charging_limit_min"
         app:unit="%" />
+    <com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.TimePickerPreference
+        android:dependency="@string/pref_smart_charging_enabled"
+        android:title="Zeit" />
 
 </PreferenceScreen>
