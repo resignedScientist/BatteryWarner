@@ -87,8 +87,10 @@
             android:key="@string/pref_usb_charging_disabled"
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/disable_usb_charging" />
-        <Preference android:title="Smart Charging">
-            <intent android:action="your.action.string" />
+        <Preference
+            android:key="@string/pref_smart_charging_enabled"
+            android:title="@string/smart_charging">
+            <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
         </Preference>
     </PreferenceCategory>
 

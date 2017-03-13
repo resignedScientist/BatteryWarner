@@ -222,7 +222,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         usbDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
         timeBefore = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
-        timeString = sharedPreferences.getString(getString(R.string.pref_smart_charging_time), null);
+        timeString = "";//sharedPreferences.getString(getString(R.string.pref_smart_charging_time), "");
         smartChargingPercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
         calcSmartChargingTimes();
 

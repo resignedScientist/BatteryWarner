@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
     <TextView
         android:id="@+id/textView_explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt." />
-
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingPreferenceFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:text="Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt."
+        android:textSize="15sp" />
+</ScrollView>
