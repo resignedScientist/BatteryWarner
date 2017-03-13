@@ -31,6 +31,8 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -43,9 +45,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
-    private int lastPercentage = NO_STATE, warningHigh, lastChargingType;
+    private int lastPercentage = NO_STATE, warningHigh, lastChargingType, smartChargingPercentage;
     private boolean graphEnabled, isEnabled, warningHighEnabled, acEnabled, usbEnabled, wirelessEnabled,
-            usbDisabled;
+            usbDisabled, smartChargingEnabled, chargingPaused = false;
+    private long timeResumeCharging, timeBefore;
+    private String timeString = null;
 
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -65,7 +69,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         public void onReceive(final Context context, Intent batteryStatus) {
             int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE);
             boolean isCharging = chargingType != 0;
-            if (!isCharging // if not charging
+            if ((!isCharging && !(smartChargingEnabled && chargingPaused)) // if not charging and not smartCharging AND chargingPaused
                     || !isEnabled // if not enabled
                     || !isChargingTypeEnabled(batteryStatus)
                     || (!graphEnabled && !warningHighEnabled)) // if not charging AND warningHigh is disabled
@@ -73,26 +77,56 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 stopSelf();
                 return;
             }
-            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
-            if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
-                NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
-                if (!IS_PRO) {
-                    stopSelf();
-                    return;
+            long timeNow = Calendar.getInstance().getTimeInMillis();
+            if (!chargingPaused) { // log only if charging is not paused
+                int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
+                if (warningHighEnabled && batteryLevel >= warningHigh) { // warning high
+                    NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_HIGH);
+                    if (smartChargingEnabled) { // if smart charging is enabled --> pause charging
+                        chargingPaused = true;
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    RootChecker.enableCharging(context);
+                                } catch (RootChecker.NotRootedException e) {
+                                    e.printStackTrace();
+                                    NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                                }
+                            }
+                        });
+                    } else if (!IS_PRO) {
+                        stopSelf();
+                        return;
+                    }
                 }
-            }
-            if (batteryLevel != lastPercentage) {
-                // log in database
-                int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
-                if (Contract.IS_PRO && graphEnabled && temperature != NO_STATE) {
-                    GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
-                    long timeNow = Calendar.getInstance().getTimeInMillis();
-                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-                    lastPercentage = batteryLevel;
+                if (batteryLevel != lastPercentage) {
+                    // log in database
+                    int temperature = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE);
+                    if (Contract.IS_PRO && graphEnabled && temperature != NO_STATE) {
+                        GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(context);
+                        graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                        lastPercentage = batteryLevel;
+                    }
+                    // stop service if battery is full or reached smartChargingPercentage if enabled
+                    if ((!smartChargingEnabled && batteryLevel == 100) || smartChargingEnabled && batteryLevel >= smartChargingPercentage) {
+                        stopSelf();
+                    }
                 }
-                // stop service if battery is full
-                if (batteryLevel == 100) {
-                    stopSelf();
+            } else { // charging is paused
+                if (timeNow >= timeResumeCharging) { // if time resume is reached => resume charging
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                RootChecker.enableCharging(context);
+                            } catch (RootChecker.NotRootedException e) {
+                                e.printStackTrace();
+                                NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                            }
+                        }
+                    });
+                    chargingPaused = false;
                 }
             }
         }
@@ -186,6 +220,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         wirelessEnabled = sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
         lastChargingType = sharedPreferences.getInt(getString(R.string.pref_last_chargingType), NO_STATE);
         usbDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        timeBefore = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
+        timeString = sharedPreferences.getString(getString(R.string.pref_smart_charging_time), null);
+        smartChargingPercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
+        calcSmartChargingTimes();
 
         registerReceiver(
                 ringerModeChangedReceiver,
@@ -262,6 +301,27 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     }
                 });
             }
+        } else if (preference.equals(getString(R.string.pref_smart_charging_enabled))) {
+            smartChargingEnabled = sharedPreferences.getBoolean(preference, getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        } else if (preference.equals(getString(R.string.pref_smart_charging_time))) {
+            timeString = sharedPreferences.getString(preference, null);
+            calcSmartChargingTimes();
+        } else if (preference.equals(getString(R.string.pref_smart_charging_time_before))) {
+            timeBefore = sharedPreferences.getLong(preference, getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
+            calcSmartChargingTimes();
+        } else if (preference.equals(getString(R.string.pref_smart_charging_limit))) {
+            smartChargingPercentage = sharedPreferences.getInt(preference, getResources().getInteger(R.integer.pref_smart_charging_limit_default));
+        }
+    }
+
+    private void calcSmartChargingTimes() {
+        if (timeString != null && timeBefore > 0 && !timeString.equals("")) {
+            String[] time = timeString.split(":");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(HOUR_OF_DAY, Integer.parseInt(time[0]));
+            calendar.set(MINUTE, Integer.parseInt(time[1]));
+            long endTime = calendar.getTimeInMillis();
+            timeResumeCharging = endTime - timeBefore;
         }
     }
 }
