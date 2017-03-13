@@ -24,7 +24,7 @@ public class TimePickerPreference extends DialogPreference {
 
     private final String TAG = getClass().getSimpleName();
     private TimePicker timePicker = null;
-    private Date date;
+    private Date date = new Date(Calendar.getInstance().getTimeInMillis());
     private DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

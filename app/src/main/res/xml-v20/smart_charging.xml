@@ -8,7 +8,7 @@
     <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
         android:defaultValue="@integer/pref_smart_charging_time_before_default"
         android:dependency="@string/pref_smart_charging_enabled"
-        android:key="@string/pref_smart_charging_time"
+        android:key="@string/pref_smart_charging_time_before"
         android:title="Minuten vorher:"
         app:slider_max="@integer/pref_smart_charging_time_before_max"
         app:slider_min="@integer/pref_smart_charging_time_before_min"
