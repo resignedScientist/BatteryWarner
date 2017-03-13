@@ -1,12 +1,17 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.preference.DialogPreference;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class TimePickerPreference extends DialogPreference {
 
@@ -32,17 +37,25 @@ public class TimePickerPreference extends DialogPreference {
     }
 
     @Override
+    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
+        super.onSetInitialValue(restorePersistedValue, defaultValue);
+        Calendar calendar = Calendar.getInstance();
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+        String defaultString = String.format(Locale.getDefault(), "%d:%d", hour, minute);
+        String persistedString = getPersistedString(defaultString);
+        if (!defaultString.equals(persistedString)){
+            String[] time = persistedString.split(":");
+            hour = Integer.parseInt(time[0]);
+            minute = Integer.parseInt(time[1]);
+        }
+        setSubTitle();
+    }
+
+    @Override
     protected View onCreateDialogView() {
         timePicker = new TimePicker(getContext());
-        if (hour != 0) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                timePicker.setHour(hour);
-                timePicker.setMinute(minute);
-            } else {
-                timePicker.setCurrentHour(hour);
-                timePicker.setCurrentMinute(minute);
-            }
-        }
+        loadTime();
         return timePicker;
     }
 
@@ -56,5 +69,24 @@ public class TimePickerPreference extends DialogPreference {
             hour = timePicker.getCurrentHour();
             minute = timePicker.getCurrentMinute();
         }
+        setSubTitle();
+    }
+
+    /**
+     * Loads the hour and minute into the TimePicker.
+     */
+    private void loadTime (){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            timePicker.setHour(hour);
+            timePicker.setMinute(minute);
+        } else {
+            timePicker.setCurrentHour(hour);
+            timePicker.setCurrentMinute(minute);
+        }
+    }
+
+    private void setSubTitle(){
+        String timeString = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
+        setSummary(timeString);
     }
 }
