@@ -27,7 +27,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.smart_charging);
         setHasOptionsMenu(true);
-        alarmTimeSwitch = (SwitchPreference) findPreference(getString(R.string.pref_smart_charging_enabled));
+        alarmTimeSwitch = (SwitchPreference) findPreference(getString(R.string.pref_smart_charging_use_alarm_clock_time));
         timePickerPreference = (TimePickerPreference) findPreference(getString(R.string.pref_smart_charging_time));
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }

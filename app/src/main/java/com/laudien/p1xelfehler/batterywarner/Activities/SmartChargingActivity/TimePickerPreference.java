@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
+import com.laudien.p1xelfehler.batterywarner.R;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -51,7 +53,10 @@ public class TimePickerPreference extends DialogPreference {
     protected void onAttachedToActivity() {
         super.onAttachedToActivity();
         String timeString = getPersistedString(getDefaultTimeString());
-        persistString(timeString);
+        boolean useAlarmClockTime = getSharedPreferences().getBoolean(getContext().getString(R.string.pref_smart_charging_use_alarm_clock_time), getContext().getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        if (!useAlarmClockTime) {
+            persistString(timeString);
+        }
         date = getDate(timeString);
         setSummary(timeString);
     }
