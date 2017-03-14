@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.os.Build;
 import android.preference.DialogPreference;
@@ -15,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.content.Context.ALARM_SERVICE;
 import static java.text.DateFormat.SHORT;
 import static java.util.Calendar.HOUR_OF_DAY;
 import static java.util.Calendar.MINUTE;
@@ -46,18 +48,11 @@ public class TimePickerPreference extends DialogPreference {
     }
 
     @Override
-    protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
-        super.onSetInitialValue(restorePersistedValue, defaultValue);
-        Log.d(TAG, "onSetInitialValue()");
+    protected void onAttachedToActivity() {
+        super.onAttachedToActivity();
         String timeString = getPersistedString(getDefaultTimeString());
         date = getDate(timeString);
         setSummary(timeString);
-    }
-
-    @Override
-    protected void onBindView(View view) {
-        super.onBindView(view);
-        Log.d(TAG, "onBindView()");
     }
 
     @Override
@@ -88,8 +83,7 @@ public class TimePickerPreference extends DialogPreference {
                 calendar.set(MINUTE, timePicker.getCurrentMinute());
             }
             date = new Date(calendar.getTimeInMillis());
-            String timeString = getTimeString();
-            Log.d(TAG, timeString);
+            String timeString = dateFormat.format(date);
             persistString(timeString);
             setSummary(timeString);
         }
@@ -98,7 +92,6 @@ public class TimePickerPreference extends DialogPreference {
     private Date getDate(String timeString) {
         try {
             return dateFormat.parse(timeString);
-
         } catch (ParseException e) {
             e.printStackTrace();
             try {
@@ -110,12 +103,20 @@ public class TimePickerPreference extends DialogPreference {
         }
     }
 
-    private String getTimeString() {
-        return dateFormat.format(date);
-    }
-
     private String getDefaultTimeString() {
-        Date date = new Date(Calendar.getInstance().getTimeInMillis());
+        Log.d(TAG, "getDefaultTimeString()");
+        Date date;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+            long triggerTime = alarmClockInfo.getTriggerTime();
+            date = new Date(triggerTime);
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(HOUR_OF_DAY, 6);
+            calendar.set(MINUTE, 0);
+            date = new Date(calendar.getTimeInMillis());
+        }
         return dateFormat.format(date);
     }
 }
