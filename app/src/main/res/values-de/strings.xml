@@ -128,4 +128,5 @@
     <string name="minutes_before">Minuten vorher:</string>
     <string name="charging_limit">Ladelimit:</string>
     <string name="smart_charging_time">Die Zeit, an der du aufwachst:</string>
+    <string name="root_features">Root-Funktionen</string>
 </resources>

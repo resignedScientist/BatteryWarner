@@ -172,4 +172,5 @@
     <string name="minutes_before">Minutes before:</string>
     <string name="charging_limit">Charging limit:</string>
     <string name="smart_charging_time">The time you wake up:</string>
+    <string name="root_features">Root features</string>
 </resources>
