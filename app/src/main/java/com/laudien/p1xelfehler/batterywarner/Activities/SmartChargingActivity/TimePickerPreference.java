@@ -109,14 +109,22 @@ public class TimePickerPreference extends DialogPreference {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
             AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
-            long triggerTime = alarmClockInfo.getTriggerTime();
-            date = new Date(triggerTime);
+            if (alarmClockInfo != null) {
+                long triggerTime = alarmClockInfo.getTriggerTime();
+                date = new Date(triggerTime);
+            } else {
+                date = getDefaultDateIfNoAlarmClockIsSet();
+            }
         } else {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(HOUR_OF_DAY, 6);
-            calendar.set(MINUTE, 0);
-            date = new Date(calendar.getTimeInMillis());
+            date = getDefaultDateIfNoAlarmClockIsSet();
         }
         return dateFormat.format(date);
+    }
+
+    private Date getDefaultDateIfNoAlarmClockIsSet() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(HOUR_OF_DAY, 6);
+        calendar.set(MINUTE, 0);
+        return new Date(calendar.getTimeInMillis());
     }
 }
