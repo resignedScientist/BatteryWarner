@@ -36,6 +36,8 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static java.text.DateFormat.SHORT;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -318,17 +320,24 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private void calcSmartChargingTimes() {
-        if (timeString != null && timeBefore > 0 && !timeString.equals("")) {
-            DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
-            try {
-                Date date = dateFormat.parse(timeString);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(date);
-                long endTime = calendar.getTimeInMillis();
-                timeResumeCharging = endTime - timeBefore;
-            } catch (ParseException e) {
-                e.printStackTrace();
+        DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
+        try {
+            Date date = dateFormat.parse(timeString);
+            Calendar calendar = Calendar.getInstance();
+            long timeNow = calendar.getTimeInMillis();
+            calendar.setTime(date);
+            int hours = calendar.get(HOUR_OF_DAY);
+            int minutes = calendar.get(MINUTE);
+            calendar.setTimeInMillis(timeNow);
+            calendar.set(HOUR_OF_DAY, hours);
+            calendar.set(MINUTE, minutes);
+            long endTime = calendar.getTimeInMillis();
+            if (endTime < timeNow) {
+                endTime += 1000 * 60 * 60 * 24; // add one day if time is in the past
             }
+            timeResumeCharging = endTime - timeBefore;
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }
