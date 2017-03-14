@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -17,12 +18,24 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
 public class SmartChargingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private TimePickerPreference timePickerPreference;
+    private SwitchPreference alarmTimeSwitch;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.smart_charging);
         setHasOptionsMenu(true);
+        alarmTimeSwitch = (SwitchPreference) findPreference(getString(R.string.pref_smart_charging_enabled));
+        timePickerPreference = (TimePickerPreference) findPreference(getString(R.string.pref_smart_charging_time));
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
     }
 
     @Override
@@ -62,6 +75,11 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             } else {
                 RootChecker.handleRootDependingPreference(getActivity(), preference);
             }
+        } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
+            if (alarmTimeSwitch.isChecked()) { // remove preference key if checked to force the preference to always load the default alarm time
+                sharedPreferences.edit().remove(timePickerPreference.getKey()).apply();
+            }
+            timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
         }
     }
 

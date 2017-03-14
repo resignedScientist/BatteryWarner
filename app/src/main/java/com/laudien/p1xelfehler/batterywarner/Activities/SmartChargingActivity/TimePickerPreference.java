@@ -51,6 +51,7 @@ public class TimePickerPreference extends DialogPreference {
     protected void onAttachedToActivity() {
         super.onAttachedToActivity();
         String timeString = getPersistedString(getDefaultTimeString());
+        persistString(timeString);
         date = getDate(timeString);
         setSummary(timeString);
     }
