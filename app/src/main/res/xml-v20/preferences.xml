@@ -17,6 +17,7 @@
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
             android:defaultValue="@integer/pref_warning_low_default"
+            android:dependency="@string/pref_warning_low_enabled"
             android:key="@string/pref_warning_low"
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
@@ -30,6 +31,7 @@
             android:title="@string/enabled" />
         <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
             android:defaultValue="80"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_warning_high"
             app:slider_min="@integer/pref_slider_high_min"
             app:unit="%" />
@@ -62,16 +64,19 @@
     <PreferenceCategory android:title="@string/root_features">
         <SwitchPreference
             android:defaultValue="@bool/pref_stop_charging_default"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_stop_charging"
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/stop_charging_title" />
         <Preference
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_smart_charging_enabled"
             android:title="@string/smart_charging">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
         </Preference>
         <SwitchPreference
             android:defaultValue="@bool/pref_usb_charging_disabled_default"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_usb_charging_disabled"
             android:summary="@string/stop_charging_subtitle"
             android:title="@string/disable_usb_charging" />
@@ -79,14 +84,17 @@
     <PreferenceCategory android:title="@string/advanced_features">
         <SwitchPreference
             android:defaultValue="@bool/pref_ac_enabled_default"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_ac_enabled"
             android:title="@string/enable_on_ac" />
         <SwitchPreference
             android:defaultValue="@bool/pref_usb_enabled_default"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_usb_enabled"
             android:title="@string/enable_on_usb" />
         <SwitchPreference
             android:defaultValue="@bool/pref_wireless_enabled_default"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_wireless_enabled"
             android:title="@string/enable_on_wireless" />
         <SwitchPreference

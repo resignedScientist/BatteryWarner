@@ -22,4 +22,6 @@
     <integer name="difference_short">10</integer>
     <integer name="interval_very_short">60000</integer> <!-- 1 minute -->
     <integer name="difference_very_short">5</integer>
+    <integer name="root_check_switch_back_delay">500
+    </integer> <!-- The delay before the switch goes back off if device is not rooted -->
 </resources>

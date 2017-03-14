@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceFragment;
 import android.preference.TwoStatePreference;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
@@ -47,7 +49,19 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
-            RootChecker.handleRootDependingPreference(getActivity(), (TwoStatePreference) findPreference(key));
+            final TwoStatePreference preference = (TwoStatePreference) findPreference(key);
+            boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
+            if (!stopChargingEnabled && getActivity() != null) {
+                Toast.makeText(getActivity(), "Smart Charging has to be enabled for that!", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        preference.setChecked(false);
+                    }
+                }, getResources().getInteger(R.integer.root_check_switch_back_delay));
+            } else {
+                RootChecker.handleRootDependingPreference(getActivity(), preference);
+            }
         }
     }
 

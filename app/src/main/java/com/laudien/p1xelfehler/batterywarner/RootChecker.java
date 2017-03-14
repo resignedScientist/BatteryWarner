@@ -146,7 +146,7 @@ public final class RootChecker {
                             public void run() {
                                 twoStatePreference.setChecked(false);
                             }
-                        }, 500);
+                        }, context.getResources().getInteger(R.integer.root_check_switch_back_delay));
                     }
                 }
             }.execute();
