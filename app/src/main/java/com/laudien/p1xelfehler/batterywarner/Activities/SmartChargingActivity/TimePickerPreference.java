@@ -58,6 +58,7 @@ public class TimePickerPreference extends DialogPreference {
     @Override
     protected View onCreateDialogView() {
         timePicker = new TimePicker(getContext());
+        timePicker.setIs24HourView(android.text.format.DateFormat.is24HourFormat(getContext()));
         Calendar calendar = getInstance();
         calendar.setTime(date);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
