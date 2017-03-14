@@ -11,6 +11,6 @@
         android:id="@+id/textView_explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt."
+        android:text="@string/smart_charging_explanation"
         android:textSize="15sp" />
 </ScrollView>

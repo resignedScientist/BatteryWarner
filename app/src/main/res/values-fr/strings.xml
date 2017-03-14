@@ -124,4 +124,8 @@
     <string name="disabled">Disabled</string>
     <string name="smart_charging_enabled">Smart Charging enabled</string>
     <string name="smart_charging">Smart Charging [Root]</string>
+    <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
+    <string name="minutes_before">Minutes before:</string>
+    <string name="charging_limit">Charging limit:</string>
+    <string name="smart_charging_time">The time you wake up:</string>
 </resources>

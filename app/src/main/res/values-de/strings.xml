@@ -124,4 +124,8 @@
     <string name="disabled">Deaktiviert</string>
     <string name="smart_charging_enabled">Smart Charging aktiviert</string>
     <string name="smart_charging">Smart Charging [Root]</string>
+    <string name="smart_charging_explanation">Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt.</string>
+    <string name="minutes_before">Minuten vorher:</string>
+    <string name="charging_limit">Ladelimit:</string>
+    <string name="smart_charging_time">Die Zeit, an der du aufwachst:</string>
 </resources>
