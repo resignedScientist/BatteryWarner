@@ -26,6 +26,7 @@
     <string name="pref_smart_charging_limit" translatable="false">smartChargingPercentMax</string>
     <string name="pref_smart_charging_time" translatable="false">smartChargingTime</string>
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
+    <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
 
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -173,4 +174,5 @@
     <string name="charging_limit">Charging limit:</string>
     <string name="smart_charging_time">The time you wake up:</string>
     <string name="root_features">Root features</string>
+    <string name="smart_charging_use_alarm_clock_time">Use the next alarm clock time</string>
 </resources>
