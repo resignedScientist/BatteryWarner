@@ -24,6 +24,7 @@ import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -48,17 +49,16 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_history, container, false);
-        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
-        adapter = new HistoryPagerAdapter(getFragmentManager());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(this);
         textView_nothingSaved = (TextView) view.findViewById(R.id.textView_nothingSaved);
         textView_fileName = (TextView) view.findViewById(R.id.textView_fileName);
         btn_next = (ImageButton) view.findViewById(R.id.btn_next);
         btn_next.setOnClickListener(this);
         btn_prev = (ImageButton) view.findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
-        readGraphs();
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        adapter = new HistoryPagerAdapter(getFragmentManager(), readGraphs());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(this);
         return view;
     }
 
@@ -72,12 +72,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 showDeleteDialog();
                 break;
             case R.id.menu_info:
-                HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
-                if (fragment != null) {
+                /*HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
+                if (fragment != null && getActivity() != null) {
                     fragment.showInfo();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
-                }
+                }*/
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -102,8 +102,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void onPageSelected(int position) {
-        HistoryPageFragment currentFragment = (HistoryPageFragment) adapter.getItem(position);
-        textView_fileName.setText(currentFragment.getFileName());
+        textView_fileName.setText(adapter.getFile(position).getName());
     }
 
     @Override
@@ -119,8 +118,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     private void showDeleteDialog() {
         final int currentPosition = viewPager.getCurrentItem();
-        final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(currentPosition);
-        if (fragment == null) {
+        if (adapter.getCount() == 0) {
             Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -131,17 +129,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (!fragment.deleteFile()) {
-                            return;
-                        }
                         adapter.removeItem(currentPosition);
                         if (adapter.getCount() == 0) {
                             viewPager.setVisibility(View.INVISIBLE);
                             textView_nothingSaved.setVisibility(View.VISIBLE);
                             textView_fileName.setText("");
                         } else { // min 1 item is there
-                            HistoryPageFragment newFragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
-                            textView_fileName.setText(newFragment.getFileName());
+                            textView_fileName.setText(adapter.getFile(currentPosition).getName());
                         }
                         if (adapter.getCount() < 2) {
                             disableButtons();
@@ -165,7 +159,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_rename, null);
         final EditText editText = (EditText) view.findViewById(R.id.editText);
-        editText.setText(fragment.getFileName());
+        editText.setText(fragment.getFile().getName());
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
                 .setTitle(getString(R.string.rename_graph))
@@ -183,7 +177,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         if (!fragment.renameFile(newName)) {
                             return;
                         }
-                        textView_fileName.setText(fragment.getFileName());
+                        textView_fileName.setText(fragment.getFile().getName());
                     }
                 })
                 .create();
@@ -194,9 +188,10 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         dialog.show();
     }
 
-    private void readGraphs() {
+    private ArrayList<File> readGraphs() {
         File path = new File(Contract.DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
+        ArrayList<File> fileList = new ArrayList<>();
         int goodFiles = 0;
         int firstGoodFile = 0;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
@@ -220,7 +215,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 Bundle bundle = new Bundle();
                 bundle.putString(EXTRA_FILE_PATH, file.getPath());
                 pageFragment.setArguments(bundle);
-                adapter.addItem(pageFragment);
+                fileList.add(file);
             }
             if (goodFiles == 0) {
                 textView_nothingSaved.setVisibility(View.VISIBLE);
@@ -230,8 +225,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         } else {
             textView_nothingSaved.setVisibility(View.VISIBLE);
         }
-        if (adapter.getCount() < 2) {
+        if (fileList.size() < 2) {
             disableButtons();
         }
+        return fileList;
     }
 }

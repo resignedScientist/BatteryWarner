@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
                 }
             }
         }
+        Log.d(TAG, "fragment created with file: " + file.getPath());
         View view = super.onCreateView(inflater, container, savedInstanceState);
         textView_title.setVisibility(View.GONE);
         if (savedInstanceState != null) {
@@ -98,33 +100,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
         return Calendar.getInstance().getTimeInMillis();
     }
 
-    /**
-     * Deletes the file that was given by the arguments.
-     * Shows a toast if the deletion failed.
-     *
-     * @return Returns true if the deletion was successful, false if not.
-     */
-    public boolean deleteFile() {
-        boolean successful = file.delete();
-        if (successful) {
-            Toast.makeText(getContext(), getString(R.string.success_delete_graph), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), getString(R.string.error_deleting), Toast.LENGTH_SHORT).show();
-        }
-        return successful;
-    }
-
-    /**
-     * Returns the file path of the file that was given by the arguments.
-     *
-     * @return Returns the file path of the file that was given by the arguments.
-     */
-    public String getFileName() {
-        if (file != null) {
-            return file.getName();
-        } else {
-            return null;
-        }
+    public File getFile() {
+        return file;
     }
 
     /**
@@ -144,10 +121,10 @@ public class HistoryPageFragment extends BasicGraphFragment {
         }
         boolean successful = this.file.renameTo(file);
         if (successful) {
-            Toast.makeText(getContext(), getString(R.string.success_renaming), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.success_renaming, Toast.LENGTH_SHORT).show();
             this.file = file;
         } else {
-            Toast.makeText(getContext(), getString(R.string.error_renaming), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error_renaming, Toast.LENGTH_SHORT).show();
         }
         return successful;
     }
