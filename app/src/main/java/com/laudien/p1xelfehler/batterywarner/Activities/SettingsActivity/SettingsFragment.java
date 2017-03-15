@@ -196,7 +196,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     }
                 }
             }
-        } else if (preference == pref_stopCharging || preference == pref_usb_disabled) {
+        } else if (preference == pref_stopCharging || preference == pref_usb_disabled) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
             RootChecker.handleRootDependingPreference(getActivity(), twoStatePreference);
             if (preference == pref_stopCharging) {
@@ -204,7 +204,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
                 pref_smart_charging.setSummary(getString(R.string.disabled));
             } else if (preference == pref_usb_disabled) {
-                pref_usb.setEnabled(!pref_usb_disabled.isChecked());
+                boolean checked = pref_usb_disabled.isChecked();
+                pref_usb.setEnabled(!checked);
+                if (!checked) { // start charging service if unchecked
+                    Context context = getActivity();
+                    if (context != null) {
+                        context.startService(new Intent(context, ChargingService.class));
+                    }
+                }
             }
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();
