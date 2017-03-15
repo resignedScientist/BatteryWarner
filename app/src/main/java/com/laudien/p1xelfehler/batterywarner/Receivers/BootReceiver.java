@@ -36,7 +36,7 @@ public class BootReceiver extends BroadcastReceiver {
 
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         if (isCharging) { // charging
-            ChargingService.startService(context); // start charging service if enabled
+            context.startService(new Intent(context, ChargingService.class)); // start charging service if enabled
         } else { // discharging
             boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             if (serviceEnabled) {

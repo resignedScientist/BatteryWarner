@@ -192,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 if (batteryStatus != null) {
                     boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
                     if (isCharging) {
-                        ChargingService.startService(getActivity());
+                        context.startService(new Intent(context, ChargingService.class));
                     }
                 }
             }
@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
             Context context = getActivity();
             if (context != null) {
-                ChargingService.restartService(context);
+                context.startService(new Intent(context, ChargingService.class));
             }
         }
     }

@@ -36,7 +36,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         }
         boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
         if (isCharging) { // charging
-            ChargingService.startService(context);
+            context.startService(new Intent(context, ChargingService.class));
         } else { // discharging
             DischargingAlarmReceiver.cancelDischargingAlarm(context);
             context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));

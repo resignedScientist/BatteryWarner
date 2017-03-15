@@ -77,7 +77,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         boolean isCharging = chargingType != 0;
         final boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        if (isCharging && (ChargingService.isChargingTypeEnabled(context, batteryStatus) || usbDisabled)) {
+        if (isCharging && (ChargingService.isChargingTypeEnabled(context, chargingType, sharedPreferences) || usbDisabled)) {
             if (usbDisabled && chargingType == BATTERY_PLUGGED_USB) { // usb charging - but disabled in settings
                 // disable charging
                 AsyncTask.execute(new Runnable() {
@@ -104,7 +104,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                     }
                 });
             }
-            ChargingService.startService(context); // start the charging service
+            context.startService(new Intent(context, ChargingService.class)); // start the charging service
             // show a notification if silent/vibrate mode is enabled
             NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
             return true;

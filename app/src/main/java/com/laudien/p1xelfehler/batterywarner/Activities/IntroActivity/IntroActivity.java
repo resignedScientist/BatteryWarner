@@ -90,7 +90,7 @@ public class IntroActivity extends MaterialIntroActivity {
             // start the service if charging
             boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
             if (isCharging) {
-                ChargingService.startService(this);
+                startService(new Intent(this, ChargingService.class));
             } else { // start the DischargingAlarmReceiver if discharging
                 sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
                 boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));

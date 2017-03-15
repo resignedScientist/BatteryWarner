@@ -46,6 +46,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
@@ -305,9 +306,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             return;
         }
         boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
-        boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1);
+        boolean isCharging = chargingType != 0;
         if (isCharging) { // charging
-            boolean isChargingTypeEnabled = ChargingService.isChargingTypeEnabled(getContext(), batteryStatus);
+            boolean isChargingTypeEnabled = ChargingService.isChargingTypeEnabled(getContext(), chargingType, sharedPreferences);
             if (isChargingTypeEnabled) { // charging type enabled
                 if (isFull) { // fully charged
                     showDischargingText();
@@ -438,7 +440,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ChargingService.restartService(getContext());
+                        GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(getContext());
+                        graphDbHelper.resetTable();
                         Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
                     }
                 }).create().show();
