@@ -34,21 +34,36 @@ public final class NotificationBuilder {
      * Notification id of the notification that warns if silent/vibrate mode is turned on.
      */
     public static final int ID_SILENT_MODE = 1337;
-    /** Notification id of the notification that warns that the battery is above X%. */
+    /**
+     * Notification id of the notification that warns that the battery is above X%.
+     */
     public static final int ID_WARNING_HIGH = 1338;
-    /** Notification id of the notification that warns that the battery is below Y%. */
+    /**
+     * Notification id of the notification that warns that the battery is below Y%.
+     */
     public static final int ID_WARNING_LOW = 1339;
-    /** Notification id of the notification that the user has to click/dismiss after the device is unplugged.
-     * Only shown if the stop charging feature is enabled. */
+    /**
+     * Notification id of the notification that the user has to click/dismiss after the device is unplugged.
+     * Only shown if the stop charging feature is enabled.
+     */
     public static final int ID_STOP_CHARGING = 1340;
-    /** Notification id of the notification that asks the user for root again after the app was updated. */
+    /**
+     * Notification id of the notification that asks the user for root again after the app was updated.
+     */
     public static final int ID_GRANT_ROOT = 1341;
-    /** Notification id of the notification that tells the user that the stop charging feature is not working
+    /**
+     * Notification id of the notification that tells the user that the stop charging feature is not working
      * on this device.
      */
     public static final int ID_STOP_CHARGING_NOT_WORKING = 1342;
-    /** Notification id of the notification that asks for root again if app has no root rights anymore. */
+    /**
+     * Notification id of the notification that asks for root again if app has no root rights anymore.
+     */
     public static final int ID_NOT_ROOTED = 1343;
+    /**
+     * Notification id of the notification that tells the user that no alarm was found in the alarm app
+     **/
+    public static final int ID_NO_ALARM_TIME_FOUND = 1344;
 
     private NotificationBuilder() {
     }
@@ -216,6 +231,16 @@ public final class NotificationBuilder {
                         ),
                         PendingIntent.getService(context, 0,
                                 new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT)
+                );
+                break;
+            case ID_NO_ALARM_TIME_FOUND:
+                showNotification(
+                        context,
+                        context.getString(R.string.no_alarm_time_found),
+                        ID_NO_ALARM_TIME_FOUND,
+                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                        null,
+                        null
                 );
                 break;
         }

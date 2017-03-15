@@ -36,6 +36,7 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 import static java.text.DateFormat.SHORT;
 
@@ -310,8 +311,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
             if (alarmClockInfo != null) {
                 alarmTime = alarmClockInfo.getTriggerTime();
-            } else {
-                stopSelf();
+            } else {// the smart charging feature cannot be used, because no alarm time is set in the alarm app
+                smartChargingEnabled = false; // disable the feature just for the service
+                NotificationBuilder.showNotification(this, ID_NO_ALARM_TIME_FOUND); // show the notification
                 return 0;
             }
         } else {
