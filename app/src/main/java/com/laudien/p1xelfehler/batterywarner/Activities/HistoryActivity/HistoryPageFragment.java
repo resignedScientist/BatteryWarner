@@ -100,4 +100,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
     public File getFile() {
         return file;
     }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }
