@@ -40,14 +40,6 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        /*HistoryPageFragment fragment = (HistoryPageFragment) object;
-        String filePath = fragment.getFile().getPath();
-        int position = files.indexOf(new File(filePath));
-        if (position >= 0) {
-            return position;
-        } else {
-            return POSITION_NONE;
-        }*/
         return POSITION_NONE;
     }
 

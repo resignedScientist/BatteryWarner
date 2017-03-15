@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -27,8 +26,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Locale;
 
 import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryPageFragment.EXTRA_FILE_PATH;
+import static com.laudien.p1xelfehler.batterywarner.Contract.DATABASE_HISTORY_PATH;
 
 /**
  * Fragment that shows the history of the charging curves.
@@ -173,10 +174,11 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                             if (newName.contains("/")) {
                                 Toast.makeText(getContext(), R.string.unallowed_character_renaming, Toast.LENGTH_SHORT).show();
                             } else {
-                                File newFile = new File(newName);
+                                File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
                                 if (newFile.exists()) {
-                                    Toast.makeText(getContext(), "There already is a graph named '" + newName + "'!", Toast.LENGTH_SHORT).show();
-                                } else if (adapter.renameFile(viewPager.getCurrentItem(), new File(newName))) {
+                                    Toast.makeText(getContext(), String.format(Locale.getDefault(), "%s '%s'!",
+                                            getString(R.string.graph_name_already_exists), newName), Toast.LENGTH_LONG).show();
+                                } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
                                     textView_fileName.setText(newName);
                                     Toast.makeText(getContext(), R.string.success_renaming, Toast.LENGTH_SHORT).show();
                                 } else {
@@ -195,7 +197,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private ArrayList<File> readGraphs() {
-        File path = new File(Contract.DATABASE_HISTORY_PATH);
+        File path = new File(DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         ArrayList<File> fileList = new ArrayList<>();
         int goodFiles = 0;

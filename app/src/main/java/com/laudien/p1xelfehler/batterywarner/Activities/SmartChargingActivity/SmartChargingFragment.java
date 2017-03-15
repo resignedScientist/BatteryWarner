@@ -65,7 +65,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             final TwoStatePreference preference = (TwoStatePreference) findPreference(key);
             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
             if (!stopChargingEnabled && getActivity() != null) {
-                Toast.makeText(getActivity(), "Smart Charging has to be enabled for that!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.toast_stop_charging_not_enabled, Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

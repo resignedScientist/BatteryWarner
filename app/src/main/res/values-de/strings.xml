@@ -131,4 +131,6 @@
     <string name="root_features">Root-Funktionen</string>
     <string name="smart_charging_use_alarm_clock_time">Nutze den nächsten gestellten Wecker</string>
     <string name="no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
+    <string name="graph_name_already_exists">Es gibt bereits einen Graphen mit dem Namen</string>
+    <string name="toast_stop_charging_not_enabled">\'Laden automatisch abbrechen\' muss dafür an sein!</string>
 </resources>
