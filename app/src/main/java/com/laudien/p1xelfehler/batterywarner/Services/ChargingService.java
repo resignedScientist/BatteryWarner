@@ -137,6 +137,14 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
     };
 
+    /**
+     * Checks if the given charging type is enabled in settings.
+     *
+     * @param context           An instance of the Context class.
+     * @param chargingType      The charging type you can receive from the BatteryManager.
+     * @param sharedPreferences An instance of the SharedPreferences class. If it is null, the default preferences from the Context are used.
+     * @return Returns true, if the charging type is enabled in settings, false if not. It also returns false, if the type is discharging.
+     */
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
