@@ -6,14 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
 import java.util.Calendar;
@@ -102,30 +99,5 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     public File getFile() {
         return file;
-    }
-
-    /**
-     * Renames the file to the given name.
-     *
-     * @param newName The new name the file should be renamed to.
-     * @return Returns true if the renaming was successful, false if not.
-     */
-    public boolean renameFile(String newName) {
-        if (this.file.getName().equals(newName)) {
-            return false;
-        }
-        File file = new File(Contract.DATABASE_HISTORY_PATH + "/" + newName);
-        if (file.exists()) {
-            Toast.makeText(getContext(), "There already is a graph named '" + newName + "'!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        boolean successful = this.file.renameTo(file);
-        if (successful) {
-            Toast.makeText(getContext(), R.string.success_renaming, Toast.LENGTH_SHORT).show();
-            this.file = file;
-        } else {
-            Toast.makeText(getContext(), R.string.error_renaming, Toast.LENGTH_SHORT).show();
-        }
-        return successful;
     }
 }

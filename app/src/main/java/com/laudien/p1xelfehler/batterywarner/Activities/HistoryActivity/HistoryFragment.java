@@ -72,12 +72,11 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 showDeleteDialog();
                 break;
             case R.id.menu_info:
-                /*HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
-                if (fragment != null && getActivity() != null) {
-                    fragment.showInfo();
+                if (adapter.getCount() != 0) {
+                    adapter.getCurrentFragment().showInfo();
                 } else {
-                    Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
-                }*/
+                    Toast.makeText(getContext(), R.string.no_graphs_saved, Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -151,15 +150,15 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void showRenameDialog() {
-        final HistoryPageFragment fragment = (HistoryPageFragment) adapter.getItem(viewPager.getCurrentItem());
-        if (fragment == null) {
+        if (adapter.getCount() == 0) {
             Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
             return;
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_rename, null);
         final EditText editText = (EditText) view.findViewById(R.id.editText);
-        editText.setText(fragment.getFile().getName());
+        final String oldName = adapter.getFile(viewPager.getCurrentItem()).getName();
+        editText.setText(oldName);
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setCancelable(true)
                 .setTitle(getString(R.string.rename_graph))
@@ -170,14 +169,21 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String newName = editText.getText().toString();
-                        if (newName.contains("/")) {
-                            Toast.makeText(getContext(), R.string.unallowed_character_renaming, Toast.LENGTH_SHORT).show();
-                            return;
+                        if (!newName.equals(oldName)) {
+                            if (newName.contains("/")) {
+                                Toast.makeText(getContext(), R.string.unallowed_character_renaming, Toast.LENGTH_SHORT).show();
+                            } else {
+                                File newFile = new File(newName);
+                                if (newFile.exists()) {
+                                    Toast.makeText(getContext(), "There already is a graph named '" + newName + "'!", Toast.LENGTH_SHORT).show();
+                                } else if (adapter.renameFile(viewPager.getCurrentItem(), new File(newName))) {
+                                    textView_fileName.setText(newName);
+                                    Toast.makeText(getContext(), R.string.success_renaming, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getContext(), R.string.error_renaming, Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
-                        if (!fragment.renameFile(newName)) {
-                            return;
-                        }
-                        textView_fileName.setText(fragment.getFile().getName());
                     }
                 })
                 .create();

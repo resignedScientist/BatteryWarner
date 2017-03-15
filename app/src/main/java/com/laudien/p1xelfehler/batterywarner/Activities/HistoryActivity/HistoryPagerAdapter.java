@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.H
  */
 class HistoryPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<File> files;
+    private HistoryPageFragment currentFragment; // the current item
 
     HistoryPagerAdapter(FragmentManager fm, ArrayList<File> files) {
         super(fm);
@@ -49,6 +51,18 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         return POSITION_NONE;
     }
 
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        if (currentFragment != object) {
+            currentFragment = (HistoryPageFragment) object;
+        }
+        super.setPrimaryItem(container, position, object);
+    }
+
+    HistoryPageFragment getCurrentFragment() {
+        return currentFragment;
+    }
+
     boolean removeItem(int position) {
         File file = files.get(position);
         if (file.delete()) {
@@ -62,5 +76,9 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
 
     File getFile(int position) {
         return files.get(position);
+    }
+
+    boolean renameFile(int position, File newFile) {
+        return files.get(position).renameTo(newFile);
     }
 }
