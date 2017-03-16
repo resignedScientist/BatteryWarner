@@ -101,29 +101,29 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                         if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
                             stopCharging();
                         }
-                        // TODO: make smart charging independent from battery level change
                         if (smartChargingEnabled) {
                             // stop charging and this service if the smart charging limit is reached
                             if (batteryLevel >= smartChargingLimit) {
                                 stopCharging();
                                 stopSelf();
-                            } else {
-                                // check if resume time is reached and charging is not resumed yet
-                                if (!isChargingResumed && timeNow >= smartChargingResumeTime) {
-                                    // resume charging
-                                    resumeCharging();
-                                }
+                                return;
                             }
                         } else { // stop service if smart charging is disabled
                             stopSelf();
+                            return;
                         }
                     }
                 }
-                // stop service if everything is turned off or the device is fully charged
-                if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
-                        || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
-                    stopSelf();
-                }
+            }
+            // check if resume time is reached and charging is paused and not resumed yet
+            if (smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
+                // resume charging
+                resumeCharging();
+            }
+            // stop service if everything is turned off or the device is fully charged
+            if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
+                    || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
+                stopSelf();
             }
         }
     };
