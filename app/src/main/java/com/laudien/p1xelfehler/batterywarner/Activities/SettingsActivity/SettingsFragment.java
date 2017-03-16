@@ -206,12 +206,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             } else if (preference == pref_usb_disabled) {
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
-                if (!checked) { // start charging service if unchecked
-                    Context context = getActivity();
-                    if (context != null) {
-                        context.startService(new Intent(context, ChargingService.class));
-                    }
-                }
             }
         } else if (preference == pref_dischargingService) {
             boolean checked = pref_dischargingService.isChecked();

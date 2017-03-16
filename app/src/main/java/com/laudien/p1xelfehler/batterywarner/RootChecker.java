@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.List;
@@ -17,6 +17,9 @@ import eu.chainfire.libsuperuser.Shell;
  * All methods have to run outside of the main/ui thread.
  */
 public final class RootChecker {
+
+    private static final String TAG = "RootChecker";
+
     /**
      * Checks if the app has root permissions. If the device is rooted, this method will trigger
      * a dialog to ask for root permissions depending on the super user app used.
@@ -37,14 +40,11 @@ public final class RootChecker {
      * @throws NotRootedException thrown if the app has no root permissions.
      */
     public static void enableCharging(Context context) throws NotRootedException {
-        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
-            return;
-        }
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+        Log.d(TAG, "Charging was enabled!");
         /*Shell.SU.run(new String[]{
                 "echo 1 > /sys/class/power_supply/battery/charging_enabled",
                 "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled"
@@ -58,14 +58,11 @@ public final class RootChecker {
      * @throws NotRootedException thrown if the app has no root permissions.
      */
     public static void disableCharging(Context context) throws NotRootedException {
-        if (!PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
-                context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))) {
-            return;
-        }
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+        Log.d(TAG, "Charging was disabled!");
         /*Shell.SU.run(new String[]{
                 "echo 0 > /sys/class/power_supply/battery/charging_enabled",
                 "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled"

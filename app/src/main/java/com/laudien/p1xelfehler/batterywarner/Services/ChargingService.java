@@ -39,6 +39,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NO_ALARM_TIME_FOUND;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 import static java.text.DateFormat.SHORT;
 
@@ -70,14 +71,18 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
             // stop service if usb charging but disabled in settings..
             // or not charging and not paused by the service
-            if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB || !isCharging && !isChargingPaused) {
+            if (!isCharging && !isChargingPaused) {
                 stopSelf();
+                return;
+            }
+            if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
+                stopCharging();
                 return;
             }
             // stop charging again if the user dismisses the notification while charging is paused
             if (isCharging && isChargingPaused) {
                 isCharging = false;
-                stopCharging();
+                pauseCharging();
             }
             if (batteryLevel != lastBatteryLevel) { // if battery level changed
                 // add a value to the database
@@ -98,12 +103,12 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     // stop charging if enabled
                     if (stopChargingEnabled) {
                         if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
-                            stopCharging();
+                            pauseCharging();
                         }
                         if (smartChargingEnabled) {
                             // stop charging and this service if the smart charging limit is reached
                             if (batteryLevel >= smartChargingLimit) {
-                                stopCharging();
+                                pauseCharging();
                                 stopSelf();
                                 return;
                             }
@@ -263,7 +268,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             usbChargingDisabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
             // stop service if usb charging, but usb charging was disabled
             if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
-                stopSelf();
+                stopCharging();
             }
         }
     }
@@ -281,20 +286,25 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
     }
 
-    private void stopCharging() {
+    private void pauseCharging() {
         isChargingPaused = true;
+        stopCharging();
+    }
+
+    private void stopCharging() {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     RootChecker.disableCharging(ChargingService.this);
+                    NotificationBuilder.showNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootChecker.NotRootedException e) {
                     e.printStackTrace();
                     NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
-                    stopSelf(); // stop service if not rooted!
                 }
             }
         });
+        stopSelf();
     }
 
     private void resumeCharging() {
