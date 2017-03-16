@@ -70,9 +70,11 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         return files.get(position);
     }
 
-    boolean renameFile(int position, File newFile) {
-        if (files.get(position).renameTo(newFile)) {
-            getCurrentFragment().setFile(newFile);
+    boolean renameFile(int currentPosition, File newFile) {
+        File oldFile = files.get(currentPosition);
+        if (oldFile.renameTo(newFile)) {
+            files.set(currentPosition, newFile);
+            notifyDataSetChanged();
             return true;
         } else {
             return false;

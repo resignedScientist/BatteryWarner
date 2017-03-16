@@ -67,7 +67,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
      */
     @Override
     protected LineGraphSeries<DataPoint>[] getSeries() {
-        if (file != null) {
+        if (file != null && file.exists()) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
         } else {
@@ -99,9 +99,5 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     public File getFile() {
         return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 }
