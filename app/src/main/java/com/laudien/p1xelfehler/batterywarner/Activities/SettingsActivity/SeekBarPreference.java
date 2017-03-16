@@ -135,6 +135,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
             }
             if (seekBar != null) {
                 seekBar.setMax(max - min);
+                seekBar.setProgress(progress - min);
             }
         }
     }
@@ -147,6 +148,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
             }
             if (seekBar != null) {
                 seekBar.setMax(max - min);
+                seekBar.setProgress(progress - min);
             }
         }
     }
