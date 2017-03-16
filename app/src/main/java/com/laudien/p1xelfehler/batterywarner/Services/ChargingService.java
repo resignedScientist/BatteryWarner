@@ -180,7 +180,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
         smartChargingTimeString = sharedPreferences.getString(getString(R.string.pref_smart_charging_time), null);
-        Log.d(TAG, "smartChargingTimeString = " + smartChargingTimeString);
         smartChargingResumeTime = getSmartChargingResumeTime();
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
@@ -249,9 +248,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         } else if (key.equals(getString(R.string.pref_smart_charging_time_before))) {
             smartChargingMinutes = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
             smartChargingResumeTime = getSmartChargingResumeTime();
+        } else if (key.equals(getString(R.string.pref_smart_charging_time))) {
+            smartChargingTimeString = sharedPreferences.getString(key, null);
+            smartChargingResumeTime = getSmartChargingResumeTime();
         } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             smartChargingUseClock = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
-            smartChargingResumeTime = getSmartChargingResumeTime();
         } else if (key.equals(getString(R.string.pref_ac_enabled))) {
             acEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_ac_enabled_default));
         } else if (key.equals(getString(R.string.pref_usb_enabled))) {
@@ -313,6 +314,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private long getSmartChargingResumeTime() {
+        if (smartChargingTimeString == null) {
+            smartChargingUseClock = true;
+        }
         long alarmTime;
         if (smartChargingUseClock && SDK_INT >= LOLLIPOP) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -353,6 +357,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
         }
         // Now we have the time the alarm is ringing (alarmTime). Now we calculate the resume time:
+        Log.d(TAG, "alarmTime = " + alarmTime);
         long timeBefore = (long) smartChargingMinutes * 60 * 1000;
         return alarmTime - timeBefore;
     }

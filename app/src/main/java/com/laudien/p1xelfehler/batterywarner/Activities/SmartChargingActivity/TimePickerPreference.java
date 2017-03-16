@@ -6,7 +6,6 @@ import android.os.Build;
 import android.preference.DialogPreference;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
@@ -29,7 +28,6 @@ public class TimePickerPreference extends DialogPreference {
     private final String TAG = getClass().getSimpleName();
     private TimePicker timePicker = null;
     private Date date = new Date(Calendar.getInstance().getTimeInMillis());
-    private DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public TimePickerPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -62,6 +60,16 @@ public class TimePickerPreference extends DialogPreference {
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        if (!enabled) {
+            String timeString = getPersistedString(getDefaultTimeString());
+            date = getDate(timeString);
+            setSummary(timeString);
+        }
+        super.setEnabled(enabled);
+    }
+
+    @Override
     protected View onCreateDialogView() {
         timePicker = new TimePicker(getContext());
         timePicker.setIs24HourView(android.text.format.DateFormat.is24HourFormat(getContext()));
@@ -90,6 +98,7 @@ public class TimePickerPreference extends DialogPreference {
                 calendar.set(MINUTE, timePicker.getCurrentMinute());
             }
             date = new Date(calendar.getTimeInMillis());
+            DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
             String timeString = dateFormat.format(date);
             persistString(timeString);
             setSummary(timeString);
@@ -97,6 +106,7 @@ public class TimePickerPreference extends DialogPreference {
     }
 
     private Date getDate(String timeString) {
+        DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
         try {
             return dateFormat.parse(timeString);
         } catch (ParseException e) {
@@ -111,7 +121,6 @@ public class TimePickerPreference extends DialogPreference {
     }
 
     private String getDefaultTimeString() {
-        Log.d(TAG, "getDefaultTimeString()");
         Date date;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
@@ -125,6 +134,7 @@ public class TimePickerPreference extends DialogPreference {
         } else {
             date = getDefaultDateIfNoAlarmClockIsSet();
         }
+        DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
         return dateFormat.format(date);
     }
 
