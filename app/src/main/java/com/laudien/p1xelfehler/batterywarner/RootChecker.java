@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -46,6 +45,10 @@ public final class RootChecker {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+        /*Shell.SU.run(new String[]{
+                "echo 1 > /sys/class/power_supply/battery/charging_enabled",
+                "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled"
+        });*/
     }
 
     /**
@@ -63,6 +66,10 @@ public final class RootChecker {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+        /*Shell.SU.run(new String[]{
+                "echo 0 > /sys/class/power_supply/battery/charging_enabled",
+                "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled"
+        });*/
     }
 
     /**
@@ -82,40 +89,6 @@ public final class RootChecker {
             return output.get(0).equals("1");
         } else {
             throw new BatteryFileNotFoundException();
-        }
-    }
-
-    public static List<Long> getAlarmList() throws NotRootedException {
-        if (!isRootAvailable()) {
-            throw new NotRootedException();
-        }
-        List<Long> alarmList = new ArrayList<>();
-        List<String> output = Shell.SU.run("dumpsys alarm");
-        String line;
-        long start = 0, end = 0;
-        for (int i = 0; i < output.size(); i++) {
-            line = output.get(i);
-            if (line.contains("deskclock") && line.contains("RTC_WAKEUP")) {
-                String batchLine = output.get(i - 1);
-                System.out.println(batchLine);
-                String[] subStrings = batchLine.split(" ");
-                for (String s : subStrings) {
-                    if (s.contains("start")) {
-                        start = Long.parseLong(s.substring(6));
-                    }
-                    if (s.contains("end")) {
-                        end = Long.parseLong(s.substring(4).replace("}:", ""));
-                    }
-                }
-                if (start == end && start != 0) {
-                    alarmList.add(start);
-                }
-            }
-        }
-        if (alarmList.isEmpty()) {
-            return null;
-        } else {
-            return alarmList;
         }
     }
 
