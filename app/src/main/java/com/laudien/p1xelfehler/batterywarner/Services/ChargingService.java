@@ -58,7 +58,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     private int warningHigh, smartChargingLimit, smartChargingMinutes, chargingType, lastBatteryLevel = -1;
     private long smartChargingResumeTime;
     private String smartChargingTimeString;
-    private DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
     private GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(this);
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -327,9 +326,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
                 return 0;
             }
-        } else { // KitKat devices
+        } else { // KitKat devices or alarm clock NOT used
             if (smartChargingEnabled) {
                 try {
+                    DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
                     Date date = dateFormat.parse(smartChargingTimeString);
                     Calendar calendar = Calendar.getInstance();
                     long timeNow = calendar.getTimeInMillis();
