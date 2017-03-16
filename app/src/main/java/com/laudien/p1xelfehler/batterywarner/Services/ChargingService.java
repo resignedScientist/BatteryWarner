@@ -101,6 +101,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                         if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
                             stopCharging();
                         }
+                        // TODO: make smart charging independent from battery level change
                         if (smartChargingEnabled) {
                             // stop charging and this service if the smart charging limit is reached
                             if (batteryLevel >= smartChargingLimit) {
@@ -116,7 +117,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                         } else { // stop service if smart charging is disabled
                             stopSelf();
                         }
-
                     }
                 }
                 // stop service if everything is turned off or the device is fully charged

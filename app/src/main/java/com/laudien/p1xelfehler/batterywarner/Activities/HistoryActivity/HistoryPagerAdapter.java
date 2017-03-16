@@ -78,6 +78,21 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         return false;
     }
 
+    boolean removeAllItems() {
+        if (!files.isEmpty()) {
+            for (File f : files) {
+                if (!f.delete()) {
+                    return false;
+                }
+            }
+            files = new ArrayList<>();
+            notifyDataSetChanged();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Get the database file of the fragment at the given position.
      *

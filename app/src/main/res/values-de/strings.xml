@@ -133,4 +133,7 @@
     <string name="no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
     <string name="graph_name_already_exists">Es gibt bereits einen Graphen mit dem Namen</string>
     <string name="toast_stop_charging_not_enabled">\'Laden automatisch abbrechen\' muss dafür an sein!</string>
+    <string name="delete_all">Alle löschen</string>
+    <string name="success_delete_all_graphs">Alle Graphen gelöscht!</string>
+    <string name="question_delete_all_graphs">Möchten Sie wirklich ALLE Graphen löschen?</string>
 </resources>

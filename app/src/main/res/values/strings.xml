@@ -178,4 +178,7 @@
     <string name="no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm or a time manually in order to use Smart Charging!</string>
     <string name="graph_name_already_exists">There already is a graph named</string>
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
+    <string name="delete_all">Delete all</string>
+    <string name="success_delete_all_graphs">All graphs removed!</string>
+    <string name="question_delete_all_graphs">Do you really want to delete ALL graphs?</string>
 </resources>

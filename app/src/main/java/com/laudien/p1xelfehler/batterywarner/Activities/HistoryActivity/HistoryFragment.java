@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
 
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryPageFragment.EXTRA_FILE_PATH;
 import static com.laudien.p1xelfehler.batterywarner.Contract.DATABASE_HISTORY_PATH;
 
@@ -72,12 +74,11 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             case R.id.menu_delete:
                 showDeleteDialog();
                 break;
+            case R.id.menu_delete_all:
+                showDeleteAllDialog();
+                break;
             case R.id.menu_info:
-                if (adapter.getCount() != 0) {
-                    adapter.getCurrentFragment().showInfo();
-                } else {
-                    Toast.makeText(getContext(), R.string.no_graphs_saved, Toast.LENGTH_SHORT).show();
-                }
+                showGraphInfo();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -117,32 +118,68 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void showDeleteDialog() {
-        final int currentPosition = viewPager.getCurrentItem();
-        if (adapter.getCount() == 0) {
-            Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
-            return;
+        if (adapter.getCount() != 0) {
+            new AlertDialog.Builder(getContext()).setCancelable(true)
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.question_delete_graph)
+                    .setIcon(R.mipmap.ic_launcher)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            int currentPosition = viewPager.getCurrentItem();
+                            if (adapter.removeItem(currentPosition)) {
+                                Toast.makeText(getContext(), R.string.success_delete_graph, LENGTH_SHORT).show();
+                                if (adapter.getCount() == 0) {
+                                    textView_nothingSaved.setVisibility(VISIBLE);
+                                    textView_fileName.setText("");
+                                } else { // min 1 item is there
+                                    textView_fileName.setText(adapter.getFile(currentPosition).getName());
+                                }
+                                if (adapter.getCount() < 2) {
+                                    disableButtons();
+                                }
+                            } else {
+                                Toast.makeText(getContext(), R.string.error_deleting, LENGTH_SHORT).show();
+                            }
+                        }
+                    }).setNegativeButton(getString(R.string.cancel), null)
+                    .create().show();
+        } else {
+            Toast.makeText(getContext(), R.string.no_graphs_saved, LENGTH_SHORT).show();
         }
-        new AlertDialog.Builder(getContext()).setCancelable(true)
-                .setTitle(getString(R.string.are_you_sure))
-                .setMessage(getString(R.string.question_delete_graph))
-                .setIcon(R.mipmap.ic_launcher)
-                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        adapter.removeItem(currentPosition);
-                        if (adapter.getCount() == 0) {
-                            viewPager.setVisibility(View.INVISIBLE);
-                            textView_nothingSaved.setVisibility(View.VISIBLE);
-                            textView_fileName.setText("");
-                        } else { // min 1 item is there
-                            textView_fileName.setText(adapter.getFile(currentPosition).getName());
+    }
+
+    private void showDeleteAllDialog() {
+        if (adapter.getCount() != 0) {
+            new AlertDialog.Builder(getContext()).setCancelable(true)
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.question_delete_all_graphs)
+                    .setIcon(R.mipmap.ic_launcher)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (adapter.removeAllItems()) {
+                                Toast.makeText(getContext(), R.string.success_delete_all_graphs, LENGTH_SHORT).show();
+                                textView_nothingSaved.setVisibility(VISIBLE);
+                                textView_fileName.setText("");
+                                disableButtons();
+                            } else {
+                                Toast.makeText(getContext(), R.string.error_deleting, LENGTH_SHORT).show();
+                            }
                         }
-                        if (adapter.getCount() < 2) {
-                            disableButtons();
-                        }
-                    }
-                }).setNegativeButton(getString(R.string.cancel), null)
-                .create().show();
+                    }).setNegativeButton(getString(R.string.cancel), null)
+                    .create().show();
+        } else {
+            Toast.makeText(getContext(), R.string.no_graphs_saved, LENGTH_SHORT).show();
+        }
+    }
+
+    private void showGraphInfo() {
+        if (adapter.getCount() != 0) {
+            adapter.getCurrentFragment().showInfo();
+        } else {
+            Toast.makeText(getContext(), R.string.no_graphs_saved, LENGTH_SHORT).show();
+        }
     }
 
     private void disableButtons() {
@@ -152,7 +189,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     private void showRenameDialog() {
         if (adapter.getCount() == 0) {
-            Toast.makeText(getContext(), getString(R.string.no_graphs_saved), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.no_graphs_saved, LENGTH_SHORT).show();
             return;
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -172,7 +209,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         String newName = editText.getText().toString();
                         if (!newName.equals(oldName)) {
                             if (newName.contains("/")) {
-                                Toast.makeText(getContext(), R.string.unallowed_character_renaming, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), R.string.unallowed_character_renaming, LENGTH_SHORT).show();
                             } else {
                                 File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
                                 if (newFile.exists()) {
@@ -180,9 +217,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                                             getString(R.string.graph_name_already_exists), newName), Toast.LENGTH_LONG).show();
                                 } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
                                     textView_fileName.setText(newName);
-                                    Toast.makeText(getContext(), R.string.success_renaming, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.success_renaming, LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(getContext(), R.string.error_renaming, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.error_renaming, LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -226,12 +263,12 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 fileList.add(file);
             }
             if (goodFiles == 0) {
-                textView_nothingSaved.setVisibility(View.VISIBLE);
+                textView_nothingSaved.setVisibility(VISIBLE);
             } else {
                 textView_fileName.setText(files[firstGoodFile].getName());
             }
         } else {
-            textView_nothingSaved.setVisibility(View.VISIBLE);
+            textView_nothingSaved.setVisibility(VISIBLE);
         }
         if (fileList.size() < 2) {
             disableButtons();
