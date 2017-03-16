@@ -51,33 +51,59 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         super.setPrimaryItem(container, position, object);
     }
 
+    /**
+     * Returns the fragment that is currently shown/ in the foreground.
+     *
+     * @return Returns the fragment that is currently shown/ in the foreground.
+     */
     HistoryPageFragment getCurrentFragment() {
         return currentFragment;
     }
 
+    /**
+     * Removes the database file of the fragment at the given position.
+     *
+     * @param position The position of the fragment in the ViewPager.
+     * @return Returns true, if the file was successfully removed, false if not.
+     */
     boolean removeItem(int position) {
-        File file = files.get(position);
-        if (file.delete()) {
-            files.remove(file);
-            notifyDataSetChanged();
-            return true;
-        } else {
-            return false;
+        if (position < files.size() && position >= 0) {
+            File file = files.get(position);
+            if (file.delete()) {
+                files.remove(file);
+                notifyDataSetChanged();
+                return true;
+            }
         }
+        return false;
     }
 
+    /**
+     * Get the database file of the fragment at the given position.
+     *
+     * @param position The position of the fragment in the ViewPager.
+     * @return Returns the database file of the fragment at the given position.
+     */
     File getFile(int position) {
         return files.get(position);
     }
 
-    boolean renameFile(int currentPosition, File newFile) {
-        File oldFile = files.get(currentPosition);
-        if (oldFile.renameTo(newFile)) {
-            files.set(currentPosition, newFile);
-            notifyDataSetChanged();
-            return true;
-        } else {
-            return false;
+    /**
+     * Rename the history file of a given position.
+     *
+     * @param position The position of the fragment in the ViewPager.
+     * @param newFile  The new file with the new name to which the file should be renamed.
+     * @return Returns true, if the renaming was successful, false if not.
+     */
+    boolean renameFile(int position, File newFile) {
+        if (position < files.size() && position >= 0) {
+            File oldFile = files.get(position);
+            if (oldFile.renameTo(newFile)) {
+                files.set(position, newFile);
+                notifyDataSetChanged();
+                return true;
+            }
         }
+        return false;
     }
 }

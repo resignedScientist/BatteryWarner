@@ -77,7 +77,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     /**
      * Returns the date the graph was created in milliseconds.
-     * If the time is older than 1000000000 ms (from 1970), it returns the date the file was last modified.
+     * If the time is older than 1000000000 ms (Unix time but in ms), it returns the date the file was last modified.
      * This is done because of back compatibility to older versions of the app where not the
      * real time but the time difference was saved.
      *
@@ -97,6 +97,11 @@ public class HistoryPageFragment extends BasicGraphFragment {
         return Calendar.getInstance().getTimeInMillis();
     }
 
+    /**
+     * Returns the database file connected to this fragment instance.
+     *
+     * @return The database file where the graphs are saved.
+     */
     public File getFile() {
         return file;
     }
