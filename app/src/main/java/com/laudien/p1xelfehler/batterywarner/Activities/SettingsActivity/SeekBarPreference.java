@@ -127,6 +127,21 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         return super.persistInt(value);
     }
 
+    public void setMin(int min) {
+        if (min >= 0) {
+            int difference = this.min - min;
+            this.min = min;
+            if (difference >= 0) {
+                progress += difference;
+            } else {
+                progress = min;
+            }
+            if (seekBar != null) {
+                seekBar.setMax(max - min);
+            }
+        }
+    }
+
     private void showDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.Nullable;
@@ -14,8 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
+
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 public class SmartChargingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -27,15 +32,26 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.smart_charging);
         setHasOptionsMenu(true);
-        alarmTimeSwitch = (SwitchPreference) findPreference(getString(R.string.pref_smart_charging_use_alarm_clock_time));
+        if (SDK_INT >= LOLLIPOP) {
+            alarmTimeSwitch = (SwitchPreference) findPreference(getString(R.string.pref_smart_charging_use_alarm_clock_time));
+        }
         timePickerPreference = (TimePickerPreference) findPreference(getString(R.string.pref_smart_charging_time));
+        Context context = getActivity();
+        if (context != null) {
+            SeekBarPreference seekBar_limit = (SeekBarPreference) findPreference(getString(R.string.pref_smart_charging_limit));
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+            seekBar_limit.setMin(warningHigh);
+        }
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
+        if (SDK_INT >= LOLLIPOP) {
+            timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
+        }
     }
 
     @Override
