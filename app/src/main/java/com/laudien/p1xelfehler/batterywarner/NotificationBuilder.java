@@ -115,8 +115,10 @@ public final class NotificationBuilder {
 
     private static void showWarningHighNotification(Context context, SharedPreferences sharedPreferences) {
         boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
         // show notification
-        if (warningHighEnabled) {
+        if (!alreadyNotified && warningHighEnabled) {
+            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh);
             Notification.Builder builder = new Notification.Builder(context)
@@ -137,7 +139,9 @@ public final class NotificationBuilder {
 
     private static void showWarningLowNotification(Context context, SharedPreferences sharedPreferences) {
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-        if (warningLowEnabled) {
+        boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+        if (!alreadyNotified && warningLowEnabled) {
+            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
