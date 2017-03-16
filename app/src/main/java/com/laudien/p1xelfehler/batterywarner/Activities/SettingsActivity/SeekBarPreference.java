@@ -129,12 +129,9 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
     public void setMin(int min) {
         if (min >= 0) {
-            int difference = this.min - min;
             this.min = min;
-            if (difference >= 0) {
-                progress += difference;
-            } else {
-                progress = min;
+            if (progress < min) {
+                persistInt(min);
             }
             if (seekBar != null) {
                 seekBar.setMax(max - min);
