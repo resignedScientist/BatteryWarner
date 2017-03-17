@@ -183,5 +183,6 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         if (seekBar != null) {
             seekBar.setProgress(progress - min);
         }
+        persistInt(progress);
     }
 }
