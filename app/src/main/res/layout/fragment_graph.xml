@@ -76,6 +76,7 @@
                 android:id="@+id/switch_percentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:checked="true"
                 android:text="@string/battery_level_percent" />
 
