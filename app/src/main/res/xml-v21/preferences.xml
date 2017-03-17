@@ -2,8 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/notification_sound">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_enable_sound_default"
+            android:key="@string/pref_enable_sound"
+            android:title="@string/enable_sound" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="@string/pref_enable_sound"
             android:key="@string/pref_sound_uri"
             android:ringtoneType="notification"
             android:showSilent="false"

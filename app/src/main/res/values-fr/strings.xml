@@ -136,4 +136,5 @@
     <string name="delete_all">Delete all</string>
     <string name="success_delete_all_graphs">All Graphs removed!</string>
     <string name="question_delete_all_graphs">Do you really want to delete ALL graphs?</string>
+    <string name="enable_sound">Enable warning sound</string>
 </resources>

@@ -19,4 +19,5 @@
     <bool name="pref_usb_charging_disabled_default">false</bool>
     <bool name="pref_smart_charging_enabled_default">false</bool>
     <bool name="pref_smart_charging_use_alarm_clock_time_default">true</bool>
+    <bool name="pref_enable_sound_default">true</bool>
 </resources>

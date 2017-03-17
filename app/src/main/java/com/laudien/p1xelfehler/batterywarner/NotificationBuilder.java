@@ -123,7 +123,7 @@ public final class NotificationBuilder {
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(getWarningSound(context))
+                    .setSound(getWarningSound(context, sharedPreferences))
                     .setVibrate(VIBRATE_PATTERN)
                     .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
@@ -146,7 +146,7 @@ public final class NotificationBuilder {
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(getWarningSound(context))
+                    .setSound(getWarningSound(context, sharedPreferences))
                     .setVibrate(VIBRATE_PATTERN)
                     .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
@@ -308,13 +308,17 @@ public final class NotificationBuilder {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static Uri getWarningSound(Context context) {
-        String uri = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getString(R.string.pref_sound_uri), "");
-        if (!uri.equals("")) {
-            return Uri.parse(uri); // saved URI
+    private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {
+        boolean soundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
+        if (soundEnabled) {
+            String uri = sharedPreferences.getString(context.getString(R.string.pref_sound_uri), "");
+            if (!uri.equals("")) {
+                return Uri.parse(uri); // saved URI
+            } else {
+                return getDefaultSound(); // default URI
+            }
         } else {
-            return getDefaultSound(); // default URI
+            return null;
         }
     }
 
