@@ -42,6 +42,10 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NO_AL
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 import static java.text.DateFormat.SHORT;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.SECOND;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -69,18 +73,19 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
             boolean isCharging = chargingType != 0;
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
-            // stop service if usb charging but disabled in settings..
-            // or not charging and not paused by the service
+            // stop service if not charging and not paused
             if (!isCharging && !isChargingPaused) {
                 stopSelf();
                 return;
             }
+            // stop charging and stop self if plugged in via usb but usb charging is disabled
             if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
                 stopCharging();
+                stopSelf();
                 return;
             }
-            // stop charging again if the user dismisses the notification while charging is paused
-            if (isCharging && isChargingPaused) {
+            // stop charging again if the user dismisses the notification while charging is paused and not resumed yet
+            if (isCharging && isChargingPaused && !isChargingResumed) {
                 isCharging = false;
                 pauseCharging();
             }
@@ -98,6 +103,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     // show the warning high notification if the battery level reached it
                     if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
                         alreadyNotified = true;
+                        // make sure that already notified is false in the settings before notifying
+                        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                                .putBoolean(getString(R.string.pref_already_notified), false)
+                                .apply();
+                        // show warning high notification
                         NotificationBuilder.showNotification(context, ID_WARNING_HIGH);
                     }
                     // stop charging if enabled
@@ -163,7 +173,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
             case BATTERY_PLUGGED_WIRELESS:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-            default: // discharging
+            default: // discharging or unknown charging type
                 return false;
         }
     }
@@ -269,6 +279,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             // stop service if usb charging, but usb charging was disabled
             if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
                 stopCharging();
+                stopSelf();
             }
         }
     }
@@ -304,7 +315,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
             }
         });
-        stopSelf();
     }
 
     private void resumeCharging() {
@@ -348,11 +358,13 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     Calendar calendar = Calendar.getInstance();
                     long timeNow = calendar.getTimeInMillis();
                     calendar.setTime(date);
-                    int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
+                    int hourOfDay = calendar.get(HOUR_OF_DAY);
+                    int minute = calendar.get(MINUTE);
                     calendar.setTimeInMillis(timeNow);
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
+                    calendar.set(HOUR_OF_DAY, hourOfDay);
+                    calendar.set(MINUTE, minute);
+                    calendar.set(SECOND, 0);
+                    calendar.set(MILLISECOND, 0);
                     alarmTime = calendar.getTimeInMillis();
                     if (alarmTime <= timeNow) {
                         alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past

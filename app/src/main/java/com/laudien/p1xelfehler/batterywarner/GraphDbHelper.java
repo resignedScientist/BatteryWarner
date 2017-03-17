@@ -155,6 +155,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         } else {
             dbChanged = true;
         }
+        Log.d(TAG, "The database has been cleared!");
     }
 
     /**
