@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
@@ -22,6 +21,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
 
@@ -240,7 +240,7 @@ public abstract class BasicGraphFragment extends Fragment {
         if (series != null && infoObject != null) {
             infoObject.showDialog(getContext());
         } else {
-            Toast.makeText(getContext(), getString(R.string.no_data), Toast.LENGTH_SHORT).show();
+            ((BaseActivity) getActivity()).showToast(R.string.no_data, LENGTH_SHORT);
         }
     }
 }
