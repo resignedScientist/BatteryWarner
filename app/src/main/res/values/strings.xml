@@ -183,5 +183,5 @@
     <string name="success_delete_all_graphs">All graphs removed!</string>
     <string name="question_delete_all_graphs">Do you really want to delete ALL graphs?</string>
     <string name="enable_sound">Enable warning sound</string>
-    <string name="alex_cheater">Hallo Alex, du Cheater!</string>
+    <string name="alex_cheater" translatable="false">Hallo Alex, du Cheater!</string>
 </resources>
