@@ -24,12 +24,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
@@ -48,6 +48,7 @@ import java.util.Locale;
 
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
@@ -211,7 +212,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
-            Toast.makeText(getContext(), getString(R.string.pro_only_short), Toast.LENGTH_SHORT).show();
+            ((BaseActivity) (getActivity())).showToast(R.string.pro_only_short, LENGTH_SHORT);
             return false;
         }
         switch (id) {
@@ -220,10 +221,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     if (series != null) {
                         showResetDialog();
                     } else {
-                        Toast.makeText(getContext(), getString(R.string.nothing_to_delete), Toast.LENGTH_SHORT).show();
+                        ((BaseActivity) (getActivity())).showToast(R.string.nothing_to_delete, LENGTH_SHORT);
                     }
                 } else {
-                    Toast.makeText(getContext(), getString(R.string.disabled_in_settings), Toast.LENGTH_SHORT).show();
+                    ((BaseActivity) (getActivity())).showToast(R.string.disabled_in_settings, LENGTH_SHORT);
                 }
                 break;
             case R.id.menu_open_history:
@@ -408,7 +409,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     private void saveGraph() {
         // check if a graph is present and has enough data
         if (graphView.getSeries().size() == 0 || series[TYPE_PERCENTAGE].getHighestValueX() == 0) {
-            Toast.makeText(getContext(), R.string.nothing_to_save, Toast.LENGTH_SHORT).show();
+            ((BaseActivity) (getActivity())).showToast(R.string.nothing_to_save, LENGTH_SHORT);
             return;
         }
         // check for permission
@@ -442,7 +443,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     public void onClick(DialogInterface dialogInterface, int i) {
                         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(getContext());
                         graphDbHelper.resetTable();
-                        Toast.makeText(getContext(), R.string.success_delete_graph, Toast.LENGTH_SHORT).show();
+                        ((BaseActivity) (getActivity())).showToast(R.string.success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
     }
@@ -473,13 +474,13 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
         @Override
         protected void onPostExecute(Boolean success) {
-            String message;
+            int message;
             if (success) {
-                message = getString(R.string.success_saving);
+                message = R.string.success_saving;
             } else {
-                message = getString(R.string.error_saving);
+                message = R.string.error_saving;
             }
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            ((BaseActivity) (getActivity())).showToast(message, LENGTH_SHORT);
         }
     }
 }

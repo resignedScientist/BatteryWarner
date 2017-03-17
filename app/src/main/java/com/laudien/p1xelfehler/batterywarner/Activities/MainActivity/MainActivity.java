@@ -16,12 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (!backPressed) {
-            Toast.makeText(getApplicationContext(), getString(R.string.click_to_exit), Toast.LENGTH_SHORT).show();
+            showToast(R.string.click_to_exit, LENGTH_SHORT);
             backPressed = true;
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -127,7 +128,7 @@ public class MainActivity extends BaseActivity {
                 if (clickCounter < 4) {
                     clickCounter++;
                 } else {
-                    Toast.makeText(getApplicationContext(), "Hallo Alex, du Cheater!", Toast.LENGTH_SHORT).show();
+                    showToast(R.string.alex_cheater, LENGTH_SHORT);
                     dialog.dismiss();
                     sharedPreferences
                             .edit()

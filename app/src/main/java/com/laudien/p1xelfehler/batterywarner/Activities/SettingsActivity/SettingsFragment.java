@@ -21,8 +21,8 @@ import android.preference.RingtonePreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
@@ -31,6 +31,8 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * A Fragment that shows the default settings and adds some functionality to some settings when
@@ -139,11 +141,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (preference == switch_darkTheme) {
             Context context = getActivity();
             if (context != null && context instanceof SettingsActivity) {
-                Toast.makeText(
-                        context,
-                        getString(R.string.theme_activated_toast),
-                        Toast.LENGTH_SHORT
-                ).show();
+                ((BaseActivity) context).showToast(R.string.theme_activated_toast, LENGTH_SHORT);
             }
         } else if (preference == ringtonePreference) {
             Context context = getActivity();

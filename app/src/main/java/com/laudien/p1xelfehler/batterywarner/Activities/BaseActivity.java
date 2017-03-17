@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -17,6 +18,9 @@ import com.laudien.p1xelfehler.batterywarner.R;
  * initializes the toolbar and sets its title.
  */
 public abstract class BaseActivity extends AppCompatActivity {
+
+    protected Toast toast;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,5 +61,21 @@ public abstract class BaseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void showToast(int messageResource, int length) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, messageResource, length);
+        toast.show();
+    }
+
+    public void showToast(String message, int length) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(this, message, length);
+        toast.show();
     }
 }

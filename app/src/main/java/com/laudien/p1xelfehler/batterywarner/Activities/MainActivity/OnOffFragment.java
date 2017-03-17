@@ -23,9 +23,9 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -235,7 +235,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                     .putLong(getString(R.string.value_time_screen_off), 0)
                     .apply();
             showNoData();
-            Toast.makeText(getContext(), getString(R.string.toast_reset_data_success), Toast.LENGTH_SHORT).show();
+            ((BaseActivity) getActivity()).showToast(R.string.toast_reset_data_success, LENGTH_SHORT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -274,12 +274,12 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
                 context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
                 context.startService(new Intent(context, DischargingService.class));
             }
-            Toast.makeText(context, getString(R.string.enabled_info), LENGTH_SHORT).show();
+            ((BaseActivity) getActivity()).showToast(R.string.enabled_info, LENGTH_SHORT);
         } else {
             if (!isCharging) { // turned off and discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(context);
             }
-            Toast.makeText(context, getString(R.string.disabled_info), LENGTH_SHORT).show();
+            ((BaseActivity) getActivity()).showToast(R.string.disabled_info, LENGTH_SHORT);
         }
         // send broadcast
         context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
