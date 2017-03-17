@@ -154,10 +154,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (IS_PRO) {
             if (graphEnabled) {
-                checkBox_percentage.setChecked(
+                switch_percentage.setChecked(
                         sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
                 );
-                checkBox_temp.setChecked(
+                switch_temp.setChecked(
                         sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
                 );
                 graphDbHelper = GraphDbHelper.getInstance(getContext());
@@ -190,8 +190,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         super.onPause();
         if (graphEnabled) {
             sharedPreferences.edit()
-                    .putBoolean(getString(R.string.pref_checkBox_percent), checkBox_percentage.isChecked())
-                    .putBoolean(getString(R.string.pref_checkBox_temperature), checkBox_temp.isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_percent), switch_percentage.isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_temperature), switch_temp.isChecked())
                     .apply();
             if (IS_PRO) {
                 graphDbHelper.setDatabaseChangedListener(null);
@@ -393,16 +393,16 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         textView_chargingTime.setText(disableText);
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
         if (disableCheckBoxes) {
-            checkBox_temp.setEnabled(false);
-            checkBox_percentage.setEnabled(false);
+            switch_temp.setEnabled(false);
+            switch_percentage.setEnabled(false);
         }
     }
 
     private void setNormalText(String enableText) {
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
         textView_chargingTime.setText(enableText);
-        checkBox_temp.setEnabled(true);
-        checkBox_percentage.setEnabled(true);
+        switch_temp.setEnabled(true);
+        switch_percentage.setEnabled(true);
     }
 
     private void saveGraph() {

@@ -74,16 +74,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/checkbox_percentage"
+            <Switch
+                android:id="@+id/switch_percentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/battery_level_percent"
                 android:textAlignment="center" />
 
-            <CheckBox
-                android:id="@+id/checkBox_temp"
+            <Switch
+                android:id="@+id/switch_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"

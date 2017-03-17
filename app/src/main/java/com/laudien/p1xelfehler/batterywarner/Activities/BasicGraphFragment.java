@@ -6,8 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,11 +45,11 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Checkbox which turns the percentage graph on and off.
      */
-    protected CheckBox checkBox_percentage;
+    protected Switch switch_percentage;
     /**
      * Checkbox which turns the temperature graph on and off.
      */
-    protected CheckBox checkBox_temp;
+    protected Switch switch_temp;
     /**
      * TextView that contains the title over the GraphView.
      */
@@ -62,15 +62,15 @@ public abstract class BasicGraphFragment extends Fragment {
      * An array of both graphs that are displayed in the GraphView.
      */
     protected LineGraphSeries<DataPoint>[] series;
-    private CompoundButton.OnCheckedChangeListener onCheckBoxChangeListener = new CompoundButton.OnCheckedChangeListener() {
+    private CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             Series s = null;
-            if (compoundButton == checkBox_percentage) {
+            if (compoundButton == switch_percentage) {
                 if (series != null) {
                     s = series[TYPE_PERCENTAGE];
                 }
-            } else if (compoundButton == checkBox_temp) {
+            } else if (compoundButton == switch_temp) {
                 if (series != null) {
                     s = series[TYPE_TEMPERATURE];
                 }
@@ -91,10 +91,10 @@ public abstract class BasicGraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = (GraphView) view.findViewById(R.id.graphView);
-        checkBox_percentage = (CheckBox) view.findViewById(R.id.checkbox_percentage);
-        checkBox_percentage.setOnCheckedChangeListener(onCheckBoxChangeListener);
-        checkBox_temp = (CheckBox) view.findViewById(R.id.checkBox_temp);
-        checkBox_temp.setOnCheckedChangeListener(onCheckBoxChangeListener);
+        switch_percentage = (Switch) view.findViewById(R.id.switch_percentage);
+        switch_percentage.setOnCheckedChangeListener(onSwitchChangedListener);
+        switch_temp = (Switch) view.findViewById(R.id.switch_temp);
+        switch_temp.setOnCheckedChangeListener(onSwitchChangedListener);
         textView_title = (TextView) view.findViewById(R.id.textView_title);
         textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
         initGraphView();
@@ -124,10 +124,10 @@ public abstract class BasicGraphFragment extends Fragment {
     protected void loadSeries() {
         series = getSeries();
         if (series != null) {
-            if (checkBox_percentage.isChecked()) {
+            if (switch_percentage.isChecked()) {
                 graphView.addSeries(series[TYPE_PERCENTAGE]);
             }
-            if (checkBox_temp.isChecked()) {
+            if (switch_temp.isChecked()) {
                 graphView.addSeries(series[TYPE_TEMPERATURE]);
             }
             createOrUpdateInfoObject();
@@ -209,10 +209,10 @@ public abstract class BasicGraphFragment extends Fragment {
                     if (graphCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
-                } else if (checkBox_percentage.isChecked() ^ checkBox_temp.isChecked()) { // Y-axis (percent)
-                    if (checkBox_percentage.isChecked())
+                } else if (switch_percentage.isChecked() ^ switch_temp.isChecked()) { // Y-axis (percent)
+                    if (switch_percentage.isChecked())
                         return super.formatLabel(value, false) + "%";
-                    if (checkBox_temp.isChecked())
+                    if (switch_temp.isChecked())
                         return super.formatLabel(value, false) + "°C";
                 }
                 return super.formatLabel(value, false);
