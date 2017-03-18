@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
@@ -50,8 +49,7 @@ public class DischargingReceiver extends BroadcastReceiver {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(ID_WARNING_HIGH);
+                NotificationBuilder.cancelNotification(context, ID_WARNING_HIGH);
             }
         }, delay);
 

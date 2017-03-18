@@ -113,6 +113,11 @@ public final class NotificationBuilder {
         }
     }
 
+    public static void cancelNotification(Context context, int notificationID) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.cancel(notificationID);
+    }
+
     private static void showWarningHighNotification(Context context, SharedPreferences sharedPreferences) {
         boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
         boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));

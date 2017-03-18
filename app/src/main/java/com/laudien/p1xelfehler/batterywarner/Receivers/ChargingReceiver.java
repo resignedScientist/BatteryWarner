@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -20,6 +19,7 @@ import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_LOW;
 
 /**
  * A BroadcastReceiver that is called by the system if the device has been plugged in to charge.
@@ -42,8 +42,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
 
         // cancel warning low notification
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(NotificationBuilder.ID_WARNING_LOW);
+        NotificationBuilder.cancelNotification(context, ID_WARNING_LOW);
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();

@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
@@ -39,6 +38,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NO_ALARM_TIME_FOUND;
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_SILENT_MODE;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
 import static java.text.DateFormat.SHORT;
@@ -147,8 +147,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int ringerMode = audioManager.getRingerMode();
             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.cancel(NotificationBuilder.ID_SILENT_MODE);
+                NotificationBuilder.cancelNotification(context, ID_SILENT_MODE);
                 unregisterReceiver(this);
             }
         }
@@ -324,8 +323,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             public void run() {
                 try {
                     RootChecker.enableCharging(ChargingService.this);
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChargingService.this);
-                    notificationManager.cancel(NotificationBuilder.ID_STOP_CHARGING);
+                    NotificationBuilder.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootChecker.NotRootedException e) {
                     e.printStackTrace();
                     NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
