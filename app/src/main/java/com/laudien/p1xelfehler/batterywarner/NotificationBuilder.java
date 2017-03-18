@@ -113,6 +113,12 @@ public final class NotificationBuilder {
         }
     }
 
+    /**
+     * Cancels the notification with the given notification id.
+     *
+     * @param context        An instance of the Context class.
+     * @param notificationID The id of the notification - usually one of the id constants.
+     */
     public static void cancelNotification(Context context, int notificationID) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.cancel(notificationID);
