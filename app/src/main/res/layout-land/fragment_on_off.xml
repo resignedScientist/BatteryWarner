@@ -30,19 +30,26 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/battery_status_full_white" />
 
-    <include
-        layout="@layout/battery_infos"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline_bottom"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintLeft_toRightOf="@id/img_battery"
         app:layout_constraintRight_toLeftOf="@+id/toggleButton"
         app:layout_constraintTop_toBottomOf="@+id/guideline_top"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <include
+            layout="@layout/battery_infos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp" />
+    </FrameLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_bottom"
