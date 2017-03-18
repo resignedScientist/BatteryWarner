@@ -324,6 +324,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             public void run() {
                 try {
                     RootChecker.enableCharging(ChargingService.this);
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChargingService.this);
+                    notificationManager.cancel(NotificationBuilder.ID_STOP_CHARGING);
                 } catch (RootChecker.NotRootedException e) {
                     e.printStackTrace();
                     NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
