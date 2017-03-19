@@ -145,8 +145,8 @@
     <string name="date">Date</string>
     <string name="unknown">Unknown</string>
     <string name="grant_root_again">The app was updated. Please click here to grant root access again!</string>
-    <string name="stop_charging_title">Automatically stop charging</string>
-    <string name="stop_charging_subtitle">Does not work with every Device (root)!</string>
+    <string name="stop_charging_title">Automatically stop charging [Root]</string>
+    <string name="stop_charging_subtitle">Stops the charging when the warning high percentage is reached.</string>
     <string name="toast_not_rooted">You must be rooted for this!</string>
     <string name="dismiss_if_unplugged">Dismiss this notification after you unplug the device!</string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
@@ -163,7 +163,7 @@
     <string name="button_on">Main switch: on</string>
     <string name="button_off">Main switch: off</string>
     <string name="advanced_features">Advanced features</string>
-    <string name="disable_usb_charging">Disable USB charging</string>
+    <string name="disable_usb_charging">Disable USB charging [Root]</string>
     <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
     <string name="toast_reset_data_success">The Data has been reset!</string>
     <string name="information">Information</string>
@@ -186,4 +186,5 @@
     <string name="alex_cheater" translatable="false">Hallo Alex, du Cheater!</string>
     <string name="grant_root">Grant root</string>
     <string name="enable_charging">Enable charging</string>
+    <string name="disable_charging_subtitle">Prevents the device from charging when plugged in via usb.</string>
 </resources>

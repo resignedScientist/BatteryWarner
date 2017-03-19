@@ -99,8 +99,8 @@
     <string name="date">Datum</string>
     <string name="unknown">Unbekannt</string>
     <string name="grant_root_again">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
-    <string name="stop_charging_title">Laden automatisch abbrechen</string>
-    <string name="stop_charging_subtitle">Funktioniert nicht mit jedem Gerät (root)!</string>
+    <string name="stop_charging_title">Laden automatisch abbrechen [Root]</string>
+    <string name="stop_charging_subtitle">Stoppt das Laden, sobald die Batterie-Warnung erscheint.</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
     <string name="dismiss_if_unplugged">Entferne diese Benachrichtigung nachdem das Kabel vom Gerät getrennt wurde!</string>
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
@@ -117,7 +117,7 @@
     <string name="button_on">Hauptschalter: an</string>
     <string name="button_off">Hauptschalter: aus</string>
     <string name="advanced_features">Erweiterte Einstellungen</string>
-    <string name="disable_usb_charging">USB-Laden deaktivieren</string>
+    <string name="disable_usb_charging">USB-Laden deaktivieren [Root]</string>
     <string name="not_rooted_notification">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
     <string name="toast_reset_data_success">Die Daten wurden zurückgesetzt!</string>
     <string name="information">Information</string>
@@ -139,4 +139,5 @@
     <string name="enable_sound">Warnton aktivieren</string>
     <string name="grant_root">Root erlauben</string>
     <string name="enable_charging">Laden aktivieren</string>
+    <string name="disable_charging_subtitle">Verhindert, dass das Gerät bei einer USB-Verbindung lädt.</string>
 </resources>

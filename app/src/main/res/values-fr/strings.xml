@@ -96,8 +96,8 @@
     <string name="date">Date</string>
     <string name="unknown">Inconnu</string>
     <string name="grant_root_again">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
-    <string name="stop_charging_title">Arrêter automatiquement la charge</string>
-    <string name="stop_charging_subtitle">Ne fonctionne pas avec tous les appareils (root) !</string>
+    <string name="stop_charging_title">Arrêter automatiquement la charge [Root]</string>
+    <string name="stop_charging_subtitle">Stops the charging when the warning high percentage is reached.</string>
     <string name="toast_not_rooted">Votre appareil doit être rooté !</string>
     <string name="dismiss_if_unplugged">Ignorez cette notification après avoir débranché l\'appareil !</string>
     <string name="toast_root_denied">L\'accès root a été refusé ! Toutes les fonctions qui l\'utilisaient sont désactivées</string>
@@ -114,7 +114,7 @@
     <string name="button_on">Interrupteur principal : ON</string>
     <string name="button_off">Interrupteur principal : OFF</string>
     <string name="advanced_features">Fonctionnalités avancées</string>
-    <string name="disable_usb_charging">Désactiver la charge USB</string>
+    <string name="disable_usb_charging">Désactiver la charge USB [Root]</string>
     <string name="not_rooted_notification">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="enable_on_ac">Alerte sur charge secteur</string>
     <string name="enable_on_usb">Alerte sur charge USB</string>
@@ -139,4 +139,5 @@
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
     <string name="grant_root">Grant root</string>
     <string name="enable_charging">Enable charging</string>
+    <string name="disable_charging_subtitle">Prevents the device from charging when plugged in via usb.</string>
 </resources>
