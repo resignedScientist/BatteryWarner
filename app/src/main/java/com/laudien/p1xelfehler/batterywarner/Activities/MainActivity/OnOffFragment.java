@@ -305,9 +305,9 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     }
 
     private void showNoData() {
-        textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s",
-                getString(R.string.screen_on), getString(R.string.not_enough_data)));
-        textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s",
-                getString(R.string.screen_off), getString(R.string.not_enough_data)));
+        textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
+                getString(R.string.screen_on), "N/A"));
+        textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
+                getString(R.string.screen_off), "N/A"));
     }
 }
