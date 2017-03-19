@@ -137,4 +137,6 @@
     <string name="success_delete_all_graphs">Alle Graphen gelöscht!</string>
     <string name="question_delete_all_graphs">Möchten Sie wirklich ALLE Graphen löschen?</string>
     <string name="enable_sound">Warnton aktivieren</string>
+    <string name="grant_root">Root erlauben</string>
+    <string name="enable_charging">Laden aktivieren</string>
 </resources>

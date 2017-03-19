@@ -119,9 +119,11 @@ public final class NotificationBuilder {
      * @param context        An instance of the Context class.
      * @param notificationID The id of the notification - usually one of the id constants.
      */
-    public static void cancelNotification(Context context, int notificationID) {
+    public static void cancelNotification(Context context, int... notificationID) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.cancel(notificationID);
+        for (int id : notificationID) {
+            notificationManager.cancel(id);
+        }
     }
 
     private static void showWarningHighNotification(Context context, SharedPreferences sharedPreferences) {
@@ -206,8 +208,8 @@ public final class NotificationBuilder {
                 public void run() {
                     try {
                         if (!RootChecker.isChargingEnabled()) {
-                            PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-                                    new Intent(context, EnableChargingService.class), FLAG_UPDATE_CURRENT);
+                            PendingIntent pendingIntent = PendingIntent.getService(context, ID_STOP_CHARGING,
+                                    new Intent(context, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
                             String messageText = context.getString(R.string.dismiss_if_unplugged);
                             Notification.Builder builder = new Notification.Builder(context)
                                     .setSmallIcon(R.mipmap.ic_launcher)
@@ -215,9 +217,9 @@ public final class NotificationBuilder {
                                     .setContentTitle(context.getString(R.string.app_name))
                                     .setContentText(messageText)
                                     .setStyle(getBigTextStyle(messageText))
-                                    .setContentIntent(pendingIntent)
-                                    .setDeleteIntent(pendingIntent)
-                                    .setAutoCancel(true);
+                                    .setContentIntent(getDefaultClickIntent(context))
+                                    .addAction(R.drawable.ic_battery_charging_full_white_48dp, context.getString(R.string.enable_charging), pendingIntent)
+                                    .setOngoing(true);
                             NotificationManager notificationManager = (NotificationManager)
                                     context.getSystemService(NOTIFICATION_SERVICE);
                             notificationManager.notify(ID_STOP_CHARGING, builder.build());
@@ -273,6 +275,7 @@ public final class NotificationBuilder {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(clickIntent)
+                    .addAction(R.drawable.ic_done_white_48dp, context.getString(R.string.grant_root), clickIntent)
                     .setDeleteIntent(deleteIntent)
                     .setAutoCancel(true);
             NotificationManager notificationManager = (NotificationManager)
@@ -295,6 +298,7 @@ public final class NotificationBuilder {
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
                 .setDeleteIntent(deleteIntent)
+                .addAction(R.drawable.ic_done_white_48dp, context.getString(R.string.grant_root), clickIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);

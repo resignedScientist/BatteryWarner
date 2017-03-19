@@ -176,7 +176,7 @@
     <string name="smart_charging_time">The time you wake up:</string>
     <string name="root_features">Root features</string>
     <string name="smart_charging_use_alarm_clock_time">Use the next alarm clock time</string>
-    <string name="no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm or a time manually in order to use Smart Charging!</string>
+    <string name="no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="graph_name_already_exists">There already is a graph named</string>
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
     <string name="delete_all">Delete all</string>
@@ -184,4 +184,6 @@
     <string name="question_delete_all_graphs">Do you really want to delete ALL graphs?</string>
     <string name="enable_sound">Enable warning sound</string>
     <string name="alex_cheater" translatable="false">Hallo Alex, du Cheater!</string>
+    <string name="grant_root">Grant root</string>
+    <string name="enable_charging">Enable charging</string>
 </resources>

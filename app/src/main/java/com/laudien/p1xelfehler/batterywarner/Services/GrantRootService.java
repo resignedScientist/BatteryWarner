@@ -9,6 +9,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.RootChecker;
 
+import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_GRANT_ROOT;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
 
@@ -31,6 +32,7 @@ public class GrantRootService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean rooted = RootChecker.isRootAvailable();
+        NotificationBuilder.cancelNotification(this, ID_GRANT_ROOT, ID_NOT_ROOTED);
         if (rooted) { // rooting was allowed now
             Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             if (batteryStatus != null) {
