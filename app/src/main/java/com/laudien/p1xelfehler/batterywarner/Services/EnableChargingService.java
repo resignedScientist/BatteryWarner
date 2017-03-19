@@ -29,6 +29,7 @@ public class EnableChargingService extends IntentService {
         try {
             RootChecker.enableCharging(EnableChargingService.this);
             NotificationBuilder.cancelNotification(EnableChargingService.this, ID_STOP_CHARGING);
+            stopService(new Intent(this, ChargingService.class));
         } catch (RootChecker.NotRootedException e) {
             NotificationBuilder.showNotification(EnableChargingService.this, ID_NOT_ROOTED);
             e.printStackTrace();
