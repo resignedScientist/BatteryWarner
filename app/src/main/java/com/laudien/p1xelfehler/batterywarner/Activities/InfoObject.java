@@ -62,6 +62,7 @@ public class InfoObject {
 
     /**
      * Returns the time string for zero seconds. Uses the time format set by the user in the settings.
+     *
      * @param context An instance of the Context class.
      * @return Returns the time string for zero seconds.
      */
@@ -89,6 +90,7 @@ public class InfoObject {
 
     /**
      * Shows the info dialog with all the information of the charging curve to the user.
+     *
      * @param context An instance of the Context class.
      */
     void showDialog(Context context) {
@@ -113,12 +115,22 @@ public class InfoObject {
                 date
         ));
         TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
-        textView_speed.setText(String.format(
-                Locale.getDefault(),
-                "%s: %.2f %%/h",
-                context.getString(R.string.charging_speed),
-                percentCharged * 60 / timeInMinutes)
-        );
+        double speed = percentCharged * 60 / timeInMinutes;
+        if (Double.isNaN(speed)) {
+            textView_speed.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s %%/h",
+                    context.getString(R.string.charging_speed),
+                    "N/A")
+            );
+        } else {
+            textView_speed.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %.2f %%/h",
+                    context.getString(R.string.charging_speed),
+                    speed)
+            );
+        }
         TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
@@ -145,6 +157,7 @@ public class InfoObject {
 
     /**
      * Returns the time string with the charging time. The format is defined by the user in the settings.
+     *
      * @param context An instance of the Context class.
      * @return Returns the time string with the charging time.
      */
@@ -177,6 +190,7 @@ public class InfoObject {
 
     /**
      * Returns the time of charging in minutes.
+     *
      * @return Returns the time of charging in minutes.
      */
     public double getTimeInMinutes() {
