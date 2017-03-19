@@ -86,7 +86,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // stop service if the user dismisses the notification while charging is paused and not resumed yet
             if (isCharging && isChargingPaused && !isChargingResumed) {
-                stopCharging();
                 stopSelf();
                 return;
             }
