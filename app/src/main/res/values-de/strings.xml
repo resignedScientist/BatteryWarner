@@ -102,7 +102,7 @@
     <string name="stop_charging_title">Laden automatisch abbrechen [Root]</string>
     <string name="stop_charging_subtitle">Stoppt das Laden, sobald die Batterie-Warnung erscheint.</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
-    <string name="dismiss_if_unplugged">Entferne diese Benachrichtigung nachdem das Kabel vom Gerät getrennt wurde!</string>
+    <string name="dismiss_if_unplugged">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
     <string name="stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
     <string name="current">Stromstärke</string>

@@ -148,7 +148,7 @@
     <string name="stop_charging_title">Automatically stop charging [Root]</string>
     <string name="stop_charging_subtitle">Stops the charging when the warning high percentage is reached.</string>
     <string name="toast_not_rooted">You must be rooted for this!</string>
-    <string name="dismiss_if_unplugged">Dismiss this notification after you unplug the device!</string>
+    <string name="dismiss_if_unplugged">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
     <string name="stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="current">Current</string>
