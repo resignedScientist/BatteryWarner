@@ -84,11 +84,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 stopSelf();
                 return;
             }
-            // stop service if the user dismisses the notification while charging is paused and not resumed yet
-            if (isCharging && isChargingPaused && !isChargingResumed) {
-                stopSelf();
-                return;
-            }
             if (batteryLevel != lastBatteryLevel) { // if battery level changed
                 // add a value to the database
                 if (isGraphEnabled && IS_PRO) {
@@ -118,7 +113,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                         if (smartChargingEnabled) {
                             // stop charging and this service if the smart charging limit is reached
                             if (batteryLevel >= smartChargingLimit) {
-                                pauseCharging();
+                                stopCharging();
                                 stopSelf();
                                 return;
                             }
@@ -130,7 +125,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
             }
             // check if resume time is reached and charging is paused and not resumed yet
-            if (smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
+            if (!isCharging && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
                 // resume charging
                 resumeCharging();
             }
