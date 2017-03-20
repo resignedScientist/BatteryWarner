@@ -99,7 +99,6 @@
     <string name="stop_charging_title">Arrêter automatiquement la charge [Root]</string>
     <string name="stop_charging_subtitle">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint.</string>
     <string name="toast_not_rooted">Votre appareil doit être rooté !</string>
-    <string name="dismiss_if_unplugged">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="toast_root_denied">L\'accès root a été refusé ! Toutes les fonctions qui l\'utilisaient sont désactivées</string>
     <string name="stop_charging_not_working">L\'arrêt auto de charge ne semble pas fonctionner avec votre appareil ! Vous pouvez désactiver cette fonctionnalité !</string>
     <string name="current">Actuel&#160;</string>
@@ -140,4 +139,5 @@
     <string name="grant_root">Accorder l\'accès Root</string>
     <string name="enable_charging">Activer la charge</string>
     <string name="disable_charging_subtitle">Empêche l\'appareil de se recharger lorsqu\'il est branché via le port USB.</string>
+    <string name="dismiss_if_unplugged">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
 </resources>
