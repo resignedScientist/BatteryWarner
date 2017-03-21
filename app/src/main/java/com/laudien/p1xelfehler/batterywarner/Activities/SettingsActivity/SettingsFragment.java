@@ -26,7 +26,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
+import com.laudien.p1xelfehler.batterywarner.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
@@ -196,7 +196,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
-            RootChecker.handleRootDependingPreference(getActivity(), twoStatePreference);
+            RootHelper.handleRootDependingPreference(getActivity(), twoStatePreference);
             if (preference == pref_stopCharging) {
                 pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();

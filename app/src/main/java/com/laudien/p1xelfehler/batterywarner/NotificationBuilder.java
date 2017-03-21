@@ -211,7 +211,7 @@ public final class NotificationBuilder {
                 @Override
                 public void run() {
                     try {
-                        if (!RootChecker.isChargingEnabled()) {
+                        if (!RootHelper.isChargingEnabled()) {
                             PendingIntent pendingIntent = PendingIntent.getService(context, ID_STOP_CHARGING,
                                     new Intent(context, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
                             String messageText = context.getString(R.string.dismiss_if_unplugged);
@@ -228,10 +228,10 @@ public final class NotificationBuilder {
                                     context.getSystemService(NOTIFICATION_SERVICE);
                             notificationManager.notify(ID_STOP_CHARGING, builder.build());
                         }
-                    } catch (RootChecker.NotRootedException e) {
+                    } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
                         showNotification(context, ID_NOT_ROOTED);
-                    } catch (RootChecker.BatteryFileNotFoundException e) {
+                    } catch (RootHelper.BatteryFileNotFoundException e) {
                         e.printStackTrace();
                         showNotification(context, ID_STOP_CHARGING_NOT_WORKING);
                     }

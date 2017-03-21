@@ -16,9 +16,9 @@ import eu.chainfire.libsuperuser.Shell;
  * Helper class that helps with all root queries in the app.
  * All methods have to run outside of the main/ui thread.
  */
-public final class RootChecker {
+public final class RootHelper {
 
-    private static final String TAG = "RootChecker";
+    private static final String TAG = "RootHelper";
 
     /**
      * Checks if the app has root permissions. If the device is rooted, this method will trigger
@@ -96,10 +96,10 @@ public final class RootChecker {
                 @Override
                 protected Boolean doInBackground(Void... voids) {
                     try {
-                        RootChecker.isChargingEnabled();
-                    } catch (RootChecker.NotRootedException e) {
+                        RootHelper.isChargingEnabled();
+                    } catch (RootHelper.NotRootedException e) {
                         return false;
-                    } catch (RootChecker.BatteryFileNotFoundException e) {
+                    } catch (RootHelper.BatteryFileNotFoundException e) {
                         NotificationBuilder.showNotification(context,
                                 NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
                     }

@@ -61,7 +61,7 @@ public class OnOffTileService extends TileService {
         super.onClick();
         Log.d(TAG, "Tile clicked!");
         if (!IS_PRO) { // not pro
-            Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.not_pro, Toast.LENGTH_SHORT).show();
             return;
         }
         if (firstStart) { // intro not finished

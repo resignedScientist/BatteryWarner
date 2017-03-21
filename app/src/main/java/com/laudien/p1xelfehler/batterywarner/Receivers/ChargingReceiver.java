@@ -12,7 +12,7 @@ import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
+import com.laudien.p1xelfehler.batterywarner.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
@@ -83,8 +83,8 @@ public class ChargingReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         try {
-                            RootChecker.disableCharging(context);
-                        } catch (RootChecker.NotRootedException e) { // not rooted notification
+                            RootHelper.disableCharging(context);
+                        } catch (RootHelper.NotRootedException e) { // not rooted notification
                             e.printStackTrace();
                             NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
                         }
@@ -96,7 +96,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (!RootChecker.isRootAvailable()) {
+                        if (!RootHelper.isRootAvailable()) {
                             // show notification if root is not available (or the user did not see the asking for it)
                             NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
                         }

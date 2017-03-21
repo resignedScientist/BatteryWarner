@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
+import com.laudien.p1xelfehler.batterywarner.RootHelper;
 
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_GRANT_ROOT;
 import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
@@ -31,7 +31,7 @@ public class GrantRootService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        boolean rooted = RootChecker.isRootAvailable();
+        boolean rooted = RootHelper.isRootAvailable();
         NotificationBuilder.cancelNotification(this, ID_GRANT_ROOT, ID_NOT_ROOTED);
         if (rooted) { // rooting was allowed now
             Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
@@ -39,14 +39,14 @@ public class GrantRootService extends IntentService {
                 boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
                 if (!isCharging) { // if not charging make sure that it is not disabled by the app
                     try {
-                        boolean chargingEnabled = RootChecker.isChargingEnabled();
+                        boolean chargingEnabled = RootHelper.isChargingEnabled();
                         if (!chargingEnabled) { // if disabled by app, show notification!
                             NotificationBuilder.showNotification(GrantRootService.this, ID_STOP_CHARGING);
                         }
-                    } catch (RootChecker.NotRootedException e) { // user disabled root again after allowing it
+                    } catch (RootHelper.NotRootedException e) { // user disabled root again after allowing it
                         e.printStackTrace();
                         NotificationBuilder.showNotification(GrantRootService.this, ID_NOT_ROOTED);
-                    } catch (RootChecker.BatteryFileNotFoundException e) {
+                    } catch (RootHelper.BatteryFileNotFoundException e) {
                         // Should not happen! Is checked before the user can enable the feature!
                         e.printStackTrace();
                     }

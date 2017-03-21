@@ -18,7 +18,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragme
 import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootChecker;
+import com.laudien.p1xelfehler.batterywarner.RootHelper;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -301,9 +301,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             @Override
             public void run() {
                 try {
-                    RootChecker.disableCharging(ChargingService.this);
+                    RootHelper.disableCharging(ChargingService.this);
                     NotificationBuilder.showNotification(ChargingService.this, ID_STOP_CHARGING);
-                } catch (RootChecker.NotRootedException e) {
+                } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
                     NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
                 }
@@ -317,9 +317,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             @Override
             public void run() {
                 try {
-                    RootChecker.enableCharging(ChargingService.this);
+                    RootHelper.enableCharging(ChargingService.this);
                     NotificationBuilder.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
-                } catch (RootChecker.NotRootedException e) {
+                } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
                     NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
                     stopSelf(); // stop service if not rooted!
