@@ -15,6 +15,10 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
+import static android.service.quicksettings.Tile.STATE_ACTIVE;
+import static android.service.quicksettings.Tile.STATE_INACTIVE;
+import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+
 /**
  * Handles the QS tile of the app. It works only on Android 7.0 and above and
  * has the functionality to toggle all warnings and logging of the app.
@@ -31,7 +35,7 @@ public class OnOffTileService extends TileService {
         super.onStartListening();
         Log.d(TAG, "start listening!");
         tile = getQsTile();
-        if (Contract.IS_PRO) { // pro version
+        if (IS_PRO) { // pro version
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             // check if the intro was finished first
             firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
@@ -41,13 +45,13 @@ public class OnOffTileService extends TileService {
             }
             // set state from shared preferences
             if (isEnabled) {
-                tile.setState(Tile.STATE_ACTIVE);
+                tile.setState(STATE_ACTIVE);
             } else {
-                tile.setState(Tile.STATE_INACTIVE);
+                tile.setState(STATE_INACTIVE);
             }
 
         } else { // free version
-            tile.setState(Tile.STATE_INACTIVE);
+            tile.setState(STATE_INACTIVE);
         }
         tile.updateTile();
     }
@@ -56,7 +60,7 @@ public class OnOffTileService extends TileService {
     public void onClick() {
         super.onClick();
         Log.d(TAG, "Tile clicked!");
-        if (!Contract.IS_PRO) { // not pro
+        if (!IS_PRO) { // not pro
             Toast.makeText(getApplicationContext(), getString(R.string.not_pro), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -64,7 +68,7 @@ public class OnOffTileService extends TileService {
             Toast.makeText(getApplicationContext(), getString(R.string.please_finish_intro), Toast.LENGTH_SHORT).show();
             return;
         }
-        boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
+        boolean isActive = tile.getState() == STATE_ACTIVE;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
@@ -74,14 +78,14 @@ public class OnOffTileService extends TileService {
 
         if (isActive) { // disable battery warnings
             Log.d(TAG, "Disabling battery warnings...");
-            tile.setState(Tile.STATE_INACTIVE);
+            tile.setState(STATE_INACTIVE);
             if (!isCharging) { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
             Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
-            tile.setState(Tile.STATE_ACTIVE);
+            tile.setState(STATE_ACTIVE);
             sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
