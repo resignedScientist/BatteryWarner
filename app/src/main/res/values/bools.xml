@@ -20,4 +20,5 @@
     <bool name="pref_smart_charging_enabled_default">false</bool>
     <bool name="pref_smart_charging_use_alarm_clock_time_default">true</bool>
     <bool name="pref_enable_sound_default">true</bool>
+    <bool name="pref_notifications_off_warning_default">true</bool>
 </resources>

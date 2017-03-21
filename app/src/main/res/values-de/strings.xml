@@ -140,4 +140,5 @@
     <string name="grant_root">Root erlauben</string>
     <string name="enable_charging">Laden aktivieren</string>
     <string name="disable_charging_subtitle">Verhindert, dass das Gerät bei einer USB-Verbindung lädt.</string>
+    <string name="notifications_are_off_setting">Warne, wenn die Benachrichtigungen aus sind</string>
 </resources>

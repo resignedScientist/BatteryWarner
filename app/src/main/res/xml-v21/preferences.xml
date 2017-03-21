@@ -103,6 +103,10 @@
             android:key="@string/pref_wireless_enabled"
             android:title="@string/enable_on_wireless" />
         <SwitchPreference
+            android:defaultValue="@bool/pref_notifications_off_warning_default"
+            android:key="@string/pref_notifications_off_warning"
+            android:title="@string/notifications_are_off_setting" />
+        <SwitchPreference
             android:defaultValue="@bool/pref_discharging_service_enabled_default"
             android:key="@string/pref_discharging_service_enabled"
             android:summary="@string/discharging_summary"

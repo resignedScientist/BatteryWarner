@@ -90,7 +90,7 @@ public final class NotificationBuilder {
                     showWarningLowNotification(context, sharedPreferences);
                     break;
                 case ID_SILENT_MODE:
-                    showSilentModeNotification(context);
+                    showSilentModeNotification(context, sharedPreferences);
                     break;
                 case ID_STOP_CHARGING:
                     showStopChargingNotification(context, sharedPreferences);
@@ -173,30 +173,33 @@ public final class NotificationBuilder {
         }
     }
 
-    private static void showSilentModeNotification(Context context) {
-        AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        int ringerMode = audioManager.getRingerMode();
-        boolean areNotificationsEnabled;
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        if (SDK_INT >= N) {
-            areNotificationsEnabled = notificationManager.areNotificationsEnabled();
-        } else {
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            areNotificationsEnabled = notificationManagerCompat.areNotificationsEnabled();
-        }
-        if (!areNotificationsEnabled || ringerMode == AudioManager.RINGER_MODE_SILENT || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-            String messageText = context.getString(R.string.notifications_are_off);
-            Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(getDefaultSound())
-                    .setVibrate(VIBRATE_PATTERN)
-                    .setPriority(PRIORITY_HIGH)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(messageText)
-                    .setStyle(getBigTextStyle(messageText))
-                    .setContentIntent(getDefaultClickIntent(context))
-                    .setAutoCancel(true);
-            notificationManager.notify(ID_SILENT_MODE, builder.build());
+    private static void showSilentModeNotification(Context context, SharedPreferences sharedPreferences) {
+        boolean silentNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_notifications_off_warning), context.getResources().getBoolean(R.bool.pref_notifications_off_warning_default));
+        if (silentNotificationEnabled) {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            int ringerMode = audioManager.getRingerMode();
+            boolean areNotificationsEnabled;
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            if (SDK_INT >= N) {
+                areNotificationsEnabled = notificationManager.areNotificationsEnabled();
+            } else {
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+                areNotificationsEnabled = notificationManagerCompat.areNotificationsEnabled();
+            }
+            if (!areNotificationsEnabled || ringerMode == AudioManager.RINGER_MODE_SILENT || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
+                String messageText = context.getString(R.string.notifications_are_off);
+                Notification.Builder builder = new Notification.Builder(context)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSound(getDefaultSound())
+                        .setVibrate(VIBRATE_PATTERN)
+                        .setPriority(PRIORITY_HIGH)
+                        .setContentTitle(context.getString(R.string.app_name))
+                        .setContentText(messageText)
+                        .setStyle(getBigTextStyle(messageText))
+                        .setContentIntent(getDefaultClickIntent(context))
+                        .setAutoCancel(true);
+                notificationManager.notify(ID_SILENT_MODE, builder.build());
+            }
         }
     }
 
