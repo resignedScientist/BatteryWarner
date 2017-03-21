@@ -137,7 +137,7 @@ public final class NotificationBuilder {
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setSound(getWarningSound(context, sharedPreferences))
-                    .setVibrate(VIBRATE_PATTERN)
+                    .setVibrate(getWarningVibratePattern(context, sharedPreferences))
                     .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
@@ -160,7 +160,7 @@ public final class NotificationBuilder {
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setSound(getWarningSound(context, sharedPreferences))
-                    .setVibrate(VIBRATE_PATTERN)
+                    .setVibrate(getWarningVibratePattern(context, sharedPreferences))
                     .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
@@ -175,7 +175,8 @@ public final class NotificationBuilder {
 
     private static void showSilentModeNotification(Context context, SharedPreferences sharedPreferences) {
         boolean silentNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_notifications_off_warning), context.getResources().getBoolean(R.bool.pref_notifications_off_warning_default));
-        if (silentNotificationEnabled) {
+        boolean isSoundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
+        if (silentNotificationEnabled && isSoundEnabled) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int ringerMode = audioManager.getRingerMode();
             boolean areNotificationsEnabled;
@@ -335,6 +336,15 @@ public final class NotificationBuilder {
             } else {
                 return getDefaultSound(); // default URI
             }
+        } else {
+            return null;
+        }
+    }
+
+    private static long[] getWarningVibratePattern(Context context, SharedPreferences sharedPreferences) {
+        boolean isSoundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
+        if (isSoundEnabled) {
+            return VIBRATE_PATTERN;
         } else {
             return null;
         }
