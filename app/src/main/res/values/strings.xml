@@ -188,5 +188,5 @@
     <string name="enable_charging">Enable charging</string>
     <string name="disable_charging_subtitle">Prevents the device from charging when plugged in via usb.</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
-    <string name="notifications_are_off_setting">Warn if notifications are disabled</string>
+    <string name="notifications_are_off_setting">Warn if the sound is disabled</string>
 </resources>
