@@ -107,7 +107,7 @@
     <string name="uninstall_text">The free and the pro app are both installed! Please uninstall the free app first!</string>
     <string name="uninstall_cancel">Cancel</string>
     <string name="uninstall_go">Uninstall it!</string>
-    <string name="notifications_are_off">Warning! The notifications are disabled!</string>
+    <string name="notifications_are_off">Warning! The sound is disabled!</string>
     <string name="notification_sound">Notification sound</string>
     <string name="theme_activated_toast">The theme will be enabled when you close the settings!</string>
     <string name="time_format_title">Time format</string>

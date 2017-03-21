@@ -58,7 +58,6 @@
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_cancel">Annuler</string>
     <string name="uninstall_go">Désinstallez-la !</string>
-    <string name="notifications_are_off">Attention ! Les sonneries de notifications sont désactivées !</string>
     <string name="notification_sound">Sonnerie de notification</string>
     <string name="theme_activated_toast">Le thème sera activé à la fermeture des paramètres !</string>
     <string name="time_format_title">Format du temps</string>
@@ -141,4 +140,5 @@
     <string name="disable_charging_subtitle">Empêche l\'appareil de se recharger lorsqu\'il est branché via le port USB.</string>
     <string name="dismiss_if_unplugged">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
     <string name="notifications_are_off_setting">Warn if notifications are disabled</string>
+    <string name="notifications_are_off">Warning! The sound is disabled!</string>
 </resources>
