@@ -84,7 +84,7 @@
         <service
             android:name=".Services.ToggleChargingTileService"
             android:icon="@drawable/ic_battery_charging_full_white_48dp"
-            android:label="Charge to 100%"
+            android:label="@string/tile_text_charge_to_100"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
