@@ -36,37 +36,27 @@ public final class RootHelper {
     /**
      * Enables charging for the device again.
      *
-     * @param context An instance of the Context class.
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void enableCharging(Context context) throws NotRootedException {
+    public static void enableCharging() throws NotRootedException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
         Log.d(TAG, "Charging was enabled!");
-        /*Shell.SU.run(new String[]{
-                "echo 1 > /sys/class/power_supply/battery/charging_enabled",
-                "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled"
-        });*/
     }
 
     /**
      * Disables charging for the device.
      *
-     * @param context An instance of the Context class.
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void disableCharging(Context context) throws NotRootedException {
+    public static void disableCharging() throws NotRootedException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
         Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
         Log.d(TAG, "Charging was disabled!");
-        /*Shell.SU.run(new String[]{
-                "echo 0 > /sys/class/power_supply/battery/charging_enabled",
-                "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled"
-        });*/
     }
 
     /**

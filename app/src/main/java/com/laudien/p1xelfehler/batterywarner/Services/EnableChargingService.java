@@ -28,7 +28,7 @@ public class EnableChargingService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         stopService(new Intent(this, ChargingService.class));
         try {
-            RootHelper.enableCharging(EnableChargingService.this);
+            RootHelper.enableCharging();
             NotificationBuilder.cancelNotification(EnableChargingService.this, ID_STOP_CHARGING);
         } catch (RootHelper.NotRootedException e) {
             NotificationBuilder.showNotification(EnableChargingService.this, ID_NOT_ROOTED);

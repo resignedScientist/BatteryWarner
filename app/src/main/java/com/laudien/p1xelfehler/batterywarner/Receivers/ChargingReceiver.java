@@ -83,7 +83,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         try {
-                            RootHelper.disableCharging(context);
+                            RootHelper.disableCharging();
                         } catch (RootHelper.NotRootedException e) { // not rooted notification
                             e.printStackTrace();
                             NotificationBuilder.showNotification(context, ID_NOT_ROOTED);

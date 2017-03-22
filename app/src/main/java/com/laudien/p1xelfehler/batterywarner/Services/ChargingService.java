@@ -301,7 +301,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             @Override
             public void run() {
                 try {
-                    RootHelper.disableCharging(ChargingService.this);
+                    RootHelper.disableCharging();
                     NotificationBuilder.showNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
@@ -317,7 +317,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             @Override
             public void run() {
                 try {
-                    RootHelper.enableCharging(ChargingService.this);
+                    RootHelper.enableCharging();
                     NotificationBuilder.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
