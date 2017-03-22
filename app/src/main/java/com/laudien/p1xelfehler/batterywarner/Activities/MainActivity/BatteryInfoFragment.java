@@ -20,18 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
@@ -42,7 +37,7 @@ import static android.widget.Toast.LENGTH_SHORT;
  * Fragment that shows some information about the current battery status. Refreshes automatically.
  * Contains a button for toggling all warnings or logging of the app.
  */
-public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class BatteryInfoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int NO_STATE = -1;
     private final String KEY_COLOR = "key_color";
@@ -51,22 +46,12 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
     private Context context;
     private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
             textView_voltage, textView_current, textView_screenOn, textView_screenOff;
-    private ToggleButton toggleButton;
     private ImageView img_battery;
     private int warningLow, warningHigh, currentColor;
     private boolean isCharging, dischargingServiceEnabled;
     private BatteryManager batteryManager;
     private long screenOnTime, screenOffTime;
     private int screenOnDrain, screenOffDrain;
-    private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            toggleButton.setOnCheckedChangeListener(null); // disable the toasts
-            toggleButton.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)));
-            toggleButton.setOnCheckedChangeListener(OnOffFragment.this); // enable the toasts
-        }
-    };
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -179,12 +164,7 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         COLOR_GREEN = context.getResources().getColor(R.color.colorBatteryOk);
         COLOR_RED = context.getResources().getColor(R.color.colorBatteryLow);
         COLOR_ORANGE = context.getResources().getColor(R.color.colorBatteryHigh);
-        View view = inflater.inflate(R.layout.fragment_on_off, container, false);
-        toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
-
-        boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
-        toggleButton.setChecked(isChecked);
-        toggleButton.setOnCheckedChangeListener(this);
+        View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = (TextView) view.findViewById(R.id.textView_technology);
         textView_temp = (TextView) view.findViewById(R.id.textView_temp);
@@ -250,39 +230,14 @@ public class OnOffFragment extends Fragment implements CompoundButton.OnCheckedC
         screenOnDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_on), 0);
         screenOffDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_off), 0);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        getActivity().registerReceiver(onOffChangedReceiver, new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED));
         getActivity().registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        onOffChangedReceiver.onReceive(context, null);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        getActivity().unregisterReceiver(onOffChangedReceiver);
         getActivity().unregisterReceiver(batteryChangedReceiver);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
-        if (isChecked) { // turned on
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
-            if (isCharging) {
-                context.startService(new Intent(context, ChargingService.class));
-            } else {
-                context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
-                context.startService(new Intent(context, DischargingService.class));
-            }
-            ((BaseActivity) getActivity()).showToast(R.string.enabled_info, LENGTH_SHORT);
-        } else {
-            if (!isCharging) { // turned off and discharging
-                DischargingAlarmReceiver.cancelDischargingAlarm(context);
-            }
-            ((BaseActivity) getActivity()).showToast(R.string.disabled_info, LENGTH_SHORT);
-        }
-        // send broadcast
-        context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
     }
 
     @Override
