@@ -21,6 +21,10 @@ import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ToggleChargingTileService extends TileService {
+
+    private final int RESULT_NOT_ROOTED = 1;
+    private final int RESULT_STOP_CHARGING_NOT_WORKING = 2;
+    private final int RESULT_OK = 3;
     private Tile tile;
     private SharedPreferences sharedPreferences;
 
@@ -43,37 +47,34 @@ public class ToggleChargingTileService extends TileService {
         super.onClick();
         boolean isActive = tile.getState() == STATE_ACTIVE;
         if (isActive) { // deactivating the tile
-            new AsyncTask<Void, Void, Boolean[]>() {
+            new AsyncTask<Void, Void, Integer>() {
                 @Override
-                protected Boolean[] doInBackground(Void... voids) {
-                    Boolean[] booleans = new Boolean[2];
+                protected Integer doInBackground(Void... voids) {
                     try {
                         RootHelper.isChargingEnabled();
-                        booleans[0] = true;
-                        booleans[1] = true;
+                        return RESULT_OK;
                     } catch (RootHelper.NotRootedException e) {
-                        booleans[0] = false;
-                        booleans[1] = false;
+                        return RESULT_NOT_ROOTED;
                     } catch (RootHelper.BatteryFileNotFoundException e) {
                         NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        booleans[0] = true;
-                        booleans[1] = false;
+                        return RESULT_STOP_CHARGING_NOT_WORKING;
                     }
-                    return booleans;
                 }
 
                 @Override
-                protected void onPostExecute(Boolean[] booleans) {
-                    super.onPostExecute(booleans);
-                    boolean isRooted = booleans[0];
-                    boolean updateToast = booleans[1];
-                    if (updateToast) {
-                        tile.setState(STATE_INACTIVE);
-                        tile.updateTile();
-                        sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), true).apply();
-                    }
-                    if (!isRooted) {
-                        Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
+                protected void onPostExecute(Integer i) {
+                    super.onPostExecute(i);
+                    switch (i) {
+                        case RESULT_NOT_ROOTED:
+                            Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
+                            break;
+                        case RESULT_STOP_CHARGING_NOT_WORKING:
+                            NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
+                        case RESULT_OK:
+                            tile.setState(STATE_INACTIVE);
+                            tile.updateTile();
+                            sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), true).apply();
+                            break;
                     }
                 }
             }.execute();
@@ -84,7 +85,7 @@ public class ToggleChargingTileService extends TileService {
             } else {
                 Toast.makeText(getApplicationContext(), R.string.not_pro, Toast.LENGTH_SHORT).show();
             }
+            tile.updateTile();
         }
-        tile.updateTile();
     }
 }
