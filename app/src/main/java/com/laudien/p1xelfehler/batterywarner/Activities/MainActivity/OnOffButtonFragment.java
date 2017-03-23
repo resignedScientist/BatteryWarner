@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,19 +24,10 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SharedPreferences sharedPreferences;
     private ToggleButton toggleButton;
-    private BroadcastReceiver onOffChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            toggleButton.setOnCheckedChangeListener(null); // disable the toasts
-            toggleButton.setChecked(sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default)));
-            toggleButton.setOnCheckedChangeListener(OnOffButtonFragment.this); // enable the toasts
-        }
-    };
 
     @Nullable
     @Override
@@ -55,20 +45,20 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(onOffChangedReceiver, new IntentFilter(Contract.BROADCAST_ON_OFF_CHANGED));
-        onOffChangedReceiver.onReceive(getActivity(), null);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(onOffChangedReceiver);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
         Context context = getContext();
         Intent batteryStatus = getActivity().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
         if (batteryStatus != null) {
             boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
             if (isChecked) { // turned on
@@ -86,8 +76,13 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
                 }
                 ((BaseActivity) getActivity()).showToast(R.string.disabled_info, LENGTH_SHORT);
             }
-            // send broadcast
-            context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_is_enabled))) {
+            toggleButton.setChecked(sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_is_enabled_default)));
         }
     }
 }

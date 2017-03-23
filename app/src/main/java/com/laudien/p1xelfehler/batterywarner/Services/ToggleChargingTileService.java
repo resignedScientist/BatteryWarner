@@ -47,44 +47,44 @@ public class ToggleChargingTileService extends TileService {
         super.onClick();
         boolean isActive = tile.getState() == STATE_ACTIVE;
         if (isActive) { // deactivating the tile
-            new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected Integer doInBackground(Void... voids) {
-                    try {
-                        RootHelper.isChargingEnabled();
-                        return RESULT_OK;
-                    } catch (RootHelper.NotRootedException e) {
-                        return RESULT_NOT_ROOTED;
-                    } catch (RootHelper.BatteryFileNotFoundException e) {
-                        NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        return RESULT_STOP_CHARGING_NOT_WORKING;
-                    }
-                }
-
-                @Override
-                protected void onPostExecute(Integer i) {
-                    super.onPostExecute(i);
-                    switch (i) {
-                        case RESULT_NOT_ROOTED:
-                            Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
-                            break;
-                        case RESULT_STOP_CHARGING_NOT_WORKING:
-                            NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        case RESULT_OK:
-                            tile.setState(STATE_INACTIVE);
-                            tile.updateTile();
-                            sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), true).apply();
-                            break;
-                    }
-                }
-            }.execute();
-        } else { // activating the tile
             if (IS_PRO) {
-                tile.setState(STATE_ACTIVE);
-                sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), false).apply();
+                new AsyncTask<Void, Void, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Void... voids) {
+                        try {
+                            RootHelper.isChargingEnabled();
+                            return RESULT_OK;
+                        } catch (RootHelper.NotRootedException e) {
+                            return RESULT_NOT_ROOTED;
+                        } catch (RootHelper.BatteryFileNotFoundException e) {
+                            NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
+                            return RESULT_STOP_CHARGING_NOT_WORKING;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer i) {
+                        super.onPostExecute(i);
+                        switch (i) {
+                            case RESULT_NOT_ROOTED:
+                                Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
+                                break;
+                            case RESULT_STOP_CHARGING_NOT_WORKING:
+                                NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
+                            case RESULT_OK:
+                                tile.setState(STATE_INACTIVE);
+                                tile.updateTile();
+                                sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), true).apply();
+                                break;
+                        }
+                    }
+                }.execute();
             } else {
                 Toast.makeText(getApplicationContext(), R.string.not_pro, Toast.LENGTH_SHORT).show();
             }
+        } else { // activating the tile
+            tile.setState(STATE_ACTIVE);
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), false).apply();
             tile.updateTile();
         }
     }

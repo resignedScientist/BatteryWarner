@@ -18,10 +18,7 @@ public class BothAppsInstalledReceiver extends BroadcastReceiver {
         if (intent.getAction().equals(Contract.BROADCAST_BOTH_APPS_INSTALLED)
                 && !Contract.IS_PRO) {
             // change to disabled in shared preferences
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit().putBoolean(context.getString(R.string.pref_is_enabled), false).apply();
-            // send broadcast
-            context.sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean(context.getString(R.string.pref_is_enabled), false).apply();
         }
     }
 }

@@ -24,9 +24,10 @@ import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
  * has the functionality to toggle all warnings and logging of the app.
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class OnOffTileService extends TileService {
+public class OnOffTileService extends TileService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
+    private SharedPreferences sharedPreferences;
     private Tile tile;
     private boolean firstStart;
 
@@ -36,7 +37,8 @@ public class OnOffTileService extends TileService {
         Log.d(TAG, "start listening!");
         tile = getQsTile();
         if (IS_PRO) { // pro version
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             // check if the intro was finished first
             firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
             boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
@@ -54,6 +56,15 @@ public class OnOffTileService extends TileService {
             tile.setState(STATE_INACTIVE);
         }
         tile.updateTile();
+    }
+
+    @Override
+    public void onStopListening() {
+        super.onStopListening();
+        Log.d(TAG, "stop listening!");
+        if (sharedPreferences != null) {
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     @Override
@@ -97,7 +108,13 @@ public class OnOffTileService extends TileService {
         }
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();
         tile.updateTile();
+    }
 
-        sendBroadcast(new Intent(Contract.BROADCAST_ON_OFF_CHANGED));
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_is_enabled))) {
+            boolean isEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_is_enabled_default));
+            tile.setState(isEnabled ? STATE_ACTIVE : STATE_INACTIVE);
+        }
     }
 }
