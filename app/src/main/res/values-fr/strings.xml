@@ -1,4 +1,4 @@
-﻿﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Battery Warner</string>
     <string name="warning_high">Niveau de batterie au-dessus de</string>
@@ -137,9 +137,9 @@
     <string name="toast_stop_charging_not_enabled">L\'arrêt automatique de charge doit être activé pour cela !</string>
     <string name="grant_root">Accorder l\'accès Root</string>
     <string name="enable_charging">Activer la charge</string>
-    <string name="disable_charging_subtitle">Empêche l\'appareil de se recharger lorsqu\'il est branché via le port USB.</string>
+    <string name="disable_charging_subtitle">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB.</string>
     <string name="dismiss_if_unplugged">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
     <string name="notifications_are_off_setting">Avertir si le son est désactivé</string>
     <string name="notifications_are_off">Attention ! Le son est désactivé !</string>
-    <string name="tile_text_charge_to_100">Chargerr à 100%</string>
+    <string name="tile_text_charge_to_100">Charger à 100%</string>
 </resources>
