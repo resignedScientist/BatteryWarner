@@ -348,7 +348,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         } else { // KitKat devices or alarm clock NOT used
             if (smartChargingEnabled) {
                 long timeNow = Calendar.getInstance().getTimeInMillis();
-                alarmTime = sharedPreferences.getLong(getString(R.string.smart_charging_time), 0);
+                alarmTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), 0);
                 if (alarmTime != 0) {
                     while (alarmTime <= timeNow) {
                         alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
