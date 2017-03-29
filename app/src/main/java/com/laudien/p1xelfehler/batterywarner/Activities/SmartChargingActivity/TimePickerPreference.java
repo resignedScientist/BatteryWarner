@@ -51,7 +51,7 @@ public class TimePickerPreference extends DialogPreference {
         super.onAttachedToActivity();
         time = getPersistedLong(getDefaultTime());
         boolean useAlarmClockTime = getSharedPreferences().getBoolean(getContext().getString(R.string.pref_smart_charging_use_alarm_clock_time), getContext().getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
-        // TODO: why again? :D
+        // save time only if the alarm clock time is not used or cannot be used (because it is available only on 5.0+)
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP || !useAlarmClockTime) {
             persistLong(time);
         }
