@@ -189,7 +189,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
         smartChargingTimeString = sharedPreferences.getString(getString(R.string.pref_smart_charging_time), null);
-        smartChargingResumeTime = getSmartChargingResumeTime();
+        smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
         }
@@ -256,10 +256,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
         } else if (key.equals(getString(R.string.pref_smart_charging_time_before))) {
             smartChargingMinutes = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
-            smartChargingResumeTime = getSmartChargingResumeTime();
+            smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_time))) {
             smartChargingTimeString = sharedPreferences.getString(key, null);
-            smartChargingResumeTime = getSmartChargingResumeTime();
+            smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             smartChargingUseClock = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         } else if (key.equals(getString(R.string.pref_ac_enabled))) {
@@ -328,7 +328,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         });
     }
 
-    private long getSmartChargingResumeTime() {
+    private long getSmartChargingResumeTime(SharedPreferences sharedPreferences) {
         if (smartChargingTimeString == null) {
             smartChargingUseClock = true;
         }
@@ -347,33 +347,20 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
         } else { // KitKat devices or alarm clock NOT used
             if (smartChargingEnabled) {
-                try {
-                    DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
-                    Date date = dateFormat.parse(smartChargingTimeString);
-                    Calendar calendar = Calendar.getInstance();
-                    long timeNow = calendar.getTimeInMillis();
-                    calendar.setTime(date);
-                    int hourOfDay = calendar.get(HOUR_OF_DAY);
-                    int minute = calendar.get(MINUTE);
-                    calendar.setTimeInMillis(timeNow);
-                    calendar.set(HOUR_OF_DAY, hourOfDay);
-                    calendar.set(MINUTE, minute);
-                    calendar.set(SECOND, 0);
-                    calendar.set(MILLISECOND, 0);
-                    alarmTime = calendar.getTimeInMillis();
-                    if (alarmTime <= timeNow) {
+                long timeNow = Calendar.getInstance().getTimeInMillis();
+                alarmTime = sharedPreferences.getLong(getString(R.string.smart_charging_time), 0);
+                if (alarmTime != 0) {
+                    while (alarmTime <= timeNow) {
                         alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    stopSelf();
+                } else { // no alarm time saved in shared preferences file
                     return 0;
                 }
-            } else {
+            } else { // smart charging is disabled
                 return 0;
             }
         }
-        // Now we have the time the alarm is ringing (alarmTime). Now we calculate the resume time:
+        // We have the time the alarm is ringing (alarmTime). Now we calculate the resume time:
         Log.d(TAG, "alarmTime = " + alarmTime);
         long timeBefore = (long) smartChargingMinutes * 60 * 1000;
         return alarmTime - timeBefore;
