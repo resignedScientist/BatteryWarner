@@ -50,21 +50,24 @@ public class TimePickerPreference extends DialogPreference {
     @Override
     protected void onAttachedToActivity() {
         super.onAttachedToActivity();
-        String timeString = getPersistedString(getDefaultTimeString());
+        long time = getPersistedLong(getDefaultDate().getTime());
         boolean useAlarmClockTime = getSharedPreferences().getBoolean(getContext().getString(R.string.pref_smart_charging_use_alarm_clock_time), getContext().getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        // TODO: why again? :D
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP || !useAlarmClockTime) {
-            persistString(timeString);
+            persistLong(time);
         }
-        date = getDate(timeString);
-        setSummary(timeString);
+        date = new Date(time);
+        DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
+        setSummary(dateFormat.format(time));
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         if (!enabled) {
-            String timeString = getPersistedString(getDefaultTimeString());
-            date = getDate(timeString);
-            setSummary(timeString);
+            long time = getPersistedLong(getDefaultDate().getTime());
+            date = new Date(time);
+            DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
+            setSummary(dateFormat.format(time));
         }
         super.setEnabled(enabled);
     }
@@ -105,7 +108,31 @@ public class TimePickerPreference extends DialogPreference {
         }
     }
 
-    private Date getDate(String timeString) {
+    @Override
+    protected boolean persistLong(long value) {
+        while (date.getTime() <= value){
+            value += 1000*60*60*24;
+        }
+        return super.persistLong(value);
+    }
+
+    private Date getDefaultDate(){
+        Date date;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+            if (alarmClockInfo != null) {
+                long triggerTime = alarmClockInfo.getTriggerTime();
+                date = new Date(triggerTime);
+            } else {
+                date = getDefaultDateIfNoAlarmClockIsSet();
+            }
+        } else { // if KitKat or no alarm clock set
+            date = getDefaultDateIfNoAlarmClockIsSet();
+        }
+        return date;
+    }
+/*private Date getDate(String timeString) {
         DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
         try {
             return dateFormat.parse(timeString);
@@ -118,9 +145,9 @@ public class TimePickerPreference extends DialogPreference {
                 return null;
             }
         }
-    }
+    }*/
 
-    private String getDefaultTimeString() {
+    /*private String getDefaultTimeString() {
         Date date;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
@@ -136,7 +163,7 @@ public class TimePickerPreference extends DialogPreference {
         }
         DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
         return dateFormat.format(date);
-    }
+    }*/
 
     private Date getDefaultDateIfNoAlarmClockIsSet() {
         Calendar calendar = Calendar.getInstance();
