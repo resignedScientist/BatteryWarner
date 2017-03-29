@@ -9,3 +9,5 @@
 .externalNativeBuild
 
 *.apk
+
+\.idea/misc\.xml
