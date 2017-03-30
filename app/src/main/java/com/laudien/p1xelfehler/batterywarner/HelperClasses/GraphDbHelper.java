@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner;
+package com.laudien.p1xelfehler.batterywarner.HelperClasses;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.util.TypedValue;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.FileReader;
 

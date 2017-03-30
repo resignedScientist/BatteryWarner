@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
@@ -136,7 +136,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                 currentColor = nextColor;
                 setImageColor(nextColor, img_battery);
                 if (!dischargingServiceEnabled && nextColor == COLOR_RED) {
-                    NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_LOW);
+                    NotificationHelper.showNotification(context, NotificationHelper.ID_WARNING_LOW);
                 }
             }
         }

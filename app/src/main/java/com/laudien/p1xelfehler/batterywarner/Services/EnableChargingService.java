@@ -4,11 +4,11 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
 
 /**
  * An IntentService called by the app that enables the charging again.
@@ -29,9 +29,9 @@ public class EnableChargingService extends IntentService {
         stopService(new Intent(this, ChargingService.class));
         try {
             RootHelper.enableCharging();
-            NotificationBuilder.cancelNotification(EnableChargingService.this, ID_STOP_CHARGING);
+            NotificationHelper.cancelNotification(EnableChargingService.this, ID_STOP_CHARGING);
         } catch (RootHelper.NotRootedException e) {
-            NotificationBuilder.showNotification(EnableChargingService.this, ID_NOT_ROOTED);
+            NotificationHelper.showNotification(EnableChargingService.this, ID_NOT_ROOTED);
             e.printStackTrace();
         }
     }

@@ -9,15 +9,15 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
 import static android.service.quicksettings.Tile.STATE_INACTIVE;
 import static android.widget.Toast.LENGTH_LONG;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ToggleChargingTileService extends TileService {
@@ -57,7 +57,7 @@ public class ToggleChargingTileService extends TileService {
                         } catch (RootHelper.NotRootedException e) {
                             return RESULT_NOT_ROOTED;
                         } catch (RootHelper.BatteryFileNotFoundException e) {
-                            NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
+                            NotificationHelper.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
                             return RESULT_STOP_CHARGING_NOT_WORKING;
                         }
                     }
@@ -70,7 +70,7 @@ public class ToggleChargingTileService extends TileService {
                                 Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
                                 break;
                             case RESULT_STOP_CHARGING_NOT_WORKING:
-                                NotificationBuilder.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
+                                NotificationHelper.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
                             case RESULT_OK:
                                 tile.setState(STATE_INACTIVE);
                                 tile.updateTile();

@@ -6,12 +6,12 @@ import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_GRANT_ROOT;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_GRANT_ROOT;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
 
 /**
  * An IntentService called by the app.
@@ -32,7 +32,7 @@ public class GrantRootService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean rooted = RootHelper.isRootAvailable();
-        NotificationBuilder.cancelNotification(this, ID_GRANT_ROOT, ID_NOT_ROOTED);
+        NotificationHelper.cancelNotification(this, ID_GRANT_ROOT, ID_NOT_ROOTED);
         if (rooted) { // rooting was allowed now
             Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             if (batteryStatus != null) {
@@ -41,11 +41,11 @@ public class GrantRootService extends IntentService {
                     try {
                         boolean chargingEnabled = RootHelper.isChargingEnabled();
                         if (!chargingEnabled) { // if disabled by app, show notification!
-                            NotificationBuilder.showNotification(GrantRootService.this, ID_STOP_CHARGING);
+                            NotificationHelper.showNotification(GrantRootService.this, ID_STOP_CHARGING);
                         }
                     } catch (RootHelper.NotRootedException e) { // user disabled root again after allowing it
                         e.printStackTrace();
-                        NotificationBuilder.showNotification(GrantRootService.this, ID_NOT_ROOTED);
+                        NotificationHelper.showNotification(GrantRootService.this, ID_NOT_ROOTED);
                     } catch (RootHelper.BatteryFileNotFoundException e) {
                         // Should not happen! Is checked before the user can enable the feature!
                         e.printStackTrace();

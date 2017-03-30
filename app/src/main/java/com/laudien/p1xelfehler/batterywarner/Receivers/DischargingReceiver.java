@@ -9,12 +9,12 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
 
 /**
  * A BroadcastReceiver called by the system when the device stops to charge.
@@ -42,14 +42,14 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
             delay = 5000;
             // show the stop charging notification
-            NotificationBuilder.showNotification(context, ID_STOP_CHARGING);
+            NotificationHelper.showNotification(context, ID_STOP_CHARGING);
         }
 
         // dismiss warning high notification
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                NotificationBuilder.cancelNotification(context, ID_WARNING_HIGH);
+                NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
             }
         }, delay);
 

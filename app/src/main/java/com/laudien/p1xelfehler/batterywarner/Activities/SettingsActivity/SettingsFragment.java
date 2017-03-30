@@ -26,7 +26,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 

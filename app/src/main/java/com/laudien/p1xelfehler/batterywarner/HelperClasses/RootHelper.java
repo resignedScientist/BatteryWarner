@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner;
+package com.laudien.p1xelfehler.batterywarner.HelperClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.preference.TwoStatePreference;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.List;
 
@@ -90,8 +92,8 @@ public final class RootHelper {
                     } catch (RootHelper.NotRootedException e) {
                         return false;
                     } catch (RootHelper.BatteryFileNotFoundException e) {
-                        NotificationBuilder.showNotification(context,
-                                NotificationBuilder.ID_STOP_CHARGING_NOT_WORKING);
+                        NotificationHelper.showNotification(context,
+                                NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
                     }
                     return true;
                 }

@@ -9,7 +9,7 @@ import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
@@ -57,6 +57,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         } catch (Exception ignored){}
 
         // show notification if not rooted anymore
-        NotificationBuilder.showNotification(context, NotificationBuilder.ID_GRANT_ROOT);
+        NotificationHelper.showNotification(context, NotificationHelper.ID_GRANT_ROOT);
     }
 }

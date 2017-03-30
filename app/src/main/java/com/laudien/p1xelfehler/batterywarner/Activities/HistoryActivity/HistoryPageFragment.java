@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 
 import java.io.File;
 import java.util.Calendar;

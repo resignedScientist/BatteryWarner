@@ -10,16 +10,16 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
 /**
  * A BroadcastReceiver that is called by the system if the device has been plugged in to charge.
@@ -42,7 +42,7 @@ public class ChargingReceiver extends BroadcastReceiver {
         DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
 
         // cancel warning low notification
-        NotificationBuilder.cancelNotification(context, ID_WARNING_LOW);
+        NotificationHelper.cancelNotification(context, ID_WARNING_LOW);
 
         // reset already notified
         sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
@@ -86,7 +86,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                             RootHelper.disableCharging();
                         } catch (RootHelper.NotRootedException e) { // not rooted notification
                             e.printStackTrace();
-                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                            NotificationHelper.showNotification(context, ID_NOT_ROOTED);
                         }
                     }
                 });
@@ -98,14 +98,14 @@ public class ChargingReceiver extends BroadcastReceiver {
                     public void run() {
                         if (!RootHelper.isRootAvailable()) {
                             // show notification if root is not available (or the user did not see the asking for it)
-                            NotificationBuilder.showNotification(context, ID_NOT_ROOTED);
+                            NotificationHelper.showNotification(context, ID_NOT_ROOTED);
                         }
                     }
                 });
             }
             context.startService(new Intent(context, ChargingService.class)); // start the charging service
             // show a notification if silent/vibrate mode is enabled
-            NotificationBuilder.showNotification(context, NotificationBuilder.ID_SILENT_MODE);
+            NotificationHelper.showNotification(context, NotificationHelper.ID_SILENT_MODE);
             return true;
         } else {
             return false;

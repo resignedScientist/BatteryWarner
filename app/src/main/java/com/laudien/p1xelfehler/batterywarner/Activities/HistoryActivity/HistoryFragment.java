@@ -19,7 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;

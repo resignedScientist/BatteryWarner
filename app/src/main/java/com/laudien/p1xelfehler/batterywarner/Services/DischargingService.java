@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
@@ -23,7 +23,7 @@ import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_SCREEN_ON;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
 /**
  * Background service that runs while discharging. It logs the percentage loss and times
@@ -69,7 +69,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
                 int warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
                 if (batteryLevel <= warningLow) {
-                    NotificationBuilder.showNotification(context, ID_WARNING_LOW);
+                    NotificationHelper.showNotification(context, ID_WARNING_LOW);
                 }
                 if (lastPercentage == -1) { // first value -> take current percent
                     lastPercentage = batteryLevel;

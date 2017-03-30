@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner;
+package com.laudien.p1xelfehler.batterywarner.HelperClasses;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
+import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
@@ -32,7 +33,7 @@ import static android.os.Build.VERSION_CODES.N;
 /**
  * Helper class to show a notification with the given type. All notifications used in the app are listed here.
  */
-public final class NotificationBuilder {
+public final class NotificationHelper {
     /**
      * Notification id of the notification that warns if silent/vibrate mode is turned on.
      */
@@ -69,7 +70,7 @@ public final class NotificationBuilder {
     public static final int ID_NO_ALARM_TIME_FOUND = 1344;
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
-    private NotificationBuilder() {
+    private NotificationHelper() {
     }
 
     /**

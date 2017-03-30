@@ -15,16 +15,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
@@ -36,16 +32,11 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_NO_ALARM_TIME_FOUND;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_SILENT_MODE;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.NotificationBuilder.ID_WARNING_HIGH;
-import static java.text.DateFormat.SHORT;
-import static java.util.Calendar.HOUR_OF_DAY;
-import static java.util.Calendar.MILLISECOND;
-import static java.util.Calendar.MINUTE;
-import static java.util.Calendar.SECOND;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -103,7 +94,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                                 .putBoolean(getString(R.string.pref_already_notified), false)
                                 .apply();
                         // show warning high notification
-                        NotificationBuilder.showNotification(context, ID_WARNING_HIGH);
+                        NotificationHelper.showNotification(context, ID_WARNING_HIGH);
                     }
                     // stop charging if enabled
                     if (stopChargingEnabled) {
@@ -142,7 +133,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int ringerMode = audioManager.getRingerMode();
             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                NotificationBuilder.cancelNotification(context, ID_SILENT_MODE);
+                NotificationHelper.cancelNotification(context, ID_SILENT_MODE);
                 unregisterReceiver(this);
             }
         }
@@ -302,10 +293,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             public void run() {
                 try {
                     RootHelper.disableCharging();
-                    NotificationBuilder.showNotification(ChargingService.this, ID_STOP_CHARGING);
+                    NotificationHelper.showNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
-                    NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
+                    NotificationHelper.showNotification(ChargingService.this, ID_NOT_ROOTED);
                 }
             }
         });
@@ -318,10 +309,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             public void run() {
                 try {
                     RootHelper.enableCharging();
-                    NotificationBuilder.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
+                    NotificationHelper.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
-                    NotificationBuilder.showNotification(ChargingService.this, ID_NOT_ROOTED);
+                    NotificationHelper.showNotification(ChargingService.this, ID_NOT_ROOTED);
                     stopSelf(); // stop service if not rooted!
                 }
             }
@@ -341,7 +332,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             } else {// the smart charging feature cannot be used, because no alarm time is set in the alarm app
                 if (smartChargingEnabled) {
                     smartChargingEnabled = false; // disable the feature just for the service
-                    NotificationBuilder.showNotification(this, ID_NO_ALARM_TIME_FOUND); // show the notification
+                    NotificationHelper.showNotification(this, ID_NO_ALARM_TIME_FOUND); // show the notification
                 }
                 return 0;
             }

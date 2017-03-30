@@ -11,7 +11,7 @@ import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.NotificationBuilder;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
@@ -63,7 +63,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
             batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, Contract.NO_STATE);
             warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             if (batteryLevel <= warningLow) { // warning low
-                NotificationBuilder.showNotification(context, NotificationBuilder.ID_WARNING_LOW);
+                NotificationHelper.showNotification(context, NotificationHelper.ID_WARNING_LOW);
             } else {
                 setDischargingAlarm(context); // set new alarm
             }

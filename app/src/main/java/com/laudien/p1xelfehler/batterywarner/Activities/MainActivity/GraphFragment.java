@@ -34,7 +34,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
 import com.laudien.p1xelfehler.batterywarner.Contract;
-import com.laudien.p1xelfehler.batterywarner.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
@@ -50,8 +50,8 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_PERCENTAGE;
-import static com.laudien.p1xelfehler.batterywarner.GraphDbHelper.TYPE_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_PERCENTAGE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_TEMPERATURE;
 
 /**
  * A Fragment that shows the latest charging curve.
