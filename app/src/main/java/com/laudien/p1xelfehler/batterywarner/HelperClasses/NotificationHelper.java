@@ -68,6 +68,7 @@ public final class NotificationHelper {
      * Notification id of the notification that tells the user that no alarm was found in the alarm app
      **/
     public static final int ID_NO_ALARM_TIME_FOUND = 1344;
+    public static final int ID_BATTERY_INFO = 1345;
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
     private NotificationHelper() {
@@ -107,6 +108,8 @@ public final class NotificationHelper {
                     break;
                 case ID_NO_ALARM_TIME_FOUND:
                     showNoAlarmTimeFoundNotification(context);
+                    break;
+                case ID_BATTERY_INFO:
                     break;
                 default:
                     throw new IdNotFoundException();
@@ -326,6 +329,10 @@ public final class NotificationHelper {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
+    }
+
+    private static void showBatteryInfoNotification(){
+
     }
 
     private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {

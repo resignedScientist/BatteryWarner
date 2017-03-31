@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,11 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -32,27 +28,22 @@ import java.util.Locale;
 
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
-/**
- * Fragment that shows some information about the current battery status. Refreshes automatically.
- * Contains a button for toggling all warnings or logging of the app.
- */
 public class BatteryInfoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int NO_STATE = -1;
-    private final String KEY_COLOR = "key_color";
-    private int COLOR_RED, COLOR_ORANGE, COLOR_GREEN;
+    public static final int COLOR_LOW = 1;
+    public static final int COLOR_HIGH = 2;
+    public static final int COLOR_OK = 3;
+    private boolean dischargingServiceEnabled;
+    private int currentColor = 0, warningLow, warningHigh;
+    private long screenOnTime, screenOffTime, screenOnDrain, screenOffDrain;
     private SharedPreferences sharedPreferences;
-    private Context context;
-    private TextView textView_technology, textView_temp, textView_health, textView_batteryLevel,
-            textView_voltage, textView_current, textView_screenOn, textView_screenOff;
-    private ImageView img_battery;
-    private int warningLow, warningHigh, currentColor;
-    private boolean isCharging, dischargingServiceEnabled;
+    private TextView textView_screenOn, textView_screenOff, textView_current, textView_technology,
+            textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private BatteryManager batteryManager;
-    private long screenOnTime, screenOffTime;
-    private int screenOnDrain, screenOffDrain;
-
+    private OnBatteryColorChangedListener onBatteryColorChangedListener;
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
@@ -63,7 +54,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             String healthString;
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
-            isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            boolean isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
 
             if (dischargingServiceEnabled) {
                 double screenOnTimeInHours = (double) screenOnTime / 3600000;
@@ -126,44 +117,30 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             // Image color
             int nextColor;
             if (batteryLevel <= warningLow) { // battery low
-                nextColor = COLOR_RED;
+                nextColor = COLOR_LOW;
             } else if (batteryLevel < warningHigh) { // battery ok
-                nextColor = COLOR_GREEN;
+                nextColor = COLOR_OK;
             } else { // battery high
-                nextColor = COLOR_ORANGE;
+                nextColor = COLOR_HIGH;
             }
             if (nextColor != currentColor) {
                 currentColor = nextColor;
-                setImageColor(nextColor, img_battery);
-                if (!dischargingServiceEnabled && nextColor == COLOR_RED) {
-                    NotificationHelper.showNotification(context, NotificationHelper.ID_WARNING_LOW);
+                if (onBatteryColorChangedListener != null) {
+                    onBatteryColorChangedListener.onColorChanged(nextColor);
+                }
+                if (nextColor == COLOR_LOW){
+                    NotificationHelper.showNotification(context, ID_WARNING_LOW);
                 }
             }
         }
     };
 
-    /**
-     * Helper method for setting a color filter to an image.
-     *
-     * @param color     The color the filter should have.
-     * @param imageView The ImageView the filter should be set to.
-     */
-    public static void setImageColor(int color, ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-        imageView.setImageDrawable(drawable);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        context = getContext();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         setHasOptionsMenu(dischargingServiceEnabled);
-        COLOR_GREEN = context.getResources().getColor(R.color.colorBatteryOk);
-        COLOR_RED = context.getResources().getColor(R.color.colorBatteryLow);
-        COLOR_ORANGE = context.getResources().getColor(R.color.colorBatteryHigh);
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = (TextView) view.findViewById(R.id.textView_technology);
@@ -174,7 +151,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         textView_current = (TextView) view.findViewById(R.id.textView_current);
         textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
         textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
-        img_battery = (ImageView) view.findViewById(R.id.img_battery);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
@@ -186,15 +162,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             textView_screenOn.setVisibility(GONE);
             textView_screenOff.setVisibility(GONE);
         }
-
-        // load last color (so that the battery is not white!)
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_COLOR)) {
-                currentColor = savedInstanceState.getInt(KEY_COLOR);
-                setImageColor(currentColor, img_battery);
-            }
-        }
-
         return view;
     }
 
@@ -240,6 +207,21 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         getActivity().unregisterReceiver(batteryChangedReceiver);
     }
 
+    public void setOnBatteryColorChangedListener(OnBatteryColorChangedListener onBatteryColorChangedListener) {
+        this.onBatteryColorChangedListener = onBatteryColorChangedListener;
+    }
+
+    public int getCurrentColor(){
+        return currentColor;
+    }
+
+    private void showNoData() {
+        textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
+                getString(R.string.screen_on), "N/A"));
+        textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
+                getString(R.string.screen_off), "N/A"));
+    }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if (s.equals(getString(R.string.value_time_screen_on))) {
@@ -253,16 +235,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_COLOR, currentColor);
-    }
-
-    private void showNoData() {
-        textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
-                getString(R.string.screen_on), "N/A"));
-        textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
-                getString(R.string.screen_off), "N/A"));
+    public interface OnBatteryColorChangedListener {
+        void onColorChanged(int colorID);
     }
 }
