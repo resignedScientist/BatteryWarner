@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
@@ -28,12 +29,13 @@ import java.util.Locale;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
 public class BatteryInfoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final int COLOR_LOW = 1;
     public static final int COLOR_HIGH = 2;
-    public static final int COLOR_NORMAL = 3;
+    public static final int COLOR_OK = 3;
     private boolean dischargingServiceEnabled;
     private int currentColor = 0, warningLow, warningHigh;
     private long screenOnTime, screenOffTime, screenOnDrain, screenOffDrain;
@@ -117,13 +119,18 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             if (batteryLevel <= warningLow) { // battery low
                 nextColor = COLOR_LOW;
             } else if (batteryLevel < warningHigh) { // battery ok
-                nextColor = COLOR_NORMAL;
+                nextColor = COLOR_OK;
             } else { // battery high
                 nextColor = COLOR_HIGH;
             }
             if (nextColor != currentColor) {
                 currentColor = nextColor;
-                onBatteryColorChangedListener.onColorChanged(nextColor);
+                if (onBatteryColorChangedListener != null) {
+                    onBatteryColorChangedListener.onColorChanged(nextColor);
+                }
+                if (nextColor == COLOR_LOW){
+                    NotificationHelper.showNotification(context, ID_WARNING_LOW);
+                }
             }
         }
     };
@@ -134,7 +141,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         setHasOptionsMenu(dischargingServiceEnabled);
-        View view = inflater.inflate(R.layout.fragment_main_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = (TextView) view.findViewById(R.id.textView_technology);
         textView_temp = (TextView) view.findViewById(R.id.textView_temp);
