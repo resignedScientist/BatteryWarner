@@ -61,7 +61,7 @@
     <string name="uninstall_text">Sowohl die Pro als auch die kostenlose Version der App sind installiert. Bitte deinstalliere die kostenlose App!</string>
     <string name="uninstall_cancel">Abbrechen</string>
     <string name="uninstall_go">Deinstallieren</string>
-    <string name="notifications_are_off">Achtung! Der Ton abgeschaltet!</string>
+    <string name="notifications_are_off">Achtung! Der Ton ist abgeschaltet!</string>
     <string name="notification_sound">Benachrichtigunston</string>
     <string name="theme_activated_toast">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
     <string name="time_format_title">Zeit-Format</string>
