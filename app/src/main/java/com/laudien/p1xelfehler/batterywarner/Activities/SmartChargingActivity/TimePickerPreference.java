@@ -100,8 +100,8 @@ public class TimePickerPreference extends DialogPreference {
             time = calendar.getTimeInMillis();
             DateFormat dateFormat = DateFormat.getTimeInstance(SHORT, Locale.getDefault());
             String timeString = dateFormat.format(time);
-            persistString(timeString);
             setSummary(timeString);
+            persistLong(time);
         }
     }
 

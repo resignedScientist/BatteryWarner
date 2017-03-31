@@ -50,8 +50,8 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         try {
             String timeString = sharedPreferences.getString(context.getString(R.string.pref_smart_charging_time), null);
             if (timeString != null){
-                sharedPreferences.edit().remove(context.getString(R.string.smart_charging_time))
-                        .putLong(context.getString(R.string.smart_charging_time), Long.parseLong(timeString))
+                sharedPreferences.edit().remove(context.getString(R.string.pref_smart_charging_time))
+                        .putLong(context.getString(R.string.pref_smart_charging_time), Long.parseLong(timeString))
                         .apply();
             }
         } catch (Exception ignored){}
