@@ -19,7 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 /**
- * A Custom preference that shows a SeeKBar and a TextView with the number.
+ * A Custom preference that shows a SeekBar and a TextView with the number.
  * You can change the number with the SeekBar or by clicking on the TextView.
  * In the XML you can define attributes for the minimum and maximum values and for the
  * unit used next to the number.
@@ -77,6 +77,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         } else {
             min = DEFAULT_MIN;
             max = DEFAULT_MAX;
+            unit = "";
         }
     }
 

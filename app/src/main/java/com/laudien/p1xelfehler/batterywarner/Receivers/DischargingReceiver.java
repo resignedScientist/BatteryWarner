@@ -29,39 +29,35 @@ public class DischargingReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (!intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) return;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
-            return; // return if intro was not finished
-
-        // add a delay for the dismissing of the notification if stop charging is enabled
-        int delay = 0;
-        int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
-        boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-        if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
-            delay = 5000;
-            // show the stop charging notification
-            NotificationHelper.showNotification(context, ID_STOP_CHARGING);
-        }
-
-        // dismiss warning high notification
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
+        if (intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) { // correct intent action
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
+                // add a delay for the dismissing of the notification if stop charging is enabled
+                short delay = 0;
+                int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
+                boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+                boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
+                    delay = 5000;
+                    NotificationHelper.showNotification(context, ID_STOP_CHARGING); // show the stop charging notification
+                }
+                // dismiss warning high notification
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
+                    }
+                }, delay);
+                // reset already notified
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+                // start discharging service if enabled
+                boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+                if (serviceEnabled) { // discharging service is enabled -> start it
+                    context.startService(new Intent(context, DischargingService.class));
+                } else { // else start DischargingReceiver which notifies or sets alarm
+                    context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                }
             }
-        }, delay);
-
-        // reset already notified
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-
-        // start discharging service if enabled
-        boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-        if (serviceEnabled) {
-            context.startService(new Intent(context, DischargingService.class));
-        } else { // else start DischargingReceiver which notifies or sets alarm
-            context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
         }
     }
 }

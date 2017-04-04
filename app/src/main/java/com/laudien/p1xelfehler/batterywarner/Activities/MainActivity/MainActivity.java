@@ -31,7 +31,6 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 public class MainActivity extends BaseActivity {
     private boolean backPressed = false;
-    private int clickCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,6 @@ public class MainActivity extends BaseActivity {
         if (viewPager != null) { // phones only
             ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
             viewPager.setAdapter(viewPagerAdapter);
-
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
             tabLayout.setupWithViewPager(viewPager);
         }
@@ -80,32 +78,21 @@ public class MainActivity extends BaseActivity {
         try {
             packageManager.getPackageInfo(Contract.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
             packageManager.getPackageInfo(Contract.PACKAGE_NAME_PRO, PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e) {
-            return; // one of the app is not installed
-        }
-        // both apps are installed:
-        // check for alex mode:
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (sharedPreferences.getBoolean(getString(R.string.pref_alex_mode), getResources().getBoolean(R.bool.pref_alex_mode_default))) {
+        } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
             return;
         }
+        // both apps are installed:
         // disable the free application
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!Contract.IS_PRO) {
             sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
         } else {
             sendBroadcast(new Intent(Contract.BROADCAST_BOTH_APPS_INSTALLED));
         }
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        TextView title = new TextView(this);
-        float scale = getResources().getDisplayMetrics().density;
-        int dp = (int) (scale + 0.5f);
-        title.setPadding(24 * dp, 8 * dp, 16 * dp, 0);
-        title.setText(getString(R.string.uninstall_title));
-        title.setTextSize(16);
-        title.setTypeface(null, Typeface.BOLD);
-        final AlertDialog dialog = builder.setCancelable(false)
-                .setCustomTitle(title)
+        // show the dialog
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.uninstall_title)
                 .setMessage(getString(R.string.uninstall_text))
                 .setNegativeButton(getString(R.string.uninstall_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -122,23 +109,8 @@ public class MainActivity extends BaseActivity {
                     }
                 })
                 .setIcon(R.mipmap.ic_launcher)
-                .create();
-        dialog.show();
-        title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (clickCounter < 4) {
-                    clickCounter++;
-                } else {
-                    showToast(R.string.alex_cheater, LENGTH_SHORT);
-                    dialog.dismiss();
-                    sharedPreferences
-                            .edit()
-                            .putBoolean(getString(R.string.pref_alex_mode), true)
-                            .apply();
-                }
-            }
-        });
+                .create()
+                .show();
     }
 
     @Override

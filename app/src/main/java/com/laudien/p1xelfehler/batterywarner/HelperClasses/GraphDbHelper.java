@@ -28,9 +28,9 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     /**
      * The array index of the battery level graph. You get the array with the getGraphs() method.
      */
-    public static final int TYPE_PERCENTAGE = 0;
+    public static final byte TYPE_PERCENTAGE = 0;
     /** The array index of the battery temperature graph. You get the array with the getGraphs() method. */
-    public static final int TYPE_TEMPERATURE = 1;
+    public static final byte TYPE_TEMPERATURE = 1;
     /** The name of the database. */
     public static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
@@ -89,8 +89,8 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     }
 
     private static Cursor getCursor(SQLiteDatabase db) {
-        return db.query(GraphDbHelper.TABLE_NAME, columns, null, null, null, null,
-                "length(" + GraphDbHelper.TABLE_COLUMN_TIME + "), " + GraphDbHelper.TABLE_COLUMN_TIME);
+        return db.query(TABLE_NAME, columns, null, null, null, null,
+                "length(" + TABLE_COLUMN_TIME + "), " + TABLE_COLUMN_TIME);
     }
 
     @Override

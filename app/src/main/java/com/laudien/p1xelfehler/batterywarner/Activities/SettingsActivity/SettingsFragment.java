@@ -32,6 +32,8 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import java.util.Locale;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -125,13 +127,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_AUTO_SAVE) {
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    pref_autoSave.setChecked(false);
-                    return;
-                }
-            }
+        if (requestCode == REQUEST_AUTO_SAVE && grantResults[0] != PERMISSION_GRANTED) {
+            pref_autoSave.setChecked(false); // uncheck preference again if permission was not granted
         }
     }
 
@@ -152,16 +149,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (preference == pref_autoSave && pref_autoSave.isChecked()) {
             // check for permission
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(
-                            new String[]{
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE
-                            },
-                            REQUEST_AUTO_SAVE
-                    );
-                }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_AUTO_SAVE);
             }
         } else if (preference == pref_warningLow) {
             Context context = getActivity();

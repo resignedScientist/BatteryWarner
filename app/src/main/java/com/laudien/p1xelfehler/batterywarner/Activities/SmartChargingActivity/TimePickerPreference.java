@@ -24,7 +24,6 @@ import static java.util.Calendar.getInstance;
 
 public class TimePickerPreference extends DialogPreference {
 
-    private final String TAG = getClass().getSimpleName();
     private TimePicker timePicker = null;
     private long time = Calendar.getInstance().getTimeInMillis();
 

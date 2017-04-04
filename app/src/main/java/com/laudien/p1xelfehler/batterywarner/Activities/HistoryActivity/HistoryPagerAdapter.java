@@ -52,9 +52,9 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     /**
-     * Returns the fragment that is currently shown/ in the foreground.
+     * Returns the fragment that is currently shown in the foreground.
      *
-     * @return Returns the fragment that is currently shown/ in the foreground.
+     * @return Returns the fragment that is currently shown in the foreground.
      */
     HistoryPageFragment getCurrentFragment() {
         return currentFragment;

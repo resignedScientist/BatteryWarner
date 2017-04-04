@@ -33,9 +33,9 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 
 public class BatteryInfoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public static final int COLOR_LOW = 1;
-    public static final int COLOR_HIGH = 2;
-    public static final int COLOR_OK = 3;
+    public static final byte COLOR_LOW = 1;
+    public static final byte COLOR_HIGH = 2;
+    public static final byte COLOR_OK = 3;
     private boolean dischargingServiceEnabled;
     private int currentColor = 0, warningLow, warningHigh;
     private long screenOnTime, screenOffTime, screenOnDrain, screenOffDrain;
@@ -54,7 +54,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             String healthString;
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
-            boolean isCharging = intent.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, NO_STATE) != 0;
 
             if (dischargingServiceEnabled) {
                 double screenOnTimeInHours = (double) screenOnTime / 3600000;
@@ -115,7 +114,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                     getString(R.string.voltage) + ": %.3f V", voltage));
 
             // Image color
-            int nextColor;
+            byte nextColor;
             if (batteryLevel <= warningLow) { // battery low
                 nextColor = COLOR_LOW;
             } else if (batteryLevel < warningHigh) { // battery ok
@@ -211,10 +210,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         this.onBatteryColorChangedListener = onBatteryColorChangedListener;
     }
 
-    public int getCurrentColor(){
-        return currentColor;
-    }
-
     private void showNoData() {
         textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
                 getString(R.string.screen_on), "N/A"));
@@ -235,7 +230,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         }
     }
 
-    public interface OnBatteryColorChangedListener {
-        void onColorChanged(int colorID);
+    interface OnBatteryColorChangedListener {
+        void onColorChanged(byte colorID);
     }
 }

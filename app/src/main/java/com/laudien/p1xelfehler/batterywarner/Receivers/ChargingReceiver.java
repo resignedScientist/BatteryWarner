@@ -31,30 +31,24 @@ public class ChargingReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (!intent.getAction().equals("android.intent.action.ACTION_POWER_CONNECTED")) return;
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean firstStart = sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default));
-        boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
-        if (firstStart || !isEnabled) {
-            return; // return if intro was not finished or main switch is turned off
-        }
-
-        DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
-
-        // cancel warning low notification
-        NotificationHelper.cancelNotification(context, ID_WARNING_LOW);
-
-        // reset already notified
-        sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-
-        if (!startService(context)) {
-            // if not enabled check again in 10s to make sure it is correct
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startService(context);
+        if (intent.getAction().equals("android.intent.action.ACTION_POWER_CONNECTED")) { // correct intent action
+            final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean firstStart = sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default));
+            boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
+            if (!firstStart && isEnabled) { // if intro was finished and main switch is turned on
+                DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
+                NotificationHelper.cancelNotification(context, ID_WARNING_LOW); // cancel warning low notification
+                // reset already notified
+                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+                if (!startService(context)) { // if current charging type is not enabled check again in 10s to make sure it is correct
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startService(context);
+                        }
+                    }, 10000);
                 }
-            }, 10000);
+            }
         }
     }
 

@@ -237,10 +237,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         File path = new File(DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
         ArrayList<File> fileList = new ArrayList<>();
-        int goodFiles = 0;
-        int firstGoodFile = 0;
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        if (files != null) {
+        if (files != null) { // there are files in the database folder
             Arrays.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File o1, File o2) {
@@ -249,28 +247,19 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             });
             for (File file : files) {
                 // check if the file is a valid database file
-                if (!dbHelper.isValidDatabase(file.getPath())) {
-                    if (file == files[firstGoodFile]) {
-                        firstGoodFile++;
-                    }
-                    continue;
+                if (dbHelper.isValidDatabase(file.getPath())) {
+                    fileList.add(file); // add the file path to the fileList
                 }
-                goodFiles++;
-                HistoryPageFragment pageFragment = new HistoryPageFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(EXTRA_FILE_PATH, file.getPath());
-                pageFragment.setArguments(bundle);
-                fileList.add(file);
             }
-            if (goodFiles == 0) {
-                textView_nothingSaved.setVisibility(VISIBLE);
-            } else {
-                textView_fileName.setText(files[firstGoodFile].getName());
+            if (fileList.isEmpty()) { // if no readable graph is in the database folder
+                textView_nothingSaved.setVisibility(VISIBLE); // show "nothing saved"
+            } else { // min 1 readable graph in the database folder
+                textView_fileName.setText(fileList.get(0).getName()); // set the name TextView
             }
-        } else {
-            textView_nothingSaved.setVisibility(VISIBLE);
+        } else { // no files in the database folder
+            textView_nothingSaved.setVisibility(VISIBLE); // show "nothing saved"
         }
-        if (fileList.size() < 2) {
+        if (fileList.size() < 2) { // disable buttons if not needed
             disableButtons();
         }
         return fileList;

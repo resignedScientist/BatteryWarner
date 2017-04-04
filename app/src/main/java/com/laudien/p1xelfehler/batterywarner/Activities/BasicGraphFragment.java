@@ -62,6 +62,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * An array of both graphs that are displayed in the GraphView.
      */
     protected LineGraphSeries<DataPoint>[] series;
+    private byte labelCounter;
     private CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -84,7 +85,6 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         }
     };
-    private int graphCounter;
 
     @Nullable
     @Override
@@ -200,13 +200,13 @@ public abstract class BasicGraphFragment extends Fragment {
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) { // X-axis (time)
                     if (value == 0) {
-                        graphCounter = 1;
+                        labelCounter = 1;
                         return "0 min";
                     }
                     if (value < 0.1) {
                         return "";
                     }
-                    if (graphCounter++ % 3 == 0)
+                    if (labelCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
                 } else if (switch_percentage.isChecked() ^ switch_temp.isChecked()) { // Y-axis (percent)

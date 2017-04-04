@@ -22,9 +22,9 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ToggleChargingTileService extends TileService {
 
-    private final int RESULT_NOT_ROOTED = 1;
-    private final int RESULT_STOP_CHARGING_NOT_WORKING = 2;
-    private final int RESULT_OK = 3;
+    private final byte RESULT_NOT_ROOTED = 1;
+    private final byte RESULT_STOP_CHARGING_NOT_WORKING = 2;
+    private final byte RESULT_OK = 3;
     private Tile tile;
     private SharedPreferences sharedPreferences;
 
@@ -48,9 +48,9 @@ public class ToggleChargingTileService extends TileService {
         boolean isActive = tile.getState() == STATE_ACTIVE;
         if (isActive) { // deactivating the tile
             if (IS_PRO) {
-                new AsyncTask<Void, Void, Integer>() {
+                new AsyncTask<Void, Void, Byte>() {
                     @Override
-                    protected Integer doInBackground(Void... voids) {
+                    protected Byte doInBackground(Void... voids) {
                         try {
                             RootHelper.isChargingEnabled();
                             return RESULT_OK;
@@ -63,9 +63,9 @@ public class ToggleChargingTileService extends TileService {
                     }
 
                     @Override
-                    protected void onPostExecute(Integer i) {
-                        super.onPostExecute(i);
-                        switch (i) {
+                    protected void onPostExecute(Byte b) {
+                        super.onPostExecute(b);
+                        switch (b) {
                             case RESULT_NOT_ROOTED:
                                 Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
                                 break;

@@ -110,6 +110,7 @@ public final class NotificationHelper {
                     showNoAlarmTimeFoundNotification(context);
                     break;
                 case ID_BATTERY_INFO:
+                    showBatteryInfoNotification();
                     break;
                 default:
                     throw new IdNotFoundException();

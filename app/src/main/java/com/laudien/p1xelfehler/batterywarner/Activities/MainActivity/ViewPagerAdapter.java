@@ -38,15 +38,13 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        String title = "";
         switch (position) {
             case 0:
-                title = context.getString(R.string.main_page);
-                break;
+                return context.getString(R.string.main_page);
             case 1:
-                title = context.getString(R.string.stats);
-                break;
+                return context.getString(R.string.stats);
+            default:
+                return null;
         }
-        return title;
     }
 }

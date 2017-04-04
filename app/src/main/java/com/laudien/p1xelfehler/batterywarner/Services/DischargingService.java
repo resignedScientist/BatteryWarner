@@ -36,7 +36,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private SharedPreferences sharedPreferences;
     private long screenOnTime, screenOffTime;
     private long timeChanged = Calendar.getInstance().getTimeInMillis(); // time point when screen on/off was changed
-    private int lastPercentage = -1, // that is a different value as in sharedPreferences!!!
+    private int lastPercentage = -1, // that is a different value as in sharedPreferences!
             screenOnDrain, screenOffDrain;
     private boolean isScreenOn;
     private BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {

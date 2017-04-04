@@ -46,12 +46,18 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.Contract.DATABASE_HISTORY_PATH;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.DATABASE_NAME;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_TEMPERATURE;
+import static java.text.DateFormat.SHORT;
 
 /**
  * A Fragment that shows the latest charging curve.
@@ -65,13 +71,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     private SharedPreferences sharedPreferences;
     private GraphDbHelper graphDbHelper;
     private boolean graphEnabled;
-    private BroadcastReceiver dischargingReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setTimeText();
-        }
-    };
-    private BroadcastReceiver chargingReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver chargingStateChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             setTimeText();
@@ -92,7 +92,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             throw new RuntimeException("Do not save the graph in main thread!");
         }
         // return if permissions are not granted
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(context.getString(R.string.pref_graph_autosave), false)
                     .apply();
@@ -108,32 +108,31 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         String outputFileDir = String.format(
                 Locale.getDefault(),
                 "%s/%s",
-                Contract.DATABASE_HISTORY_PATH,
-                DateFormat.getDateInstance(DateFormat.SHORT)
+                DATABASE_HISTORY_PATH,
+                DateFormat.getDateInstance(SHORT)
                         .format(GraphDbHelper.getEndTime(dbHelper.getReadableDatabase()))
                         .replace("/", "_")
         );
         // rename the file if it already exists
         File outputFile = new File(outputFileDir);
-        int i = 0;
         String baseFileDir = outputFileDir;
-        while (outputFile.exists()) {
-            i++;
+        for (byte i = 1; outputFile.exists() && i < 127; i++){
             outputFileDir = baseFileDir + " (" + i + ")";
             outputFile = new File(outputFileDir);
         }
-        File inputFile = context.getDatabasePath(GraphDbHelper.DATABASE_NAME);
+        File inputFile = context.getDatabasePath(DATABASE_NAME);
         try {
-            File directory = new File(Contract.DATABASE_HISTORY_PATH);
+            File directory = new File(DATABASE_HISTORY_PATH);
             if (!directory.exists()) {
-                directory.mkdirs();
+                if (!directory.mkdirs()){
+                    return false;
+                }
             }
             FileInputStream inputStream = new FileInputStream(inputFile);
             FileOutputStream outputStream = new FileOutputStream(outputFile, false);
             byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            while (inputStream.read(buffer) != -1) {
+                outputStream.write(buffer);
             }
             outputStream.flush();
             outputStream.close();
@@ -175,8 +174,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public void onResume() {
         super.onResume();
         if (IS_PRO && graphEnabled) {
-            getContext().registerReceiver(dischargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
-            getContext().registerReceiver(chargingReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
+            getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
+            getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
             graphDbHelper.setDatabaseChangedListener(this);
             if (graphDbHelper.hasDbChanged()) {
                 reload();
@@ -196,8 +195,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     .apply();
             if (IS_PRO) {
                 graphDbHelper.setDatabaseChangedListener(null);
-                getContext().unregisterReceiver(dischargingReceiver);
-                getContext().unregisterReceiver(chargingReceiver);
+                getContext().unregisterReceiver(chargingStateChangedReceiver);
             }
         }
     }
@@ -243,17 +241,12 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // first check if all permissions were granted
-        for (int result : grantResults) {
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                return;
+        if (grantResults[0] == PERMISSION_GRANTED) {
+            if (requestCode == REQUEST_SAVE_GRAPH) {
+                new SaveGraphTask().execute(); // restart the saving of the graph
+            } else if (requestCode == REQUEST_OPEN_HISTORY) {
+                openHistory();
             }
-        }
-        if (requestCode == REQUEST_SAVE_GRAPH) {
-            // restart the saving of the graph
-            new SaveGraphTask().execute();
-        } else if (requestCode == REQUEST_OPEN_HISTORY) {
-            openHistory();
         }
     }
 
@@ -298,7 +291,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
     /**
      * Sets the text under the GraphView depending on if the device is charging, fully charged or
-     * not charging. It also shows if there is no or not enough data to show any graph.
+     * not charging. It also shows if there is no or not enough data to show a graph.
      */
     @Override
     protected void setTimeText() {
@@ -367,9 +360,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onDatabaseCleared() {
         if (series != null) {
-            for (Series s : series) {
-                graphView.removeSeries(s);
-            }
+            graphView.removeAllSeries();
             series = null;
         }
         setTimeText();
@@ -407,24 +398,17 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     }
 
     private void saveGraph() {
-        // check if a graph is present and has enough data
-        if (graphView.getSeries().size() == 0 || series[TYPE_PERCENTAGE].getHighestValueX() == 0) {
+        if (graphView.getSeries().size() > 0 && series[TYPE_PERCENTAGE].getHighestValueX() > 0) {
+            // check for permission
+            if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+                // save graph
+                new SaveGraphTask().execute();
+            } else { // permission not granted -> ask for permission
+                requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
+            }
+        } else { // there is no graph or the graph does not have enough data
             ((BaseActivity) (getActivity())).showToast(R.string.nothing_to_save, LENGTH_SHORT);
-            return;
         }
-        // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    REQUEST_SAVE_GRAPH
-            );
-            return;
-        }
-        // save graph
-        new SaveGraphTask().execute();
     }
 
     /**
@@ -452,18 +436,11 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * Starts the HistoryActivity after asking for the storage permission.
      */
     public void openHistory() {
-        // check for permission
-        if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    new String[]{
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
-                    },
-                    REQUEST_OPEN_HISTORY
-            );
-            return;
+        if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            startActivity(new Intent(getContext(), HistoryActivity.class)); // open history
+        } else { // permission not granted -> ask for permission
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_OPEN_HISTORY);
         }
-        startActivity(new Intent(getContext(), HistoryActivity.class));
     }
 
     private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {

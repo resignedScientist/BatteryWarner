@@ -32,8 +32,7 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Context context = getContext();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         View view = inflater.inflate(R.layout.fragment_on_off_button, container, false);
         toggleButton = (ToggleButton) view.findViewById(R.id.toggleButton);
         boolean isChecked = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
