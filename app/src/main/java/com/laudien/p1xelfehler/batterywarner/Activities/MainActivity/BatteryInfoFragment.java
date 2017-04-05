@@ -177,6 +177,9 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         }
         // load from saved instance state
         if (savedInstanceState != null){
+            if (savedInstanceState.containsKey(KEY_COLOR)) {
+                currentColor = savedInstanceState.getByte(KEY_COLOR);
+            }
             if (savedInstanceState.containsKey(KEY_TECHNOLOGY)){
                 textView_technology.setText((CharSequence) savedInstanceState.get(KEY_TECHNOLOGY));
             }
@@ -205,19 +208,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             }
         }
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // load the battery color from the saved instance state
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_COLOR)) {
-                if (onBatteryColorChangedListener != null) {
-                    onBatteryColorChangedListener.onColorChanged(savedInstanceState.getByte(KEY_COLOR));
-                }
-            }
-        }
     }
 
     @Override
@@ -275,6 +265,9 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
 
     public void setOnBatteryColorChangedListener(OnBatteryColorChangedListener onBatteryColorChangedListener) {
         this.onBatteryColorChangedListener = onBatteryColorChangedListener;
+        if (currentColor != 0) {
+            onBatteryColorChangedListener.onColorChanged(currentColor);
+        }
     }
 
     private void showNoData() {
