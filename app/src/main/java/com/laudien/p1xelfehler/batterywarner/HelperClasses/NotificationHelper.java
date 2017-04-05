@@ -6,13 +6,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
+import android.widget.RemoteViews;
 
+import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
@@ -110,7 +113,7 @@ public final class NotificationHelper {
                     showNoAlarmTimeFoundNotification(context);
                     break;
                 case ID_BATTERY_INFO:
-                    showBatteryInfoNotification();
+                    showBatteryInfoNotification(context);
                     break;
                 default:
                     throw new IdNotFoundException();
@@ -332,8 +335,15 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static void showBatteryInfoNotification(){
-
+    private static void showBatteryInfoNotification(Context context){
+        Notification notification = new Notification.Builder(context)
+                .setOngoing(true)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .build();
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(ID_BATTERY_INFO, notification);
     }
 
     private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {
