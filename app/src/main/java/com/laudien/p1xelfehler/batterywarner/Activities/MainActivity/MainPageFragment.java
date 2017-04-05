@@ -1,11 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,16 +26,21 @@ import static com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.Batt
  */
 public class MainPageFragment extends Fragment {
 
+    BatteryInfoFragment infoFragment;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        setHasOptionsMenu(dischargingServiceEnabled);
         View view = inflater.inflate(R.layout.fragment_main_page, container, false);
         final ImageView img_battery = (ImageView) view.findViewById(R.id.img_battery);
-        BatteryInfoFragment infoFragment = (BatteryInfoFragment) getChildFragmentManager().findFragmentById(R.id.fragment_battery_info);
+        infoFragment = (BatteryInfoFragment) getChildFragmentManager().findFragmentById(R.id.fragment_battery_info);
         infoFragment.setOnBatteryColorChangedListener(new BatteryInfoFragment.OnBatteryColorChangedListener() {
             @Override
             public void onColorChanged(byte colorID) {
-                switch (colorID){
+                switch (colorID) {
                     case COLOR_LOW:
                         ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow), img_battery);
                         break;
@@ -46,5 +54,19 @@ public class MainPageFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.on_off_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_reset){
+            infoFragment.resetDischargingStats();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

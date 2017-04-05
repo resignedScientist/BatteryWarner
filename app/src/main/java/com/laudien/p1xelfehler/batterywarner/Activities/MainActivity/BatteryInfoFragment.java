@@ -150,7 +150,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-        setHasOptionsMenu(dischargingServiceEnabled);
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = (TextView) view.findViewById(R.id.textView_technology);
@@ -223,28 +222,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.on_off_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_reset) {
-            // reset screen on/off percentages and times in sharedPreferences
-            sharedPreferences.edit()
-                    .putInt(getString(R.string.value_drain_screen_on), 0)
-                    .putInt(getString(R.string.value_drain_screen_off), 0)
-                    .putLong(getString(R.string.value_time_screen_on), 0)
-                    .putLong(getString(R.string.value_time_screen_off), 0)
-                    .apply();
-            showNoData();
-            ((BaseActivity) getActivity()).showToast(R.string.toast_reset_data_success, LENGTH_SHORT);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
@@ -278,6 +255,18 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             outState.putString(KEY_SCREEN_ON, textView_screenOn.getText().toString());
             outState.putString(KEY_SCREEN_OFF, textView_screenOff.getText().toString());
         }
+    }
+
+    public void resetDischargingStats(){
+        // reset screen on/off percentages and times in sharedPreferences
+        sharedPreferences.edit()
+                .putInt(getString(R.string.value_drain_screen_on), 0)
+                .putInt(getString(R.string.value_drain_screen_off), 0)
+                .putLong(getString(R.string.value_time_screen_on), 0)
+                .putLong(getString(R.string.value_time_screen_off), 0)
+                .apply();
+        showNoData();
+        ((BaseActivity) getActivity()).showToast(R.string.toast_reset_data_success, LENGTH_SHORT);
     }
 
     public void setOnBatteryColorChangedListener(OnBatteryColorChangedListener onBatteryColorChangedListener) {
