@@ -11,7 +11,9 @@ import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 
@@ -71,6 +73,7 @@ public final class NotificationHelper {
      * Notification id of the notification that tells the user that no alarm was found in the alarm app
      **/
     public static final int ID_NO_ALARM_TIME_FOUND = 1344;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static final int ID_BATTERY_INFO = 1345;
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
@@ -113,7 +116,9 @@ public final class NotificationHelper {
                     showNoAlarmTimeFoundNotification(context);
                     break;
                 case ID_BATTERY_INFO:
-                    showBatteryInfoNotification(context);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        showBatteryInfoNotification(context);
+                    }
                     break;
                 default:
                     throw new IdNotFoundException();
@@ -335,9 +340,12 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private static void showBatteryInfoNotification(Context context){
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.fragment_battery_infos);
         Notification notification = new Notification.Builder(context)
                 .setOngoing(true)
+                .setCustomBigContentView(contentView)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher)

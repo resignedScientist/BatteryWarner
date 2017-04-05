@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 /**
@@ -23,6 +24,7 @@ public class StartActivity extends BaseActivity {
         } else {
             startActivity(new Intent(this, MainActivity.class));
         }
+        NotificationHelper.showNotification(this, NotificationHelper.ID_BATTERY_INFO);
         finish();
     }
 }
