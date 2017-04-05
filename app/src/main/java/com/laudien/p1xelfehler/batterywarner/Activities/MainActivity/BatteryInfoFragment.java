@@ -27,6 +27,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
@@ -139,7 +140,10 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                     onBatteryColorChangedListener.onColorChanged(nextColor);
                 }
                 if (nextColor == COLOR_LOW){
-                    NotificationHelper.showNotification(context, ID_WARNING_LOW);
+                    boolean isCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) != 0;
+                    if (!isCharging) {
+                        NotificationHelper.showNotification(context, ID_WARNING_LOW);
+                    }
                 }
             }
         }
