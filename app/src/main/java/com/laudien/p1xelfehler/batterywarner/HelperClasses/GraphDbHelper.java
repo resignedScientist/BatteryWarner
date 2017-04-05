@@ -38,16 +38,13 @@ public class GraphDbHelper extends SQLiteOpenHelper {
     private static final String TABLE_COLUMN_TIME = "time";
     private static final String TABLE_COLUMN_PERCENTAGE = "percentage";
     private static final String TABLE_COLUMN_TEMP = "temperature";
-    private static final String CREATE_QUERY =
-            "CREATE TABLE " + TABLE_NAME
-                    + " (" + TABLE_COLUMN_TIME + " TEXT,"
-                    + TABLE_COLUMN_PERCENTAGE + " INTEGER,"
-                    + TABLE_COLUMN_TEMP + " INTEGER);";
+    private static final String CREATE_QUERY = String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER);",
+            TABLE_NAME, TABLE_COLUMN_TIME, TABLE_COLUMN_PERCENTAGE, TABLE_COLUMN_TEMP);
     private static GraphDbHelper instance;
     private static String[] columns = {
-            GraphDbHelper.TABLE_COLUMN_TIME,
-            GraphDbHelper.TABLE_COLUMN_PERCENTAGE,
-            GraphDbHelper.TABLE_COLUMN_TEMP};
+            TABLE_COLUMN_TIME,
+            TABLE_COLUMN_PERCENTAGE,
+            TABLE_COLUMN_TEMP};
     private final String TAG = getClass().getSimpleName();
     private int color_percentage, color_percentageBackground, color_temperature;
     private boolean darkThemeEnabled = false;
