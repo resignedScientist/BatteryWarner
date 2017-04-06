@@ -358,6 +358,7 @@ public final class NotificationHelper {
         }
         Notification notification = new Notification.Builder(context)
                 .setOngoing(true)
+                .setContentIntent(getDefaultClickIntent(context))
                 .setCustomBigContentView(contentView)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(context.getString(R.string.app_name))

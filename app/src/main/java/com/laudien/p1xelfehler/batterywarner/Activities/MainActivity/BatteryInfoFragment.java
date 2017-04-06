@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.ImageHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -63,7 +64,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             String technology = intent.getStringExtra(android.os.BatteryManager.EXTRA_TECHNOLOGY);
             double temperature = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
             int health = intent.getIntExtra(android.os.BatteryManager.EXTRA_HEALTH, NO_STATE);
-            String healthString;
+            String healthString = BatteryHelper.getHealthString(context, health);
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
 
@@ -91,30 +92,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                         getString(R.string.current),
                         currentNow / -1000)
                 );
-            }
-
-            switch (health) {
-                case android.os.BatteryManager.BATTERY_HEALTH_COLD:
-                    healthString = getString(R.string.health_cold);
-                    break;
-                case android.os.BatteryManager.BATTERY_HEALTH_DEAD:
-                    healthString = getString(R.string.health_dead);
-                    break;
-                case android.os.BatteryManager.BATTERY_HEALTH_GOOD:
-                    healthString = getString(R.string.health_good);
-                    break;
-                case android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE:
-                    healthString = getString(R.string.health_overvoltage);
-                    break;
-                case android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT:
-                    healthString = getString(R.string.health_overheat);
-                    break;
-                case android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE:
-                    healthString = getString(R.string.health_unspecified_failure);
-                    break;
-                default:
-                    healthString = getString(R.string.health_unknown);
-                    break;
             }
 
             textView_technology.setText(getString(R.string.technology) + ": " + technology);

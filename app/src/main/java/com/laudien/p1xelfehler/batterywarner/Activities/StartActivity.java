@@ -10,6 +10,7 @@ import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivit
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 
 /**
  * "Middle man" activity that starts either the IntroActivity or the MainActivity.
@@ -27,9 +28,7 @@ public class StartActivity extends BaseActivity {
             startActivity(new Intent(this, MainActivity.class));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationHelper.showBatteryInfoNotification(this, new BatteryData(
-                    "1", "2", "3", "4", "5", "6"
-            ));
+            startService(new Intent(this, BatteryInfoNotificationService.class));
         }
         finish();
     }
