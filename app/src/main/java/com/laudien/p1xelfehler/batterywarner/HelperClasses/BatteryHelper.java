@@ -81,7 +81,7 @@ public class BatteryHelper {
         );
     }
 
-    static class BatteryData {
+    public static class BatteryData {
 
         private String technology, temperature, health, batteryLevel, voltage, current, screenOn, screenOff;
 

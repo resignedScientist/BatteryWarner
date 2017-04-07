@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,16 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.ImageHelper;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -34,7 +30,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
-public class BatteryInfoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class BatteryInfoFragment extends Fragment {
 
     public static final byte COLOR_LOW = 1;
     public static final byte COLOR_HIGH = 2;
@@ -51,58 +47,26 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
     private boolean dischargingServiceEnabled;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
-    private long screenOnTime, screenOffTime, screenOnDrain, screenOffDrain;
     private SharedPreferences sharedPreferences;
     private TextView textView_screenOn, textView_screenOff, textView_current, textView_technology,
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
-    private BatteryManager batteryManager;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
-        public void onReceive(Context context, Intent intent) {
-            String technology = intent.getStringExtra(android.os.BatteryManager.EXTRA_TECHNOLOGY);
-            double temperature = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
-            int health = intent.getIntExtra(android.os.BatteryManager.EXTRA_HEALTH, NO_STATE);
-            String healthString = BatteryHelper.getHealthString(context, health);
-            int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
-            double voltage = (double) intent.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
+        public void onReceive(Context context, Intent batteryStatus) {
 
-            if (dischargingServiceEnabled) {
-                double screenOnTimeInHours = (double) screenOnTime / 3600000;
-                double screenOffTimeInHours = (double) screenOffTime / 3600000;
-                double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
-                double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
-                if (screenOnPercentPerHour != 0.0 && !Double.isInfinite(screenOnPercentPerHour) && !Double.isNaN(screenOnPercentPerHour)
-                        && screenOffPercentPerHour != 0.0 && !Double.isInfinite(screenOffPercentPerHour) && !Double.isNaN(screenOffPercentPerHour)) {
-                    textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
-                            getString(R.string.screen_on), screenOnPercentPerHour));
-                    textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %.2f %%/h",
-                            getString(R.string.screen_off), screenOffPercentPerHour));
-                } else {
-                    showNoData();
-                }
-            }
-
-            if (batteryManager != null) {
-                long currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-                textView_current.setText(String.format(
-                        Locale.getDefault(),
-                        "%s: %d mA",
-                        getString(R.string.current),
-                        currentNow / -1000)
-                );
-            }
-
-            textView_technology.setText(getString(R.string.technology) + ": " + technology);
-            textView_temp.setText(String.format(Locale.getDefault(),
-                    getString(R.string.temperature) + ": %.1f °C", temperature));
-            textView_health.setText(getString(R.string.health) + ": " + healthString);
-            textView_batteryLevel.setText(String.format(getString(R.string.battery_level) + ": %d%%", batteryLevel));
-            textView_voltage.setText(String.format(Locale.getDefault(),
-                    getString(R.string.voltage) + ": %.3f V", voltage));
+            // set textView text
+            BatteryData batteryData = BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus);
+            textView_technology.setText(batteryData.getTechnology());
+            textView_temp.setText(batteryData.getTemperature());
+            textView_health.setText(batteryData.getHealth());
+            textView_batteryLevel.setText(batteryData.getBatteryLevel());
+            textView_voltage.setText(batteryData.getVoltage());
+            textView_current.setText(batteryData.getCurrent());
 
             // Image color
+            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
             byte nextColor;
             if (batteryLevel <= warningLow) { // battery low
                 nextColor = COLOR_LOW;
@@ -116,8 +80,8 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                 if (onBatteryColorChangedListener != null) {
                     onBatteryColorChangedListener.onColorChanged(nextColor);
                 }
-                if (nextColor == COLOR_LOW){
-                    boolean isCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) != 0;
+                if (nextColor == COLOR_LOW) {
+                    boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
                     if (!isCharging) {
                         NotificationHelper.showNotification(context, ID_WARNING_LOW);
                     }
@@ -142,9 +106,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
         textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            batteryManager = (BatteryManager) getActivity().getSystemService(Context.BATTERY_SERVICE);
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             textView_current.setVisibility(GONE);
         }
         // hide the screen on/off TextViews if discharging service is disabled
@@ -153,26 +115,26 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
             textView_screenOff.setVisibility(GONE);
         }
         // load from saved instance state
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_COLOR)) {
                 currentColor = savedInstanceState.getByte(KEY_COLOR);
             }
-            if (savedInstanceState.containsKey(KEY_TECHNOLOGY)){
+            if (savedInstanceState.containsKey(KEY_TECHNOLOGY)) {
                 textView_technology.setText((CharSequence) savedInstanceState.get(KEY_TECHNOLOGY));
             }
-            if (savedInstanceState.containsKey(KEY_TEMPERATURE)){
+            if (savedInstanceState.containsKey(KEY_TEMPERATURE)) {
                 textView_temp.setText((CharSequence) savedInstanceState.get(KEY_TEMPERATURE));
             }
-            if (savedInstanceState.containsKey(KEY_HEALTH)){
+            if (savedInstanceState.containsKey(KEY_HEALTH)) {
                 textView_health.setText((CharSequence) savedInstanceState.get(KEY_HEALTH));
             }
-            if (savedInstanceState.containsKey(KEY_BATTERY_LEVEL)){
+            if (savedInstanceState.containsKey(KEY_BATTERY_LEVEL)) {
                 textView_batteryLevel.setText((CharSequence) savedInstanceState.get(KEY_BATTERY_LEVEL));
             }
-            if (savedInstanceState.containsKey(KEY_VOLTAGE)){
+            if (savedInstanceState.containsKey(KEY_VOLTAGE)) {
                 textView_voltage.setText((CharSequence) savedInstanceState.get(KEY_VOLTAGE));
             }
-            if (savedInstanceState.containsKey(KEY_CURRENT)){
+            if (savedInstanceState.containsKey(KEY_CURRENT)) {
                 textView_current.setText((CharSequence) savedInstanceState.get(KEY_CURRENT));
             }
             if (dischargingServiceEnabled) {
@@ -195,20 +157,14 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
     @Override
     public void onResume() {
         super.onResume();
-        screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
-        screenOffTime = sharedPreferences.getLong(getString(R.string.value_time_screen_off), 0);
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        screenOnDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_on), 0);
-        screenOffDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_off), 0);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         getActivity().registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         getActivity().unregisterReceiver(batteryChangedReceiver);
     }
 
@@ -228,7 +184,7 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
         }
     }
 
-    public void resetDischargingStats(){
+    public void resetDischargingStats() {
         // reset screen on/off percentages and times in sharedPreferences
         sharedPreferences.edit()
                 .putInt(getString(R.string.value_drain_screen_on), 0)
@@ -252,19 +208,6 @@ public class BatteryInfoFragment extends Fragment implements SharedPreferences.O
                 getString(R.string.screen_on), "N/A"));
         textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
                 getString(R.string.screen_off), "N/A"));
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (s.equals(getString(R.string.value_time_screen_on))) {
-            screenOnTime = sharedPreferences.getLong(s, 0);
-        } else if (s.equals(getString(R.string.value_time_screen_off))) {
-            screenOffTime = sharedPreferences.getLong(s, 0);
-        } else if (s.equals(getString(R.string.value_drain_screen_on))) {
-            screenOnDrain = sharedPreferences.getInt(s, 0);
-        } else if (s.equals(getString(R.string.value_drain_screen_off))) {
-            screenOffDrain = sharedPreferences.getInt(s, 0);
-        }
     }
 
     interface OnBatteryColorChangedListener {
