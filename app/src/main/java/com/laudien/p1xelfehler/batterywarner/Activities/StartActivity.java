@@ -7,8 +7,6 @@ import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 

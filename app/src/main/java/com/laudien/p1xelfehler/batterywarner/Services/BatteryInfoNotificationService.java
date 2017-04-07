@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -23,7 +25,9 @@ public class BatteryInfoNotificationService extends Service{
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            NotificationHelper.showBatteryInfoNotification(context, BatteryHelper.getBatteryData(context, batteryStatus));
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            NotificationHelper.showBatteryInfoNotification(context,
+                    BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus));
         }
     };
 

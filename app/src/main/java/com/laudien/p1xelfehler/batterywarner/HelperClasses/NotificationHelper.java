@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
@@ -25,6 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 
 import java.util.Locale;
 
