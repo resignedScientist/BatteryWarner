@@ -1,68 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/textView_technology"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Technologie: Li-Io"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_technology"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Technologie: Li-Io"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperatur: 25°C"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_temp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Temperatur: 25°C"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_health"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gesundheit: OK"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_health"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gesundheit: OK"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_batteryLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Akkustand: 30%"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_batteryLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Akkustand: 30%"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_voltage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Spannung: 3,5V"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_voltage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Spannung: 3,5V"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stromstärke: 1500mAh"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_current"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stromstärke: 1500mAh"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_screenOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Screen on: 33,33 %/h"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_screenOn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Screen on: 33,33 %/h"
-                android:textSize="@dimen/text_size_battery_info" />
+    <TextView
+        android:id="@+id/textView_screenOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Screen off: 33,33 %/h"
+        android:textSize="@dimen/text_size_battery_info" />
 
-            <TextView
-                android:id="@+id/textView_screenOff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Screen off: 33,33 %/h"
-                android:textSize="@dimen/text_size_battery_info" />
-
-        </LinearLayout>
-</ScrollView>
+</LinearLayout>

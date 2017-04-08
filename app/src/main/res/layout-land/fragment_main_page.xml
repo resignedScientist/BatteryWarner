@@ -39,15 +39,20 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline_top"
         app:layout_constraintVertical_bias="1.0">
 
-        <fragment
-            android:id="@+id/fragment_battery_info"
-            android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp">
+
+            <fragment
+                android:id="@+id/fragment_battery_info"
+                android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
     </FrameLayout>
 
     <android.support.constraint.Guideline

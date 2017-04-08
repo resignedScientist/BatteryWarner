@@ -2,11 +2,13 @@ package com.laudien.p1xelfehler.batterywarner.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 
 /**
  * "Middle man" activity that starts either the IntroActivity or the MainActivity.
@@ -22,6 +24,9 @@ public class StartActivity extends BaseActivity {
             startActivity(new Intent(this, IntroActivity.class));
         } else {
             startActivity(new Intent(this, MainActivity.class));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            startService(new Intent(this, BatteryInfoNotificationService.class));
         }
         finish();
     }

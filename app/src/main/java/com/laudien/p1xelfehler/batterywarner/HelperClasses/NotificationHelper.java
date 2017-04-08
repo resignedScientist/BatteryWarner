@@ -6,16 +6,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Icon;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
@@ -23,6 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 
 import java.util.Locale;
 
@@ -32,6 +33,7 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.N;
+import static android.view.View.GONE;
 
 /**
  * Helper class to show a notification with the given type. All notifications used in the app are listed here.
@@ -71,6 +73,7 @@ public final class NotificationHelper {
      * Notification id of the notification that tells the user that no alarm was found in the alarm app
      **/
     public static final int ID_NO_ALARM_TIME_FOUND = 1344;
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static final int ID_BATTERY_INFO = 1345;
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
@@ -111,9 +114,6 @@ public final class NotificationHelper {
                     break;
                 case ID_NO_ALARM_TIME_FOUND:
                     showNoAlarmTimeFoundNotification(context);
-                    break;
-                case ID_BATTERY_INFO:
-                    showBatteryInfoNotification(context);
                     break;
                 default:
                     throw new IdNotFoundException();
@@ -335,9 +335,35 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static void showBatteryInfoNotification(Context context){
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void showBatteryInfoNotification(Context context, BatteryData batteryData){
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
+        if (batteryData != null){
+            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
+
+            // unload not needed TextViews
+            contentView.setViewVisibility(R.id.textView_technology, GONE);
+            contentView.setViewVisibility(R.id.textView_health, GONE);
+            contentView.setViewVisibility(R.id.textView_batteryLevel, GONE);
+
+            // set TextView texts
+            contentView.setTextViewText(R.id.textView_temp, batteryData.getTemperature());
+            contentView.setTextViewText(R.id.textView_voltage, batteryData.getVoltage());
+            contentView.setTextViewText(R.id.textView_current, batteryData.getCurrent());
+            String screenOn = batteryData.getScreenOn();
+            String screenOff = batteryData.getScreenOff();
+            if (screenOn != null && screenOff != null){
+                contentView.setTextViewText(R.id.textView_screenOn, screenOn);
+                contentView.setTextViewText(R.id.textView_screenOff, screenOff);
+            } else {
+                contentView.setViewVisibility(R.id.textView_screenOn, GONE);
+                contentView.setViewVisibility(R.id.textView_screenOff, GONE);
+            }
+        }
         Notification notification = new Notification.Builder(context)
                 .setOngoing(true)
+                .setContentIntent(getDefaultClickIntent(context))
+                .setCustomBigContentView(contentView)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher)

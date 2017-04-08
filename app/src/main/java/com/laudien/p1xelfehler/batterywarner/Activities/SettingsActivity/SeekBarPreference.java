@@ -18,6 +18,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+
 /**
  * A Custom preference that shows a SeekBar and a TextView with the number.
  * You can change the number with the SeekBar or by clicking on the TextView.
@@ -36,7 +38,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     private TextView textView;
     private SeekBar seekBar;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = LOLLIPOP)
     public SeekBarPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context, attrs);
