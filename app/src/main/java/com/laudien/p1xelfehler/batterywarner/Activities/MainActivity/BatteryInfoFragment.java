@@ -56,7 +56,7 @@ public class BatteryInfoFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
 
-            // set textView text
+            // set textView texts
             BatteryData batteryData = BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus);
             textView_technology.setText(batteryData.getTechnology());
             textView_temp.setText(batteryData.getTemperature());
@@ -64,6 +64,19 @@ public class BatteryInfoFragment extends Fragment {
             textView_batteryLevel.setText(batteryData.getBatteryLevel());
             textView_voltage.setText(batteryData.getVoltage());
             textView_current.setText(batteryData.getCurrent());
+            if (dischargingServiceEnabled) {
+                String screenOn = batteryData.getScreenOn();
+                String screenOff = batteryData.getScreenOff();
+                if (screenOn != null && screenOff != null) {
+                    textView_screenOn.setText(screenOn);
+                    textView_screenOff.setText(screenOff);
+                } else {
+                    showNoData();
+                }
+            } else {
+                textView_screenOn.setVisibility(GONE);
+                textView_screenOff.setVisibility(GONE);
+            }
 
             // Image color
             int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
