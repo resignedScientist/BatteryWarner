@@ -337,8 +337,10 @@ public final class NotificationHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void showBatteryInfoNotification(Context context, BatteryData batteryData){
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.fragment_battery_infos);
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
         if (batteryData != null){
+            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
+
             // unload not needed TextViews
             contentView.setViewVisibility(R.id.textView_technology, GONE);
             contentView.setViewVisibility(R.id.textView_health, GONE);
