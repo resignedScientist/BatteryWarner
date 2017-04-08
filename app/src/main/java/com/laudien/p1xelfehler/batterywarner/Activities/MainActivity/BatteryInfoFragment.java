@@ -73,9 +73,6 @@ public class BatteryInfoFragment extends Fragment {
                 } else {
                     showNoData();
                 }
-            } else {
-                textView_screenOn.setVisibility(GONE);
-                textView_screenOff.setVisibility(GONE);
             }
 
             // Image color
