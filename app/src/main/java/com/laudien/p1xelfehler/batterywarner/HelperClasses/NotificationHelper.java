@@ -366,7 +366,7 @@ public final class NotificationHelper {
                 .setCustomBigContentView(contentView)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle(context.getString(R.string.app_name))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(android.R.color.transparent)
                 .build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_BATTERY_INFO, notification);
