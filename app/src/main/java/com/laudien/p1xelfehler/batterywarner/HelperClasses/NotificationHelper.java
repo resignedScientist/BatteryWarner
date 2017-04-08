@@ -336,9 +336,9 @@ public final class NotificationHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void showBatteryInfoNotification(Context context, BatteryData batteryData){
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
-        if (batteryData != null){
+    public static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences, BatteryData batteryData){
+        if (batteryData != null) {
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
 
             // unload not needed TextViews
@@ -347,29 +347,29 @@ public final class NotificationHelper {
             contentView.setViewVisibility(R.id.textView_batteryLevel, GONE);
 
             // set TextView texts
-            contentView.setTextViewText(R.id.textView_temp, batteryData.getTemperature());
-            contentView.setTextViewText(R.id.textView_voltage, batteryData.getVoltage());
-            contentView.setTextViewText(R.id.textView_current, batteryData.getCurrent());
-            String screenOn = batteryData.getScreenOn();
-            String screenOff = batteryData.getScreenOff();
-            if (screenOn != null && screenOff != null){
+            contentView.setTextViewText(R.id.textView_temp, batteryData.getTemperature(context));
+            contentView.setTextViewText(R.id.textView_voltage, batteryData.getVoltage(context));
+            contentView.setTextViewText(R.id.textView_current, batteryData.getCurrent(context));
+            String screenOn = batteryData.getScreenOn(context, sharedPreferences);
+            String screenOff = batteryData.getScreenOff(context, sharedPreferences);
+            if (screenOn != null && screenOff != null) {
                 contentView.setTextViewText(R.id.textView_screenOn, screenOn);
                 contentView.setTextViewText(R.id.textView_screenOff, screenOff);
             } else {
                 contentView.setViewVisibility(R.id.textView_screenOn, GONE);
                 contentView.setViewVisibility(R.id.textView_screenOff, GONE);
             }
+            Notification notification = new Notification.Builder(context)
+                    .setOngoing(true)
+                    .setContentIntent(getDefaultClickIntent(context))
+                    .setCustomBigContentView(contentView)
+                    .setPriority(Notification.PRIORITY_MAX)
+                    .setContentTitle(context.getString(R.string.app_name))
+                    .setSmallIcon(android.R.color.transparent)
+                    .build();
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(ID_BATTERY_INFO, notification);
         }
-        Notification notification = new Notification.Builder(context)
-                .setOngoing(true)
-                .setContentIntent(getDefaultClickIntent(context))
-                .setCustomBigContentView(contentView)
-                .setPriority(Notification.PRIORITY_MAX)
-                .setContentTitle(context.getString(R.string.app_name))
-                .setSmallIcon(android.R.color.transparent)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(ID_BATTERY_INFO, notification);
     }
 
     private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {

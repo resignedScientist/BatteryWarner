@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -24,7 +24,10 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
+import static android.os.BatteryManager.EXTRA_HEALTH;
+import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
+import static android.os.BatteryManager.EXTRA_TECHNOLOGY;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.view.View.GONE;
@@ -52,35 +55,47 @@ public class BatteryInfoFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private TextView textView_screenOn, textView_screenOff, textView_current, textView_technology,
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private BatteryData batteryData;
+    private BatteryManager batteryManager;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @RequiresApi(api = LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-
-            // set textView texts
-            BatteryData batteryData = BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus);
-            textView_technology.setText(batteryData.getTechnology());
-            textView_temp.setText(batteryData.getTemperature());
-            textView_health.setText(batteryData.getHealth());
-            textView_batteryLevel.setText(batteryData.getBatteryLevel());
-            textView_voltage.setText(batteryData.getVoltage());
+            // technology (only once)
+            batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
+            textView_technology.setText(batteryData.getTechnology(context));
+            // temperature
+            batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
+            textView_temp.setText(batteryData.getTemperature(context));
+            // health
+            batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
+            textView_health.setText(batteryData.getHealth(context));
+            // battery level
+            batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
+            textView_batteryLevel.setText(batteryData.getBatteryLevel(context));
+            // voltage
+            batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
+            textView_voltage.setText(batteryData.getVoltage(context));
+            // current
             if (SDK_INT >= LOLLIPOP) {
-                textView_current.setText(batteryData.getCurrent());
+                if (batteryManager == null){
+                    batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+                }
+                batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager));
+                textView_current.setText(batteryData.getCurrent(context));
             }
             if (dischargingServiceEnabled) {
-                String screenOn = batteryData.getScreenOn();
-                String screenOff = batteryData.getScreenOff();
-                if (screenOn != null && screenOff != null) {
-                    textView_screenOn.setText(screenOn);
-                    textView_screenOff.setText(screenOff);
-                } else {
-                    showNoData();
-                }
+                // screen on
+                batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences));
+                textView_screenOn.setText(batteryData.getScreenOn(context, sharedPreferences));
+                // screen off
+                batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences));
+                textView_screenOff.setText(batteryData.getScreenOff(context, sharedPreferences));
             }
 
             // Image color
-            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
+            int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
             byte nextColor;
             if (batteryLevel <= warningLow) { // battery low
                 nextColor = COLOR_LOW;
@@ -119,6 +134,7 @@ public class BatteryInfoFragment extends Fragment {
         textView_current = (TextView) view.findViewById(R.id.textView_current);
         textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
         textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
+        batteryData = new BatteryData();
 
         if (SDK_INT < LOLLIPOP) {
             textView_current.setVisibility(GONE);
