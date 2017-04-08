@@ -339,10 +339,13 @@ public final class NotificationHelper {
     public static void showBatteryInfoNotification(Context context, BatteryData batteryData){
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.fragment_battery_infos);
         if (batteryData != null){
-            contentView.setTextViewText(R.id.textView_technology, batteryData.getTechnology());
+            // unload not needed TextViews
+            contentView.setViewVisibility(R.id.textView_technology, GONE);
+            contentView.setViewVisibility(R.id.textView_health, GONE);
+            contentView.setViewVisibility(R.id.textView_batteryLevel, GONE);
+
+            // set TextView texts
             contentView.setTextViewText(R.id.textView_temp, batteryData.getTemperature());
-            contentView.setTextViewText(R.id.textView_health, batteryData.getHealth());
-            contentView.setTextViewText(R.id.textView_batteryLevel, batteryData.getBatteryLevel());
             contentView.setTextViewText(R.id.textView_voltage, batteryData.getVoltage());
             contentView.setTextViewText(R.id.textView_current, batteryData.getCurrent());
             String screenOn = batteryData.getScreenOn();
