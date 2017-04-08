@@ -96,7 +96,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             if (alarmTimeSwitch.isChecked()) { // remove preference key if checked to force the preference to always load the default alarm time
                 sharedPreferences.edit().remove(timePickerPreference.getKey()).apply();
             } else { // if unchecked, save the time string to shared preferences
-                sharedPreferences.edit().putString(timePickerPreference.getKey(), timePickerPreference.getSummary().toString()).apply();
+                sharedPreferences.edit().putLong(timePickerPreference.getKey(), timePickerPreference.getTime()).apply();
             }
             timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
         }
