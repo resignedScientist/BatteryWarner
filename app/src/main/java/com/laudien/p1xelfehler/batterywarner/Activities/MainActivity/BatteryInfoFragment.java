@@ -25,6 +25,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 import static android.os.BatteryManager.EXTRA_PLUGGED;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
@@ -52,7 +54,7 @@ public class BatteryInfoFragment extends Fragment {
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @RequiresApi(api = LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
 
@@ -63,7 +65,9 @@ public class BatteryInfoFragment extends Fragment {
             textView_health.setText(batteryData.getHealth());
             textView_batteryLevel.setText(batteryData.getBatteryLevel());
             textView_voltage.setText(batteryData.getVoltage());
-            textView_current.setText(batteryData.getCurrent());
+            if (SDK_INT >= LOLLIPOP) {
+                textView_current.setText(batteryData.getCurrent());
+            }
             if (dischargingServiceEnabled) {
                 String screenOn = batteryData.getScreenOn();
                 String screenOff = batteryData.getScreenOff();
@@ -116,7 +120,7 @@ public class BatteryInfoFragment extends Fragment {
         textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
         textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (SDK_INT < LOLLIPOP) {
             textView_current.setVisibility(GONE);
         }
         // hide the screen on/off TextViews if discharging service is disabled

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -15,6 +17,7 @@ import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE;
 import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
 public class BatteryHelper {
@@ -45,7 +48,7 @@ public class BatteryHelper {
         int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, NO_STATE);
         double voltage = (double) batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
         String currentString = null, screenOn = null, screenOff = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= LOLLIPOP) {
             BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
             long current = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
             currentString = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
@@ -122,6 +125,7 @@ public class BatteryHelper {
             return voltage;
         }
 
+        @RequiresApi(api = LOLLIPOP)
         public String getCurrent() {
             return current;
         }
