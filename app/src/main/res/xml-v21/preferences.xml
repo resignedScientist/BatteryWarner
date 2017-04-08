@@ -60,6 +60,12 @@
             android:summary="%s"
             android:title="@string/time_format_title" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/info_notification">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_info_notification_enabled_default"
+            android:key="@string/pref_info_notification_enabled"
+            android:title="@string/battery_info_notification_enabled"/>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/theming">
         <SwitchPreference
             android:defaultValue="@bool/pref_dark_theme_enabled_default"

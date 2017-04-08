@@ -27,6 +27,7 @@ import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
@@ -45,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
-            pref_usb_disabled, pref_stopCharging;
+            pref_usb_disabled, pref_stopCharging, pref_battery_info_notification;
     private RingtonePreference ringtonePreference;
     private Preference pref_smart_charging;
 
@@ -67,6 +68,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
+        pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
 
         Context context = getActivity();
         if (context != null) {
@@ -209,6 +211,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getActivity();
             if (context != null) {
                 context.startService(new Intent(context, ChargingService.class));
+            }
+        } else if (preference == pref_battery_info_notification){
+            Context context = getActivity();
+            if (context != null) {
+                Intent intent = new Intent(context, BatteryInfoNotificationService.class);
+                if (pref_battery_info_notification.isChecked()) {
+                    context.startService(intent);
+                } else {
+                    context.stopService(intent);
+                }
             }
         }
     }

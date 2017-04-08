@@ -142,4 +142,6 @@
     <string name="disable_charging_subtitle">Verhindert, dass das Gerät bei einer USB-Verbindung lädt.</string>
     <string name="notifications_are_off_setting">Warne, wenn der Ton aus ist</string>
     <string name="tile_text_charge_to_100">Lade auf 100%</string>
+    <string name="battery_info_notification_enabled">Info-Benachrichtigung aktivieren</string>
+    <string name="info_notification">Info-Benachrichtigung</string>
 </resources>

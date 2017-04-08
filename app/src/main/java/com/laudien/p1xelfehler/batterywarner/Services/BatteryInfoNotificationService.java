@@ -15,19 +15,25 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class BatteryInfoNotificationService extends Service{
+public class BatteryInfoNotificationService extends Service {
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            NotificationHelper.showBatteryInfoNotification(context,
-                    BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus));
+            boolean notificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+            if (notificationEnabled) {
+                NotificationHelper.showBatteryInfoNotification(context,
+                        BatteryHelper.getBatteryData(context, sharedPreferences, batteryStatus));
+            } else {
+                stopSelf();
+            }
         }
     };
 
@@ -49,5 +55,6 @@ public class BatteryInfoNotificationService extends Service{
         Log.d(getClass().getSimpleName(), "Service destroyed!");
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
+        NotificationHelper.cancelNotification(this, ID_BATTERY_INFO);
     }
 }

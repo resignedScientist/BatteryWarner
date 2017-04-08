@@ -28,6 +28,8 @@
     <string name="pref_smart_charging_time" translatable="false">smartChargingTime</string>
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
+    <!-- BatteryInfo Notification -->
+    <string name="pref_info_notification_enabled" translatable="false">infoNotificationEnabled</string>
 
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -189,4 +191,6 @@
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <string name="notifications_are_off_setting">Warn if the sound is disabled</string>
     <string name="tile_text_charge_to_100">Charge to 100%</string>
+    <string name="battery_info_notification_enabled">Enable info notification</string>
+    <string name="info_notification">Info notification</string>
 </resources>
