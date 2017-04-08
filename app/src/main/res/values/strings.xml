@@ -29,8 +29,6 @@
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
 
-    <string name="alex_cheater" translatable="false">Hallo Alex, du Cheater!</string>
-
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_last_percentage" translatable="false">lastPercentage</string>
