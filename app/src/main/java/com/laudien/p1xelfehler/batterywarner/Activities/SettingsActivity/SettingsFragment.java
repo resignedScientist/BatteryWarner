@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,9 +23,9 @@ import android.support.v4.content.ContextCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
@@ -35,6 +34,8 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.N;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -68,7 +69,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
-        pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
+        if (SDK_INT >= N) {
+            pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
+        }
 
         Context context = getActivity();
         if (context != null) {
@@ -151,7 +154,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (preference == pref_autoSave && pref_autoSave.isChecked()) {
             // check for permission
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            if (SDK_INT >= Build.VERSION_CODES.M
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_AUTO_SAVE);
             }
@@ -212,7 +215,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null) {
                 context.startService(new Intent(context, ChargingService.class));
             }
-        } else if (preference == pref_battery_info_notification){
+        } else if (preference == pref_battery_info_notification) {
             Context context = getActivity();
             if (context != null) {
                 Intent intent = new Intent(context, BatteryInfoNotificationService.class);
