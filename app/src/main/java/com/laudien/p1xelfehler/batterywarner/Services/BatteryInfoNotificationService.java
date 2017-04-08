@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
-import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -20,23 +19,22 @@ import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.showBatteryInfoNotification;
 
 @RequiresApi(api = N)
 public class BatteryInfoNotificationService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SharedPreferences sharedPreferences;
-    private boolean dischargingServiceEnabled;
+    private boolean dischargingServiceEnabled, notificationEnabled;
     private BatteryData batteryData;
     private BatteryManager batteryManager;
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            boolean notificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
             if (notificationEnabled) {
                 batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
                 batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
@@ -65,6 +63,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         return super.onStartCommand(intent, flags, startId);
@@ -83,10 +82,13 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         this.sharedPreferences = sharedPreferences;
         if (s.equals(getString(R.string.pref_discharging_service_enabled))) {
             dischargingServiceEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            NotificationHelper.showBatteryInfoNotification(BatteryInfoNotificationService.this, sharedPreferences, batteryData);
-            if (!dischargingServiceEnabled) {
-                stopSelf();
+            if (dischargingServiceEnabled) {
+                cancelNotification(this, ID_BATTERY_INFO);
             }
+            showBatteryInfoNotification(this, sharedPreferences, batteryData);
+        } else if (s.equals(getString(R.string.pref_info_notification_enabled))) {
+            notificationEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+            showBatteryInfoNotification(this, sharedPreferences, batteryData);
         }
     }
 }

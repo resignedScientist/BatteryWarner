@@ -19,11 +19,11 @@ import android.widget.RemoteViews;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
+import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 
 import java.util.Locale;
 
@@ -336,7 +336,7 @@ public final class NotificationHelper {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences, BatteryData batteryData){
+    public static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences, BatteryData batteryData) {
         if (batteryData != null) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);

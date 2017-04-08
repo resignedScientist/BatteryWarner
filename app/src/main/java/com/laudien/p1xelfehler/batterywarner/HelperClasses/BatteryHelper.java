@@ -162,7 +162,7 @@ public class BatteryHelper {
         public String getScreenOff(Context context, SharedPreferences sharedPreferences) {
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             if (dischargingServiceEnabled) {
-                if (screenOff == 0.0){
+                if (screenOff == 0.0) {
                     return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
                 } else {
                     return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
