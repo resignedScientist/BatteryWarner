@@ -216,13 +216,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 context.startService(new Intent(context, ChargingService.class));
             }
         } else if (preference == pref_battery_info_notification) {
-            Context context = getActivity();
-            if (context != null) {
-                Intent intent = new Intent(context, BatteryInfoNotificationService.class);
-                if (pref_battery_info_notification.isChecked()) {
-                    context.startService(intent);
-                } else {
-                    context.stopService(intent);
+            if (pref_battery_info_notification != null) {
+                Context context = getActivity();
+                if (context != null) {
+                    Intent intent = new Intent(context, BatteryInfoNotificationService.class);
+                    if (pref_battery_info_notification.isChecked()) {
+                        context.startService(intent);
+                    } else {
+                        context.stopService(intent);
+                    }
                 }
             }
         }
