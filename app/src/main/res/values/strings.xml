@@ -30,6 +30,14 @@
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
     <!-- BatteryInfo Notification -->
     <string name="pref_info_notification_enabled" translatable="false">infoNotificationEnabled</string>
+    <string name="pref_info_technology" translatable="false">infoTechnology</string>
+    <string name="pref_info_temperature" translatable="false">infoTemperature</string>
+    <string name="pref_info_health" translatable="false">infoHealth</string>
+    <string name="pref_info_battery_level" translatable="false">infoBatteryLevel</string>
+    <string name="pref_info_voltage" translatable="false">infoVoltage</string>
+    <string name="pref_info_current" translatable="false">infoCurrent</string>
+    <string name="pref_info_screen_on" translatable="false">infoScreenOn</string>
+    <string name="pref_info_screen_off" translatable="false">infoScreenOff</string>
 
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
