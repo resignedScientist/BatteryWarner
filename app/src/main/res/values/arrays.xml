@@ -11,26 +11,4 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-
-    <!-- Info notification -->
-    <string-array name="info_notification_items">
-        <item>@string/pref_info_technology</item>
-        <item>@string/pref_info_temperature</item>
-        <item>@string/pref_info_health</item>
-        <item>@string/pref_info_battery_level</item>
-        <item>@string/pref_info_voltage</item>
-        <item>@string/pref_info_current</item>
-        <item>@string/pref_info_screen_on</item>
-        <item>@string/pref_info_screen_off</item>
-    </string-array>
-    <string-array name="info_notification_items_default">
-        <item>@bool/pref_info_technology_default</item>
-        <item>@bool/pref_info_temperature_default</item>
-        <item>@bool/pref_info_health_default</item>
-        <item>@bool/pref_info_battery_level_default</item>
-        <item>@bool/pref_info_voltage_default</item>
-        <item>@bool/pref_info_current_default</item>
-        <item>@bool/pref_info_screen_on_default</item>
-        <item>@bool/pref_info_screen_off_default</item>
-    </string-array>
 </resources>
