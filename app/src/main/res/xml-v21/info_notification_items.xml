@@ -22,6 +22,10 @@
         android:key="@string/pref_info_voltage"
         android:title="@string/voltage" />
     <CheckBoxPreference
+        android:defaultValue="@bool/pref_info_current_default"
+        android:key="@string/pref_info_current"
+        android:title="@string/current" />
+    <CheckBoxPreference
         android:defaultValue="@bool/pref_info_screen_on_default"
         android:key="@string/pref_info_screen_on"
         android:title="@string/screen_on" />

@@ -70,10 +70,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
-        if (SDK_INT >= N) {
-            pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
-            pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
-        }
+        pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
+        pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
 
         Context context = getActivity();
         if (context != null) {
@@ -128,9 +126,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         Context context = getActivity();
         if (context != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (SDK_INT >= N) {
-                setInfoNotificationSubtitle(sharedPreferences);
-            }
+            setInfoNotificationSubtitle(sharedPreferences);
             setSmartChargingSummary(sharedPreferences);
         }
     }
@@ -214,9 +210,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     activity.startService(new Intent(activity, DischargingService.class));
                 }
             }
-            if (SDK_INT >= N){
-                setInfoNotificationSubtitle(sharedPreferences);
-            }
+            setInfoNotificationSubtitle(sharedPreferences);
         } else if ((preference == pref_ac && pref_ac.isChecked())
                 || (preference == pref_usb && pref_usb.isChecked())
                 || (preference == pref_wireless && pref_wireless.isChecked())) {

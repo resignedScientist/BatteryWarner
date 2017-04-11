@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
 
@@ -343,7 +344,6 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences, BatteryData batteryData) {
         if (batteryData != null) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
@@ -361,7 +361,7 @@ public final class NotificationHelper {
                     contentView.setViewVisibility(textViewId, GONE);
                 }
             }
-            Notification.Builder builder = new Notification.Builder(context)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
                     .setPriority(Notification.PRIORITY_MAX)

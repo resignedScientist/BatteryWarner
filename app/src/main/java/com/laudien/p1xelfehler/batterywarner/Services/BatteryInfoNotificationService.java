@@ -22,13 +22,14 @@ import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_HEALTH;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_TECHNOLOGY;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.showBatteryInfoNotification;
 
-@RequiresApi(api = N)
 public class BatteryInfoNotificationService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SharedPreferences sharedPreferences;
@@ -53,7 +54,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
                     batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
                 if (voltageEnabled)
                     batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
-                if (currentEnabled) {
+                if (currentEnabled && SDK_INT >= LOLLIPOP) {
                     if (batteryManager == null){
                         batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
                     }
@@ -158,7 +159,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             rebuildNotification(voltageEnabled);
         } else if (s.equals(getString(R.string.pref_info_current))){
             currentEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_current_default));
-            if (currentEnabled){
+            if (currentEnabled && SDK_INT >= LOLLIPOP){
                 if (batteryManager == null){
                     batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
                 }

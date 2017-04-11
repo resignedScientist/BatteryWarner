@@ -25,9 +25,7 @@ public class StartActivity extends BaseActivity {
         } else {
             startActivity(new Intent(this, MainActivity.class));
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            startService(new Intent(this, BatteryInfoNotificationService.class));
-        }
+        startService(new Intent(this, BatteryInfoNotificationService.class));
         finish();
     }
 }
