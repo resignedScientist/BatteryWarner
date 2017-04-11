@@ -64,7 +64,12 @@
         <SwitchPreference
             android:defaultValue="@bool/pref_info_notification_enabled_default"
             android:key="@string/pref_info_notification_enabled"
-            android:title="@string/battery_info_notification_enabled"/>
+            android:title="@string/battery_info_notification_enabled" />
+        <Preference
+            android:dependency="@string/pref_info_notification_enabled"
+            android:title="Notification items">
+            <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
+        </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/theming">
         <SwitchPreference

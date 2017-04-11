@@ -42,6 +42,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activities.InfoNotificationActivity.InfoNotificationActivity">
+            <intent-filter>
+                <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".Receivers.BootReceiver">
             <intent-filter>
