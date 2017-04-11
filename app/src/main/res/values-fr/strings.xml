@@ -142,9 +142,9 @@
     <string name="notifications_are_off_setting">Avertir si le son est désactivé</string>
     <string name="notifications_are_off">Attention ! Le son est désactivé !</string>
     <string name="tile_text_charge_to_100">Charger à 100%</string>
-    <string name="battery_info_notification_enabled">Enable info notification</string>
-    <string name="info_notification">Info notification</string>
-    <string name="shown_in_notification">Shown in notification</string>
-    <string name="no_items">No items enabled!</string>
-    <string name="has_to_be_enabled">has to be enabled for that!</string>
+    <string name="battery_info_notification_enabled">Activer la notification d\'infos</string>
+    <string name="info_notification">Notification d\'infos batterie</string>
+    <string name="shown_in_notification">Affiché(s) dans la notification</string>
+    <string name="no_items">Aucun élément activé !</string>
+    <string name="has_to_be_enabled">Doit être activé pour cela !</string>
 </resources>
