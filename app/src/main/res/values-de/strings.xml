@@ -146,4 +146,5 @@
     <string name="info_notification">Info-Benachrichtigung</string>
     <string name="shown_in_notification">In Benachrichtigung anzeigen</string>
     <string name="no_items">Alle Infos deaktiviert!</string>
+    <string name="has_to_be_enabled">muss dafür aktiviert sein!</string>
 </resources>

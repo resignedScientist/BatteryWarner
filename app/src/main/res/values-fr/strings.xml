@@ -146,4 +146,5 @@
     <string name="info_notification">Info notification</string>
     <string name="shown_in_notification">Shown in notification</string>
     <string name="no_items">No items enabled!</string>
+    <string name="has_to_be_enabled">has to be enabled for that!</string>
 </resources>
