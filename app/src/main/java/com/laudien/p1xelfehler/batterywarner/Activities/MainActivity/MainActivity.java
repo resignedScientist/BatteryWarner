@@ -18,9 +18,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -36,15 +38,22 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        setToolbarTitle();
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        if (viewPager != null) { // phones only
-            ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
-            viewPager.setAdapter(viewPagerAdapter);
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
-            tabLayout.setupWithViewPager(viewPager);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
+        if (firstStart){
+            startActivity(new Intent(this, IntroActivity.class));
+            finish();
+        } else {
+            setContentView(R.layout.activity_main);
+            setToolbarTitle();
+            ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+            if (viewPager != null) { // phones only
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
+                viewPager.setAdapter(viewPagerAdapter);
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+                tabLayout.setupWithViewPager(viewPager);
+            }
+            startService(new Intent(this, BatteryInfoNotificationService.class));
         }
     }
 

@@ -17,8 +17,8 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.5" />
-
-        <activity android:name=".Activities.StartActivity">
+        <activity android:name=".Activities.IntroActivity.IntroActivity" />
+        <activity android:name=".Activities.MainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
@@ -26,8 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.IntroActivity.IntroActivity" />
-        <activity android:name=".Activities.MainActivity.MainActivity" />
         <activity
             android:name=".Activities.HistoryActivity.HistoryActivity"
             android:parentActivityName=".Activities.MainActivity.MainActivity" />
@@ -50,19 +48,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <receiver android:name=".Receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".Receivers.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".Receivers.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -83,7 +78,6 @@
                 <action android:name="com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED" />
             </intent-filter>
         </receiver>
-
         <service
             android:name=".Services.OnOffTileService"
             android:icon="@drawable/ic_battery_alert_white_48dp"
@@ -109,5 +103,4 @@
         <service android:name=".Services.GrantRootService" />
         <service android:name=".Services.BatteryInfoNotificationService" />
     </application>
-
 </manifest>
