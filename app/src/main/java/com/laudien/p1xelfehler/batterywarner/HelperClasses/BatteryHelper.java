@@ -229,7 +229,7 @@ public class BatteryHelper {
         }
 
         public String getVoltage(Context context, SharedPreferences sharedPreferences) {
-            boolean voltageEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
+            boolean voltageEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
             if (voltageEnabled) {
                 return getVoltage(context);
             } else {
