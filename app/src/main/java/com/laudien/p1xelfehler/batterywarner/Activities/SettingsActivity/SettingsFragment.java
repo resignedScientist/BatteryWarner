@@ -214,6 +214,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     activity.startService(new Intent(activity, DischargingService.class));
                 }
             }
+            if (SDK_INT >= N){
+                setInfoNotificationSubtitle(sharedPreferences);
+            }
         } else if ((preference == pref_ac && pref_ac.isChecked())
                 || (preference == pref_usb && pref_usb.isChecked())
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
