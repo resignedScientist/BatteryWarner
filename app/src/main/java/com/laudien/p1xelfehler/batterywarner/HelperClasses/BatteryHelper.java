@@ -19,6 +19,14 @@ import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_HEALTH;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_OFF;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_ON;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 
 public class BatteryHelper {
     private static String getHealthString(Context context, int health) {
@@ -77,8 +85,39 @@ public class BatteryHelper {
         }
     }
 
+    public static int getTextViewId(byte index) {
+        switch (index) {
+            case INDEX_TECHNOLOGY:
+                return R.id.textView_technology;
+            case INDEX_TEMPERATURE:
+                return R.id.textView_temp;
+            case INDEX_HEALTH:
+                return R.id.textView_health;
+            case INDEX_BATTERY_LEVEL:
+                return R.id.textView_batteryLevel;
+            case INDEX_VOLTAGE:
+                return R.id.textView_voltage;
+            case INDEX_CURRENT:
+                return R.id.textView_current;
+            case INDEX_SCREEN_ON:
+                return R.id.textView_screenOn;
+            case INDEX_SCREEN_OFF:
+                return R.id.textView_screenOff;
+            default:
+                throw new RuntimeException("That index does not exist!");
+        }
+    }
+
     public static class BatteryData {
 
+        public static final byte INDEX_TECHNOLOGY = 0;
+        public static final byte INDEX_TEMPERATURE = 1;
+        public static final byte INDEX_HEALTH = 2;
+        public static final byte INDEX_BATTERY_LEVEL = 3;
+        public static final byte INDEX_VOLTAGE = 4;
+        public static final byte INDEX_CURRENT = 5;
+        public static final byte INDEX_SCREEN_ON = 6;
+        public static final byte INDEX_SCREEN_OFF = 7;
         private String technology;
         private int health, batteryLevel;
         private long current;
@@ -88,7 +127,28 @@ public class BatteryHelper {
 
         }
 
-        public String getTechnology(Context context) {
+        public String[] getAsArray(Context context, SharedPreferences sharedPreferences) {
+            return new String[]{
+                    getTechnology(context, sharedPreferences),
+                    getTemperature(context, sharedPreferences),
+                    getHealth(context, sharedPreferences),
+                    getBatteryLevel(context, sharedPreferences),
+                    getVoltage(context, sharedPreferences),
+                    getCurrent(context, sharedPreferences),
+                    getScreenOn(context, sharedPreferences),
+                    getScreenOff(context, sharedPreferences)};
+        }
+
+        public String getTechnology(Context context, SharedPreferences sharedPreferences) {
+            boolean technologyEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
+            if (technologyEnabled) {
+                return getTechnology(context);
+            } else {
+                return null;
+            }
+        }
+
+        public String getTechnology(Context context){
             return context.getString(R.string.technology) + ": " + technology;
         }
 
@@ -96,7 +156,16 @@ public class BatteryHelper {
             this.technology = technology;
         }
 
-        public String getHealth(Context context) {
+        public String getHealth(Context context, SharedPreferences sharedPreferences) {
+            boolean healthEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
+            if (healthEnabled) {
+                return getHealth(context);
+            } else {
+                return null;
+            }
+        }
+
+        public String getHealth(Context context){
             return context.getString(R.string.health) + ": " + getHealthString(context, health);
         }
 
@@ -104,7 +173,16 @@ public class BatteryHelper {
             this.health = health;
         }
 
-        public String getBatteryLevel(Context context) {
+        public String getBatteryLevel(Context context, SharedPreferences sharedPreferences) {
+            boolean batteryLevelEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
+            if (batteryLevelEnabled) {
+                return getBatteryLevel(context);
+            } else {
+                return null;
+            }
+        }
+
+        public String getBatteryLevel(Context context){
             return String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
         }
 
@@ -112,21 +190,37 @@ public class BatteryHelper {
             this.batteryLevel = batteryLevel;
         }
 
-        @RequiresApi(api = LOLLIPOP)
-        public String getCurrent(Context context) {
+        public String getCurrent(Context context, SharedPreferences sharedPreferences) {
             if (SDK_INT >= LOLLIPOP) {
-                return String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+                boolean currentEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
+                if (currentEnabled) {
+                    return getCurrent(context);
+                } else {
+                    return null;
+                }
+            } else { // KitKat
+                return null;
+            }
+        }
+
+        public String getCurrent(Context context){
+            return String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+        }
+
+        public void setCurrent(long current) {
+            this.current = current;
+        }
+
+        public String getTemperature(Context context, SharedPreferences sharedPreferences) {
+            boolean temperatureEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
+            if (temperatureEnabled) {
+                return getTemperature(context);
             } else {
                 return null;
             }
         }
 
-        @RequiresApi(api = LOLLIPOP)
-        public void setCurrent(long current) {
-            this.current = current;
-        }
-
-        public String getTemperature(Context context) {
+        public String getTemperature(Context context){
             return String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
         }
 
@@ -134,7 +228,16 @@ public class BatteryHelper {
             this.temperature = temperature;
         }
 
-        public String getVoltage(Context context) {
+        public String getVoltage(Context context, SharedPreferences sharedPreferences) {
+            boolean voltageEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
+            if (voltageEnabled) {
+                return getVoltage(context);
+            } else {
+                return null;
+            }
+        }
+
+        public String getVoltage(Context context){
             return String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
         }
 
@@ -144,14 +247,19 @@ public class BatteryHelper {
 
         public String getScreenOn(Context context, SharedPreferences sharedPreferences) {
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            if (dischargingServiceEnabled) {
-                if (screenOn == 0.0) {
-                    return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_on), "N/A");
-                } else {
-                    return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
-                }
+            boolean screenOnEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
+            if (dischargingServiceEnabled && screenOnEnabled) {
+                return getScreenOn(context);
             } else {
                 return null;
+            }
+        }
+
+        public String getScreenOn(Context context){
+            if (screenOn == 0.0) {
+                return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_on), "N/A");
+            } else {
+                return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
             }
         }
 
@@ -161,14 +269,19 @@ public class BatteryHelper {
 
         public String getScreenOff(Context context, SharedPreferences sharedPreferences) {
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            if (dischargingServiceEnabled) {
-                if (screenOff == 0.0) {
-                    return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
-                } else {
-                    return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
-                }
+            boolean screenOffEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
+            if (dischargingServiceEnabled && screenOffEnabled) {
+                return getScreenOff(context);
             } else {
                 return null;
+            }
+        }
+
+        public String getScreenOff(Context context){
+            if (screenOff == 0.0) {
+                return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
+            } else {
+                return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
             }
         }
 

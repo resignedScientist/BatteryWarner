@@ -88,10 +88,10 @@ public class BatteryInfoFragment extends Fragment {
             if (dischargingServiceEnabled) {
                 // screen on
                 batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences));
-                textView_screenOn.setText(batteryData.getScreenOn(context, sharedPreferences));
+                textView_screenOn.setText(batteryData.getScreenOn(context));
                 // screen off
                 batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences));
-                textView_screenOff.setText(batteryData.getScreenOff(context, sharedPreferences));
+                textView_screenOff.setText(batteryData.getScreenOff(context));
             }
 
             // Image color

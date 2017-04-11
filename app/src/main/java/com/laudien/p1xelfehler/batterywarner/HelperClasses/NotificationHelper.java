@@ -34,6 +34,14 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.N;
 import static android.view.View.GONE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_HEALTH;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_OFF;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_ON;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 
 /**
  * Helper class to show a notification with the given type. All notifications used in the app are listed here.
@@ -340,35 +348,32 @@ public final class NotificationHelper {
         if (batteryData != null) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
+            String[] data = batteryData.getAsArray(context, sharedPreferences);
 
-            // unload not needed TextViews
-            contentView.setViewVisibility(R.id.textView_technology, GONE);
-            contentView.setViewVisibility(R.id.textView_health, GONE);
-            contentView.setViewVisibility(R.id.textView_batteryLevel, GONE);
-
-            // set TextView texts
-            contentView.setTextViewText(R.id.textView_temp, batteryData.getTemperature(context));
-            contentView.setTextViewText(R.id.textView_voltage, batteryData.getVoltage(context));
-            contentView.setTextViewText(R.id.textView_current, batteryData.getCurrent(context));
-            String screenOn = batteryData.getScreenOn(context, sharedPreferences);
-            String screenOff = batteryData.getScreenOff(context, sharedPreferences);
-            if (screenOn != null && screenOff != null) {
-                contentView.setTextViewText(R.id.textView_screenOn, screenOn);
-                contentView.setTextViewText(R.id.textView_screenOff, screenOff);
-            } else {
-                contentView.setViewVisibility(R.id.textView_screenOn, GONE);
-                contentView.setViewVisibility(R.id.textView_screenOff, GONE);
+            int textViewId;
+            boolean somethingIsEnabled = false;
+            for (byte i = 0; i < data.length; i++) {
+                textViewId = BatteryHelper.getTextViewId(i);
+                if (data[i] != null) {
+                    somethingIsEnabled = true;
+                    contentView.setTextViewText(textViewId, data[i]);
+                } else {
+                    contentView.setViewVisibility(textViewId, GONE);
+                }
             }
-            Notification notification = new Notification.Builder(context)
+            Notification.Builder builder = new Notification.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
-                    .setCustomBigContentView(contentView)
                     .setPriority(Notification.PRIORITY_MAX)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .build();
+                    .setContentTitle(context.getString(R.string.info_notification))
+                    .setSmallIcon(R.mipmap.ic_launcher);
+            if (somethingIsEnabled){
+                builder.setCustomBigContentView(contentView);
+            } else {
+                builder.setContentText("No data enabled in settings!");
+            }
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(ID_BATTERY_INFO, notification);
+            notificationManager.notify(ID_BATTERY_INFO, builder.build());
         }
     }
 
