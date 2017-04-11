@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_technology_default"
         android:key="@string/pref_info_technology"
         android:title="@string/technology" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_temperature_default"
         android:key="@string/pref_info_temperature"
         android:title="@string/temperature" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_health_default"
         android:key="@string/pref_info_health"
         android:title="@string/health" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_battery_level_default"
         android:key="@string/pref_info_battery_level"
         android:title="@string/battery_level" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_voltage_default"
         android:key="@string/pref_info_voltage"
         android:title="@string/voltage" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_current_default"
         android:key="@string/pref_info_current"
         android:title="@string/current" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_screen_on_default"
         android:key="@string/pref_info_screen_on"
         android:title="@string/screen_on" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/pref_info_screen_off_default"
         android:key="@string/pref_info_screen_off"
         android:title="@string/screen_off" />
