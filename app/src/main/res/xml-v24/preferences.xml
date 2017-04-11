@@ -67,7 +67,8 @@
             android:title="@string/battery_info_notification_enabled" />
         <Preference
             android:dependency="@string/pref_info_notification_enabled"
-            android:title="Notification items">
+            android:key="@string/pref_info_notification_items"
+            android:title="@string/shown_in_notification">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
         </Preference>
     </PreferenceCategory>

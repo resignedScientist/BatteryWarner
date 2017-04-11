@@ -30,6 +30,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationSer
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -49,7 +50,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
             pref_usb_disabled, pref_stopCharging, pref_battery_info_notification;
     private RingtonePreference ringtonePreference;
-    private Preference pref_smart_charging;
+    private Preference pref_smart_charging, pref_info_notification_items;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
         if (SDK_INT >= N) {
             pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
+            pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
         }
 
         Context context = getActivity();
@@ -80,10 +82,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             String sound = sharedPreferences.getString(getString(R.string.pref_sound_uri), "");
             Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
             ringtonePreference.setSummary(ringtone.getTitle(context));
-            // set summary of smart charging preference
-            Preference pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
-            boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
-            pref_smart_charging.setSummary(smartChargingEnabled ? R.string.enabled : R.string.disabled);
         }
 
         if (!Contract.IS_PRO) {
@@ -126,6 +124,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_usb.setEnabled(!pref_usb_disabled.isChecked());
         if (Contract.IS_PRO) {
             pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
+        }
+        Context context = getActivity();
+        if (context != null) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            if (SDK_INT >= N) {
+                setInfoNotificationSubtitle(sharedPreferences);
+            }
+            setSmartChargingSummary(sharedPreferences);
         }
     }
 
@@ -228,5 +234,46 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
+    }
+
+    private void setInfoNotificationSubtitle(SharedPreferences sharedPreferences) {
+        if (pref_battery_info_notification.isChecked()) {
+            ArrayList<String> enabledItems = new ArrayList<>();
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default)))
+                enabledItems.add(getString(R.string.technology));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default)))
+                enabledItems.add(getString(R.string.temperature));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default)))
+                enabledItems.add(getString(R.string.health));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default)))
+                enabledItems.add(getString(R.string.battery_level));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default)))
+                enabledItems.add(getString(R.string.voltage));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
+                enabledItems.add(getString(R.string.current));
+            if (pref_dischargingService.isChecked()) {
+                if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
+                    enabledItems.add(getString(R.string.screen_on));
+                if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
+                    enabledItems.add(getString(R.string.screen_off));
+            }
+            if (!enabledItems.isEmpty()) {
+                String summary = enabledItems.get(0);
+                for (byte i = 0; i < enabledItems.size(); i++) {
+                    if (i == 0) {
+                        continue;
+                    }
+                    summary = summary.concat(", ").concat(enabledItems.get(i));
+                }
+                pref_info_notification_items.setSummary(summary);
+            } else { // no items selected
+                pref_info_notification_items.setSummary(getString(R.string.no_items));
+            }
+        }
+    }
+
+    private void setSmartChargingSummary(SharedPreferences sharedPreferences) {
+        boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        pref_smart_charging.setSummary(smartChargingEnabled ? R.string.enabled : R.string.disabled);
     }
 }

@@ -144,4 +144,6 @@
     <string name="tile_text_charge_to_100">Charger à 100%</string>
     <string name="battery_info_notification_enabled">Enable info notification</string>
     <string name="info_notification">Info notification</string>
+    <string name="shown_in_notification">Shown in notification</string>
+    <string name="no_items">No items enabled!</string>
 </resources>

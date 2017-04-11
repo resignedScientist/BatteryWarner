@@ -29,6 +29,7 @@
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
     <!-- BatteryInfo Notification -->
+    <string name="pref_info_notification_items" translatable="false">infoNotificationItems</string>
     <string name="pref_info_notification_enabled" translatable="false">infoNotificationEnabled</string>
     <string name="pref_info_technology" translatable="false">infoTechnology</string>
     <string name="pref_info_temperature" translatable="false">infoTemperature</string>
@@ -201,4 +202,6 @@
     <string name="tile_text_charge_to_100">Charge to 100%</string>
     <string name="battery_info_notification_enabled">Enable info notification</string>
     <string name="info_notification">Info notification</string>
+    <string name="shown_in_notification">Shown in notification</string>
+    <string name="no_items">No items enabled!</string>
 </resources>

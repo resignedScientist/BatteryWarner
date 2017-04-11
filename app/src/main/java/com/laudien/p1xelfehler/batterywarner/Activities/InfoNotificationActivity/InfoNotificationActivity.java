@@ -11,7 +11,7 @@ public class InfoNotificationActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame_layout);
-        setToolbarTitle(getString(R.string.info_notification));
+        setToolbarTitle(getString(R.string.shown_in_notification));
         // replace container layout with InfoNotificationFragment
         getFragmentManager().beginTransaction().replace(R.id.container_layout, new InfoNotificationFragment()).commit();
     }

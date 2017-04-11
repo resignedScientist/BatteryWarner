@@ -370,7 +370,7 @@ public final class NotificationHelper {
             if (somethingIsEnabled){
                 builder.setCustomBigContentView(contentView);
             } else {
-                builder.setContentText("No data enabled in settings!");
+                builder.setContentText(context.getString(R.string.no_items));
             }
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_BATTERY_INFO, builder.build());
