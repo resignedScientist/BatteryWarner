@@ -22,9 +22,6 @@ import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_HEALTH;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_TECHNOLOGY;
-import static android.os.Build.VERSION.SDK;
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
@@ -39,13 +36,13 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             healthEnabled, batteryLevelEnabled, voltageEnabled, currentEnabled, screenOnEnabled, screenOffEnabled;
     private BatteryData batteryData;
     private BatteryManager batteryManager;
-    private Intent lastBatteryStatus;
+    private Intent batteryStatus;
 
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             if (notificationEnabled) {
-                lastBatteryStatus = batteryStatus;
+                BatteryInfoNotificationService.this.batteryStatus = batteryStatus;
                 if (technologyEnabled)
                     batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
                 if (temperatureEnabled)
@@ -132,31 +129,31 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         } else if (s.equals(getString(R.string.pref_info_technology))){
             technologyEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_technology_default));
             if (technologyEnabled) {
-                batteryData.setTechnology(lastBatteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
+                batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
             }
             rebuildNotification(technologyEnabled);
         } else if (s.equals(getString(R.string.pref_info_temperature))){
             temperatureEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_temperature_default));
             if (temperatureEnabled){
-                batteryData.setTemperature(BatteryHelper.getTemperature(lastBatteryStatus));
+                batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
             }
             rebuildNotification(temperatureEnabled);
         } else if (s.equals(getString(R.string.pref_info_health))) {
             healthEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_health_default));
             if (healthEnabled){
-                batteryData.setHealth(lastBatteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
+                batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
             }
             rebuildNotification(healthEnabled);
         } else if(s.equals(getString(R.string.pref_info_battery_level))){
             batteryLevelEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_battery_level_default));
             if (batteryLevelEnabled){
-                batteryData.setBatteryLevel(lastBatteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
+                batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
             }
             rebuildNotification(batteryLevelEnabled);
         } else if (s.equals(getString(R.string.pref_info_voltage))){
             voltageEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_voltage_default));
             if (voltageEnabled){
-                batteryData.setVoltage(BatteryHelper.getVoltage(lastBatteryStatus));
+                batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
             }
             rebuildNotification(voltageEnabled);
         } else if (s.equals(getString(R.string.pref_info_current))){
