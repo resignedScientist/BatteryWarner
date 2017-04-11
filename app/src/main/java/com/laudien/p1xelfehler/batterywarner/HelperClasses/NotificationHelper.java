@@ -364,7 +364,7 @@ public final class NotificationHelper {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
-                    .setPriority(Notification.PRIORITY_MAX)
+                    .setPriority(Notification.PRIORITY_LOW)
                     .setContentTitle(context.getString(R.string.info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
             if (somethingIsEnabled){
