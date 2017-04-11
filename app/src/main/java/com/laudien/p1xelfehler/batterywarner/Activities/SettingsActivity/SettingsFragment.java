@@ -36,7 +36,6 @@ import java.util.Locale;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.N;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -234,38 +233,36 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setInfoNotificationSubtitle(SharedPreferences sharedPreferences) {
-        if (pref_battery_info_notification.isChecked()) {
-            ArrayList<String> enabledItems = new ArrayList<>();
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default)))
-                enabledItems.add(getString(R.string.technology));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default)))
-                enabledItems.add(getString(R.string.temperature));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default)))
-                enabledItems.add(getString(R.string.health));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default)))
-                enabledItems.add(getString(R.string.battery_level));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default)))
-                enabledItems.add(getString(R.string.voltage));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
-                enabledItems.add(getString(R.string.current));
-            if (pref_dischargingService.isChecked()) {
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
-                    enabledItems.add(getString(R.string.screen_on));
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
-                    enabledItems.add(getString(R.string.screen_off));
-            }
-            if (!enabledItems.isEmpty()) {
-                String summary = enabledItems.get(0);
-                for (byte i = 0; i < enabledItems.size(); i++) {
-                    if (i == 0) {
-                        continue;
-                    }
-                    summary = summary.concat(", ").concat(enabledItems.get(i));
+        ArrayList<String> enabledItems = new ArrayList<>();
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default)))
+            enabledItems.add(getString(R.string.technology));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default)))
+            enabledItems.add(getString(R.string.temperature));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default)))
+            enabledItems.add(getString(R.string.health));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default)))
+            enabledItems.add(getString(R.string.battery_level));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default)))
+            enabledItems.add(getString(R.string.voltage));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
+            enabledItems.add(getString(R.string.current));
+        if (pref_dischargingService.isChecked()) {
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
+                enabledItems.add(getString(R.string.screen_on));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
+                enabledItems.add(getString(R.string.screen_off));
+        }
+        if (!enabledItems.isEmpty()) {
+            String summary = enabledItems.get(0);
+            for (byte i = 0; i < enabledItems.size(); i++) {
+                if (i == 0) {
+                    continue;
                 }
-                pref_info_notification_items.setSummary(summary);
-            } else { // no items selected
-                pref_info_notification_items.setSummary(getString(R.string.no_items));
+                summary = summary.concat(", ").concat(enabledItems.get(i));
             }
+            pref_info_notification_items.setSummary(summary);
+        } else { // no items selected
+            pref_info_notification_items.setSummary(getString(R.string.no_items));
         }
     }
 
