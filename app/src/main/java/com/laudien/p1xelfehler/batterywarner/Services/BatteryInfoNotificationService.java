@@ -45,27 +45,27 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             if (notificationEnabled) {
                 BatteryInfoNotificationService.this.batteryStatus = batteryStatus;
                 if (technologyEnabled)
-                    batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
+                    batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
                 if (temperatureEnabled)
-                    batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
+                    batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
                 if (healthEnabled)
-                    batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
+                    batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE), context);
                 if (batteryLevelEnabled)
-                    batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
+                    batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE), context);
                 if (voltageEnabled)
-                    batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
+                    batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
                 if (currentEnabled && SDK_INT >= LOLLIPOP) {
                     if (batteryManager == null){
                         batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
                     }
-                    batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager));
+                    batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager), context);
                 }
                 if (dischargingServiceEnabled) {
                     if (screenOnEnabled) {
-                        batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences));
+                        batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences), context);
                     }
                     if (screenOffEnabled) {
-                        batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences));
+                        batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences), context);
                     }
                 }
                 showBatteryInfoNotification(context, sharedPreferences, batteryData);
@@ -87,17 +87,17 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (notificationEnabled) {
-            batteryData = new BatteryData();
             dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             technologyEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default));
             temperatureEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default));
             healthEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default));
             batteryLevelEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default));
-            voltageEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_voltage_default));
+            voltageEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default));
             currentEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default));
             screenOnEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default));
             screenOffEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default));
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            batteryData = new BatteryData();
             registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         } else {
             stopSelf();
@@ -122,60 +122,83 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             dischargingServiceEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             if (dischargingServiceEnabled){
                 if (screenOnEnabled)
-                    batteryData.setScreenOn(BatteryHelper.getScreenOn(this, sharedPreferences));
+                    batteryData.setScreenOn(BatteryHelper.getScreenOn(this, sharedPreferences), BatteryInfoNotificationService.this);
                 if (screenOffEnabled)
-                    batteryData.setScreenOff(BatteryHelper.getScreenOff(this, sharedPreferences));
+                    batteryData.setScreenOff(BatteryHelper.getScreenOff(this, sharedPreferences), BatteryInfoNotificationService.this);
+            } else {
+                if (screenOnEnabled)
+                    batteryData.removeScreenOn();
+                if (screenOffEnabled)
+                    batteryData.removeScreenOff();
             }
             rebuildNotification(dischargingServiceEnabled);
         } else if (s.equals(getString(R.string.pref_info_technology))){
             technologyEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_technology_default));
             if (technologyEnabled) {
-                batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
+                batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeTechnology();
             }
             rebuildNotification(technologyEnabled);
         } else if (s.equals(getString(R.string.pref_info_temperature))){
             temperatureEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_temperature_default));
             if (temperatureEnabled){
-                batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
+                batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeTemperature();
             }
             rebuildNotification(temperatureEnabled);
         } else if (s.equals(getString(R.string.pref_info_health))) {
             healthEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_health_default));
             if (healthEnabled){
-                batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
+                batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeHealth();
             }
             rebuildNotification(healthEnabled);
         } else if(s.equals(getString(R.string.pref_info_battery_level))){
             batteryLevelEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_battery_level_default));
             if (batteryLevelEnabled){
-                batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
+                batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeBatteryLevel();
             }
             rebuildNotification(batteryLevelEnabled);
         } else if (s.equals(getString(R.string.pref_info_voltage))){
             voltageEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_voltage_default));
             if (voltageEnabled){
-                batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
+                batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeVoltage();
             }
             rebuildNotification(voltageEnabled);
         } else if (s.equals(getString(R.string.pref_info_current))){
             currentEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_current_default));
-            if (currentEnabled && SDK_INT >= LOLLIPOP){
-                if (batteryManager == null){
-                    batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+            if (SDK_INT >= LOLLIPOP){
+                if (currentEnabled) {
+                    if (batteryManager == null) {
+                        batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+                    }
+                    batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager), BatteryInfoNotificationService.this);
+                } else {
+                    batteryData.removeCurrent();
                 }
-                batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager));
             }
             rebuildNotification(currentEnabled);
         } else if (s.equals(getString(R.string.pref_info_screen_on))){
             screenOnEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_screen_on_default));
             if (screenOnEnabled && dischargingServiceEnabled){
-                batteryData.setScreenOn(BatteryHelper.getScreenOn(this, sharedPreferences));
+                batteryData.setScreenOn(BatteryHelper.getScreenOn(this, sharedPreferences), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeScreenOn();
             }
             rebuildNotification(screenOnEnabled);
         } else if (s.equals(getString(R.string.pref_info_screen_off))){
             screenOffEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_screen_off_default));
             if (screenOffEnabled && dischargingServiceEnabled){
-                batteryData.setScreenOff(BatteryHelper.getScreenOff(this, sharedPreferences));
+                batteryData.setScreenOff(BatteryHelper.getScreenOff(this, sharedPreferences), BatteryInfoNotificationService.this);
+            } else {
+                batteryData.removeScreenOff();
             }
             rebuildNotification(screenOffEnabled);
         }

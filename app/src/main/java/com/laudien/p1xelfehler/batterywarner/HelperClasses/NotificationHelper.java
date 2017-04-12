@@ -348,7 +348,7 @@ public final class NotificationHelper {
         if (batteryData != null) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
-            String[] data = batteryData.getAsArray(context, sharedPreferences);
+            String[] data = batteryData.getAsArray();
 
             int textViewId;
             boolean somethingIsEnabled = false;

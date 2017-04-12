@@ -63,35 +63,35 @@ public class BatteryInfoFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             // technology (only once)
-            batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
-            textView_technology.setText(batteryData.getTechnology(context));
+            batteryData.setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
+            textView_technology.setText(batteryData.getTechnologyString());
             // temperature
-            batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus));
-            textView_temp.setText(batteryData.getTemperature(context));
+            batteryData.setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
+            textView_temp.setText(batteryData.getTemperatureString());
             // health
-            batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE));
-            textView_health.setText(batteryData.getHealth(context));
+            batteryData.setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE), context);
+            textView_health.setText(batteryData.getHealthString());
             // battery level
-            batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE));
-            textView_batteryLevel.setText(batteryData.getBatteryLevel(context));
+            batteryData.setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE), context);
+            textView_batteryLevel.setText(batteryData.getBatteryLevelString());
             // voltage
-            batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus));
-            textView_voltage.setText(batteryData.getVoltage(context));
+            batteryData.setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
+            textView_voltage.setText(batteryData.getVoltageString());
             // current
             if (SDK_INT >= LOLLIPOP) {
                 if (batteryManager == null){
                     batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 }
-                batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager));
-                textView_current.setText(batteryData.getCurrent(context));
+                batteryData.setCurrent(BatteryHelper.getCurrent(batteryManager), context);
+                textView_current.setText(batteryData.getCurrentString());
             }
             if (dischargingServiceEnabled) {
                 // screen on
-                batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences));
-                textView_screenOn.setText(batteryData.getScreenOn(context));
+                batteryData.setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences), context);
+                textView_screenOn.setText(batteryData.getScreenOnString());
                 // screen off
-                batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences));
-                textView_screenOff.setText(batteryData.getScreenOff(context));
+                batteryData.setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences), context);
+                textView_screenOff.setText(batteryData.getScreenOffString());
             }
 
             // Image color

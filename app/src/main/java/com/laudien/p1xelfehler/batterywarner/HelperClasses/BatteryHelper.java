@@ -8,7 +8,12 @@ import android.support.annotation.RequiresApi;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
 import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
@@ -19,7 +24,6 @@ import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
 import static android.os.BatteryManager.BATTERY_PROPERTY_CURRENT_NOW;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.BatteryManager.EXTRA_VOLTAGE;
-import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
@@ -121,6 +125,7 @@ public class BatteryHelper {
         public static final byte INDEX_CURRENT = 5;
         public static final byte INDEX_SCREEN_ON = 6;
         public static final byte INDEX_SCREEN_OFF = 7;
+        private String[] values = new String[8];
         private String technology;
         private int health, batteryLevel;
         private long current;
@@ -130,166 +135,146 @@ public class BatteryHelper {
 
         }
 
-        public String[] getAsArray(Context context, SharedPreferences sharedPreferences) {
-            return new String[]{
-                    getTechnology(context, sharedPreferences),
-                    getTemperature(context, sharedPreferences),
-                    getHealth(context, sharedPreferences),
-                    getBatteryLevel(context, sharedPreferences),
-                    getVoltage(context, sharedPreferences),
-                    getCurrent(context, sharedPreferences),
-                    getScreenOn(context, sharedPreferences),
-                    getScreenOff(context, sharedPreferences)};
+        public String[] getAsArray() {
+            return values;
         }
 
-        public String getTechnology(Context context, SharedPreferences sharedPreferences) {
-            boolean technologyEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
-            if (technologyEnabled) {
-                return getTechnology(context);
-            } else {
-                return null;
+        public String getTechnologyString() {
+            return values[INDEX_TECHNOLOGY];
+        }
+
+        public void setTechnology(String technology, Context context) {
+            if (this.technology == null || !this.technology.equals(technology)) {
+                this.technology = technology;
+                values[INDEX_TECHNOLOGY] = context.getString(R.string.technology) + ": " + technology;
             }
         }
 
-        public String getTechnology(Context context){
-            return context.getString(R.string.technology) + ": " + technology;
+        public void removeTechnology(){
+            technology = null;
+            values[INDEX_TECHNOLOGY] = null;
         }
 
-        public void setTechnology(String technology) {
-            this.technology = technology;
+        public String getHealthString() {
+            return values[INDEX_HEALTH];
         }
 
-        public String getHealth(Context context, SharedPreferences sharedPreferences) {
-            boolean healthEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
-            if (healthEnabled) {
-                return getHealth(context);
-            } else {
-                return null;
+        public void setHealth(int health, Context context) {
+            if (this.health != health || values[INDEX_HEALTH] == null) {
+                this.health = health;
+                values[INDEX_HEALTH] = context.getString(R.string.health) + ": " + BatteryHelper.getHealthString(context, health);
             }
         }
 
-        public String getHealth(Context context){
-            return context.getString(R.string.health) + ": " + getHealthString(context, health);
+        public void removeHealth(){
+            health = 0;
+            values[INDEX_HEALTH] = null;
         }
 
-        public void setHealth(int health) {
-            this.health = health;
+        public String getBatteryLevelString() {
+            return values[INDEX_BATTERY_LEVEL];
         }
 
-        public String getBatteryLevel(Context context, SharedPreferences sharedPreferences) {
-            boolean batteryLevelEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
-            if (batteryLevelEnabled) {
-                return getBatteryLevel(context);
-            } else {
-                return null;
+        public void setBatteryLevel(int batteryLevel, Context context) {
+            if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
+                this.batteryLevel = batteryLevel;
+                values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
             }
         }
 
-        public String getBatteryLevel(Context context){
-            return String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
+        public void removeBatteryLevel(){
+            batteryLevel = 0;
+            values[INDEX_BATTERY_LEVEL] = null;
         }
 
-        public void setBatteryLevel(int batteryLevel) {
-            this.batteryLevel = batteryLevel;
+        public String getCurrentString() {
+            return values[INDEX_CURRENT];
         }
 
-        public String getCurrent(Context context, SharedPreferences sharedPreferences) {
-            if (SDK_INT >= LOLLIPOP) {
-                boolean currentEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
-                if (currentEnabled) {
-                    return getCurrent(context);
+        @RequiresApi(api = LOLLIPOP)
+        public void setCurrent(long current, Context context) {
+            if (this.current != current || values[INDEX_CURRENT] == null) {
+                this.current = current;
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+            }
+        }
+
+        @RequiresApi(api = LOLLIPOP)
+        public void removeCurrent(){
+            current = 0L;
+            values[INDEX_CURRENT] = null;
+        }
+
+        public String getTemperatureString() {
+            return values[INDEX_TEMPERATURE];
+        }
+
+        public void setTemperature(double temperature, Context context) {
+            if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
+                this.temperature = temperature;
+                values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
+            }
+        }
+
+        public void removeTemperature(){
+            temperature = 0.0;
+            values[INDEX_TEMPERATURE] = null;
+        }
+
+        public String getVoltageString() {
+            return values[INDEX_VOLTAGE];
+        }
+
+        public void setVoltage(double voltage, Context context) {
+            if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
+                this.voltage = voltage;
+                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
+            }
+        }
+
+        public void removeVoltage(){
+            voltage = 0.0;
+            values[INDEX_VOLTAGE] = null;
+        }
+
+        public String getScreenOnString() {
+            return values[INDEX_SCREEN_ON];
+        }
+
+        public void setScreenOn(double screenOn, Context context) {
+            if (this.screenOn != screenOn || values[INDEX_SCREEN_ON] == null) {
+                this.screenOn = screenOn;
+                if (screenOn == 0.0) {
+                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_on), "N/A");
                 } else {
-                    return null;
+                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
                 }
-            } else { // KitKat
-                return null;
             }
         }
 
-        public String getCurrent(Context context){
-            return String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+        public void removeScreenOn(){
+            screenOn = 0.0;
+            values[INDEX_SCREEN_ON] = null;
         }
 
-        public void setCurrent(long current) {
-            this.current = current;
+        public String getScreenOffString() {
+            return values[INDEX_SCREEN_OFF];
         }
 
-        public String getTemperature(Context context, SharedPreferences sharedPreferences) {
-            boolean temperatureEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
-            if (temperatureEnabled) {
-                return getTemperature(context);
-            } else {
-                return null;
+        public void setScreenOff(double screenOff, Context context) {
+            if (this.screenOff != screenOff || values[INDEX_SCREEN_OFF] == null) {
+                this.screenOff = screenOff;
+                if (screenOff == 0.0) {
+                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
+                } else {
+                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
+                }
             }
         }
 
-        public String getTemperature(Context context){
-            return String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
-        }
-
-        public void setTemperature(double temperature) {
-            this.temperature = temperature;
-        }
-
-        public String getVoltage(Context context, SharedPreferences sharedPreferences) {
-            boolean voltageEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
-            if (voltageEnabled) {
-                return getVoltage(context);
-            } else {
-                return null;
-            }
-        }
-
-        public String getVoltage(Context context){
-            return String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
-        }
-
-        public void setVoltage(double voltage) {
-            this.voltage = voltage;
-        }
-
-        public String getScreenOn(Context context, SharedPreferences sharedPreferences) {
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            boolean screenOnEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
-            if (dischargingServiceEnabled && screenOnEnabled) {
-                return getScreenOn(context);
-            } else {
-                return null;
-            }
-        }
-
-        public String getScreenOn(Context context){
-            if (screenOn == 0.0) {
-                return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_on), "N/A");
-            } else {
-                return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
-            }
-        }
-
-        public void setScreenOn(double screenOn) {
-            this.screenOn = screenOn;
-        }
-
-        public String getScreenOff(Context context, SharedPreferences sharedPreferences) {
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            boolean screenOffEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
-            if (dischargingServiceEnabled && screenOffEnabled) {
-                return getScreenOff(context);
-            } else {
-                return null;
-            }
-        }
-
-        public String getScreenOff(Context context){
-            if (screenOff == 0.0) {
-                return String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
-            } else {
-                return String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
-            }
-        }
-
-        public void setScreenOff(double screenOff) {
-            this.screenOff = screenOff;
+        public void removeScreenOff(){
+            screenOff = 0.0;
+            values[INDEX_SCREEN_OFF] = null;
         }
     }
 }
