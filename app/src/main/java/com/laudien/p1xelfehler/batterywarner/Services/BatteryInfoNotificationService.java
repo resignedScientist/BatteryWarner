@@ -10,7 +10,6 @@ import android.os.BatteryManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
@@ -24,7 +23,6 @@ import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_TECHNOLOGY;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.N;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
