@@ -16,6 +16,9 @@ import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE;
 import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
+import static android.os.BatteryManager.BATTERY_PROPERTY_CURRENT_NOW;
+import static android.os.BatteryManager.EXTRA_TEMPERATURE;
+import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
@@ -49,16 +52,16 @@ public class BatteryHelper {
     }
 
     public static double getTemperature(Intent batteryStatus) {
-        return (double) batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, NO_STATE) / 10;
+        return (double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, NO_STATE) / 10;
     }
 
     public static double getVoltage(Intent batteryStatus) {
-        return (double) batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_VOLTAGE, NO_STATE) / 1000;
+        return (double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, NO_STATE) / 1000;
     }
 
     @RequiresApi(api = LOLLIPOP)
     public static long getCurrent(BatteryManager batteryManager) {
-        return batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+        return batteryManager.getLongProperty(BATTERY_PROPERTY_CURRENT_NOW);
     }
 
     public static double getScreenOn(Context context, SharedPreferences sharedPreferences) {
