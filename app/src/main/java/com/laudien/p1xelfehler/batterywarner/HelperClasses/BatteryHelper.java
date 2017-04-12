@@ -9,11 +9,7 @@ import android.support.annotation.RequiresApi;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
 
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
 import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
@@ -41,6 +37,22 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 
 public class BatteryHelper {
+    private static BatteryData batteryData;
+
+    public static BatteryData getBatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
+        if (batteryData == null) {
+            batteryData = new BatteryData(batteryStatus, context, sharedPreferences);
+        }
+        return batteryData;
+    }
+
+    static BatteryData getBatteryData(){
+        if (batteryData == null){
+            return null;
+        }
+        return batteryData;
+    }
+
     private static String getHealthString(Context context, int health) {
         switch (health) {
             case BATTERY_HEALTH_COLD:
@@ -60,7 +72,7 @@ public class BatteryHelper {
         }
     }
 
-    public static boolean isCharging (Intent batteryStatus){
+    public static boolean isCharging(Intent batteryStatus) {
         return batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
     }
 
@@ -140,9 +152,9 @@ public class BatteryHelper {
         private int health, batteryLevel;
         private long current;
         private double temperature, voltage, screenOn, screenOff;
-        private OnBatteryValueChangedListener listener;
+        private ArrayList<OnBatteryValueChangedListener> listeners;
 
-        public BatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
+        private BatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
             update(batteryStatus, context, sharedPreferences);
         }
 
@@ -194,9 +206,7 @@ public class BatteryHelper {
             if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
                 values[INDEX_TECHNOLOGY] = context.getString(R.string.technology) + ": " + technology;
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_TECHNOLOGY);
-                }
+                notifyListeners(INDEX_TECHNOLOGY);
             }
         }
 
@@ -204,9 +214,7 @@ public class BatteryHelper {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
                 values[INDEX_HEALTH] = context.getString(R.string.health) + ": " + BatteryHelper.getHealthString(context, health);
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_HEALTH);
-                }
+                notifyListeners(INDEX_HEALTH);
             }
         }
 
@@ -214,13 +222,11 @@ public class BatteryHelper {
             if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
                 this.batteryLevel = batteryLevel;
                 values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_BATTERY_LEVEL);
-                }
+                notifyListeners(INDEX_BATTERY_LEVEL);
             }
         }
 
-        public int getBatteryLevel(){
+        public int getBatteryLevel() {
             return batteryLevel;
         }
 
@@ -229,9 +235,7 @@ public class BatteryHelper {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
                 values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_CURRENT);
-                }
+                notifyListeners(INDEX_CURRENT);
             }
         }
 
@@ -239,9 +243,7 @@ public class BatteryHelper {
             if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
                 values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_TEMPERATURE);
-                }
+                notifyListeners(INDEX_TEMPERATURE);
             }
         }
 
@@ -249,9 +251,7 @@ public class BatteryHelper {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
                 values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_VOLTAGE);
-                }
+                notifyListeners(INDEX_VOLTAGE);
             }
         }
 
@@ -263,9 +263,7 @@ public class BatteryHelper {
                 } else {
                     values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
                 }
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_SCREEN_ON);
-                }
+                notifyListeners(INDEX_SCREEN_ON);
             }
         }
 
@@ -277,18 +275,33 @@ public class BatteryHelper {
                 } else {
                     values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
                 }
-                if (listener != null) {
-                    listener.onBatteryValueChanged(INDEX_SCREEN_OFF);
+                notifyListeners(INDEX_SCREEN_OFF);
+            }
+        }
+
+        public void addOnBatteryValueChangedListener(OnBatteryValueChangedListener listener) {
+            if (listeners == null) {
+                listeners = new ArrayList<>(1);
+            }
+            listeners.add(listener);
+        }
+
+        public void unregisterOnBatteryValueChangedListener(OnBatteryValueChangedListener listener) {
+            if (listener != null) {
+                listeners.remove(listener);
+            }
+        }
+
+        private void notifyListeners(int index) {
+            if (listeners != null) {
+                for (OnBatteryValueChangedListener listener : listeners) {
+                    listener.onBatteryValueChanged(index);
                 }
             }
         }
 
-        public void setOnBatteryValueChangedListener(OnBatteryValueChangedListener listener){
-            this.listener = listener;
-        }
-
         public interface OnBatteryValueChangedListener {
-            void onBatteryValueChanged (int index);
+            void onBatteryValueChanged(int index);
         }
     }
 }

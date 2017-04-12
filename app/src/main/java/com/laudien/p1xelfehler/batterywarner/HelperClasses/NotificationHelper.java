@@ -124,6 +124,9 @@ public final class NotificationHelper {
                 case ID_NO_ALARM_TIME_FOUND:
                     showNoAlarmTimeFoundNotification(context);
                     break;
+                case ID_BATTERY_INFO:
+                    showBatteryInfoNotification(context, sharedPreferences);
+                    break;
                 default:
                     throw new IdNotFoundException();
             }
@@ -344,7 +347,8 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    public static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences, BatteryData batteryData) {
+    private static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences) {
+        BatteryData batteryData = BatteryHelper.getBatteryData();
         if (batteryData != null) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
@@ -367,7 +371,7 @@ public final class NotificationHelper {
                     .setPriority(Notification.PRIORITY_LOW)
                     .setContentTitle(context.getString(R.string.info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
-            if (somethingIsEnabled){
+            if (somethingIsEnabled) {
                 builder.setCustomBigContentView(contentView);
             } else {
                 builder.setContentText(context.getString(R.string.no_items));
