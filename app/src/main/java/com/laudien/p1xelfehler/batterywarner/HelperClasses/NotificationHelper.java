@@ -241,7 +241,7 @@ public final class NotificationHelper {
                                     .setContentTitle(context.getString(R.string.app_name))
                                     .setContentText(messageText)
                                     .setStyle(getBigTextStyle(messageText))
-                                    .setContentIntent(getDefaultClickIntent(context))
+                                    .setContentIntent(pendingIntent)
                                     .addAction(R.drawable.ic_battery_charging_full_white_48dp, context.getString(R.string.enable_charging), pendingIntent)
                                     .setOngoing(true);
                             NotificationManager notificationManager = (NotificationManager)
