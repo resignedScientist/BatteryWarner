@@ -24,6 +24,7 @@ import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
 import static android.os.BatteryManager.BATTERY_PROPERTY_CURRENT_NOW;
 import static android.os.BatteryManager.EXTRA_HEALTH;
 import static android.os.BatteryManager.EXTRA_LEVEL;
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TECHNOLOGY;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.BatteryManager.EXTRA_VOLTAGE;
@@ -57,6 +58,10 @@ public class BatteryHelper {
             default:
                 return context.getString(R.string.health_unknown);
         }
+    }
+
+    public static boolean isCharging (Intent batteryStatus){
+        return batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
     }
 
     public static double getTemperature(Intent batteryStatus) {
@@ -135,10 +140,7 @@ public class BatteryHelper {
         private int health, batteryLevel;
         private long current;
         private double temperature, voltage, screenOn, screenOff;
-
-        public BatteryData() {
-
-        }
+        private OnBatteryValueChangedListener listener;
 
         public BatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
             update(batteryStatus, context, sharedPreferences);
@@ -166,18 +168,18 @@ public class BatteryHelper {
         }
 
         public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
-            boolean[] enabledBools = new boolean[NUMBER_OF_ITEMS];
-            enabledBools[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
-            enabledBools[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
-            enabledBools[INDEX_HEALTH] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
-            enabledBools[INDEX_BATTERY_LEVEL] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
-            enabledBools[INDEX_VOLTAGE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
-            enabledBools[INDEX_CURRENT] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
-            enabledBools[INDEX_SCREEN_ON] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
-            enabledBools[INDEX_SCREEN_OFF] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
+            boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
+            enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
+            enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
+            enabledBooleans[INDEX_HEALTH] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
+            enabledBooleans[INDEX_BATTERY_LEVEL] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
+            enabledBooleans[INDEX_VOLTAGE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
+            enabledBooleans[INDEX_CURRENT] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
+            enabledBooleans[INDEX_SCREEN_ON] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
+            enabledBooleans[INDEX_SCREEN_OFF] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
             String[] enabledValues = new String[NUMBER_OF_ITEMS];
             for (byte i = 0; i < NUMBER_OF_ITEMS; i++) {
-                if (enabledBools[i]) {
+                if (enabledBooleans[i]) {
                     enabledValues[i] = values[i];
                 }
             }
@@ -192,36 +194,34 @@ public class BatteryHelper {
             if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
                 values[INDEX_TECHNOLOGY] = context.getString(R.string.technology) + ": " + technology;
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_TECHNOLOGY);
+                }
             }
-        }
-
-        public void removeTechnology() {
-            technology = null;
-            values[INDEX_TECHNOLOGY] = null;
         }
 
         public void setHealth(int health, Context context) {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
                 values[INDEX_HEALTH] = context.getString(R.string.health) + ": " + BatteryHelper.getHealthString(context, health);
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_HEALTH);
+                }
             }
-        }
-
-        public void removeHealth() {
-            health = 0;
-            values[INDEX_HEALTH] = null;
         }
 
         public void setBatteryLevel(int batteryLevel, Context context) {
             if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
                 this.batteryLevel = batteryLevel;
                 values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_BATTERY_LEVEL);
+                }
             }
         }
 
-        public void removeBatteryLevel() {
-            batteryLevel = 0;
-            values[INDEX_BATTERY_LEVEL] = null;
+        public int getBatteryLevel(){
+            return batteryLevel;
         }
 
         @RequiresApi(api = LOLLIPOP)
@@ -229,37 +229,30 @@ public class BatteryHelper {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
                 values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_CURRENT);
+                }
             }
-        }
-
-        @RequiresApi(api = LOLLIPOP)
-        public void removeCurrent() {
-            current = 0L;
-            values[INDEX_CURRENT] = null;
         }
 
         public void setTemperature(double temperature, Context context) {
             if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
                 values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_TEMPERATURE);
+                }
             }
-        }
-
-        public void removeTemperature() {
-            temperature = 0.0;
-            values[INDEX_TEMPERATURE] = null;
         }
 
         public void setVoltage(double voltage, Context context) {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
                 values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_VOLTAGE);
+                }
             }
-        }
-
-        public void removeVoltage() {
-            voltage = 0.0;
-            values[INDEX_VOLTAGE] = null;
         }
 
         public void setScreenOn(double screenOn, Context context) {
@@ -270,12 +263,10 @@ public class BatteryHelper {
                 } else {
                     values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
                 }
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_SCREEN_ON);
+                }
             }
-        }
-
-        public void removeScreenOn() {
-            screenOn = 0.0;
-            values[INDEX_SCREEN_ON] = null;
         }
 
         public void setScreenOff(double screenOff, Context context) {
@@ -286,12 +277,18 @@ public class BatteryHelper {
                 } else {
                     values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
                 }
+                if (listener != null) {
+                    listener.onBatteryValueChanged(INDEX_SCREEN_OFF);
+                }
             }
         }
 
-        public void removeScreenOff() {
-            screenOff = 0.0;
-            values[INDEX_SCREEN_OFF] = null;
+        public void setOnBatteryValueChangedListener(OnBatteryValueChangedListener listener){
+            this.listener = listener;
+        }
+
+        public interface OnBatteryValueChangedListener {
+            void onBatteryValueChanged (int index);
         }
     }
 }

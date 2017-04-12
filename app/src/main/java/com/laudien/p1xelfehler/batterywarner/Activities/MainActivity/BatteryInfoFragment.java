@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,16 +49,16 @@ public class BatteryInfoFragment extends Fragment {
     public static final byte COLOR_LOW = 1;
     public static final byte COLOR_HIGH = 2;
     public static final byte COLOR_OK = 3;
-    private final String KEY_COLOR = "color";
-    private final String KEY_TECHNOLOGY = "technology";
-    private final String KEY_TEMPERATURE = "temperature";
-    private final String KEY_HEALTH = "health";
-    private final String KEY_BATTERY_LEVEL = "batteryLevel";
-    private final String KEY_VOLTAGE = "voltage";
-    private final String KEY_CURRENT = "current";
-    private final String KEY_SCREEN_ON = "screenOn";
-    private final String KEY_SCREEN_OFF = "screenOff";
-    private boolean dischargingServiceEnabled;
+    private final static String KEY_COLOR = "color";
+    private final static String KEY_TECHNOLOGY = "technology";
+    private final static String KEY_TEMPERATURE = "temperature";
+    private final static String KEY_HEALTH = "health";
+    private final static String KEY_BATTERY_LEVEL = "batteryLevel";
+    private final static String KEY_VOLTAGE = "voltage";
+    private final static String KEY_CURRENT = "current";
+    private final static String KEY_SCREEN_ON = "screenOn";
+    private final static String KEY_SCREEN_OFF = "screenOff";
+    private boolean dischargingServiceEnabled, isCharging;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
     private SharedPreferences sharedPreferences;
@@ -66,67 +67,46 @@ public class BatteryInfoFragment extends Fragment {
     private BatteryData batteryData;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
+            isCharging = BatteryHelper.isCharging(batteryStatus);
             if (batteryData != null) {
                 batteryData.update(batteryStatus, context, sharedPreferences);
             } else {
                 batteryData = new BatteryData(batteryStatus, context, sharedPreferences);
-            }
-            String[] values = batteryData.getAsArray();
-            for (byte i = 0; i < values.length; i++){
-                if (values[i] != null) {
-                    switch (i) {
-                        case INDEX_TECHNOLOGY:
-                            textView_technology.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_TEMPERATURE:
-                            textView_temp.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_HEALTH:
-                            textView_health.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_BATTERY_LEVEL:
-                            textView_batteryLevel.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_VOLTAGE:
-                            textView_voltage.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_CURRENT:
-                            textView_current.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_SCREEN_ON:
-                            textView_screenOn.setText(batteryData.getValue(i));
-                            break;
-                        case INDEX_SCREEN_OFF:
-                            textView_screenOff.setText(batteryData.getValue(i));
-                            break;
+                batteryData.setOnBatteryValueChangedListener(new BatteryData.OnBatteryValueChangedListener() {
+                    @Override
+                    public void onBatteryValueChanged(int index) {
+                        Log.d("Test", "onBatteryValueChanged: " + index);
+                        switch (index) {
+                            case INDEX_TECHNOLOGY:
+                                textView_technology.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_TEMPERATURE:
+                                textView_temp.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_HEALTH:
+                                textView_health.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_BATTERY_LEVEL:
+                                textView_batteryLevel.setText(batteryData.getValue(index));
+                                setBatteryColor();
+                                break;
+                            case INDEX_VOLTAGE:
+                                textView_voltage.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_CURRENT:
+                                textView_current.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_SCREEN_ON:
+                                textView_screenOn.setText(batteryData.getValue(index));
+                                break;
+                            case INDEX_SCREEN_OFF:
+                                textView_screenOff.setText(batteryData.getValue(index));
+                                break;
+                        }
                     }
-                }
-            }
-
-            // Image color
-            int batteryLevel = batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE);
-            byte nextColor;
-            if (batteryLevel <= warningLow) { // battery low
-                nextColor = COLOR_LOW;
-            } else if (batteryLevel < warningHigh) { // battery ok
-                nextColor = COLOR_OK;
-            } else { // battery high
-                nextColor = COLOR_HIGH;
-            }
-            if (nextColor != currentColor) {
-                currentColor = nextColor;
-                if (onBatteryColorChangedListener != null) {
-                    onBatteryColorChangedListener.onColorChanged(nextColor);
-                }
-                if (nextColor == COLOR_LOW) {
-                    boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
-                    if (!isCharging) {
-                        NotificationHelper.showNotification(context, ID_WARNING_LOW);
-                    }
-                }
+                });
             }
         }
     };
@@ -249,6 +229,31 @@ public class BatteryInfoFragment extends Fragment {
                 getString(R.string.screen_on), "N/A"));
         textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
                 getString(R.string.screen_off), "N/A"));
+    }
+
+    private void setBatteryColor(){
+        byte nextColor;
+        if (batteryData.getBatteryLevel() <= warningLow) { // battery low
+            nextColor = COLOR_LOW;
+        } else if (batteryData.getBatteryLevel() < warningHigh) { // battery ok
+            nextColor = COLOR_OK;
+        } else { // battery high
+            nextColor = COLOR_HIGH;
+        }
+        if (nextColor != currentColor) {
+            currentColor = nextColor;
+            if (onBatteryColorChangedListener != null) {
+                onBatteryColorChangedListener.onColorChanged(nextColor);
+            }
+            if (nextColor == COLOR_LOW) {
+                if (!isCharging) {
+                    Context context = getActivity();
+                    if (context != null) {
+                        NotificationHelper.showNotification(context, ID_WARNING_LOW);
+                    }
+                }
+            }
+        }
     }
 
     interface OnBatteryColorChangedListener {
