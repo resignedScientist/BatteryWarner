@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
@@ -166,13 +168,24 @@ public class BatteryHelper {
             enabledBooleans[INDEX_CURRENT] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
             enabledBooleans[INDEX_SCREEN_ON] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
             enabledBooleans[INDEX_SCREEN_OFF] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
+            // add enabled strings to array
             String[] enabledValues = new String[NUMBER_OF_ITEMS];
+            byte count = 0;
             for (byte i = 0; i < NUMBER_OF_ITEMS; i++) {
                 if (enabledBooleans[i]) {
                     enabledValues[i] = values[i];
+                    count++;
                 }
             }
-            return enabledValues;
+            // remove null values from array
+            String[] cleanedValues = new String[count];
+            byte j = 0;
+            for (String s : enabledValues){
+                if (s != null) {
+                    cleanedValues[j++] = s;
+                }
+            }
+            return cleanedValues;
         }
 
         public String getValue(int index) {
