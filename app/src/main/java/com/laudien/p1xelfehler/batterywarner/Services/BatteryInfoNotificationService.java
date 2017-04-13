@@ -23,7 +23,7 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
 
 public class BatteryInfoNotificationService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-    
+
     private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private BatteryData batteryData;
