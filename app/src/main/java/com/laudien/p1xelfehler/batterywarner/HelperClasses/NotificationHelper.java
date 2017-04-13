@@ -363,15 +363,19 @@ public final class NotificationHelper {
             if (data.length != 0) {
                 RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
                 contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
-                int textViewId;
-                for (int i = 0; i < data.length; i++) {
-                    textViewId = BatteryHelper.getTextViewId(i);
-                    if (data[i] != null) {
-                        contentView.setTextViewText(textViewId, data[i]);
-                    } else {
-                        contentView.setViewVisibility(textViewId, GONE);
+                String message = "";
+                boolean first = true;
+                for (String s : data) {
+                    if (s != null) {
+                        if (!first){
+                            message = message.concat("\n");
+                        } else {
+                            first = false;
+                        }
+                        message = message.concat(s);
                     }
                 }
+                contentView.setTextViewText(R.id.textView_message, message);
                 builder.setCustomBigContentView(contentView);
             } else { // no items enabled
                 builder.setContentText(context.getString(R.string.no_items));
