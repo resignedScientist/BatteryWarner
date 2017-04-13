@@ -113,29 +113,6 @@ public class BatteryHelper {
         }
     }
 
-    public static int getTextViewId(int index) {
-        switch (index) {
-            case INDEX_TECHNOLOGY:
-                return R.id.textView_technology;
-            case INDEX_TEMPERATURE:
-                return R.id.textView_temp;
-            case INDEX_HEALTH:
-                return R.id.textView_health;
-            case INDEX_BATTERY_LEVEL:
-                return R.id.textView_batteryLevel;
-            case INDEX_VOLTAGE:
-                return R.id.textView_voltage;
-            case INDEX_CURRENT:
-                return R.id.textView_current;
-            case INDEX_SCREEN_ON:
-                return R.id.textView_screenOn;
-            case INDEX_SCREEN_OFF:
-                return R.id.textView_screenOff;
-            default:
-                throw new RuntimeException("That index does not exist!");
-        }
-    }
-
     public static class BatteryData {
 
         public static final int INDEX_TECHNOLOGY = 0;
