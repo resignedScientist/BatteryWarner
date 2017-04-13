@@ -350,30 +350,30 @@ public final class NotificationHelper {
     private static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences) {
         BatteryData batteryData = BatteryHelper.getBatteryData();
         if (batteryData != null) {
-            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
-            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
             String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
-
-            int textViewId;
-            boolean somethingIsEnabled = false;
-            for (byte i = 0; i < data.length; i++) {
-                textViewId = BatteryHelper.getTextViewId(i);
-                if (data[i] != null) {
-                    somethingIsEnabled = true;
-                    contentView.setTextViewText(textViewId, data[i]);
-                } else {
-                    contentView.setViewVisibility(textViewId, GONE);
-                }
-            }
+            // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
                     .setPriority(Notification.PRIORITY_LOW)
                     .setContentTitle(context.getString(R.string.info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
-            if (somethingIsEnabled) {
+
+            // load data in notification
+            if (data.length != 0) {
+                RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
+                contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
+                int textViewId;
+                for (byte i = 0; i < data.length; i++) {
+                    textViewId = BatteryHelper.getTextViewId(i);
+                    if (data[i] != null) {
+                        contentView.setTextViewText(textViewId, data[i]);
+                    } else {
+                        contentView.setViewVisibility(textViewId, GONE);
+                    }
+                }
                 builder.setCustomBigContentView(contentView);
-            } else {
+            } else { // no items enabled
                 builder.setContentText(context.getString(R.string.no_items));
             }
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
