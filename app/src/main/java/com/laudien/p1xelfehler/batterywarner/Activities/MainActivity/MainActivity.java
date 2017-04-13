@@ -53,7 +53,6 @@ public class MainActivity extends BaseActivity {
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
                 tabLayout.setupWithViewPager(viewPager);
             }
-            startService(new Intent(this, BatteryInfoNotificationService.class));
         }
     }
 
