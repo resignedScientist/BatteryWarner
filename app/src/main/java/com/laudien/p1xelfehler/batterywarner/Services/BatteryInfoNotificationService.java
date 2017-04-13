@@ -17,6 +17,8 @@ import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
+import static android.content.Intent.ACTION_SCREEN_OFF;
+import static android.content.Intent.ACTION_SCREEN_ON;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
 
@@ -24,7 +26,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
 
     private SharedPreferences sharedPreferences;
     private BatteryData batteryData;
-    private BroadcastReceiver batteryChangedReceiver;
+    private BroadcastReceiver batteryChangedReceiver, screenOnReceiver, screenOffReceiver;
     private BatteryData.OnBatteryValueChangedListener onBatteryValueChangedListener;
 
     @Nullable
@@ -52,9 +54,25 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
                     batteryData.update(batteryStatus, context, sharedPreferences);
                 }
             };
+            screenOnReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    batteryData.addOnBatteryValueChangedListener(onBatteryValueChangedListener);
+                    registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
+                }
+            };
+            screenOffReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    unregisterReceiver(batteryChangedReceiver);
+                    batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
+                }
+            };
             Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
             batteryData = BatteryHelper.getBatteryData(batteryStatus, this, sharedPreferences);
             batteryData.addOnBatteryValueChangedListener(onBatteryValueChangedListener);
+            registerReceiver(screenOnReceiver, new IntentFilter(ACTION_SCREEN_ON));
+            registerReceiver(screenOffReceiver, new IntentFilter(ACTION_SCREEN_OFF));
             NotificationHelper.showNotification(this, ID_BATTERY_INFO);
         } else {
             stopSelf();
@@ -68,6 +86,9 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         super.onDestroy();
         try {
             unregisterReceiver(batteryChangedReceiver);
+            unregisterReceiver(screenOnReceiver);
+            unregisterReceiver(screenOffReceiver);
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         } catch (Exception ignored) {
         }
         if (batteryData != null) {
