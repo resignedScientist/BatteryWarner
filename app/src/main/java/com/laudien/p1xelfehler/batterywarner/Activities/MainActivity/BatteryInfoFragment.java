@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -230,29 +229,29 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     public void onBatteryValueChanged(int index) {
         switch (index) {
             case INDEX_TECHNOLOGY:
-                textView_technology.setText(batteryData.getValue(index));
+                textView_technology.setText(batteryData.getValueString(index));
                 break;
             case INDEX_TEMPERATURE:
-                textView_temp.setText(batteryData.getValue(index));
+                textView_temp.setText(batteryData.getValueString(index));
                 break;
             case INDEX_HEALTH:
-                textView_health.setText(batteryData.getValue(index));
+                textView_health.setText(batteryData.getValueString(index));
                 break;
             case INDEX_BATTERY_LEVEL:
-                textView_batteryLevel.setText(batteryData.getValue(index));
+                textView_batteryLevel.setText(batteryData.getValueString(index));
                 setBatteryColor();
                 break;
             case INDEX_VOLTAGE:
-                textView_voltage.setText(batteryData.getValue(index));
+                textView_voltage.setText(batteryData.getValueString(index));
                 break;
             case INDEX_CURRENT:
-                textView_current.setText(batteryData.getValue(index));
+                textView_current.setText(batteryData.getValueString(index));
                 break;
             case INDEX_SCREEN_ON:
-                textView_screenOn.setText(batteryData.getValue(index));
+                textView_screenOn.setText(batteryData.getValueString(index));
                 break;
             case INDEX_SCREEN_OFF:
-                textView_screenOff.setText(batteryData.getValue(index));
+                textView_screenOff.setText(batteryData.getValueString(index));
                 break;
         }
     }

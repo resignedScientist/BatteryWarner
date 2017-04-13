@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Locale;
 
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
@@ -29,18 +27,21 @@ import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_HEALTH;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_OFF;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_ON;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 
+/**
+ * Helper class for everything about battery status information.
+ */
 public class BatteryHelper {
     private static BatteryData batteryData;
 
+    /**
+     * Returns existing or creates new BatteryData object with filling in the data and returns it.
+     *
+     * @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+     * @param context           An instance of the Context class.
+     * @param sharedPreferences An instance of SharedPreferences class.
+     * @return The singleton object of BatteryData.
+     */
     public static BatteryData getBatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
         if (batteryData == null) {
             batteryData = new BatteryData(batteryStatus, context, sharedPreferences);
@@ -48,8 +49,13 @@ public class BatteryHelper {
         return batteryData;
     }
 
-    static BatteryData getBatteryData(){
-        if (batteryData == null){
+    /**
+     * Returns existing BatteryData object or null if it does not exist. It does not create a new one.
+     *
+     * @return Existing BatteryData object or null if it does not exist.
+     */
+    static BatteryData getBatteryData() {
+        if (batteryData == null) {
             return null;
         }
         return batteryData;
@@ -74,23 +80,45 @@ public class BatteryHelper {
         }
     }
 
+    /**
+     * Reads the information if the device is currently charging out of the given intent.
+     *
+     * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+     * @return Returns true if the device is charging, false if not.
+     */
     public static boolean isCharging(Intent batteryStatus) {
         return batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
     }
 
+    /**
+     * Reads the temperature out of the given intent and calculates it to the correct format.
+     *
+     * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+     * @return Returns the temperature in the correct format as double.
+     */
     public static double getTemperature(Intent batteryStatus) {
         return (double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, NO_STATE) / 10;
     }
 
+    /**
+     * Reads the voltage out of the given intent and calculates it to the correct format.
+     *
+     * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+     * @return Returns the voltage in the correct format as double.
+     */
     public static double getVoltage(Intent batteryStatus) {
         return (double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, NO_STATE) / 1000;
     }
 
-    @RequiresApi(api = LOLLIPOP)
-    public static long getCurrent(BatteryManager batteryManager) {
-        return batteryManager.getLongProperty(BATTERY_PROPERTY_CURRENT_NOW);
-    }
-
+    /**
+     * Calculates the screen-on percentage with the values in the sharedPreferences.
+     * The values were written by the DischargingService.
+     *
+     * @param context           An instance of the Context class.
+     * @param sharedPreferences An instance of SharedPreferences class.
+     * @return The battery percentage loss per hour when the screen is on.
+     * Returns 0.0 if there is not enough data yet.
+     */
     public static double getScreenOn(Context context, SharedPreferences sharedPreferences) {
         long screenOnTime = sharedPreferences.getLong(context.getString(R.string.value_time_screen_on), 0);
         int screenOnDrain = sharedPreferences.getInt(context.getString(R.string.value_drain_screen_on), 0);
@@ -103,6 +131,15 @@ public class BatteryHelper {
         }
     }
 
+    /**
+     * Calculates the screen-off percentage with the values in the sharedPreferences.
+     * The values were written by the DischargingService.
+     *
+     * @param context           An instance of the Context class.
+     * @param sharedPreferences An instance of SharedPreferences class.
+     * @return The battery percentage loss per hour when the screen is off.
+     * Returns 0.0 if there is not enough data yet.
+     */
     public static double getScreenOff(Context context, SharedPreferences sharedPreferences) {
         long screenOffTime = sharedPreferences.getLong(context.getString(R.string.value_time_screen_off), 0);
         int screenOffDrain = sharedPreferences.getInt(context.getString(R.string.value_drain_screen_off), 0);
@@ -115,6 +152,14 @@ public class BatteryHelper {
         }
     }
 
+    /**
+     * This class holds all the data that can be shown in the BatteryInfoFragment or the info
+     * notification (or else where if needed). You can set an OnBatteryValueChangedListener
+     * that notifies you when the data was changed with one of the setters. It will only be called
+     * if the new data is actually different from the old data. The data can be updated with the
+     * update() method.
+     * This class is a singleton and is provided by the BatteryHelper class only.
+     */
     public static class BatteryData {
 
         public static final int INDEX_TECHNOLOGY = 0;
@@ -137,6 +182,13 @@ public class BatteryHelper {
             update(batteryStatus, context, sharedPreferences);
         }
 
+        /**
+         * Updates all the data that is in the batteryStatus intent and the SharedPreferences given.
+         *
+         * @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+         * @param context           An instance of the Context class.
+         * @param sharedPreferences An instance of the SharedPreferences class.
+         */
         public void update(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
             setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
@@ -145,7 +197,7 @@ public class BatteryHelper {
             setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-                setCurrent(BatteryHelper.getCurrent(batteryManager), context);
+                setCurrent(batteryManager.getLongProperty(BATTERY_PROPERTY_CURRENT_NOW), context);
             }
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             if (dischargingServiceEnabled) {
@@ -154,11 +206,26 @@ public class BatteryHelper {
             }
         }
 
+        /**
+         * Get all the data as String array with correct formats to show to the user.
+         * Use the INDEX constants to determine which String is which.
+         *
+         * @return Returns all data as String array with correct formats to show to the user.
+         */
         public String[] getAsArray() {
             return values;
         }
 
-        public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
+        /**
+         * This method does the same as the getAsArray() method, but only returns the data that is
+         * enabled to be shown in the info notification.
+         * Caution: The indexes are not correct here!
+         *
+         * @param context           An instance of the Context class.
+         * @param sharedPreferences An instance of the SharedPreferences class.
+         * @return Returns enabled data as String array with correct formats to show to the user.
+         */
+        String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
             boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
             enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
             enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
@@ -180,7 +247,7 @@ public class BatteryHelper {
             // remove null values from array
             String[] cleanedValues = new String[count];
             byte j = 0;
-            for (String s : enabledValues){
+            for (String s : enabledValues) {
                 if (s != null) {
                     cleanedValues[j++] = s;
                 }
@@ -188,11 +255,46 @@ public class BatteryHelper {
             return cleanedValues;
         }
 
-        public String getValue(int index) {
+        /**
+         * Get a specific value with the given index as correctly formatted String.
+         *
+         * @param index One of the INDEX attributes that determine which value should be returned.
+         * @return Returns the value with the given index as correctly formatted String.
+         */
+        public String getValueString(int index) {
             return values[index];
         }
 
-        public void setTechnology(String technology, Context context) {
+        /**
+         * Get the value with the given index as object.
+         *
+         * @param index One of the INDEX attributes that determine which value should be returned.
+         * @return Returns the value with the given index as object or null if there is no object with that index.
+         */
+        public Object getValue(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return technology;
+                case INDEX_TEMPERATURE:
+                    return temperature;
+                case INDEX_HEALTH:
+                    return health;
+                case INDEX_BATTERY_LEVEL:
+                    return batteryLevel;
+                case INDEX_VOLTAGE:
+                    return voltage;
+                case INDEX_CURRENT:
+                    return current;
+                case INDEX_SCREEN_ON:
+                    return screenOn;
+                case INDEX_SCREEN_OFF:
+                    return screenOff;
+                default:
+                    return null;
+            }
+        }
+
+        private void setTechnology(String technology, Context context) {
             if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
                 values[INDEX_TECHNOLOGY] = context.getString(R.string.technology) + ": " + technology;
@@ -200,7 +302,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setHealth(int health, Context context) {
+        private void setHealth(int health, Context context) {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
                 values[INDEX_HEALTH] = context.getString(R.string.health) + ": " + BatteryHelper.getHealthString(context, health);
@@ -208,7 +310,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setBatteryLevel(int batteryLevel, Context context) {
+        private void setBatteryLevel(int batteryLevel, Context context) {
             if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
                 this.batteryLevel = batteryLevel;
                 values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
@@ -221,7 +323,7 @@ public class BatteryHelper {
         }
 
         @RequiresApi(api = LOLLIPOP)
-        public void setCurrent(long current, Context context) {
+        private void setCurrent(long current, Context context) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
                 values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
@@ -229,7 +331,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setTemperature(double temperature, Context context) {
+        private void setTemperature(double temperature, Context context) {
             if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
                 values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
@@ -237,7 +339,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setVoltage(double voltage, Context context) {
+        private void setVoltage(double voltage, Context context) {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
                 values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
@@ -245,7 +347,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setScreenOn(double screenOn, Context context) {
+        private void setScreenOn(double screenOn, Context context) {
             if (this.screenOn != screenOn || values[INDEX_SCREEN_ON] == null) {
                 this.screenOn = screenOn;
                 if (screenOn == 0.0) {
@@ -257,7 +359,7 @@ public class BatteryHelper {
             }
         }
 
-        public void setScreenOff(double screenOff, Context context) {
+        private void setScreenOff(double screenOff, Context context) {
             if (this.screenOff != screenOff || values[INDEX_SCREEN_OFF] == null) {
                 this.screenOff = screenOff;
                 if (screenOff == 0.0) {
