@@ -113,7 +113,7 @@ public class BatteryHelper {
         }
     }
 
-    public static int getTextViewId(byte index) {
+    public static int getTextViewId(int index) {
         switch (index) {
             case INDEX_TECHNOLOGY:
                 return R.id.textView_technology;
