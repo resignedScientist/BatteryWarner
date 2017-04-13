@@ -23,7 +23,8 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
 
 public class BatteryInfoNotificationService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+    
+    private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private BatteryData batteryData;
     private BroadcastReceiver batteryChangedReceiver, screenOnReceiver, screenOffReceiver;
@@ -37,7 +38,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "Service started!");
+        Log.d(TAG, "Service started!");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (notificationEnabled) {
@@ -45,6 +46,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             onBatteryValueChangedListener = new BatteryData.OnBatteryValueChangedListener() {
                 @Override
                 public void onBatteryValueChanged(int index) {
+                    Log.d(TAG, "batteryData was updated! index: " + index);
                     NotificationHelper.showNotification(BatteryInfoNotificationService.this, ID_BATTERY_INFO);
                 }
             };
@@ -57,6 +59,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             screenOnReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
+                    Log.d(TAG, "listening resumed (screen on)");
                     batteryData.addOnBatteryValueChangedListener(onBatteryValueChangedListener);
                     registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
                 }
@@ -64,6 +67,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             screenOffReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
+                    Log.d(TAG, "listening paused (screen off)");
                     unregisterReceiver(batteryChangedReceiver);
                     batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
                 }
@@ -82,7 +86,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
 
     @Override
     public void onDestroy() {
-        Log.d(getClass().getSimpleName(), "Service destroyed!");
+        Log.d(TAG, "Service destroyed!");
         super.onDestroy();
         try {
             unregisterReceiver(batteryChangedReceiver);
