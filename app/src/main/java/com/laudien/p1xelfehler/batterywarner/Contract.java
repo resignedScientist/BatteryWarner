@@ -19,4 +19,3 @@ public final class Contract {
     private Contract() {
     }
 }
-//test
