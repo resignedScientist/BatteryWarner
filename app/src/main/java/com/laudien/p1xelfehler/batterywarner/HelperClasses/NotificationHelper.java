@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
@@ -26,6 +27,8 @@ import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static android.app.Notification.PRIORITY_HIGH;
@@ -342,6 +345,7 @@ public final class NotificationHelper {
         BatteryData batteryData = BatteryHelper.getBatteryData();
         if (batteryData != null) {
             String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
+            Log.d("NotificationHelper", Arrays.toString(data));
             // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
