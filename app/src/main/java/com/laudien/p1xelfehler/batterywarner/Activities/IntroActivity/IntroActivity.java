@@ -51,8 +51,6 @@ public class IntroActivity extends MaterialIntroActivity {
 
         addSlide(new BatterySlide()); // first slide
         if (!IS_PRO) { // free version
-            // first slide
-            addSlide(new BatterySlide());
             // second slide
             ImageSlide imageSlide = new ImageSlide();
             Bundle imageBundle = new Bundle(2);
