@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,9 @@ public class BatterySlide extends SlideFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(agency.tango.materialintroscreen.R.layout.fragment_slide, container, false);
-        TextView titleTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_title_slide);
-        TextView descriptionTextView = (TextView) view.findViewById(agency.tango.materialintroscreen.R.id.txt_description_slide);
+        View view = inflater.inflate(R.layout.fragment_intro_slide, container, false);
+        TextView titleTextView = (TextView) view.findViewById(R.id.txt_title_slide);
+        TextView descriptionTextView = (TextView) view.findViewById(R.id.txt_description_slide);
         // set title and description texts
         if (IS_PRO) { // pro version
             titleTextView.setText(R.string.thank_you_pro_title);
@@ -38,8 +39,8 @@ public class BatterySlide extends SlideFragment {
             descriptionTextView.setText(R.string.intro_1_description);
         }
         // image
-        ImageView imageView = (ImageView) view.findViewById(agency.tango.materialintroscreen.R.id.image_slide);
-        imageView.setImageResource(R.drawable.battery_status_full_white);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image_slide);
+        imageView.setImageResource(R.drawable.battery_status_full_white_big);
         ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk), imageView);
         imageView.setVisibility(VISIBLE);
         return view;

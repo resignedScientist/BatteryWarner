@@ -20,6 +20,11 @@ import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
+import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_BACKGROUND_COLOR;
+import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_DESCRIPTION;
+import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_IMAGE;
+import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_TITLE;
+
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
  * version of the app.
@@ -47,23 +52,26 @@ public class IntroActivity extends MaterialIntroActivity {
         if (Contract.IS_PRO) { // pro version
             addSlide(new BatterySlide()); // first slide (thank you slide)
         } else { // free version
-            addSlide(new BatterySlide()); // first slide (slogan)
-            addSlide(new SlideFragmentBuilder()
-                    .backgroundColor(R.color.colorIntro2)
-                    .buttonsColor(R.color.colorButtons)
-                    .image(R.drawable.batteries)
-                    .title(getString(R.string.slide_2_title))
-                    .description(getString(R.string.slide_2_description))
-                    .build()
-            );
-            addSlide(new SlideFragmentBuilder()
-                    .backgroundColor(R.color.colorIntro3)
-                    .buttonsColor(R.color.colorButtons)
-                    .image(R.drawable.done_white_big)
-                    .title(getString(R.string.slide_3_title))
-                    .description(getString(R.string.slide_3_description))
-                    .build()
-            );
+            // first slide
+            addSlide(new BatterySlide());
+            // second slide
+            ImageSlide imageSlide = new ImageSlide();
+            Bundle imageBundle = new Bundle(2);
+            imageBundle.putString(KEY_TITLE, getString(R.string.slide_2_title));
+            imageBundle.putString(KEY_DESCRIPTION, getString(R.string.slide_2_description));
+            imageBundle.putInt(KEY_IMAGE, R.drawable.batteries);
+            imageBundle.putInt(KEY_BACKGROUND_COLOR, R.color.colorIntro2);
+            imageSlide.setArguments(imageBundle);
+            addSlide(imageSlide);
+            // third slide
+            imageSlide = new ImageSlide();
+            imageBundle = new Bundle(2);
+            imageBundle.putString(KEY_TITLE, getString(R.string.slide_3_title));
+            imageBundle.putString(KEY_DESCRIPTION, getString(R.string.slide_3_description));
+            imageBundle.putInt(KEY_IMAGE, R.drawable.done_white_big);
+            imageBundle.putInt(KEY_BACKGROUND_COLOR, R.color.colorIntro3);
+            imageSlide.setArguments(imageBundle);
+            addSlide(imageSlide);
         }
         // preference slide
         addSlide(new PreferencesSlide());
