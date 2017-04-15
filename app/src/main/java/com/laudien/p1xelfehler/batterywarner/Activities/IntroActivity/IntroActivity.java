@@ -18,12 +18,12 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
-import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_BACKGROUND_COLOR;
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_DESCRIPTION;
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_IMAGE;
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_TITLE;
+import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
 
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
@@ -49,9 +49,8 @@ public class IntroActivity extends MaterialIntroActivity {
                     }
                 });
 
-        if (Contract.IS_PRO) { // pro version
-            addSlide(new BatterySlide()); // first slide (thank you slide)
-        } else { // free version
+        addSlide(new BatterySlide()); // first slide
+        if (!IS_PRO) { // free version
             // first slide
             addSlide(new BatterySlide());
             // second slide
