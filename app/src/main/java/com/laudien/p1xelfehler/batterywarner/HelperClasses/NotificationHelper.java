@@ -235,7 +235,7 @@ public final class NotificationHelper {
                                     .setContentText(messageText)
                                     .setStyle(getBigTextStyle(messageText))
                                     .setContentIntent(pendingIntent)
-                                    .addAction(R.drawable.ic_battery_charging_full_white_48dp, context.getString(R.string.enable_charging), pendingIntent)
+                                    .addAction(R.drawable.ic_battery_charging_full_white, context.getString(R.string.enable_charging), pendingIntent)
                                     .setOngoing(true);
                             NotificationManager notificationManager = (NotificationManager)
                                     context.getSystemService(NOTIFICATION_SERVICE);
@@ -292,7 +292,7 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(clickIntent)
-                    .addAction(R.drawable.ic_done_white_48dp, context.getString(R.string.grant_root), clickIntent)
+                    .addAction(R.drawable.ic_done_white, context.getString(R.string.grant_root), clickIntent)
                     .setDeleteIntent(deleteIntent)
                     .setAutoCancel(true);
             NotificationManager notificationManager = (NotificationManager)
@@ -315,7 +315,7 @@ public final class NotificationHelper {
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
                 .setDeleteIntent(deleteIntent)
-                .addAction(R.drawable.ic_done_white_48dp, context.getString(R.string.grant_root), clickIntent)
+                .addAction(R.drawable.ic_done_white, context.getString(R.string.grant_root), clickIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);

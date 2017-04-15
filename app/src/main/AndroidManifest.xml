@@ -80,7 +80,7 @@
         </receiver>
         <service
             android:name=".Services.OnOffTileService"
-            android:icon="@drawable/ic_battery_alert_white_48dp"
+            android:icon="@drawable/ic_battery_alert_white"
             android:label="@string/tile_title"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -89,7 +89,7 @@
         </service>
         <service
             android:name=".Services.ToggleChargingTileService"
-            android:icon="@drawable/ic_battery_charging_full_white_48dp"
+            android:icon="@drawable/ic_battery_charging_full_white"
             android:label="@string/tile_text_charge_to_100"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
