@@ -15,4 +15,7 @@
     <color name="colorBatteryOk">#44a300</color>
     <color name="colorBatteryLow">#dd0000</color>
     <color name="colorBatteryHigh">#f89200</color>
+
+    <!-- Dark notification -->
+    <color name="dark_background">#212121</color>
 </resources>

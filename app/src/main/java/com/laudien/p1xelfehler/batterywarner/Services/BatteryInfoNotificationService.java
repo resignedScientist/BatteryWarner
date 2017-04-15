@@ -183,6 +183,8 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         } else if (s.equals(getString(R.string.pref_info_screen_off))) {
             boolean screenOffEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_screen_off_default));
             rebuildNotification(screenOffEnabled);
+        } else if (s.equals(getString(R.string.pref_dark_theme_enabled))){
+            rebuildNotification(false);
         }
     }
 

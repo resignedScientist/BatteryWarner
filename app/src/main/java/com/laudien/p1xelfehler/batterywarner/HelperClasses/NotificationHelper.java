@@ -27,7 +27,6 @@ import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -346,6 +345,15 @@ public final class NotificationHelper {
         if (batteryData != null) {
             String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
             Log.d("NotificationHelper", Arrays.toString(data));
+            // prepare content view (with theme)
+            boolean darkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+            RemoteViews contentView;
+            if (darkThemeEnabled) {
+                contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info_dark);
+            } else {
+                contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
+            }
+            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
             // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
@@ -353,20 +361,18 @@ public final class NotificationHelper {
                     .setPriority(Notification.PRIORITY_LOW)
                     .setContentTitle(context.getString(R.string.info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
-
             // load data in notification
+            String message;
             if (data.length != 0) {
-                RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
-                contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
-                String message = data[0];
+                message = data[0];
                 for (byte i = 1; i < data.length; i++) {
                     message = message.concat("\n").concat(data[i]);
                 }
-                contentView.setTextViewText(R.id.textView_message, message);
-                builder.setCustomBigContentView(contentView);
             } else { // no items enabled
-                builder.setContentText(context.getString(R.string.no_items));
+                message = context.getString(R.string.no_items);
             }
+            contentView.setTextViewText(R.id.textView_message, message);
+            builder.setCustomBigContentView(contentView);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_BATTERY_INFO, builder.build());
         }
