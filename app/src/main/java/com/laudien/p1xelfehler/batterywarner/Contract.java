@@ -12,7 +12,7 @@ public final class Contract {
     public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
     // activating pro-features
-    public static final boolean IS_PRO = false;
+    public static final boolean IS_PRO = true;
     // value that means not set, unknown or error
     public static final int NO_STATE = -1;
 
