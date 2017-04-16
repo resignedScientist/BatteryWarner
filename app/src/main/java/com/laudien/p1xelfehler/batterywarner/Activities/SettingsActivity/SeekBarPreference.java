@@ -3,7 +3,6 @@ package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.preference.Preference;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
@@ -166,8 +165,8 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         new AlertDialog.Builder(getContext())
                 .setView(view)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_button_cancel, null)
+                .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         setValue(numberPicker.getValue());

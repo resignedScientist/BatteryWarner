@@ -195,9 +195,9 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
 
     private void showNoData() {
         textView_screenOn.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
-                getString(R.string.screen_on), "N/A"));
+                getString(R.string.info_screen_on), "N/A"));
         textView_screenOff.setText(String.format(Locale.getDefault(), "%s: %s %%/h",
-                getString(R.string.screen_off), "N/A"));
+                getString(R.string.info_screen_off), "N/A"));
     }
 
     private void setBatteryColor(){

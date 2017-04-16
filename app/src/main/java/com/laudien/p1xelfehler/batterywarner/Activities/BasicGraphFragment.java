@@ -176,7 +176,7 @@ public abstract class BasicGraphFragment extends Fragment {
             textView_chargingTime.setText(String.format(
                     Locale.getDefault(),
                     "%s: %s",
-                    getString(R.string.charging_time),
+                    getString(R.string.info_charging_time),
                     infoObject.getTimeString(getContext())
             ));
         }
@@ -240,7 +240,7 @@ public abstract class BasicGraphFragment extends Fragment {
         if (series != null && infoObject != null) {
             infoObject.showDialog(getContext());
         } else {
-            ((BaseActivity) getActivity()).showToast(R.string.no_data, LENGTH_SHORT);
+            ((BaseActivity) getActivity()).showToast(R.string.toast_no_data, LENGTH_SHORT);
         }
     }
 }

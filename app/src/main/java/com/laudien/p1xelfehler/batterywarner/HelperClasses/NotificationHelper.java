@@ -35,6 +35,7 @@ import static android.app.Notification.PRIORITY_LOW;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
 
 /**
@@ -146,7 +147,7 @@ public final class NotificationHelper {
         if (!alreadyNotified && warningHighEnabled) {
             sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
-            String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_high), warningHigh);
+            String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setSound(getWarningSound(context, sharedPreferences))
@@ -169,7 +170,7 @@ public final class NotificationHelper {
         if (!alreadyNotified && warningLowEnabled) {
             sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
-            String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.warning_low), warningLow);
+            String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setSound(getWarningSound(context, sharedPreferences))
@@ -201,7 +202,7 @@ public final class NotificationHelper {
                 areNotificationsEnabled = notificationManagerCompat.areNotificationsEnabled();
             }
             if (!areNotificationsEnabled || ringerMode == AudioManager.RINGER_MODE_SILENT || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
-                String messageText = context.getString(R.string.notifications_are_off);
+                String messageText = context.getString(R.string.notification_sound_disabled);
                 Notification.Builder builder = new Notification.Builder(context)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setSound(getDefaultSound())
@@ -227,7 +228,7 @@ public final class NotificationHelper {
                         if (!RootHelper.isChargingEnabled()) {
                             PendingIntent pendingIntent = PendingIntent.getService(context, ID_STOP_CHARGING,
                                     new Intent(context, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
-                            String messageText = context.getString(R.string.dismiss_if_unplugged);
+                            String messageText = context.getString(R.string.notification_charging_disabled);
                             Notification.Builder builder = new Notification.Builder(context)
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setPriority(PRIORITY_LOW)
@@ -235,7 +236,7 @@ public final class NotificationHelper {
                                     .setContentText(messageText)
                                     .setStyle(getBigTextStyle(messageText))
                                     .setContentIntent(pendingIntent)
-                                    .addAction(R.drawable.ic_battery_charging_full_white, context.getString(R.string.enable_charging), pendingIntent)
+                                    .addAction(R.drawable.ic_battery_charging_full_white, context.getString(R.string.notification_button_enable_charging), pendingIntent)
                                     .setOngoing(true);
                             NotificationManager notificationManager = (NotificationManager)
                                     context.getSystemService(NOTIFICATION_SERVICE);
@@ -257,7 +258,7 @@ public final class NotificationHelper {
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
         boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         if (stopChargingEnabled || usbChargingDisabled) {
-            String messageText = context.getString(R.string.stop_charging_not_working);
+            String messageText = context.getString(R.string.notification_stop_charging_not_working);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
@@ -280,7 +281,7 @@ public final class NotificationHelper {
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
         boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         if (stopChargingEnabled || usbChargingDisabled) {
-            String messageText = context.getString(R.string.grant_root_again);
+            String messageText = context.getString(R.string.notification_grant_root);
             PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
             PendingIntent deleteIntent = PendingIntent.getService(context, 0, new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
@@ -292,7 +293,7 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(clickIntent)
-                    .addAction(R.drawable.ic_done_white, context.getString(R.string.grant_root), clickIntent)
+                    .addAction(R.drawable.ic_done_white, context.getString(R.string.notification_button_grant_root), clickIntent)
                     .setDeleteIntent(deleteIntent)
                     .setAutoCancel(true);
             NotificationManager notificationManager = (NotificationManager)
@@ -302,7 +303,7 @@ public final class NotificationHelper {
     }
 
     private static void showNotRootedNotification(Context context) {
-        String messageText = context.getString(R.string.not_rooted_notification);
+        String messageText = context.getString(R.string.notification_not_rooted);
         PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
         PendingIntent deleteIntent = PendingIntent.getService(context, 0, new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
@@ -315,7 +316,7 @@ public final class NotificationHelper {
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
                 .setDeleteIntent(deleteIntent)
-                .addAction(R.drawable.ic_done_white, context.getString(R.string.grant_root), clickIntent)
+                .addAction(R.drawable.ic_done_white, context.getString(R.string.notification_button_grant_root), clickIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);
@@ -323,7 +324,7 @@ public final class NotificationHelper {
     }
 
     private static void showNoAlarmTimeFoundNotification(Context context) {
-        String messageText = context.getString(R.string.no_alarm_time_found);
+        String messageText = context.getString(R.string.notification_no_alarm_time_found);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, new Intent(context, SmartChargingActivity.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -346,20 +347,26 @@ public final class NotificationHelper {
             String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
             Log.d("NotificationHelper", Arrays.toString(data));
             // prepare content view (with theme)
-            boolean darkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
-            RemoteViews contentView;
-            if (darkThemeEnabled) {
-                contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info_dark);
+            int layout;
+            if (SDK_INT >= LOLLIPOP) {
+                boolean darkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+                boolean notificationUsesTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_info_dark_theme), context.getResources().getBoolean(R.bool.pref_info_dark_theme_default));
+                if (darkThemeEnabled && notificationUsesTheme) {
+                    layout = R.layout.notification_battery_info_dark;
+                } else {
+                    layout = R.layout.notification_battery_info;
+                }
             } else {
-                contentView = new RemoteViews(context.getPackageName(), R.layout.notification_battery_info);
+                layout = R.layout.notification_battery_info;
             }
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), layout);
             contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
             // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
                     .setPriority(Notification.PRIORITY_LOW)
-                    .setContentTitle(context.getString(R.string.info_notification))
+                    .setContentTitle(context.getString(R.string.title_info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
             // load data in notification
             String message;

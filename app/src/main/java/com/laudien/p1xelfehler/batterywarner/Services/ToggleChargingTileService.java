@@ -80,7 +80,7 @@ public class ToggleChargingTileService extends TileService {
                     }
                 }.execute();
             } else {
-                Toast.makeText(getApplicationContext(), R.string.not_pro, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.toast_not_pro, Toast.LENGTH_SHORT).show();
             }
         } else { // activating the tile
             tile.setState(STATE_ACTIVE);

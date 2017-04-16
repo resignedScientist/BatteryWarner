@@ -23,7 +23,7 @@ public class SettingsActivity extends BaseActivity {
 
         setContentView(R.layout.frame_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.settings));
+        toolbar.setTitle(getString(R.string.title_preferences));
         try { // put version code in subtitle of the toolbar
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             toolbar.setSubtitle(pInfo.versionName);

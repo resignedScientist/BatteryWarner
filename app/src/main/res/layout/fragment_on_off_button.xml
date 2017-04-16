@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textAllCaps="false"
-    android:textOff="@string/button_off"
-    android:textOn="@string/button_on" />
+    android:textOff="@string/main_switch_off"
+    android:textOn="@string/main_switch_on" />

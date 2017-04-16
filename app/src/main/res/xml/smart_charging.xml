@@ -4,12 +4,12 @@
     <CheckBoxPreference
         android:defaultValue="@bool/pref_smart_charging_enabled_default"
         android:key="@string/pref_smart_charging_enabled"
-        android:title="@string/smart_charging_enabled" />
+        android:title="@string/title_smart_charging_enabled" />
     <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
         android:defaultValue="@integer/pref_smart_charging_time_before_default"
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_time_before"
-        android:title="@string/minutes_before"
+        android:title="@string/title_minutes_before"
         app:slider_max="@integer/pref_smart_charging_time_before_max"
         app:slider_min="@integer/pref_smart_charging_time_before_min"
         app:unit=" min" />
@@ -17,13 +17,13 @@
         android:defaultValue="@integer/pref_smart_charging_limit_default"
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_limit"
-        android:title="@string/charging_limit"
+        android:title="@string/title_charging_limit"
         app:slider_max="@integer/pref_smart_charging_limit_max"
         app:slider_min="@integer/pref_smart_charging_limit_min"
         app:unit="%" />
     <com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.TimePickerPreference
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_time"
-        android:title="@string/smart_charging_time" />
+        android:title="@string/title_smart_charging_time" />
 
 </PreferenceScreen>

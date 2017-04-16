@@ -295,7 +295,7 @@ public class BatteryHelper {
         private void setTechnology(String technology, Context context) {
             if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
-                values[INDEX_TECHNOLOGY] = context.getString(R.string.technology) + ": " + technology;
+                values[INDEX_TECHNOLOGY] = context.getString(R.string.info_technology) + ": " + technology;
                 notifyListeners(INDEX_TECHNOLOGY);
             }
         }
@@ -303,7 +303,7 @@ public class BatteryHelper {
         private void setHealth(int health, Context context) {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
-                values[INDEX_HEALTH] = context.getString(R.string.health) + ": " + BatteryHelper.getHealthString(context, health);
+                values[INDEX_HEALTH] = context.getString(R.string.info_health) + ": " + BatteryHelper.getHealthString(context, health);
                 notifyListeners(INDEX_HEALTH);
             }
         }
@@ -311,7 +311,7 @@ public class BatteryHelper {
         private void setBatteryLevel(int batteryLevel, Context context) {
             if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
                 this.batteryLevel = batteryLevel;
-                values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.battery_level) + ": %d%%", batteryLevel);
+                values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
                 notifyListeners(INDEX_BATTERY_LEVEL);
             }
         }
@@ -324,7 +324,7 @@ public class BatteryHelper {
         private void setCurrent(long current, Context context) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.current), current / -1000);
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / -1000);
                 notifyListeners(INDEX_CURRENT);
             }
         }
@@ -332,7 +332,7 @@ public class BatteryHelper {
         private void setTemperature(double temperature, Context context) {
             if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
-                values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.temperature) + ": %.1f °C", temperature);
+                values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.info_temperature) + ": %.1f °C", temperature);
                 notifyListeners(INDEX_TEMPERATURE);
             }
         }
@@ -340,7 +340,7 @@ public class BatteryHelper {
         private void setVoltage(double voltage, Context context) {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
-                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.voltage) + ": %.3f V", voltage);
+                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.info_voltage) + ": %.3f V", voltage);
                 notifyListeners(INDEX_VOLTAGE);
             }
         }
@@ -349,9 +349,9 @@ public class BatteryHelper {
             if (this.screenOn != screenOn || values[INDEX_SCREEN_ON] == null) {
                 this.screenOn = screenOn;
                 if (screenOn == 0.0) {
-                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_on), "N/A");
+                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.info_screen_on), "N/A");
                 } else {
-                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_on), screenOn);
+                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.info_screen_on), screenOn);
                 }
                 notifyListeners(INDEX_SCREEN_ON);
             }
@@ -361,9 +361,9 @@ public class BatteryHelper {
             if (this.screenOff != screenOff || values[INDEX_SCREEN_OFF] == null) {
                 this.screenOff = screenOff;
                 if (screenOff == 0.0) {
-                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.screen_off), "N/A");
+                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.info_screen_off), "N/A");
                 } else {
-                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.screen_off), screenOff);
+                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.info_screen_off), screenOff);
                 }
                 notifyListeners(INDEX_SCREEN_OFF);
             }

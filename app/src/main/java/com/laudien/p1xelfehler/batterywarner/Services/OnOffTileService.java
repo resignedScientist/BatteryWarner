@@ -72,11 +72,11 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         super.onClick();
         Log.d(TAG, "Tile clicked!");
         if (!IS_PRO) { // not pro
-            Toast.makeText(getApplicationContext(), R.string.not_pro, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.toast_not_pro, Toast.LENGTH_SHORT).show();
             return;
         }
         if (firstStart) { // intro not finished
-            Toast.makeText(getApplicationContext(), getString(R.string.please_finish_intro), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_finish_intro_first), Toast.LENGTH_SHORT).show();
             return;
         }
         boolean isActive = tile.getState() == STATE_ACTIVE;
@@ -93,7 +93,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             if (!isCharging) { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
-            Toast.makeText(getApplicationContext(), getString(R.string.disabled_info), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_disabled), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
             tile.setState(STATE_ACTIVE);
@@ -104,7 +104,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
                 sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
                 startService(new Intent(this, DischargingService.class));
             }
-            Toast.makeText(getApplicationContext(), getString(R.string.enabled_info), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_enabled), Toast.LENGTH_SHORT).show();
         }
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();
         tile.updateTile();

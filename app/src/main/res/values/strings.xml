@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Battery Warner</string>
     <!-- Shared Preference Keys -->
     <!-- Settings -->
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
@@ -17,6 +18,7 @@
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
     <string name="pref_discharging_service_enabled" translatable="false">dischargingServiceEnabled</string>
     <string name="pref_enable_sound" translatable="false">enableSound</string>
+    <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
@@ -28,7 +30,7 @@
     <string name="pref_smart_charging_time" translatable="false">smartChargingTime</string>
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
-    <!-- BatteryInfo Notification -->
+    <!-- Battery info notification -->
     <string name="pref_info_notification_items" translatable="false">infoNotificationItems</string>
     <string name="pref_info_notification_enabled" translatable="false">infoNotificationEnabled</string>
     <string name="pref_info_technology" translatable="false">infoTechnology</string>
@@ -39,7 +41,7 @@
     <string name="pref_info_current" translatable="false">infoCurrent</string>
     <string name="pref_info_screen_on" translatable="false">infoScreenOn</string>
     <string name="pref_info_screen_off" translatable="false">infoScreenOff</string>
-
+    <string name="pref_info_dark_theme" translatable="false">infoDarkTheme</string>
     <!-- Not directly changeable by user -->
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_last_percentage" translatable="false">lastPercentage</string>
@@ -48,7 +50,7 @@
     <string name="pref_already_notified" translatable="false">alreadyNotified</string>
     <string name="pref_last_chargingType" translatable="false">lastChargingType</string>
     <string name="pref_alex_mode" translatable="false">alexMode</string>
-    <string name="pref_stats_key" translatable="false">stats</string>
+    <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
     <!-- Measured values -->
     <string name="value_time_screen_on" translatable="false">timeScreenOn</string>
@@ -56,41 +58,114 @@
     <string name="value_drain_screen_on" translatable="false">screenOnDrain</string>
     <string name="value_drain_screen_off" translatable="false">screenOffDrain</string>
 
-    <!-- Other Strings -->
-    <string name="app_name">Battery Warner</string>
-    <string name="warning_high">Battery level is above</string>
-    <string name="warning_low">Battery level is below</string>
-    <string name="settings">Settings</string>
-    <string name="low_battery_warning">Low battery warning:</string>
-    <string name="high_battery_warning">High battery warning:</string>
-    <string name="enabled">Enabled</string>
-    <string name="enable_on_ac">Warning on AC charging</string>
-    <string name="enable_on_usb">Warning on USB charging</string>
-    <string name="enable_on_wireless">Warning on wireless charging</string>
-    <string name="settings_saved">Settings saved!</string>
-    <string name="intro_1_title">Welcome to Battery Warner!</string>
-    <string name="intro_1_description">It will help your battery to live longer!</string>
-    <string name="enabled_info">Successfully enabled!</string>
-    <string name="disabled_info">Successfully disabled!</string>
-    <string name="btn_notification">Choose notification Sound</string>
-    <string name="slide_preferences_title">Let\'s get started!</string>
-    <string name="slide_preferences_discription">Choose your settings right here!</string>
-    <string name="slide_2_title">How does it do that?</string>
-    <string name="slide_2_description" formatted="false">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
-    <string name="slide_3_title">For the longest life, you have to charge \"flat\"!</string>
-    <string name="slide_3_description" formatted="false">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
+    <!-- translatable strings -->
+    <!-- both apps installed dialog -->
+    <string name="uninstall_title">Uninstall free app first!</string>
+    <string name="uninstall_text">The free and the pro app are both installed! Please uninstall the free app first!</string>
+    <string name="uninstall_go">Uninstall it!</string>
+    <!-- preference titles -->
+    <string name="title_low_battery_warning">Low battery warning:</string>
+    <string name="title_high_battery_warning">High battery warning:</string>
+    <string name="title_ac_enabled">Warning on AC charging</string>
+    <string name="title_usb_enabled">Warning on USB charging</string>
+    <string name="title_wireless_enabled">Warning on wireless charging</string>
+    <string name="title_enabled">Enabled</string>
+    <string name="title_graph_enabled">Enable charging curve</string>
+    <string name="title_dark_theme_enabled">Enable Dark Theme</string>
+    <string name="title_theming">Theming</string>
+    <string name="title_stats">Stats</string>
+    <string name="title_sound_uri">Choose notification Sound</string>
+    <string name="title_notification_sound">Notification sound</string>
+    <string name="title_time_format">Time format</string>
+    <string name="title_graph_autosave">Save automatically</string>
+    <string name="title_stop_charging">Automatically stop charging [Root]</string>
+    <string name="title_discharging_service_enabled">Log percent per hour</string>
+    <string name="title_advanced_features">Advanced features</string>
+    <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
+    <string name="title_smart_charging">Smart Charging [Root]</string>
+    <string name="title_root_features">Root features</string>
+    <string name="title_enable_sound">Enable warning sound</string>
+    <string name="title_info_notification_enabled">Enable info notification</string>
+    <string name="title_info_notification">Info notification</string>
+    <string name="title_info_notification_items">Shown in notification</string>
+    <string name="title_notifications_off_warning">Warn if the sound is disabled</string>
+    <string name="title_info_dark_theme">Apply on info notification</string>
+    <string name="title_get_pro">Click here to get pro version!</string>
+    <string name="title_smart_charging_time">The time you wake up:</string>
+    <string name="title_smart_charging_use_alarm_clock_time">Use the next alarm clock time</string>
+    <string name="title_minutes_before">Minutes before:</string>
+    <string name="title_charging_limit">Charging limit:</string>
+    <string name="title_smart_charging_enabled">Smart Charging enabled</string>
+    <!-- other titles -->
+    <string name="title_preferences">Preferences</string>
+    <string name="title_main_page">Main page</string>
+    <string name="title_charging_curve">Charging curve</string>
+    <string name="title_history">History</string>
+    <!-- preference summaries -->
+    <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached.</string>
+    <string name="summary_discharging_service_enabled">Runs a service at any time in background!</string>
+    <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb.</string>
+    <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
+    <string name="summary_dependency">has to be enabled for that!</string>
+    <string name="summary_disabled">Disabled</string>
+    <!-- time format preference -->
+    <string name="time_format_hours_minutes">1 h 30 min</string>
+    <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
+    <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
+    <!-- intro -->
+    <string name="intro_slide_1_title">Welcome to Battery Warner!</string>
+    <string name="intro_slide_1_description">It will help your battery to live longer!</string>
+    <string name="intro_slide_2_title">How does it do that?</string>
+    <string name="intro_slide_2_description" formatted="false">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
+    <string name="intro_slide_3_title">For the longest life, you have to charge \"flat\"!</string>
+    <string name="intro_slide_3_description" formatted="false">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
+    <string name="intro_slide_prefs_title">Let\'s get started!</string>
+    <string name="intro_slide_prefs_description">Choose your settings right here!</string>
+    <string name="intro_slide_thank_you_title">Thank you for purchasing the pro Version!</string>
+    <string name="intro_slide_thank_you_description">You won\'t regret it! :)</string>
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
-    <string name="main_page">Main page</string>
-    <string name="stats">Stats</string>
-    <string name="charging_curve">Charging curve</string>
-    <string name="refresh">Refresh</string>
-    <string name="charging">Charging</string>
-    <string name="charging_time">Charging time</string>
-    <string name="technology">Technology</string>
-    <string name="temperature">Temperature</string>
-    <string name="health">Health</string>
-    <string name="battery_level">Battery level</string>
-    <string name="voltage">Voltage</string>
+    <!-- toasts -->
+    <string name="toast_not_rooted">You must be rooted for this!</string>
+    <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
+    <string name="toast_reset_data_success">The Data has been reset!</string>
+    <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
+    <string name="toast_settings_saved">Settings saved!</string>
+    <string name="toast_successfully_enabled">Successfully enabled!</string>
+    <string name="toast_successfully_disabled">Successfully disabled!</string>
+    <string name="toast_click_to_exit">Click again to exit app!</string>
+    <string name="toast_disabled_in_settings">Disabled in settings!</string>
+    <string name="toast_not_enough_data">Not enough data yet!</string>
+    <string name="toast_no_data">No data yet!</string>
+    <string name="toast_not_pro">Pro version of the app is needed for that feature!</string>
+    <string name="toast_not_pro_short">Pro only!</string>
+    <string name="toast_finish_intro_first">Please finish the intro first!</string>
+    <string name="toast_charging_type_disabled">The current charging type is disabled in settings!</string>
+    <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
+    <string name="toast_nothing_to_save">There is nothing to save!</string>
+    <string name="toast_error_saving">Saving failed!</string>
+    <string name="toast_success_saving">The graph was saved to history!</string>
+    <string name="toast_success_delete_graph">Graph removed!</string>
+    <string name="toast_error_deleting">Deleting failed!</string>
+    <string name="toast_error_renaming">Renaming failed!</string>
+    <string name="toast_success_renaming">File renamed!</string>
+    <string name="toast_error_renaming_wrong_characters">Unallowed character(s) used! Renaming failed!</string>
+    <string name="toast_success_delete_all_graphs">All graphs removed!</string>
+    <string name="toast_no_graphs_saved">No Graphs saved!</string>
+    <string name="toast_nothing_to_delete">There is nothing to delete!</string>
+    <string name="toast_graph_name_already_exists">There already is a graph named</string>
+    <string name="toast_no_items">No items enabled!</string>
+    <!-- notifications -->
+    <string name="notification_warning_high">Battery level is above</string>
+    <string name="notification_warning_low">Battery level is below</string>
+    <string name="notification_sound_disabled">Warning! The sound is disabled!</string>
+    <string name="notification_grant_root">The app was updated. Please click here to grant root access again!</string>
+    <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
+    <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
+    <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
+    <string name="notification_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
+    <string name="notification_button_grant_root">Grant root</string>
+    <string name="notification_button_enable_charging">Enable charging</string>
+    <!-- battery health -->
     <string name="health_good">Good</string>
     <string name="health_unknown">Unknown</string>
     <string name="health_cold">Cold</string>
@@ -98,111 +173,50 @@
     <string name="health_overvoltage">Overvoltage</string>
     <string name="health_overheat">Overheat</string>
     <string name="health_unspecified_failure">Unspecified failure</string>
-    <string name="enable_charging_curve">Enable charging curve</string>
-    <string name="disabled_in_settings">Disabled in settings!</string>
-    <string name="no_data">No data yet!</string>
-    <string name="not_enough_data">Not enough data yet!</string>
-    <string name="graph_reloaded">The graph was reloaded!</string>
-    <string name="not_pro">Pro version of the app is needed for that feature!</string>
-    <string name="pro_only_short">Pro only!</string>
-    <string name="higher_accuracy">Higher accuracy for dash/quick charging</string>
-    <string name="battery_level_percent">Battery level (%)</string>
-    <string name="temperature_degrees">Temperature (°C)</string>
-    <string name="enable_dark_theme">Enable Dark Theme</string>
-    <string name="theming">Theming</string>
-    <string name="please_finish_intro">Please finish the intro first!</string>
-    <string name="tile_title">Battery Warnings</string>
-    <string name="click_to_exit">Click again to exit app!</string>
-    <string name="charging_type_disabled">The current charging type is disabled in settings!</string>
-    <string name="uninstall_title">Uninstall free app first!</string>
-    <string name="uninstall_text">The free and the pro app are both installed! Please uninstall the free app first!</string>
-    <string name="uninstall_cancel">Cancel</string>
-    <string name="uninstall_go">Uninstall it!</string>
-    <string name="notifications_are_off">Warning! The sound is disabled!</string>
-    <string name="notification_sound">Notification sound</string>
-    <string name="theme_activated_toast">The theme will be enabled when you close the settings!</string>
-    <string name="time_format_title">Time format</string>
-    <string name="history_title">History</string>
-    <string name="open_history">Open history</string>
-    <string name="save_to_history">Save to history</string>
-    <string name="nothing_to_save">There is nothing to save!</string>
-    <string name="error_saving">Saving failed!</string>
-    <string name="success_saving">The graph was saved to history!</string>
-    <string name="delete">Delete</string>
-    <string name="success_delete_graph">Graph removed!</string>
-    <string name="error_deleting">Deleting failed!</string>
-    <string name="error_renaming">Renaming failed!</string>
-    <string name="success_renaming">File renamed!</string>
-    <string name="rename">Rename</string>
-    <string name="graph_info">Graph information</string>
-    <string name="max_temp">Highest temperature</string>
-    <string name="min_temp">Lowest temperature</string>
-    <string name="no_graphs_saved">No Graphs saved!</string>
-    <string name="rename_graph">Rename graph</string>
-    <string name="are_you_sure">Are you sure?</string>
-    <string name="question_delete_graph">Do you really want to delete that graph?</string>
-    <string name="yes">Yes</string>
-    <string name="cancel">Cancel</string>
-    <string name="ok">Ok</string>
-    <string name="close">Close</string>
-    <string name="charging_speed">Charging speed</string>
-    <string name="autosave">Save automatically</string>
-    <string name="get_pro">Click here to get pro version!</string>
-    <string name="reset">Reset</string>
-    <string name="unallowed_character_renaming">Unallowed character(s) used! Renaming failed!</string>
-    <string name="thank_you_pro_title">Thank you for purchasing the pro Version!</string>
-    <string name="thank_you_pro_subtitle">You won\'t regret it! :)</string>
-    <string name="discharging">discharging</string>
-    <string name="date">Date</string>
-    <string name="unknown">Unknown</string>
-    <string name="grant_root_again">The app was updated. Please click here to grant root access again!</string>
-    <string name="stop_charging_title">Automatically stop charging [Root]</string>
-    <string name="stop_charging_subtitle">Stops the charging when the warning high percentage is reached.</string>
-    <string name="toast_not_rooted">You must be rooted for this!</string>
-    <string name="dismiss_if_unplugged">Charging has been disabled by the app. Click here to enable it again.</string>
-    <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
-    <string name="stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
-    <string name="current">Current</string>
-    <string name="time_format_hours_minutes">1 h 30 min</string>
-    <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
-    <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
-    <string name="screen_on">Screen on</string>
-    <string name="screen_off">Screen off</string>
-    <string name="log_percent_per_hour">Log percent per hour</string>
-    <string name="discharging_summary">Runs a service at any time in background!</string>
-    <string name="nothing_to_delete">There is nothing to delete!</string>
-    <string name="button_on">Main switch: on</string>
-    <string name="button_off">Main switch: off</string>
-    <string name="advanced_features">Advanced features</string>
-    <string name="disable_usb_charging">Disable USB charging [Root]</string>
-    <string name="not_rooted_notification">The app has no root access anymore! Click here to grant root access again!</string>
-    <string name="toast_reset_data_success">The Data has been reset!</string>
-    <string name="information">Information</string>
-    <string name="disabled">Disabled</string>
-    <string name="smart_charging">Smart Charging [Root]</string>
-    <string name="smart_charging_enabled">Smart Charging enabled</string>
+    <!-- check boxes -->
+    <string name="checkbox_battery_level">Battery level (%)</string>
+    <string name="checkbox_temperature">Temperature (°C)</string>
+    <!-- menu items -->
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_open_history">Open history</string>
+    <string name="menu_save_to_history">Save to history</string>
+    <string name="menu_rename">Rename</string>
+    <string name="menu_rename_graph">Rename graph</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_delete_all">Delete all</string>
+    <string name="menu_reset">Reset</string>
+    <!-- battery information -->
+    <string name="info_technology">Technology</string>
+    <string name="info_temperature">Temperature</string>
+    <string name="info_health">Health</string>
+    <string name="info_battery_level">Battery level</string>
+    <string name="info_voltage">Voltage</string>
+    <string name="info_current">Current</string>
+    <string name="info_screen_on">Screen on</string>
+    <string name="info_screen_off">Screen off</string>
+    <!-- graph information -->
+    <string name="info_date">Date</string>
+    <string name="info_max_temp">Highest temperature</string>
+    <string name="info_min_temp">Lowest temperature</string>
+    <string name="info_charging_time">Charging time</string>
+    <string name="info_charging_speed">Charging speed</string>
+    <!-- qs tiles -->
+    <string name="tile_on_off">Battery Warnings</string>
+    <string name="tile_charge_to_100">Charge to 100%</string>
+    <!-- dialogs -->
+    <string name="dialog_title_graph_info">Graph information</string>
+    <string name="dialog_title_are_you_sure">Are you sure?</string>
+    <string name="dialog_title_information">Information</string>
+    <string name="dialog_message_delete_all_graphs">Do you really want to delete ALL graphs?</string>
+    <string name="dialog_message_delete_graph">Do you really want to delete that graph?</string>
+    <string name="dialog_button_yes">Yes</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_close">Close</string>
+    <!-- main switch -->
+    <string name="main_switch_on">Main switch: on</string>
+    <string name="main_switch_off">Main switch: off</string>
+    <!-- the rest -->
+    <string name="charging">Charging</string>
     <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
-    <string name="minutes_before">Minutes before:</string>
-    <string name="charging_limit">Charging limit:</string>
-    <string name="smart_charging_time">The time you wake up:</string>
-    <string name="root_features">Root features</string>
-    <string name="smart_charging_use_alarm_clock_time">Use the next alarm clock time</string>
-    <string name="no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
-    <string name="graph_name_already_exists">There already is a graph named</string>
-    <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
-    <string name="delete_all">Delete all</string>
-    <string name="success_delete_all_graphs">All graphs removed!</string>
-    <string name="question_delete_all_graphs">Do you really want to delete ALL graphs?</string>
-    <string name="enable_sound">Enable warning sound</string>
-    <string name="grant_root">Grant root</string>
-    <string name="enable_charging">Enable charging</string>
-    <string name="disable_charging_subtitle">Prevents the device from charging when plugged in via usb.</string>
-    <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
-    <string name="notifications_are_off_setting">Warn if the sound is disabled</string>
-    <string name="tile_text_charge_to_100">Charge to 100%</string>
-    <string name="battery_info_notification_enabled">Enable info notification</string>
-    <string name="info_notification">Info notification</string>
-    <string name="shown_in_notification">Shown in notification</string>
-    <string name="no_items">No items enabled!</string>
-    <string name="has_to_be_enabled">has to be enabled for that!</string>
 </resources>

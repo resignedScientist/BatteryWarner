@@ -100,7 +100,7 @@ public class InfoObject {
         textView_totalTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
-                context.getString(R.string.charging_time),
+                context.getString(R.string.info_charging_time),
                 getTimeString(context))
         );
         String date = context.getString(R.string.unknown);
@@ -111,7 +111,7 @@ public class InfoObject {
         textView_date.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
-                context.getString(R.string.date),
+                context.getString(R.string.info_date),
                 date
         ));
         TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
@@ -120,14 +120,14 @@ public class InfoObject {
             textView_speed.setText(String.format(
                     Locale.getDefault(),
                     "%s: %s %%/h",
-                    context.getString(R.string.charging_speed),
+                    context.getString(R.string.info_charging_speed),
                     "N/A")
             );
         } else {
             textView_speed.setText(String.format(
                     Locale.getDefault(),
                     "%s: %.2f %%/h",
-                    context.getString(R.string.charging_speed),
+                    context.getString(R.string.info_charging_speed),
                     speed)
             );
         }
@@ -135,21 +135,21 @@ public class InfoObject {
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
-                context.getString(R.string.max_temp),
+                context.getString(R.string.info_max_temp),
                 maxTemp)
         );
         TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
-                context.getString(R.string.min_temp),
+                context.getString(R.string.info_min_temp),
                 minTemp)
         );
         new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.graph_info))
+                .setTitle(context.getString(R.string.dialog_title_graph_info))
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton(context.getString(R.string.close), null)
+                .setPositiveButton(context.getString(R.string.dialog_button_close), null)
                 .setIcon(R.mipmap.ic_launcher)
                 .create()
                 .show();

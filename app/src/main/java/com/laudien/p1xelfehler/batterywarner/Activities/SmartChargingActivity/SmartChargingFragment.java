@@ -106,10 +106,10 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
         Context context = getActivity();
         if (context != null) {
             new AlertDialog.Builder(context)
-                    .setTitle(R.string.information)
+                    .setTitle(R.string.dialog_title_information)
                     .setView(R.layout.fragment_smart_charging)
                     .setCancelable(true)
-                    .setPositiveButton(R.string.close, null)
+                    .setPositiveButton(R.string.dialog_button_close, null)
                     .setIcon(R.mipmap.ic_launcher)
                     .create()
                     .show();

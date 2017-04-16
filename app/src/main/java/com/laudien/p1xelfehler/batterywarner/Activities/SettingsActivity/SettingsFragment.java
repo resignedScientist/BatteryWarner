@@ -88,9 +88,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_autoSave.setEnabled(false);
             PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
             category_graph.setTitle(String.format(Locale.getDefault(),
-                    "%s (%s)", getString(R.string.stats), getString(R.string.pro_only_short)));
+                    "%s (%s)", getString(R.string.title_stats), getString(R.string.toast_not_pro_short)));
             Preference pref_pro = new Preference(context);
-            pref_pro.setTitle(getString(R.string.get_pro));
+            pref_pro.setTitle(getString(R.string.title_get_pro));
             pref_pro.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -144,7 +144,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (preference == switch_darkTheme) {
             Context context = getActivity();
             if (context != null && context instanceof SettingsActivity) {
-                ((BaseActivity) context).showToast(R.string.theme_activated_toast, LENGTH_SHORT);
+                ((BaseActivity) context).showToast(R.string.toast_theme_changed, LENGTH_SHORT);
             }
         } else if (preference == ringtonePreference) {
             Context context = getActivity();
@@ -170,7 +170,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (!highChecked) {
                 pref_stopCharging.setChecked(false);
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
-                pref_smart_charging.setSummary(getString(R.string.disabled));
+                pref_smart_charging.setSummary(getString(R.string.summary_disabled));
             }
             Context context = getActivity();
             if (context != null && highChecked) {
@@ -196,7 +196,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (preference == pref_stopCharging) {
                 pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
-                pref_smart_charging.setSummary(getString(R.string.disabled));
+                pref_smart_charging.setSummary(getString(R.string.summary_disabled));
             } else if (preference == pref_usb_disabled) {
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
@@ -235,22 +235,22 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void setInfoNotificationSubtitle(SharedPreferences sharedPreferences) {
         ArrayList<String> enabledItems = new ArrayList<>();
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default)))
-            enabledItems.add(getString(R.string.technology));
+            enabledItems.add(getString(R.string.info_technology));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default)))
-            enabledItems.add(getString(R.string.temperature));
+            enabledItems.add(getString(R.string.info_temperature));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default)))
-            enabledItems.add(getString(R.string.health));
+            enabledItems.add(getString(R.string.info_health));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default)))
-            enabledItems.add(getString(R.string.battery_level));
+            enabledItems.add(getString(R.string.info_battery_level));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default)))
-            enabledItems.add(getString(R.string.voltage));
+            enabledItems.add(getString(R.string.info_voltage));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
-            enabledItems.add(getString(R.string.current));
+            enabledItems.add(getString(R.string.info_current));
         if (pref_dischargingService.isChecked()) {
             if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
-                enabledItems.add(getString(R.string.screen_on));
+                enabledItems.add(getString(R.string.info_screen_on));
             if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
-                enabledItems.add(getString(R.string.screen_off));
+                enabledItems.add(getString(R.string.info_screen_off));
         }
         if (!enabledItems.isEmpty()) {
             String summary = enabledItems.get(0);
@@ -268,6 +268,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     private void setSmartChargingSummary(SharedPreferences sharedPreferences) {
         boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
-        pref_smart_charging.setSummary(smartChargingEnabled ? R.string.enabled : R.string.disabled);
+        pref_smart_charging.setSummary(smartChargingEnabled ? R.string.title_enabled : R.string.summary_disabled);
     }
 }

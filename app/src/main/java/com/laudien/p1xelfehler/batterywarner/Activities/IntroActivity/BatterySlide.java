@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +31,11 @@ public class BatterySlide extends SlideFragment {
         TextView descriptionTextView = (TextView) view.findViewById(R.id.txt_description_slide);
         // set title and description texts
         if (IS_PRO) { // pro version
-            titleTextView.setText(R.string.thank_you_pro_title);
-            descriptionTextView.setText(R.string.thank_you_pro_subtitle);
+            titleTextView.setText(R.string.intro_slide_thank_you_title);
+            descriptionTextView.setText(R.string.intro_slide_thank_you_description);
         } else { // free version
-            titleTextView.setText(R.string.intro_1_title);
-            descriptionTextView.setText(R.string.intro_1_description);
+            titleTextView.setText(R.string.intro_slide_1_title);
+            descriptionTextView.setText(R.string.intro_slide_1_description);
         }
         // image
         ImageView imageView = (ImageView) view.findViewById(R.id.image_slide);

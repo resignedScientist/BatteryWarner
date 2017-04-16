@@ -12,7 +12,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/charging_curve"
+        android:text="@string/title_charging_curve"
         android:textSize="16sp"
         android:textStyle="normal|bold"
         app:layout_constraintHorizontal_bias="0.0"
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/battery_level_percent"
+                android:text="@string/checkbox_battery_level"
                 android:textAlignment="center" />
 
             <Switch
@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/temperature_degrees"
+                android:text="@string/checkbox_temperature"
                 android:textAlignment="center" />
 
         </LinearLayout>

@@ -13,5 +13,5 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="@string/enabled" />
+        android:text="@string/title_enabled" />
 </LinearLayout>

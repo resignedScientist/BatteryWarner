@@ -5,6 +5,6 @@
     <item
         android:id="@+id/menu_info"
         android:icon="@drawable/ic_info_outline_white"
-        android:title="@string/information"
+        android:title="@string/dialog_title_information"
         app:showAsAction="always" />
 </menu>

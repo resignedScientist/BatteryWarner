@@ -1,13 +1,11 @@
 package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -28,7 +26,6 @@ import android.view.ViewGroup;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
@@ -162,10 +159,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 );
                 graphDbHelper = GraphDbHelper.getInstance(getContext());
             } else {
-                setBigText(getString(R.string.disabled_in_settings), true);
+                setBigText(getString(R.string.toast_disabled_in_settings), true);
             }
         } else {
-            setBigText(getString(R.string.not_pro), true);
+            setBigText(getString(R.string.toast_not_pro), true);
         }
         return view;
     }
@@ -210,7 +207,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
-            ((BaseActivity) (getActivity())).showToast(R.string.pro_only_short, LENGTH_SHORT);
+            ((BaseActivity) (getActivity())).showToast(R.string.toast_not_pro_short, LENGTH_SHORT);
             return false;
         }
         switch (id) {
@@ -219,10 +216,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     if (series != null) {
                         showResetDialog();
                     } else {
-                        ((BaseActivity) (getActivity())).showToast(R.string.nothing_to_delete, LENGTH_SHORT);
+                        ((BaseActivity) (getActivity())).showToast(R.string.toast_nothing_to_delete, LENGTH_SHORT);
                     }
                 } else {
-                    ((BaseActivity) (getActivity())).showToast(R.string.disabled_in_settings, LENGTH_SHORT);
+                    ((BaseActivity) (getActivity())).showToast(R.string.toast_disabled_in_settings, LENGTH_SHORT);
                 }
                 break;
             case R.id.menu_open_history:
@@ -285,7 +282,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         if (IS_PRO) {
             super.loadSeries();
         } else {
-            setBigText(getString(R.string.not_pro), true);
+            setBigText(getString(R.string.toast_not_pro), true);
         }
     }
 
@@ -318,7 +315,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     setNormalText(String.format(Locale.getDefault(), "%s... (%s)", getString(R.string.charging), timeString));
                 }
             } else { // charging type disabled
-                setBigText(getString(R.string.charging_type_disabled), false);
+                setBigText(getString(R.string.toast_charging_type_disabled), false);
             }
         } else { // discharging
             showDischargingText();
@@ -369,14 +366,14 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     private void showDischargingText() {
         boolean isDatabaseEmpty = series == null;
         if (isDatabaseEmpty) { // no data yet (database is empty)
-            setBigText(getString(R.string.no_data), true);
+            setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
             boolean hasEnoughData = infoObject.getTimeInMinutes() != 0;
             if (hasEnoughData) { // enough data
                 String timeString = infoObject.getTimeString(getContext());
-                setNormalText(String.format(Locale.getDefault(), "%s: %s", getString(R.string.charging_time), timeString));
+                setNormalText(String.format(Locale.getDefault(), "%s: %s", getString(R.string.info_charging_time), timeString));
             } else { // not enough data
-                setBigText(getString(R.string.not_enough_data), true);
+                setBigText(getString(R.string.toast_not_enough_data), true);
             }
         }
     }
@@ -407,7 +404,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
             }
         } else { // there is no graph or the graph does not have enough data
-            ((BaseActivity) (getActivity())).showToast(R.string.nothing_to_save, LENGTH_SHORT);
+            ((BaseActivity) (getActivity())).showToast(R.string.toast_nothing_to_save, LENGTH_SHORT);
         }
     }
 
@@ -419,15 +416,15 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
                 .setIcon(R.mipmap.ic_launcher)
-                .setTitle(R.string.are_you_sure)
-                .setMessage(R.string.question_delete_graph)
-                .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.dialog_title_are_you_sure)
+                .setMessage(R.string.dialog_message_delete_graph)
+                .setNegativeButton(R.string.dialog_button_cancel, null)
+                .setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(getContext());
                         graphDbHelper.resetTable();
-                        ((BaseActivity) (getActivity())).showToast(R.string.success_delete_graph, LENGTH_SHORT);
+                        ((BaseActivity) (getActivity())).showToast(R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
     }
@@ -453,9 +450,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         protected void onPostExecute(Boolean success) {
             int message;
             if (success) {
-                message = R.string.success_saving;
+                message = R.string.toast_success_saving;
             } else {
-                message = R.string.error_saving;
+                message = R.string.toast_error_saving;
             }
             ((BaseActivity) (getActivity())).showToast(message, LENGTH_SHORT);
         }

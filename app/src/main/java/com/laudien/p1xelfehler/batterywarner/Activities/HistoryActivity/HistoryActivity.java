@@ -25,7 +25,7 @@ public class HistoryActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.frame_layout);
-        setToolbarTitle(getString(R.string.history_title));
+        setToolbarTitle(getString(R.string.title_history));
         // check for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(

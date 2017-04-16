@@ -68,12 +68,12 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
                     context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
                     context.startService(new Intent(context, DischargingService.class));
                 }
-                ((BaseActivity) getActivity()).showToast(R.string.enabled_info, LENGTH_SHORT);
+                ((BaseActivity) getActivity()).showToast(R.string.toast_successfully_enabled, LENGTH_SHORT);
             } else {
                 if (!isCharging) { // turned off and discharging
                     DischargingAlarmReceiver.cancelDischargingAlarm(context);
                 }
-                ((BaseActivity) getActivity()).showToast(R.string.disabled_info, LENGTH_SHORT);
+                ((BaseActivity) getActivity()).showToast(R.string.toast_successfully_disabled, LENGTH_SHORT);
             }
         }
     }

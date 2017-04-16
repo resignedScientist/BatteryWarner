@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,15 +13,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -65,7 +61,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (!backPressed) {
-            showToast(R.string.click_to_exit, LENGTH_SHORT);
+            showToast(R.string.toast_click_to_exit, LENGTH_SHORT);
             backPressed = true;
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -102,7 +98,7 @@ public class MainActivity extends BaseActivity {
                 .setCancelable(false)
                 .setTitle(R.string.uninstall_title)
                 .setMessage(getString(R.string.uninstall_text))
-                .setNegativeButton(getString(R.string.uninstall_cancel), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         finish();
