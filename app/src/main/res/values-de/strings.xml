@@ -10,7 +10,6 @@
     <string name="title_ac_enabled">Warnung beim normalen Laden</string>
     <string name="title_usb_enabled">Warnung beim USB-Laden</string>
     <string name="title_wireless_enabled">Warnung beim kabellosen Laden</string>
-    <string name="toast_settings_saved">Die Einstellungen wurden gespeichert!</string>
     <string name="intro_slide_1_title">Willkommen beim BatteryWarner!</string>
     <string name="intro_slide_1_description">Diese App hilft deinem Akku, länger zu leben!</string>
     <string name="toast_successfully_enabled">Erfolgreich aktiviert!</string>
@@ -26,7 +25,6 @@
     <string name="title_main_page">Hauptseite</string>
     <string name="title_stats">Statistiken</string>
     <string name="title_charging_curve">Ladekurve</string>
-    <string name="menu_refresh">Aktualisieren</string>
     <string name="charging">Lade</string>
     <string name="info_charging_time">Ladezeit</string>
     <string name="info_technology">Technologie</string>

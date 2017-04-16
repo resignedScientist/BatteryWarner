@@ -7,7 +7,6 @@
     <string name="title_low_battery_warning">Alerte de batterie faible :</string>
     <string name="title_high_battery_warning">Alerte de batterie élevée :</string>
     <string name="title_enabled">activée</string>
-    <string name="toast_settings_saved">Paramètres sauvegardés !</string>
     <string name="intro_slide_1_title">Bienvenue dans Battery Warner !</string>
     <string name="intro_slide_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie !</string>
     <string name="toast_successfully_enabled">Activation réussie !</string>
@@ -23,7 +22,6 @@
     <string name="title_main_page">Accueil</string>
     <string name="title_stats">Statistiques</string>
     <string name="title_charging_curve">Courbe de charge</string>
-    <string name="menu_refresh">Actualiser</string>
     <string name="charging">En charge</string>
     <string name="info_charging_time">Temps de charge&#160;</string>
     <string name="info_technology">Technologie&#160;</string>
