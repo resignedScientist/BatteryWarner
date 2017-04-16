@@ -185,6 +185,8 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             rebuildNotification(screenOffEnabled);
         } else if (s.equals(getString(R.string.pref_dark_theme_enabled))){
             rebuildNotification(false);
+        } else if (s.equals(getString(R.string.pref_info_dark_theme))){
+            rebuildNotification(false);
         }
     }
 
