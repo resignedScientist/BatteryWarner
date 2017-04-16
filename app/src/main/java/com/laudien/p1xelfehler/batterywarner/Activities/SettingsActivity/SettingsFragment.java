@@ -262,7 +262,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
             pref_info_notification_items.setSummary(summary);
         } else { // no items selected
-            pref_info_notification_items.setSummary(getString(R.string.no_items));
+            pref_info_notification_items.setSummary(getString(R.string.notification_message_no_items_enabled));
         }
     }
 

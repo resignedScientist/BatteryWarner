@@ -376,7 +376,7 @@ public final class NotificationHelper {
                     message = message.concat("\n").concat(data[i]);
                 }
             } else { // no items enabled
-                message = context.getString(R.string.no_items);
+                message = context.getString(R.string.notification_message_no_items_enabled);
             }
             contentView.setTextViewText(R.id.textView_message, message);
             builder.setCustomBigContentView(contentView);

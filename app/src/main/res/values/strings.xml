@@ -153,7 +153,6 @@
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
     <string name="toast_nothing_to_delete">There is nothing to delete!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
-    <string name="toast_no_items">No items enabled!</string>
     <!-- notifications -->
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
@@ -219,4 +218,5 @@
     <!-- the rest -->
     <string name="charging">Charging</string>
     <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
+    <string name="notification_message_no_items_enabled">No items enabled!</string>
 </resources>

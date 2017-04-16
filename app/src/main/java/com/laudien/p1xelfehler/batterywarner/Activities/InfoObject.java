@@ -103,7 +103,7 @@ public class InfoObject {
                 context.getString(R.string.info_charging_time),
                 getTimeString(context))
         );
-        String date = context.getString(R.string.unknown);
+        String date = context.getString(R.string.health_unknown);
         if (creationTime > 1000000000) {
             date = DateFormat.getDateInstance(DateFormat.SHORT).format(creationTime);
         }

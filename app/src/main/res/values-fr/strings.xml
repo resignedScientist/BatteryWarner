@@ -44,7 +44,6 @@
     <string name="toast_not_enough_data">Pas encore assez de données !</string>
     <string name="toast_not_pro">La version Pro de l\'application est nécessaire pour cette fonctionnalité !</string>
     <string name="toast_not_pro_short">Pro uniquement !</string>
-    <string name="higher_accuracy">Meilleure précision pour la charge rapide (dash ou quick charge)</string>
     <string name="checkbox_battery_level">Niveau de batterie (%)</string>
     <string name="checkbox_temperature">Température (°C)</string>
     <string name="title_dark_theme_enabled">Activer le thème sombre</string>
@@ -89,9 +88,7 @@
     <string name="toast_error_renaming_wrong_characters">Caractère(s) non autorisé(s) utilisé(s) ! Échec du renommage !</string>
     <string name="intro_slide_thank_you_title">Merci d\'avoir acheté la version Pro !</string>
     <string name="intro_slide_thank_you_description">Vous ne le regretterez pas ! :)</string>
-    <string name="discharging">en décharge</string>
     <string name="info_date">Date&#160;</string>
-    <string name="unknown">Inconnu</string>
     <string name="notification_grant_root">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="title_stop_charging">Arrêter automatiquement la charge [Root]</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint.</string>
@@ -143,8 +140,8 @@
     <string name="title_info_notification_enabled">Activer la notification d\'infos</string>
     <string name="title_info_notification">Notification d\'infos batterie</string>
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
-    <string name="no_items">Aucun élément activé !</string>
     <string name="summary_dependency">Doit être activé pour cela !</string>
     <string name="title_info_dark_theme">Apply on info notification</string>
     <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
+    <string name="notification_message_no_items_enabled">Aucun élément activé !</string>
 </resources>
