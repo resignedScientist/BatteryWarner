@@ -33,6 +33,7 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
     compile 'agency.tango.android:material-intro-screen:0.0.4'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
