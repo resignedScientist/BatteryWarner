@@ -21,6 +21,8 @@ import eu.chainfire.libsuperuser.Shell;
 public final class RootHelper {
 
     private static final String TAG = "RootHelper";
+    //private static final String FILE_PATH = "/sys/class/power_supply/manta-battery/charging_enabled";
+    private static final String FILE_PATH = "/sys/class/power_supply/battery/charging_enabled";
 
     /**
      * Checks if the app has root permissions. If the device is rooted, this method will trigger
@@ -44,7 +46,7 @@ public final class RootHelper {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        Shell.SU.run("echo 1 > /sys/class/power_supply/battery/charging_enabled");
+        Shell.SU.run("echo 1 > " + FILE_PATH);
         Log.d(TAG, "Charging was enabled!");
     }
 
@@ -57,7 +59,7 @@ public final class RootHelper {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        Shell.SU.run("echo 0 > /sys/class/power_supply/battery/charging_enabled");
+        Shell.SU.run("echo 0 > " + FILE_PATH);
         Log.d(TAG, "Charging was disabled!");
     }
 
@@ -73,7 +75,7 @@ public final class RootHelper {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        List output = Shell.SU.run("cat /sys/class/power_supply/battery/charging_enabled");
+        List output = Shell.SU.run("cat " + FILE_PATH);
         if (output != null && !output.isEmpty()) {
             return output.get(0).equals("1");
         } else {
