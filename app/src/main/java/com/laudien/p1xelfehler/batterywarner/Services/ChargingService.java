@@ -17,8 +17,8 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
@@ -52,8 +52,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
             isChargingPaused = false, isChargingResumed = false, alreadyNotified = false;
     private int warningHigh, smartChargingLimit, smartChargingMinutes, chargingType, lastBatteryLevel = -1;
-    private long smartChargingResumeTime;
-    private String smartChargingTimeString;
+    private long smartChargingResumeTime, smartChargingTime;
     private GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(this);
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -179,7 +178,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
-        smartChargingTimeString = sharedPreferences.getString(getString(R.string.pref_smart_charging_time), null);
+        smartChargingTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), 0);
         smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
@@ -249,7 +248,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             smartChargingMinutes = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
             smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_time))) {
-            smartChargingTimeString = sharedPreferences.getString(key, null);
+            smartChargingTime = sharedPreferences.getLong(key, 0);
             smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             smartChargingUseClock = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
@@ -320,7 +319,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private long getSmartChargingResumeTime(SharedPreferences sharedPreferences) {
-        if (smartChargingTimeString == null) {
+        if (smartChargingTime == 0) {
             smartChargingUseClock = true;
         }
         long alarmTime;
