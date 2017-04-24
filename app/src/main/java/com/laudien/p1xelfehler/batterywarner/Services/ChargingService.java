@@ -12,20 +12,17 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.text.DateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -39,7 +36,6 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;
@@ -358,12 +354,13 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             // => Smart charging notification (only for test purposes!)
             DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
             String message = String.format(Locale.getDefault(),
-                    "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d",
+                    "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d\n%s: %b",
                     "Charge to", warningHigh,
                     "Resume charging at", formatter.format(new Date(alarmTime - timeBefore)),
                     "Then charge to", smartChargingLimit,
                     "Target time", formatter.format(new Date(alarmTime)),
-                    "Minutes before", smartChargingMinutes
+                    "Minutes before", smartChargingMinutes,
+                    "Use next alarm clock", smartChargingUseClock
             );
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(1346, new Notification.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
