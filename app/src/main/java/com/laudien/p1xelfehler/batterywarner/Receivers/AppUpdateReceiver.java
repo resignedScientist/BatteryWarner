@@ -62,7 +62,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 }
             }
             // patch old time strings
-            // TODO: test this for the correct time!
             try {
                 String timeString = sharedPreferences.getString(context.getString(R.string.pref_smart_charging_time), null);
                 if (timeString != null) {

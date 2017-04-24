@@ -1,6 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.Services;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,17 +12,22 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
@@ -32,11 +39,13 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
+import static java.text.DateFormat.SHORT;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -59,7 +68,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         public void onReceive(final Context context, Intent intent) {
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
-            long timeNow = Calendar.getInstance().getTimeInMillis();
+            long timeNow = System.currentTimeMillis();
             chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
             boolean isCharging = chargingType != 0;
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
@@ -116,7 +125,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // check if resume time is reached and charging is paused and not resumed yet
             if (!isCharging && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
-                // resume charging
                 resumeCharging();
             }
             // stop service if everything is turned off or the device is fully charged
@@ -178,7 +186,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
         smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
-        smartChargingTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), 0);
+        smartChargingTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), -1);
         smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
@@ -239,6 +247,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             stopChargingEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_stop_charging_default));
         } else if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
             smartChargingEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+            smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_limit))) {
             smartChargingLimit = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_charging_limit_default));
             if (smartChargingLimit < warningHigh) {
@@ -248,10 +257,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             smartChargingMinutes = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
             smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_time))) {
-            smartChargingTime = sharedPreferences.getLong(key, 0);
+            smartChargingTime = sharedPreferences.getLong(key, -1);
             smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             smartChargingUseClock = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+            smartChargingResumeTime = getSmartChargingResumeTime(sharedPreferences);
         } else if (key.equals(getString(R.string.pref_ac_enabled))) {
             acEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_ac_enabled_default));
         } else if (key.equals(getString(R.string.pref_usb_enabled))) {
@@ -319,40 +329,53 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private long getSmartChargingResumeTime(SharedPreferences sharedPreferences) {
-        if (smartChargingTime == 0) {
-            smartChargingUseClock = true;
-        }
-        long alarmTime;
-        if (smartChargingUseClock && SDK_INT >= LOLLIPOP) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
-            if (alarmClockInfo != null) {
-                alarmTime = alarmClockInfo.getTriggerTime();
-            } else {// the smart charging feature cannot be used, because no alarm time is set in the alarm app
-                if (smartChargingEnabled) {
-                    smartChargingEnabled = false; // disable the feature just for the service
-                    NotificationHelper.showNotification(this, ID_NO_ALARM_TIME_FOUND); // show the notification
-                }
-                return 0;
-            }
-        } else { // KitKat devices or alarm clock NOT used
-            if (smartChargingEnabled) {
-                long timeNow = Calendar.getInstance().getTimeInMillis();
-                alarmTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), 0);
-                if (alarmTime != 0) {
-                    while (alarmTime <= timeNow) {
-                        alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
-                    }
-                } else { // no alarm time saved in shared preferences file
+        if (smartChargingEnabled) {
+            long alarmTime; // the target time the device should be charged to the defined maximum
+            if (SDK_INT >= LOLLIPOP && smartChargingUseClock) { // use alarm clock
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+                if (alarmClockInfo != null) {
+                    alarmTime = alarmClockInfo.getTriggerTime();
+                } else { // no alarm time is set in the alarm app
+                    NotificationHelper.showNotification(this, ID_NO_ALARM_TIME_FOUND);
+                    sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), false).apply();
                     return 0;
                 }
-            } else { // smart charging is disabled
-                return 0;
+            } else { // use time in shared preferences (smartChargingTime)
+                if (smartChargingTime != -1) {
+                    alarmTime = smartChargingTime;
+                } else { // there is no time saved in shared preferences
+                    return 0;
+                }
             }
+            long timeNow = System.currentTimeMillis();
+            while (alarmTime <= timeNow) {
+                alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
+                Log.d(TAG, "added a day to the time!");
+            }
+            long timeBefore = (long) smartChargingMinutes * 60 * 1000;
+            // TODO: remove notification!
+            // => Smart charging notification (only for test purposes!)
+            DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
+            String message = String.format(Locale.getDefault(),
+                    "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d",
+                    "Charge to", warningHigh,
+                    "Resume charging at", formatter.format(new Date(alarmTime - timeBefore)),
+                    "Then charge to", smartChargingLimit,
+                    "Target time", formatter.format(new Date(alarmTime)),
+                    "Minutes before", smartChargingMinutes
+            );
+            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(1346, new Notification.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Smart Charging")
+                    .setContentText(message)
+                    .setStyle(NotificationHelper.getBigTextStyle(message))
+                    .build()
+            );
+            // <= Smart charging notification (only for test purposes!)
+            return alarmTime - timeBefore; // return the resume time
+        } else { // smart charging is disabled
+            return 0;
         }
-        // We have the time the alarm is ringing (alarmTime). Now we calculate the resume time:
-        Log.d(TAG, "alarmTime = " + alarmTime);
-        long timeBefore = (long) smartChargingMinutes * 60 * 1000;
-        return alarmTime - timeBefore;
     }
 }
