@@ -30,7 +30,6 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_BATTERY_INFO;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.cancelNotification;
 
 public class BatteryInfoNotificationService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -59,7 +58,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
             onBatteryValueChangedListener = new BatteryData.OnBatteryValueChangedListener() {
                 @Override
                 public void onBatteryValueChanged(int index) {
-                    switch (index){
+                    switch (index) {
                         case INDEX_TECHNOLOGY:
                             if (!sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default)))
                                 return;
@@ -93,7 +92,6 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
                                 return;
                             break;
                     }
-                    Log.d(TAG, "batteryData was updated! index: " + index);
                     NotificationHelper.showNotification(BatteryInfoNotificationService.this, ID_BATTERY_INFO);
                 }
             };
@@ -183,9 +181,9 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
         } else if (s.equals(getString(R.string.pref_info_screen_off))) {
             boolean screenOffEnabled = sharedPreferences.getBoolean(s, getResources().getBoolean(R.bool.pref_info_screen_off_default));
             rebuildNotification(screenOffEnabled);
-        } else if (s.equals(getString(R.string.pref_dark_theme_enabled))){
+        } else if (s.equals(getString(R.string.pref_dark_theme_enabled))) {
             rebuildNotification(false);
-        } else if (s.equals(getString(R.string.pref_info_dark_theme))){
+        } else if (s.equals(getString(R.string.pref_info_dark_theme))) {
             rebuildNotification(false);
         }
     }
