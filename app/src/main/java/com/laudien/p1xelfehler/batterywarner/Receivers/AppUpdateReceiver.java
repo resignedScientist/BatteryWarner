@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
@@ -23,8 +21,7 @@ import java.util.Locale;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
-import static com.laudien.p1xelfehler.batterywarner.Contract.BROADCAST_DISCHARGING_ALARM;
-import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.BROADCAST_DISCHARGING_ALARM;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_GRANT_ROOT;
 import static java.text.DateFormat.SHORT;
 import static java.util.Calendar.HOUR_OF_DAY;
@@ -50,7 +47,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             if (batteryStatus == null) {
                 return;
             }
-            boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, NO_STATE) != 0;
+            boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
             if (isCharging) { // charging
                 context.startService(new Intent(context, ChargingService.class));
             } else { // discharging

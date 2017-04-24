@@ -35,7 +35,7 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;

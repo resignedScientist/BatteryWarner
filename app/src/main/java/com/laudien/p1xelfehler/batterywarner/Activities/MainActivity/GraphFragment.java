@@ -30,7 +30,6 @@ import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
-import com.laudien.p1xelfehler.batterywarner.Contract;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -49,8 +48,8 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.Contract.DATABASE_HISTORY_PATH;
-import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.DATABASE_NAME;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper.TYPE_TEMPERATURE;
@@ -296,7 +295,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         if (batteryStatus == null) {
             return;
         }
-        boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, Contract.NO_STATE) == 100;
+        boolean isFull = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) == 100;
         int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1);
         boolean isCharging = chargingType != 0;
         if (isCharging) { // charging

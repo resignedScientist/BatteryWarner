@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 /**
@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected void setToolbarTitle() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (Contract.IS_PRO) {
+        if (AppInfoHelper.IS_PRO) {
             toolbar.setTitle(getString(R.string.app_name) + " Pro");
         } else {
             toolbar.setTitle(getString(R.string.app_name));

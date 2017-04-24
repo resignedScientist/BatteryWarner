@@ -14,7 +14,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import agency.tango.materialintroscreen.SlideFragment;
 
 import static android.view.View.VISIBLE;
-import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * A custom slide for the app intro with a battery image.

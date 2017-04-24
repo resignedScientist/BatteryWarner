@@ -11,13 +11,13 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
 import static android.service.quicksettings.Tile.STATE_INACTIVE;
-import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * Handles the QS tile of the app. It works only on Android 7.0 and above and
@@ -85,7 +85,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         if (batteryStatus == null) {
             return;
         }
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) != 0;
 
         if (isActive) { // disable battery warnings
             Log.d(TAG, "Disabling battery warnings...");
@@ -101,7 +101,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging
-                sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
                 startService(new Intent(this, DischargingService.class));
             }
             Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_enabled), Toast.LENGTH_SHORT).show();

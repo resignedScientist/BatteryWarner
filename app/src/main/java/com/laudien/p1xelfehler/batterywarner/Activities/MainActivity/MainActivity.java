@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -80,18 +80,18 @@ public class MainActivity extends BaseActivity {
     private void isAppInstalled() {
         PackageManager packageManager = getPackageManager();
         try {
-            packageManager.getPackageInfo(Contract.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
-            packageManager.getPackageInfo(Contract.PACKAGE_NAME_PRO, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_PRO, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
             return;
         }
         // both apps are installed:
         // disable the free application
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!Contract.IS_PRO) {
+        if (!AppInfoHelper.IS_PRO) {
             sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
         } else {
-            sendBroadcast(new Intent(Contract.BROADCAST_BOTH_APPS_INSTALLED));
+            sendBroadcast(new Intent(AppInfoHelper.BROADCAST_BOTH_APPS_INSTALLED));
         }
         // show the dialog
         new AlertDialog.Builder(this)
@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity {
                 .setPositiveButton(getString(R.string.uninstall_go), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Uri uri = Uri.parse("package:" + Contract.PACKAGE_NAME_FREE);
+                        Uri uri = Uri.parse("package:" + AppInfoHelper.PACKAGE_NAME_FREE);
                         Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri);
                         startActivity(uninstallIntent);
                     }

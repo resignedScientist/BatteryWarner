@@ -8,7 +8,7 @@ import android.os.BatteryManager;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
@@ -34,7 +34,7 @@ public class DischargingReceiver extends BroadcastReceiver {
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
                 // add a delay for the dismissing of the notification if stop charging is enabled
                 short delay = 0;
-                int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), Contract.NO_STATE);
+                int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), -1);
                 boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
                 boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
                 if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
@@ -55,7 +55,7 @@ public class DischargingReceiver extends BroadcastReceiver {
                 if (serviceEnabled) { // discharging service is enabled -> start it
                     context.startService(new Intent(context, DischargingService.class));
                 } else { // else start DischargingReceiver which notifies or sets alarm
-                    context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                    context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
                 }
             }
         }

@@ -26,7 +26,6 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static com.laudien.p1xelfehler.batterywarner.Contract.NO_STATE;
 
 /**
  * Helper class for everything about battery status information.
@@ -97,7 +96,7 @@ public class BatteryHelper {
      * @return Returns the temperature in the correct format as double.
      */
     public static double getTemperature(Intent batteryStatus) {
-        return (double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, NO_STATE) / 10;
+        return (double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10;
     }
 
     /**
@@ -107,7 +106,7 @@ public class BatteryHelper {
      * @return Returns the voltage in the correct format as double.
      */
     public static double getVoltage(Intent batteryStatus) {
-        return (double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, NO_STATE) / 1000;
+        return (double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000;
     }
 
     /**
@@ -192,8 +191,8 @@ public class BatteryHelper {
         public void update(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
             setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
-            setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, NO_STATE), context);
-            setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, NO_STATE), context);
+            setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1), context);
+            setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1), context);
             setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);

@@ -2,7 +2,7 @@ package com.laudien.p1xelfehler.batterywarner;
 
 import android.os.Environment;
 
-public final class Contract {
+public final class AppInfoHelper {
     // Database
     public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     // custom broadcasts
@@ -13,9 +13,7 @@ public final class Contract {
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
     // activating pro-features
     public static final boolean IS_PRO = true;
-    // value that means not set, unknown or error
-    public static final int NO_STATE = -1;
 
-    private Contract() {
+    private AppInfoHelper() {
     }
 }

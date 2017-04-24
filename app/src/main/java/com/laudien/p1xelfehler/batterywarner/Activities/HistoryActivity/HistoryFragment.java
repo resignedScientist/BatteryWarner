@@ -30,7 +30,7 @@ import java.util.Locale;
 
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.Contract.DATABASE_HISTORY_PATH;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
 
 /**
  * Fragment that shows the history of the charging curves.

@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             ringtonePreference.setSummary(ringtone.getTitle(context));
         }
 
-        if (!Contract.IS_PRO) {
+        if (!AppInfoHelper.IS_PRO) {
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
             pref_timeFormat.setEnabled(false);
@@ -95,9 +95,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Contract.PACKAGE_NAME_PRO)));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppInfoHelper.PACKAGE_NAME_PRO)));
                     } catch (android.content.ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + Contract.PACKAGE_NAME_PRO)));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + AppInfoHelper.PACKAGE_NAME_PRO)));
                     }
                     return true;
                 }
@@ -119,7 +119,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onResume();
         pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
         pref_usb.setEnabled(!pref_usb_disabled.isChecked());
-        if (Contract.IS_PRO) {
+        if (AppInfoHelper.IS_PRO) {
             pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         }
         Context context = getActivity();
@@ -163,7 +163,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getActivity();
             if (context != null) {
                 DischargingAlarmReceiver.cancelDischargingAlarm(context);
-                context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
             }
         } else if (preference == pref_warningHigh) {
             boolean highChecked = pref_warningHigh.isChecked();
@@ -184,7 +184,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null && checked) {
                 Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 if (batteryStatus != null) {
-                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
                     if (isCharging) {
                         context.startService(new Intent(context, ChargingService.class));
                     }

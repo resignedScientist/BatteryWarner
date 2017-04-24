@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -32,7 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
                     // set already notified to false
                     sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                     // start services/receivers
-                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
                     if (isCharging) { // charging
                         context.startService(new Intent(context, ChargingService.class)); // start charging service if enabled
                     } else { // discharging
@@ -40,7 +40,7 @@ public class BootReceiver extends BroadcastReceiver {
                         if (serviceEnabled) { // discharging service enabled -> start it
                             context.startService(new Intent(context, DischargingService.class));
                         } else { // discharging service disabled -> use DischargingAlarmReceiver
-                            context.sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
+                            context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
                         }
                     }
                 }

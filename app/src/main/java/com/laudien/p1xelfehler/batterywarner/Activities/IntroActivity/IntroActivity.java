@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.Contract;
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -23,7 +23,7 @@ import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.Ima
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_DESCRIPTION;
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_IMAGE;
 import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_TITLE;
-import static com.laudien.p1xelfehler.batterywarner.Contract.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
@@ -88,11 +88,11 @@ public class IntroActivity extends MaterialIntroActivity {
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
             // start the service if charging
-            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, Contract.NO_STATE) != 0;
+            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
             if (isCharging) {
                 startService(new Intent(this, ChargingService.class));
             } else { // start the DischargingAlarmReceiver if discharging
-                sendBroadcast(new Intent(Contract.BROADCAST_DISCHARGING_ALARM));
+                sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
                 boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
                 if (serviceEnabled) {
                     startService(new Intent(this, DischargingService.class));
