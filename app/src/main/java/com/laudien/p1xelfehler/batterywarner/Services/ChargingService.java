@@ -1,8 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.Services;
 
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,10 +20,6 @@ import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
@@ -42,7 +36,6 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
-import static java.text.DateFormat.SHORT;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -357,9 +350,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 Log.d(TAG, "added a day to the time!");
             }
             long timeBefore = (long) smartChargingMinutes * 60 * 1000;
-            // TODO: remove notification!
             // => Smart charging notification (only for test purposes!)
-            DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
+            /*DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
             String message = String.format(Locale.getDefault(),
                     "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d\n%s: %b",
                     "Charge to", warningHigh,
@@ -375,7 +367,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .setContentText(message)
                     .setStyle(NotificationHelper.getBigTextStyle(message))
                     .build()
-            );
+            );*/
             // <= Smart charging notification (only for test purposes!)
             return alarmTime - timeBefore; // return the resume time
         } else { // smart charging is disabled
