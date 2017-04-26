@@ -40,6 +40,7 @@ import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHe
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
 import static java.text.DateFormat.SHORT;
 
@@ -302,6 +303,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
                     NotificationHelper.showNotification(ChargingService.this, ID_NOT_ROOTED);
+                } catch (RootHelper.NoBatteryFileFoundException e) {
+                    e.printStackTrace();
+                    NotificationHelper.showNotification(ChargingService.this, ID_STOP_CHARGING_NOT_WORKING);
                 }
             }
         });
@@ -319,6 +323,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     e.printStackTrace();
                     NotificationHelper.showNotification(ChargingService.this, ID_NOT_ROOTED);
                     stopSelf(); // stop service if not rooted!
+                } catch (RootHelper.NoBatteryFileFoundException e) {
+                    e.printStackTrace();
+                    NotificationHelper.showNotification(ChargingService.this, ID_STOP_CHARGING_NOT_WORKING);
                 }
             }
         });

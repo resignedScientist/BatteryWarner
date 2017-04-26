@@ -56,7 +56,7 @@ public class ToggleChargingTileService extends TileService {
                             return RESULT_OK;
                         } catch (RootHelper.NotRootedException e) {
                             return RESULT_NOT_ROOTED;
-                        } catch (RootHelper.BatteryFileNotFoundException e) {
+                        } catch (RootHelper.NoBatteryFileFoundException e) {
                             NotificationHelper.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
                             return RESULT_STOP_CHARGING_NOT_WORKING;
                         }

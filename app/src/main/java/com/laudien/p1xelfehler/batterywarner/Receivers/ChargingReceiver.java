@@ -18,6 +18,7 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
 
 /**
@@ -80,6 +81,8 @@ public class ChargingReceiver extends BroadcastReceiver {
                         } catch (RootHelper.NotRootedException e) { // not rooted notification
                             e.printStackTrace();
                             NotificationHelper.showNotification(context, ID_NOT_ROOTED);
+                        } catch (RootHelper.NoBatteryFileFoundException e) {
+                            NotificationHelper.showNotification(context, ID_STOP_CHARGING_NOT_WORKING);
                         }
                     }
                 });

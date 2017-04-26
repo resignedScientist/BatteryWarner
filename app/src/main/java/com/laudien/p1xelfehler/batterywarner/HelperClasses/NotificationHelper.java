@@ -245,7 +245,7 @@ public final class NotificationHelper {
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
                         showNotification(context, ID_NOT_ROOTED);
-                    } catch (RootHelper.BatteryFileNotFoundException e) {
+                    } catch (RootHelper.NoBatteryFileFoundException e) {
                         e.printStackTrace();
                         showNotification(context, ID_STOP_CHARGING_NOT_WORKING);
                     }

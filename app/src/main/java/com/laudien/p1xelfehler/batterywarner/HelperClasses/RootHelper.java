@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
+import java.io.File;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -21,8 +22,6 @@ import eu.chainfire.libsuperuser.Shell;
 public final class RootHelper {
 
     private static final String TAG = "RootHelper";
-    //private static final String FILE_PATH = "/sys/class/power_supply/manta-battery/charging_enabled";
-    private static final String FILE_PATH = "/sys/class/power_supply/battery/charging_enabled";
 
     /**
      * Checks if the app has root permissions. If the device is rooted, this method will trigger
@@ -42,11 +41,12 @@ public final class RootHelper {
      *
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void enableCharging() throws NotRootedException {
+    public static void enableCharging() throws NotRootedException, NoBatteryFileFoundException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        Shell.SU.run("echo 1 > " + FILE_PATH);
+        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOn, toggleChargingFile.path));
         Log.d(TAG, "Charging was enabled!");
     }
 
@@ -55,11 +55,12 @@ public final class RootHelper {
      *
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void disableCharging() throws NotRootedException {
+    public static void disableCharging() throws NotRootedException, NoBatteryFileFoundException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        Shell.SU.run("echo 0 > " + FILE_PATH);
+        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOff, toggleChargingFile.path));
         Log.d(TAG, "Charging was disabled!");
     }
 
@@ -68,18 +69,19 @@ public final class RootHelper {
      *
      * @return Returns true if charging is enabled, false if not.
      * @throws NotRootedException           thrown if the app has no root permissions.
-     * @throws BatteryFileNotFoundException thrown if the file to change was not found.
+     * @throws NoBatteryFileFoundException thrown if the file to change was not found.
      *                                      That means that the stop charging feature is not working with this device.
      */
-    public static boolean isChargingEnabled() throws NotRootedException, BatteryFileNotFoundException {
+    public static boolean isChargingEnabled() throws NotRootedException, NoBatteryFileFoundException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        List output = Shell.SU.run("cat " + FILE_PATH);
+        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        List output = Shell.SU.run("cat " + toggleChargingFile.path);
         if (output != null && !output.isEmpty()) {
-            return output.get(0).equals("1");
+            return output.get(0).equals(toggleChargingFile.chargeOn);
         } else {
-            throw new BatteryFileNotFoundException();
+            throw new NoBatteryFileFoundException();
         }
     }
 
@@ -93,7 +95,7 @@ public final class RootHelper {
                         RootHelper.isChargingEnabled();
                     } catch (RootHelper.NotRootedException e) {
                         return false;
-                    } catch (RootHelper.BatteryFileNotFoundException e) {
+                    } catch (NoBatteryFileFoundException e) {
                         NotificationHelper.showNotification(context,
                                 NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
                     }
@@ -139,9 +141,37 @@ public final class RootHelper {
      * Exception that is thrown if the file to change was not found.
      * That means that the stop charging feature is not working with this device.
      */
-    public static class BatteryFileNotFoundException extends Exception {
-        private BatteryFileNotFoundException() {
+    public static class NoBatteryFileFoundException extends Exception {
+        private NoBatteryFileFoundException() {
             super("The battery file was not found. Stop charging does not work with this device!");
+        }
+    }
+
+    private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
+        ToggleChargingFile[] files = new ToggleChargingFile[]{
+                new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
+                new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
+                new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
+        };
+        for (ToggleChargingFile file : files){
+            if (new File(file.path).exists()){
+                Log.d("RootHelper", "File found: " + file.path);
+                return file;
+            }
+        }
+        Log.d("RootHelper", "No file found!");
+        throw new NoBatteryFileFoundException();
+    }
+
+    private static class ToggleChargingFile {
+        private String path, chargeOn, chargeOff;
+        private ToggleChargingFile(String path, String chargeOn, String chargeOff){
+            this.path = path;
+            this.chargeOn = chargeOn;
+            this.chargeOff = chargeOff;
         }
     }
 }
