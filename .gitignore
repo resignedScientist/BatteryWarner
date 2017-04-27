@@ -11,3 +11,5 @@
 *.apk
 
 \.idea/misc\.xml
+
+\.idea/
