@@ -37,5 +37,5 @@ dependencies {
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile project(path: ':material-intro-screen2')
+    compile project(path: ':material-intro-screen')
 }

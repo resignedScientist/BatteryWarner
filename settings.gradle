@@ -1,2 +1,2 @@
-include ':app', ':material-intro-screen2'
-project(':material-intro-screen2').projectDir = new File('material-intro-screen')
+include ':app', ':material-intro-screen'
+project(':material-intro-screen').projectDir = new File('material-intro-screen')
