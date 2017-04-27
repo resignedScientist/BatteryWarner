@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:text="@string/intro_slide_prefs_title"
         android:textSize="24sp" />
@@ -17,17 +17,16 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_value"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:text="@string/intro_slide_prefs_description"
         android:textSize="18sp" />
 
     <fragment
-        android:id="@+id/settings_fragment"
+        android:id="@+id/pustekuchen"
         android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView2"
-        android:layout_marginBottom="80dp" />
+        android:layout_marginBottom="80dp"
+        android:tag="test" />
 
-</RelativeLayout>
+</LinearLayout>
