@@ -37,6 +37,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
+import static android.view.View.GONE;
 
 /**
  * Helper class to show a notification with the given type. All notifications used in the app are listed here.
@@ -349,14 +350,10 @@ public final class NotificationHelper {
             Log.d("NotificationHelper", Arrays.toString(data));
             // prepare content view (with theme)
             int layout;
-            if (SDK_INT >= LOLLIPOP) {
-                boolean darkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
-                boolean notificationUsesTheme = sharedPreferences.getBoolean(context.getString(R.string.pref_info_dark_theme), context.getResources().getBoolean(R.bool.pref_info_dark_theme_default));
-                if (darkThemeEnabled && notificationUsesTheme) {
-                    layout = R.layout.notification_battery_info_dark;
-                } else {
-                    layout = R.layout.notification_battery_info;
-                }
+            boolean darkThemeEnabled = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+            boolean notificationUsesTheme = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_info_dark_theme), context.getResources().getBoolean(R.bool.pref_info_dark_theme_default));
+            if (darkThemeEnabled && notificationUsesTheme) {
+                layout = R.layout.notification_battery_info_dark;
             } else {
                 layout = R.layout.notification_battery_info;
             }
@@ -370,16 +367,13 @@ public final class NotificationHelper {
                     .setContentTitle(context.getString(R.string.title_info_notification))
                     .setSmallIcon(R.mipmap.ic_launcher);
             // load data in notification
-            String message;
-            if (data.length != 0) {
-                message = data[0];
-                for (byte i = 1; i < data.length; i++) {
-                    message = message.concat("\n").concat(data[i]);
-                }
-            } else { // no items enabled
+            String message = splitMessageData(data, contentView);
+            if (message == null) { // no items enabled
+                contentView.setViewVisibility(R.id.view_middleLine, GONE);
+                contentView.setViewVisibility(R.id.textView_message_right, GONE);
                 message = context.getString(R.string.notification_message_no_items_enabled);
+                contentView.setTextViewText(R.id.textView_message_left, message);
             }
-            contentView.setTextViewText(R.id.textView_message, message);
             builder.setCustomBigContentView(contentView);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_BATTERY_INFO, builder.build());
@@ -413,8 +407,7 @@ public final class NotificationHelper {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
-    // TODO: make it private again!!
-    public static Notification.BigTextStyle getBigTextStyle(String messageText) {
+    private static Notification.BigTextStyle getBigTextStyle(String messageText) {
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
         bigTextStyle.bigText(messageText);
         return bigTextStyle;
@@ -422,6 +415,35 @@ public final class NotificationHelper {
 
     private static PendingIntent getDefaultClickIntent(Context context) {
         return PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
+    }
+
+    private static String splitMessageData(String[] data, RemoteViews contentView) {
+        if (data.length > 0) {
+            if (data.length <= 3) {
+                contentView.setViewVisibility(R.id.textView_message_right, GONE);
+                contentView.setViewVisibility(R.id.view_middleLine, GONE);
+                String message = data[0];
+                for (byte i = 1; i < data.length; i++) {
+                    message = message.concat("\n").concat(data[i]);
+                }
+                contentView.setTextViewText(R.id.textView_message_left, message);
+                return message;
+            } else {
+                String message_left = data[0], message_right = data[1];
+                for (byte i = 2; i < data.length; i++) {
+                    if (i % 2 == 0) {
+                        message_left = message_left.concat("\n").concat(data[i]);
+                    } else {
+                        message_right = message_right.concat("\n").concat(data[i]);
+                    }
+                }
+                contentView.setTextViewText(R.id.textView_message_left, message_left);
+                contentView.setTextViewText(R.id.textView_message_right, message_right);
+                return message_left;
+            }
+        } else {
+            return null;
+        }
     }
 
     private static class IdNotFoundException extends RuntimeException {
