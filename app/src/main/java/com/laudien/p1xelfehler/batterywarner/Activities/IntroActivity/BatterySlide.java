@@ -26,7 +26,7 @@ public class BatterySlide extends SlideFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_intro_slide, container, false);
+        View view = inflater.inflate(agency.tango.materialintroscreen.R.layout.fragment_slide, container, false);
         TextView titleTextView = (TextView) view.findViewById(R.id.txt_title_slide);
         TextView descriptionTextView = (TextView) view.findViewById(R.id.txt_description_slide);
         // set title and description texts

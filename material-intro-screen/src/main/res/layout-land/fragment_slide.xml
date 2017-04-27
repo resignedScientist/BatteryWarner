@@ -24,7 +24,7 @@
         android:scaleType="centerInside"
         android:visibility="gone"
         app:layout_parallaxFactor="0.6"
-        tools:src="@drawable/batteries"
+        tools:src="@android:drawable/arrow_down_float"
         tools:visibility="visible" />
 
     <LinearLayout
