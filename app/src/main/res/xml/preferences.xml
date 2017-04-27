@@ -93,7 +93,6 @@
         </Preference>
         <CheckBoxPreference
             android:defaultValue="@bool/pref_usb_charging_disabled_default"
-            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_usb_charging_disabled"
             android:summary="@string/summary_usb_charging_disabled"
             android:title="@string/title_usb_charging_disabled" />

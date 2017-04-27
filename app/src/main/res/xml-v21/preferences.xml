@@ -81,8 +81,8 @@
             android:defaultValue="@bool/pref_info_dark_theme_default"
             android:dependency="@string/pref_dark_theme_enabled"
             android:key="@string/pref_info_dark_theme"
-            android:title="@string/title_info_dark_theme"
-            android:summary="@string/summary_info_dark_theme"/>
+            android:summary="@string/summary_info_dark_theme"
+            android:title="@string/title_info_dark_theme" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_root_features">
         <SwitchPreference
@@ -99,7 +99,6 @@
         </Preference>
         <SwitchPreference
             android:defaultValue="@bool/pref_usb_charging_disabled_default"
-            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_usb_charging_disabled"
             android:summary="@string/summary_usb_charging_disabled"
             android:title="@string/title_usb_charging_disabled" />
