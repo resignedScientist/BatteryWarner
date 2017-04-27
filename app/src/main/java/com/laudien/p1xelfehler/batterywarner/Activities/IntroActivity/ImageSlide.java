@@ -25,7 +25,7 @@ public class ImageSlide extends SlideFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_intro_slide, container, false);
+        View view = inflater.inflate(agency.tango.materialintroscreen.R.layout.fragment_slide, container, false);
         // read and set title/image from arguments
         Bundle arguments = getArguments();
         if (arguments != null) {

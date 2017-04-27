@@ -14,17 +14,16 @@
     <ImageView
         android:id="@+id/image_slide"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="128dp"
         android:layout_marginRight="16dp"
-        android:layout_weight="1"
-        android:adjustViewBounds="false"
+        android:layout_marginBottom="128dp"
         android:paddingTop="32dp"
-        android:scaleType="centerInside"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
         android:visibility="gone"
         app:layout_parallaxFactor="0.6"
-        tools:src="@drawable/batteries"
+        tools:src="@android:drawable/arrow_down_float"
         tools:visibility="visible" />
 
     <LinearLayout
