@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.HelperClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.TwoStatePreference;
@@ -68,9 +69,9 @@ public final class RootHelper {
      * Checks if charging is enabled on the device.
      *
      * @return Returns true if charging is enabled, false if not.
-     * @throws NotRootedException           thrown if the app has no root permissions.
+     * @throws NotRootedException          thrown if the app has no root permissions.
      * @throws NoBatteryFileFoundException thrown if the file to change was not found.
-     *                                      That means that the stop charging feature is not working with this device.
+     *                                     That means that the stop charging feature is not working with this device.
      */
     public static boolean isChargingEnabled() throws NotRootedException, NoBatteryFileFoundException {
         if (!isRootAvailable()) {
@@ -120,22 +121,38 @@ public final class RootHelper {
     }
 
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
-        ToggleChargingFile[] files = new ToggleChargingFile[]{
-                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
-                new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
-                new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
-        };
-        for (ToggleChargingFile file : files) {
-            if (new File(file.path).exists()) {
-                Log.d("RootHelper", "File found: " + file.path);
-                return file;
-            }
+        ToggleChargingFile file = null;
+        switch (Build.MANUFACTURER) {
+            case "Samsung":
+                if (Build.MODEL.toLowerCase().contains("note"))
+                    file = new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1");
+                else
+                    file = new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
+                break;
+            case "OnePlus":
+                file = new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
+                break;
         }
-        Log.d("RootHelper", "No file found!");
-        throw new NoBatteryFileFoundException();
+        if (file == null || !new File(file.path).exists()) {
+            ToggleChargingFile[] files = new ToggleChargingFile[]{
+                    new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
+                    new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
+                    new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
+                    new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
+                    new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
+                    new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
+            };
+            for (ToggleChargingFile f : files) {
+                if (new File(f.path).exists()) {
+                    Log.d("RootHelper", "File found: " + f.path);
+                    return f;
+                }
+            }
+            Log.d("RootHelper", "No file found!");
+            throw new NoBatteryFileFoundException();
+        } else {
+            return file;
+        }
     }
 
     /**
@@ -168,7 +185,8 @@ public final class RootHelper {
 
     private static class ToggleChargingFile {
         private String path, chargeOn, chargeOff;
-        private ToggleChargingFile(String path, String chargeOn, String chargeOff){
+
+        private ToggleChargingFile(String path, String chargeOn, String chargeOff) {
             this.path = path;
             this.chargeOn = chargeOn;
             this.chargeOff = chargeOff;
