@@ -18,11 +18,8 @@ import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
+import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
-import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_BACKGROUND_COLOR;
-import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_DESCRIPTION;
-import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_IMAGE;
-import static com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.ImageSlide.KEY_TITLE;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
@@ -52,23 +49,23 @@ public class IntroActivity extends MaterialIntroActivity {
         addSlide(new BatterySlide()); // first slide
         if (!IS_PRO) { // free version
             // second slide
-            ImageSlide imageSlide = new ImageSlide();
-            Bundle imageBundle = new Bundle(2);
-            imageBundle.putString(KEY_TITLE, getString(R.string.intro_slide_2_title));
-            imageBundle.putString(KEY_DESCRIPTION, getString(R.string.intro_slide_2_description));
-            imageBundle.putInt(KEY_IMAGE, R.drawable.batteries);
-            imageBundle.putInt(KEY_BACKGROUND_COLOR, R.color.colorIntro2);
-            imageSlide.setArguments(imageBundle);
-            addSlide(imageSlide);
+            addSlide(new SlideFragmentBuilder()
+                    .backgroundColor(R.color.colorIntro2)
+                    .buttonsColor(R.color.colorButtons)
+                    .image(R.drawable.batteries)
+                    .title(getString(R.string.intro_slide_2_title))
+                    .description(getString(R.string.intro_slide_2_description))
+                    .build()
+            );
             // third slide
-            imageSlide = new ImageSlide();
-            imageBundle = new Bundle(2);
-            imageBundle.putString(KEY_TITLE, getString(R.string.intro_slide_3_title));
-            imageBundle.putString(KEY_DESCRIPTION, getString(R.string.intro_slide_3_description));
-            imageBundle.putInt(KEY_IMAGE, R.drawable.done_white_big);
-            imageBundle.putInt(KEY_BACKGROUND_COLOR, R.color.colorIntro3);
-            imageSlide.setArguments(imageBundle);
-            addSlide(imageSlide);
+            addSlide(new SlideFragmentBuilder()
+                    .backgroundColor(R.color.colorIntro3)
+                    .buttonsColor(R.color.colorButtons)
+                    .image(R.drawable.done_white_big)
+                    .title(getString(R.string.intro_slide_3_title))
+                    .description(getString(R.string.intro_slide_3_description))
+                    .build()
+            );
         }
         // preference slide
         addSlide(new PreferencesSlide());
