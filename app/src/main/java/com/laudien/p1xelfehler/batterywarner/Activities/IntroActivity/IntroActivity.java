@@ -33,7 +33,7 @@ public class IntroActivity extends MaterialIntroActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
+        enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // enable fullscreen if fullscreen was disabled (e.g. if a dialog opens)
