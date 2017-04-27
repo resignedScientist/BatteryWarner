@@ -12,7 +12,7 @@ public final class AppInfoHelper {
     public static final String PACKAGE_NAME_FREE = "com.laudien.p1xelfehler.batterywarner";
     public static final String PACKAGE_NAME_PRO = "com.laudien.p1xelfehler.batterywarner_pro";
     // activating pro-features
-    public static final boolean IS_PRO = true;
+    public static final boolean IS_PRO = false;
 
     private AppInfoHelper() {
     }
