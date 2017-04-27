@@ -220,7 +220,8 @@ public final class NotificationHelper {
 
     private static void showStopChargingNotification(final Context context, SharedPreferences sharedPreferences) {
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        if (stopChargingEnabled) {
+        boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        if (stopChargingEnabled || usbChargingDisabled) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
