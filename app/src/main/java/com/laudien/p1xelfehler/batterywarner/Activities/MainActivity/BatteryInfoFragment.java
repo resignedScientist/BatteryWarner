@@ -41,16 +41,8 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     public static final byte COLOR_LOW = 1;
     public static final byte COLOR_HIGH = 2;
     public static final byte COLOR_OK = 3;
-    private final static String KEY_COLOR = "color";
-    private final static String KEY_TECHNOLOGY = "technology";
-    private final static String KEY_TEMPERATURE = "temperature";
-    private final static String KEY_HEALTH = "health";
-    private final static String KEY_BATTERY_LEVEL = "batteryLevel";
-    private final static String KEY_VOLTAGE = "voltage";
-    private final static String KEY_CURRENT = "current";
-    private final static String KEY_SCREEN_ON = "screenOn";
-    private final static String KEY_SCREEN_OFF = "screenOff";
-    private boolean dischargingServiceEnabled, isCharging, notificationEnabled;
+    private boolean isCharging;
+    private boolean notificationEnabled;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
     private SharedPreferences sharedPreferences;
@@ -62,7 +54,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             isCharging = BatteryHelper.isCharging(batteryStatus);
-            if (!notificationEnabled){
+            if (!notificationEnabled) {
                 batteryData.update(batteryStatus, context, sharedPreferences);
             }
         }
@@ -72,7 +64,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = (TextView) view.findViewById(R.id.textView_technology);
@@ -92,35 +84,15 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             textView_screenOn.setVisibility(GONE);
             textView_screenOff.setVisibility(GONE);
         }
-        // load from saved instance state
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_COLOR))
-                currentColor = savedInstanceState.getByte(KEY_COLOR);
-            if (savedInstanceState.containsKey(KEY_TECHNOLOGY))
-                textView_technology.setText((CharSequence) savedInstanceState.get(KEY_TECHNOLOGY));
-            if (savedInstanceState.containsKey(KEY_TEMPERATURE))
-                textView_temp.setText((CharSequence) savedInstanceState.get(KEY_TEMPERATURE));
-            if (savedInstanceState.containsKey(KEY_HEALTH))
-                textView_health.setText((CharSequence) savedInstanceState.get(KEY_HEALTH));
-            if (savedInstanceState.containsKey(KEY_BATTERY_LEVEL))
-                textView_batteryLevel.setText((CharSequence) savedInstanceState.get(KEY_BATTERY_LEVEL));
-            if (savedInstanceState.containsKey(KEY_VOLTAGE))
-                textView_voltage.setText((CharSequence) savedInstanceState.get(KEY_VOLTAGE));
-            if (savedInstanceState.containsKey(KEY_CURRENT))
-                textView_current.setText((CharSequence) savedInstanceState.get(KEY_CURRENT));
-            if (dischargingServiceEnabled) {
-                if (savedInstanceState.containsKey(KEY_SCREEN_ON))
-                    textView_screenOn.setText((CharSequence) savedInstanceState.get(KEY_SCREEN_ON));
-                if (savedInstanceState.containsKey(KEY_SCREEN_OFF))
-                    textView_screenOff.setText((CharSequence) savedInstanceState.get(KEY_SCREEN_OFF));
-            }
-        }
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
+        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+        notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         Context context = getActivity();
         if (context != null) {
             // register receivers
@@ -139,35 +111,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         super.onStop();
         getActivity().unregisterReceiver(batteryChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
-        warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putByte(KEY_COLOR, currentColor);
-        outState.putString(KEY_TECHNOLOGY, textView_technology.getText().toString());
-        outState.putString(KEY_TEMPERATURE, textView_temp.getText().toString());
-        outState.putString(KEY_HEALTH, textView_health.getText().toString());
-        outState.putString(KEY_BATTERY_LEVEL, textView_batteryLevel.getText().toString());
-        outState.putString(KEY_VOLTAGE, textView_voltage.getText().toString());
-        outState.putString(KEY_CURRENT, textView_current.getText().toString());
-        if (dischargingServiceEnabled) {
-            outState.putString(KEY_SCREEN_ON, textView_screenOn.getText().toString());
-            outState.putString(KEY_SCREEN_OFF, textView_screenOff.getText().toString());
-        }
     }
 
     public void resetDischargingStats() {
@@ -196,7 +139,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
                 getString(R.string.info_screen_off), "N/A"));
     }
 
-    private void setBatteryColor(){
+    private void setBatteryColor() {
         byte nextColor;
         if (batteryData.getBatteryLevel() <= warningLow) { // battery low
             nextColor = COLOR_LOW;
