@@ -190,6 +190,7 @@ public class BatteryInfoNotificationService extends Service implements SharedPre
 
     private void rebuildNotification(boolean updateData) {
         if (updateData) {
+            NotificationHelper.cancelNotification(this, ID_BATTERY_INFO);
             batteryData.update(lastBatteryStatus, this, sharedPreferences);
         }
         NotificationHelper.showNotification(this, ID_BATTERY_INFO);
