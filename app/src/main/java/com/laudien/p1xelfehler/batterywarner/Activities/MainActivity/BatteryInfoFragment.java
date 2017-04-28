@@ -94,34 +94,25 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         }
         // load from saved instance state
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(KEY_COLOR)) {
+            if (savedInstanceState.containsKey(KEY_COLOR))
                 currentColor = savedInstanceState.getByte(KEY_COLOR);
-            }
-            if (savedInstanceState.containsKey(KEY_TECHNOLOGY)) {
+            if (savedInstanceState.containsKey(KEY_TECHNOLOGY))
                 textView_technology.setText((CharSequence) savedInstanceState.get(KEY_TECHNOLOGY));
-            }
-            if (savedInstanceState.containsKey(KEY_TEMPERATURE)) {
+            if (savedInstanceState.containsKey(KEY_TEMPERATURE))
                 textView_temp.setText((CharSequence) savedInstanceState.get(KEY_TEMPERATURE));
-            }
-            if (savedInstanceState.containsKey(KEY_HEALTH)) {
+            if (savedInstanceState.containsKey(KEY_HEALTH))
                 textView_health.setText((CharSequence) savedInstanceState.get(KEY_HEALTH));
-            }
-            if (savedInstanceState.containsKey(KEY_BATTERY_LEVEL)) {
+            if (savedInstanceState.containsKey(KEY_BATTERY_LEVEL))
                 textView_batteryLevel.setText((CharSequence) savedInstanceState.get(KEY_BATTERY_LEVEL));
-            }
-            if (savedInstanceState.containsKey(KEY_VOLTAGE)) {
+            if (savedInstanceState.containsKey(KEY_VOLTAGE))
                 textView_voltage.setText((CharSequence) savedInstanceState.get(KEY_VOLTAGE));
-            }
-            if (savedInstanceState.containsKey(KEY_CURRENT)) {
+            if (savedInstanceState.containsKey(KEY_CURRENT))
                 textView_current.setText((CharSequence) savedInstanceState.get(KEY_CURRENT));
-            }
             if (dischargingServiceEnabled) {
-                if (savedInstanceState.containsKey(KEY_SCREEN_ON)) {
+                if (savedInstanceState.containsKey(KEY_SCREEN_ON))
                     textView_screenOn.setText((CharSequence) savedInstanceState.get(KEY_SCREEN_ON));
-                }
-                if (savedInstanceState.containsKey(KEY_SCREEN_OFF)) {
+                if (savedInstanceState.containsKey(KEY_SCREEN_OFF))
                     textView_screenOff.setText((CharSequence) savedInstanceState.get(KEY_SCREEN_OFF));
-                }
             }
         }
         return view;
@@ -130,6 +121,24 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     @Override
     public void onStart() {
         super.onStart();
+        Context context = getActivity();
+        if (context != null) {
+            // register receivers
+            Intent batteryStatus = context.registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
+            batteryData.addOnBatteryValueChangedListener(this);
+            // refresh TextViews
+            for (byte i = 0; i < batteryData.getAsArray().length; i++) {
+                onBatteryValueChanged(i);
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(batteryChangedReceiver);
+        batteryData.unregisterOnBatteryValueChangedListener(this);
     }
 
     @Override
@@ -138,24 +147,11 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
         notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-        Context context = getActivity();
-        if (context != null) {
-            // register receivers
-            Intent batteryStatus = context.registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
-            batteryData.addOnBatteryValueChangedListener(this);
-            // refresh TextViews
-            for (byte i = 0; i < batteryData.getAsArray().length; i++){
-                onBatteryValueChanged(i);
-            }
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(batteryChangedReceiver);
-        batteryData.unregisterOnBatteryValueChangedListener(this);
     }
 
     @Override
