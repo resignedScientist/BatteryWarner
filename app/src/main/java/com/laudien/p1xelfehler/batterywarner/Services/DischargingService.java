@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
@@ -22,7 +22,7 @@ import java.util.Calendar;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_SCREEN_ON;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_WARNING_LOW;
 
 /**
  * Background service that runs while discharging. It logs the percentage loss and times

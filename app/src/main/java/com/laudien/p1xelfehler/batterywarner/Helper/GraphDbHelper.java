@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.HelperClasses;
+package com.laudien.p1xelfehler.batterywarner.Helper;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
@@ -26,15 +26,15 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_HEALTH;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_OFF;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_SCREEN_ON;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData.INDEX_VOLTAGE;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_HEALTH;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_SCREEN_OFF;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_SCREEN_ON;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_WARNING_LOW;
 
 public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatteryValueChangedListener {
 

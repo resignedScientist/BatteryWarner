@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.laudien.p1xelfehler.batterywarner.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference;
 import com.laudien.p1xelfehler.batterywarner.R;
 

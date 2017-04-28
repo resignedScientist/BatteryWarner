@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
@@ -22,7 +22,7 @@ import java.util.Locale;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.BROADCAST_DISCHARGING_ALARM;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_GRANT_ROOT;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_GRANT_ROOT;
 import static java.text.DateFormat.SHORT;
 import static java.util.Calendar.HOUR_OF_DAY;
 import static java.util.Calendar.MINUTE;

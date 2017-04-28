@@ -23,7 +23,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;

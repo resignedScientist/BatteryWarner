@@ -4,12 +4,12 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 /**
  * An IntentService called by the app that enables the charging again.

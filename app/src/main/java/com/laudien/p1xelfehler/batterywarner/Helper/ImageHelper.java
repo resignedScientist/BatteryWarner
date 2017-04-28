@@ -1,6 +1,5 @@
-package com.laudien.p1xelfehler.batterywarner.HelperClasses;
+package com.laudien.p1xelfehler.batterywarner.Helper;
 
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 

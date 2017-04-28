@@ -9,15 +9,15 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
 import static android.service.quicksettings.Tile.STATE_INACTIVE;
 import static android.widget.Toast.LENGTH_LONG;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ToggleChargingTileService extends TileService {

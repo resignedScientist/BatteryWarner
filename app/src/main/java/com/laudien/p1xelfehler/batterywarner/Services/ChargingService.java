@@ -15,9 +15,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
@@ -30,12 +30,12 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_SILENT_MODE;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_SILENT_MODE;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_WARNING_HIGH;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class

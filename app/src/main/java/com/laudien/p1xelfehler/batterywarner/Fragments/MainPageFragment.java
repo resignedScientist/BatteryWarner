@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.ImageHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.ImageHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import static com.laudien.p1xelfehler.batterywarner.Fragments.BatteryInfoFragment.COLOR_HIGH;

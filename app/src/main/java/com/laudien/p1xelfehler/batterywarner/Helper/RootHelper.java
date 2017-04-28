@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.HelperClasses;
+package com.laudien.p1xelfehler.batterywarner.Helper;
 
 import android.content.Context;
 import android.os.AsyncTask;

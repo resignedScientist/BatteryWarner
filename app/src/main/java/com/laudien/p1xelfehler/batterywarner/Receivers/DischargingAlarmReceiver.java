@@ -10,7 +10,7 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;

@@ -9,12 +9,12 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_WARNING_HIGH;
 
 /**
  * A BroadcastReceiver called by the system when the device stops to charge.

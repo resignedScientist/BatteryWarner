@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_GRANT_ROOT;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper.ID_STOP_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_GRANT_ROOT;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_NOT_ROOTED;
+import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING;
 
 /**
  * An IntentService called by the app.
