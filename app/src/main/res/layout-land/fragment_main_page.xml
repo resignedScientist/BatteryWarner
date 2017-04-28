@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingBottom="50dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
     android:paddingTop="50dp">
 
     <ImageView
@@ -11,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="16dp"
         android:src="@drawable/battery_status_full_white" />
 
     <FrameLayout
