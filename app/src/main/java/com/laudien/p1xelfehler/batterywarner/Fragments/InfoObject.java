@@ -16,7 +16,7 @@ import java.util.Locale;
 /**
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
-public class InfoObject {
+class InfoObject {
     private double timeInMinutes, maxTemp, minTemp, percentCharged;
     private long creationTime;
 
@@ -66,7 +66,7 @@ public class InfoObject {
      * @param context An instance of the Context class.
      * @return Returns the time string for zero seconds.
      */
-    public static String getZeroTimeString(Context context) {
+    static String getZeroTimeString(Context context) {
         String[] formats = getTimeFormats(context);
         return String.format(Locale.getDefault(), formats[2], 0f);
     }
@@ -80,7 +80,7 @@ public class InfoObject {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    public void updateValues(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+    void updateValues(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
         this.creationTime = creationTime;
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
@@ -161,7 +161,7 @@ public class InfoObject {
      * @param context An instance of the Context class.
      * @return Returns the time string with the charging time.
      */
-    public String getTimeString(Context context) {
+    String getTimeString(Context context) {
         String[] formats = getTimeFormats(context);
         boolean useSeconds = Boolean.valueOf(formats[3]);
         if (timeInMinutes > 60) { // over an hour
@@ -193,7 +193,7 @@ public class InfoObject {
      *
      * @return Returns the time of charging in minutes.
      */
-    public double getTimeInMinutes() {
+    double getTimeInMinutes() {
         return timeInMinutes;
     }
 }
