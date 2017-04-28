@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.HelperClasses;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.TwoStatePreference;
@@ -121,19 +120,6 @@ public final class RootHelper {
     }
 
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
-        ToggleChargingFile file = null;
-        switch (Build.MANUFACTURER) {
-            case "Samsung":
-                if (Build.MODEL.toLowerCase().contains("note"))
-                    file = new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1");
-                else
-                    file = new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
-                break;
-            case "OnePlus":
-                file = new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
-                break;
-        }
-        if (file == null || !new File(file.path).exists()) {
             ToggleChargingFile[] files = new ToggleChargingFile[]{
                     new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
                     new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
@@ -142,17 +128,14 @@ public final class RootHelper {
                     new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
                     new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
             };
-            for (ToggleChargingFile f : files) {
-                if (new File(f.path).exists()) {
-                    Log.d("RootHelper", "File found: " + f.path);
-                    return f;
+        for (ToggleChargingFile file : files) {
+            if (new File(file.path).exists()) {
+                Log.d("RootHelper", "File found: " + file.path);
+                return file;
                 }
             }
             Log.d("RootHelper", "No file found!");
             throw new NoBatteryFileFoundException();
-        } else {
-            return file;
-        }
     }
 
     /**
