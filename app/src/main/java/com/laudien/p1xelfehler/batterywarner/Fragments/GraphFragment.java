@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,11 +26,9 @@ import android.view.ViewGroup;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.InfoObject;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 

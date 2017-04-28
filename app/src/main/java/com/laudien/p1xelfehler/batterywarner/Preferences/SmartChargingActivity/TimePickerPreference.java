@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
+package com.laudien.p1xelfehler.batterywarner.Preferences.SmartChargingActivity;
 
 import android.app.AlarmManager;
 import android.content.Context;
@@ -13,7 +13,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import static android.content.Context.ALARM_SERVICE;

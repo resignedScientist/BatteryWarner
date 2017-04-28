@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
+package com.laudien.p1xelfehler.batterywarner.AppIntro;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
+import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;

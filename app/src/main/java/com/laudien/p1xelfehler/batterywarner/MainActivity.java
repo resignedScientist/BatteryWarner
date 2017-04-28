@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,16 +9,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity.IntroActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
-import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.AppIntro.IntroActivity;
+import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.Fragments.MainPageFragment;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -36,7 +37,7 @@ public class MainActivity extends BaseActivity {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
-        if (firstStart){
+        if (firstStart) {
             startActivity(new Intent(this, IntroActivity.class));
             finish();
         } else {
@@ -44,7 +45,7 @@ public class MainActivity extends BaseActivity {
             setToolbarTitle();
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
             if (viewPager != null) { // phones only
-                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 viewPager.setAdapter(viewPagerAdapter);
                 TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
                 tabLayout.setupWithViewPager(viewPager);
@@ -129,5 +130,40 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new MainPageFragment();
+                case 1:
+                    return new GraphFragment();
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_main_page);
+                case 1:
+                    return getString(R.string.title_stats);
+                default:
+                    return null;
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -8,8 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment.HistoryFragment;
 
 /**
  * Activity that shows all the charging curves that were saved.

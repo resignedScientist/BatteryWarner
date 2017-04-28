@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import java.io.File;
 import java.util.ArrayList;
 
-import static com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity.HistoryPageFragment.EXTRA_FILE_PATH;
+import static com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment.HistoryPageFragment.EXTRA_FILE_PATH;
 
 /**
  * A FragmentStatePagerAdapter that is used by the HistoryFragment to load HistoryPageFragments

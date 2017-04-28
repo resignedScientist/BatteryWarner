@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +17,7 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;

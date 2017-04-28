@@ -17,8 +17,9 @@
         <meta-data
             android:name="android.max_aspect"
             android:value="2.5" />
-        <activity android:name=".Activities.IntroActivity.IntroActivity" />
-        <activity android:name=".Activities.MainActivity.MainActivity">
+
+        <activity android:name=".AppIntro.IntroActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
@@ -27,22 +28,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.HistoryActivity.HistoryActivity"
-            android:parentActivityName=".Activities.MainActivity.MainActivity" />
+            android:name=".HistoryActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".Activities.SettingsActivity.SettingsActivity"
-            android:parentActivityName=".Activities.MainActivity.MainActivity" />
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".Activities.SmartChargingActivity.SmartChargingActivity"
-            android:parentActivityName=".Activities.SettingsActivity.SettingsActivity">
+            android:name=".Preferences.SmartChargingActivity.SmartChargingActivity"
+            android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.InfoNotificationActivity.InfoNotificationActivity"
-            android:parentActivityName=".Activities.SettingsActivity.SettingsActivity">
+            android:name=".Preferences.InfoNotificationActivity.InfoNotificationActivity"
+            android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

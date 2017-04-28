@@ -18,14 +18,14 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.MainActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
+import com.laudien.p1xelfehler.batterywarner.MainActivity;
+import com.laudien.p1xelfehler.batterywarner.Preferences.SmartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
+import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 
 import java.util.Arrays;
 import java.util.Locale;

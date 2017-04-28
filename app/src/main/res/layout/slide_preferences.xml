@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/pustekuchen"
-        android:name="com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SettingsFragment"
+        android:name="com.laudien.p1xelfehler.batterywarner.Preferences.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"

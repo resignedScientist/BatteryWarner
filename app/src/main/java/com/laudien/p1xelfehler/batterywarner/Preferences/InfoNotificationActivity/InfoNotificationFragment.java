@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity;
+package com.laudien.p1xelfehler.batterywarner.Preferences.InfoNotificationActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;

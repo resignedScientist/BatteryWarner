@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;

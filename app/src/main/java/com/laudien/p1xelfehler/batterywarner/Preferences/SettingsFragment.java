@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity;
+package com.laudien.p1xelfehler.batterywarner.Preferences;
 
 import android.Manifest;
 import android.app.Activity;
@@ -21,14 +21,15 @@ import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
+import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.Locale;

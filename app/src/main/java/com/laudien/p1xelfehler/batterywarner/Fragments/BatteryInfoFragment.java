@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.BatteryHelper.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;

@@ -5,7 +5,7 @@
         android:defaultValue="@bool/pref_smart_charging_enabled_default"
         android:key="@string/pref_smart_charging_enabled"
         android:title="@string/title_smart_charging_enabled" />
-    <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+    <com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference
         android:defaultValue="@integer/pref_smart_charging_time_before_default"
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_time_before"
@@ -13,7 +13,7 @@
         app:slider_max="@integer/pref_smart_charging_time_before_max"
         app:slider_min="@integer/pref_smart_charging_time_before_min"
         app:unit=" min" />
-    <com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference
+    <com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference
         android:defaultValue="@integer/pref_smart_charging_limit_default"
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_limit"
@@ -21,7 +21,7 @@
         app:slider_max="@integer/pref_smart_charging_limit_max"
         app:slider_min="@integer/pref_smart_charging_limit_min"
         app:unit="%" />
-    <com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity.TimePickerPreference
+    <com.laudien.p1xelfehler.batterywarner.Preferences.SmartChargingActivity.TimePickerPreference
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_time"
         android:title="@string/title_smart_charging_time" />

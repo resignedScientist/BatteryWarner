@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.Activities.BasicGraphFragment;
+import com.laudien.p1xelfehler.batterywarner.Fragments.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 
 import java.io.File;

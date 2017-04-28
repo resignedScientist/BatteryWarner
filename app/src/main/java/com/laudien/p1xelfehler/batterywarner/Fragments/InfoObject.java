@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;

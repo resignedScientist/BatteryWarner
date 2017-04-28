@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity;
+package com.laudien.p1xelfehler.batterywarner.Preferences.SmartChargingActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,10 +14,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
-import com.laudien.p1xelfehler.batterywarner.Activities.SettingsActivity.SeekBarPreference;
-import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference;
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;

@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.MainActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,9 +16,9 @@ import android.widget.ImageView;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.ImageHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-import static com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment.COLOR_HIGH;
-import static com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment.COLOR_LOW;
-import static com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment.COLOR_OK;
+import static com.laudien.p1xelfehler.batterywarner.Fragments.BatteryInfoFragment.COLOR_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.Fragments.BatteryInfoFragment.COLOR_LOW;
+import static com.laudien.p1xelfehler.batterywarner.Fragments.BatteryInfoFragment.COLOR_OK;
 
 /**
  * Fragment that shows some information about the current battery status. Refreshes automatically.

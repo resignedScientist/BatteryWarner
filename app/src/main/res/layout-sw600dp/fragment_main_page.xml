@@ -20,7 +20,7 @@
 
         <fragment
             android:id="@+id/fragment_battery_info"
-            android:name="com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.BatteryInfoFragment"
+            android:name="com.laudien.p1xelfehler.batterywarner.Fragments.BatteryInfoFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp" />

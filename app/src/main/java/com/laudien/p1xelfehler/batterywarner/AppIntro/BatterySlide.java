@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.IntroActivity;
+package com.laudien.p1xelfehler.batterywarner.AppIntro;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.MainActivity.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.RootHelper;

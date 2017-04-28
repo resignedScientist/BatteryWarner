@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities;
+package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,9 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Toast;
-
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
-import com.laudien.p1xelfehler.batterywarner.R;
 
 /**
  * Super class for all activities in the app. It applies the theme,

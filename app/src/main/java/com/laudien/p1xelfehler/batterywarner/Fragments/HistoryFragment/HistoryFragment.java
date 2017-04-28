@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.Activities.HistoryActivity;
+package com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.Activities.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HelperClasses.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
