@@ -2,7 +2,7 @@
 <ToggleButton xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toggleButton"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:textAllCaps="false"
     android:textOff="@string/main_switch_off"
     android:textOn="@string/main_switch_on" />

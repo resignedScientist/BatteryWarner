@@ -46,7 +46,7 @@ public class MainActivity extends BaseActivity {
             if (viewPager != null) { // phones only
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
                 viewPager.setAdapter(viewPagerAdapter);
-                TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
                 tabLayout.setupWithViewPager(viewPager);
             }
         }
