@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.Helper;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.TwoStatePreference;
@@ -15,6 +14,10 @@ import java.io.File;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
+
+import static android.os.Build.BRAND;
+import static android.os.Build.MODEL;
+import static android.os.Build.PRODUCT;
 
 /**
  * Helper class that helps with all root queries in the app.
@@ -121,15 +124,18 @@ public final class RootHelper {
     }
 
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
-        if (Build.MODEL.contains("Pixel")) {
+        if (MODEL.contains("Pixel")) {
             return new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
         }
-        if (Build.BRAND.contains("OnePlus")) {
+        if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola")) {
             return new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
         }
+        if (BRAND.equals("samsung")) {
+            return new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
+        }
         ToggleChargingFile[] files = new ToggleChargingFile[]{
-                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
                 new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
