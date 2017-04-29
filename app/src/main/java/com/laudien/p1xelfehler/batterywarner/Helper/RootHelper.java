@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.Helper;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.TwoStatePreference;
@@ -120,22 +121,28 @@ public final class RootHelper {
     }
 
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
-            ToggleChargingFile[] files = new ToggleChargingFile[]{
-                    new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
-                    new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
-                    new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
-                    new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
-                    new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
-                    new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
-            };
+        if (Build.MODEL.contains("Pixel")) {
+            return new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
+        }
+        if (Build.BRAND.contains("OnePlus")) {
+            return new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
+        }
+        ToggleChargingFile[] files = new ToggleChargingFile[]{
+                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
+                new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
+                new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1")
+        };
         for (ToggleChargingFile file : files) {
             if (new File(file.path).exists()) {
                 Log.d("RootHelper", "File found: " + file.path);
                 return file;
-                }
             }
-            Log.d("RootHelper", "No file found!");
-            throw new NoBatteryFileFoundException();
+        }
+        Log.d("RootHelper", "No file found!");
+        throw new NoBatteryFileFoundException();
     }
 
     /**
