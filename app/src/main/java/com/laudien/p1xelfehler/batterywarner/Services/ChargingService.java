@@ -125,10 +125,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 resumeCharging();
             }
             // stop service if everything is turned off or the device is fully charged
-            /*if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
+            if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
                     || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
                 stopSelf();
-            }*/
+            }
         }
     };
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
