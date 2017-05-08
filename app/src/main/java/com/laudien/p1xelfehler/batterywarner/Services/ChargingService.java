@@ -357,6 +357,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             while (resumeTime <= timeNow) {
                 alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
                 resumeTime = alarmTime - timeBefore;
+                // save the new time in the shared preferences
+                sharedPreferences.edit().putLong(getString(R.string.pref_smart_charging_time), alarmTime).apply();
                 Log.d(TAG, "added a day to the time!");
             }
             // TODO: comment out this notification
