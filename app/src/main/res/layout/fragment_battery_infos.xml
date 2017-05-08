@@ -59,5 +59,4 @@
         android:layout_height="wrap_content"
         android:text="Screen off: 33,33 %/h"
         android:textSize="@dimen/text_size_battery_info" />
-
 </LinearLayout>
