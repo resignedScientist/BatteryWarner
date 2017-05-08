@@ -14,6 +14,8 @@ import com.laudien.p1xelfehler.batterywarner.Services.BatteryInfoNotificationSer
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * A BroadcastReceiver called by the System if the device finished booting.
  * It starts some services if necessary. Does only work after the intro was finished.
@@ -30,7 +32,8 @@ public class BootReceiver extends BroadcastReceiver {
                 Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                 if (batteryStatus != null) { // given batteryStatus intent not null
                     // set already notified to false
-                    sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
+                    SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                    temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                     // start services/receivers
                     boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
                     if (isCharging) { // charging

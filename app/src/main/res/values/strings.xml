@@ -16,6 +16,7 @@
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
     <string name="pref_discharging_service_enabled" translatable="false">dischargingServiceEnabled</string>
     <string name="pref_enable_sound" translatable="false">enableSound</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
@@ -43,13 +44,13 @@
     <string name="pref_info_screen_off" translatable="false">infoScreenOff</string>
     <string name="pref_info_dark_theme" translatable="false">infoDarkTheme</string>
     <!-- Not directly changeable by user -->
+    <string name="prefs_temporary" translatable="false">TemporaryPrefs</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_last_percentage" translatable="false">lastPercentage</string>
     <string name="pref_intent_time" translatable="false">intentTime</string>
     <string name="pref_already_notified" translatable="false">alreadyNotified</string>
     <string name="pref_last_chargingType" translatable="false">lastChargingType</string>
     <string name="pref_stats" translatable="false">stats</string>
-    <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
     <!-- Measured values -->
     <string name="value_time_screen_on" translatable="false">timeScreenOn</string>
     <string name="value_time_screen_off" translatable="false">timeScreenOff</string>

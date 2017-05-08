@@ -32,7 +32,7 @@ import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID
 public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String TAG = getClass().getSimpleName();
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences, temporaryPrefs;
     private long screenOnTime, screenOffTime;
     private long timeChanged = Calendar.getInstance().getTimeInMillis(); // time point when screen on/off was changed
     private int lastPercentage = -1, // that is a different value as in sharedPreferences!
@@ -46,7 +46,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             long timeNow = Calendar.getInstance().getTimeInMillis();
             long timeDifference = timeNow - timeChanged;
             timeChanged = timeNow;
-            sharedPreferences.edit().putLong(getString(R.string.value_time_screen_off), screenOffTime + timeDifference).apply();
+            temporaryPrefs.edit().putLong(getString(R.string.value_time_screen_off), screenOffTime + timeDifference).apply();
         }
     };
     private BroadcastReceiver screenOffReceiver = new BroadcastReceiver() {
@@ -57,7 +57,9 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             long timeNow = Calendar.getInstance().getTimeInMillis();
             long timeDifference = timeNow - timeChanged;
             timeChanged = timeNow;
-            sharedPreferences.edit().putLong(getString(R.string.value_time_screen_on), screenOnTime + timeDifference).apply();
+            temporaryPrefs.edit()
+                    .putLong(getString(R.string.value_time_screen_on), screenOnTime + timeDifference)
+                    .apply();
         }
     };
     private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
@@ -77,9 +79,9 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                         int diff = lastPercentage - batteryLevel;
                         lastPercentage = batteryLevel;
                         if (isScreenOn) { // screen is on
-                            sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain + diff).apply();
+                            temporaryPrefs.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain + diff).apply();
                         } else { // screen is off
-                            sharedPreferences.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain + diff).apply();
+                            temporaryPrefs.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain + diff).apply();
                         }
                     }
                 }
@@ -93,15 +95,17 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "Service started!");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         boolean isEnabled = sharedPreferences.getBoolean(getString(R.string.pref_is_enabled), getResources().getBoolean(R.bool.pref_is_enabled_default));
         if (isEnabled && serviceEnabled) {
-            screenOnDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_on), 0);
-            screenOffDrain = sharedPreferences.getInt(getString(R.string.value_drain_screen_off), 0);
-            screenOnTime = sharedPreferences.getLong(getString(R.string.value_time_screen_on), 0);
-            screenOffTime = sharedPreferences.getLong(getString(R.string.value_time_screen_off), 0);
+            screenOnDrain = temporaryPrefs.getInt(getString(R.string.value_drain_screen_on), 0);
+            screenOffDrain = temporaryPrefs.getInt(getString(R.string.value_drain_screen_off), 0);
+            screenOnTime = temporaryPrefs.getLong(getString(R.string.value_time_screen_on), 0);
+            screenOffTime = temporaryPrefs.getLong(getString(R.string.value_time_screen_off), 0);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-            sharedPreferences.edit()
+            temporaryPrefs.registerOnSharedPreferenceChangeListener(this);
+            temporaryPrefs.edit()
                     .putLong(getString(R.string.value_time_screen_off), screenOffTime)
                     .putLong(getString(R.string.value_time_screen_on), screenOnTime)
                     .apply();
@@ -132,6 +136,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             e.printStackTrace();
         }
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        temporaryPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

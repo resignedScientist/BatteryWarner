@@ -11,6 +11,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
 import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
 import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
@@ -113,14 +114,14 @@ public class BatteryHelper {
      * Calculates the screen-on percentage with the values in the sharedPreferences.
      * The values were written by the DischargingService.
      *
-     * @param context           An instance of the Context class.
-     * @param sharedPreferences An instance of SharedPreferences class.
+     * @param context An instance of the Context class.
      * @return The battery percentage loss per hour when the screen is on.
      * Returns 0.0 if there is not enough data yet.
      */
-    public static double getScreenOn(Context context, SharedPreferences sharedPreferences) {
-        long screenOnTime = sharedPreferences.getLong(context.getString(R.string.value_time_screen_on), 0);
-        int screenOnDrain = sharedPreferences.getInt(context.getString(R.string.value_drain_screen_on), 0);
+    private static double getScreenOn(Context context) {
+        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+        long screenOnTime = temporaryPrefs.getLong(context.getString(R.string.value_time_screen_on), 0);
+        int screenOnDrain = temporaryPrefs.getInt(context.getString(R.string.value_drain_screen_on), 0);
         double screenOnTimeInHours = (double) screenOnTime / 3600000;
         double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
         if (screenOnPercentPerHour != 0.0 && !Double.isInfinite(screenOnPercentPerHour) && !Double.isNaN(screenOnPercentPerHour)) {
@@ -134,14 +135,14 @@ public class BatteryHelper {
      * Calculates the screen-off percentage with the values in the sharedPreferences.
      * The values were written by the DischargingService.
      *
-     * @param context           An instance of the Context class.
-     * @param sharedPreferences An instance of SharedPreferences class.
+     * @param context An instance of the Context class.
      * @return The battery percentage loss per hour when the screen is off.
      * Returns 0.0 if there is not enough data yet.
      */
-    public static double getScreenOff(Context context, SharedPreferences sharedPreferences) {
-        long screenOffTime = sharedPreferences.getLong(context.getString(R.string.value_time_screen_off), 0);
-        int screenOffDrain = sharedPreferences.getInt(context.getString(R.string.value_drain_screen_off), 0);
+    public static double getScreenOff(Context context) {
+        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+        long screenOffTime = temporaryPrefs.getLong(context.getString(R.string.value_time_screen_off), 0);
+        int screenOffDrain = temporaryPrefs.getInt(context.getString(R.string.value_drain_screen_off), 0);
         double screenOffTimeInHours = (double) screenOffTime / 3600000;
         double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
         if (screenOffPercentPerHour != 0.0 && !Double.isInfinite(screenOffPercentPerHour) && !Double.isNaN(screenOffPercentPerHour)) {
@@ -198,8 +199,8 @@ public class BatteryHelper {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 setCurrent(batteryManager.getLongProperty(BATTERY_PROPERTY_CURRENT_NOW), context);
             }
-            setScreenOn(BatteryHelper.getScreenOn(context, sharedPreferences), context);
-            setScreenOff(BatteryHelper.getScreenOff(context, sharedPreferences), context);
+            setScreenOn(BatteryHelper.getScreenOn(context), context);
+            setScreenOff(BatteryHelper.getScreenOff(context), context);
         }
 
         /**

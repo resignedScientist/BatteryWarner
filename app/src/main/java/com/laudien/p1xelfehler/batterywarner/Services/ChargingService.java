@@ -94,8 +94,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     // show the warning high notification if the battery level reached it
                     if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
                         alreadyNotified = true;
-                        // make sure that already notified is false in the settings before notifying
-                        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                        // make sure that already notified is false in the shared preferences before notifying
+                        getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE).edit()
                                 .putBoolean(getString(R.string.pref_already_notified), false)
                                 .apply();
                         // show warning high notification
@@ -225,7 +225,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         }
         // put last battery level in the shared preferences (it might be used by the discharging service)
         if (lastBatteryLevel != -1) {
-            sharedPreferences.edit()
+            SharedPreferences temporaryPreferences = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
+            temporaryPreferences.edit()
                     .putInt(getString(R.string.pref_last_percentage), lastBatteryLevel)
                     .apply();
         }

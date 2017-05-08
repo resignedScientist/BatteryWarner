@@ -22,6 +22,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.view.View.GONE;
@@ -115,7 +116,8 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
 
     public void resetDischargingStats() {
         // reset screen on/off percentages and times in sharedPreferences
-        sharedPreferences.edit()
+        SharedPreferences temporaryPrefs = getContext().getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
+        temporaryPrefs.edit()
                 .putInt(getString(R.string.value_drain_screen_on), 0)
                 .putInt(getString(R.string.value_drain_screen_off), 0)
                 .putLong(getString(R.string.value_time_screen_on), 0)

@@ -31,6 +31,7 @@ import java.util.Locale;
 import static android.app.Notification.PRIORITY_HIGH;
 import static android.app.Notification.PRIORITY_LOW;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -139,18 +140,19 @@ public final class NotificationHelper {
         }
     }
 
-    private static void showWarningHighNotification(Context context, SharedPreferences sharedPreferences) {
-        boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-        boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+    private static void showWarningHighNotification(Context context, SharedPreferences defaultPrefs) {
+        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+        boolean warningHighEnabled = defaultPrefs.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
         // show notification
         if (!alreadyNotified && warningHighEnabled) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
-            int warningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
+            temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
+            int warningHigh = defaultPrefs.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setSound(getWarningSound(context, sharedPreferences))
-                    .setVibrate(getWarningVibratePattern(context, sharedPreferences))
+                    .setSound(getWarningSound(context, defaultPrefs))
+                    .setVibrate(getWarningVibratePattern(context, defaultPrefs))
                     .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
@@ -164,10 +166,11 @@ public final class NotificationHelper {
     }
 
     private static void showWarningLowNotification(Context context, SharedPreferences sharedPreferences) {
+        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-        boolean alreadyNotified = sharedPreferences.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+        boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
         if (!alreadyNotified && warningLowEnabled) {
-            sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
+            temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)

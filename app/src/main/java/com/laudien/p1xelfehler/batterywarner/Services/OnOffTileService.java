@@ -97,7 +97,8 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
             tile.setState(STATE_ACTIVE);
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
+            SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
+            temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging

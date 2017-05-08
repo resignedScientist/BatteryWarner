@@ -13,6 +13,7 @@ import com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_WARNING_HIGH;
 
@@ -32,9 +33,9 @@ public class DischargingReceiver extends BroadcastReceiver {
         if (intent.getAction().equals("android.intent.action.ACTION_POWER_DISCONNECTED")) { // correct intent action
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
-                // add a delay for the dismissing of the notification if stop charging is enabled
-                short delay = 0;
-                int lastChargingType = sharedPreferences.getInt(context.getString(R.string.pref_last_chargingType), -1);
+                short delay = 0; // add a delay for the dismissing of the notification if stop charging is enabled
+                SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                int lastChargingType = temporaryPrefs.getInt(context.getString(R.string.pref_last_chargingType), -1);
                 boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
                 boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
                 if (stopCharging || (usbDisabled && lastChargingType == BatteryManager.BATTERY_PLUGGED_USB)) {
@@ -49,7 +50,10 @@ public class DischargingReceiver extends BroadcastReceiver {
                     }
                 }, delay);
                 // reset already notified
-                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+                context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE)
+                        .edit()
+                        .putBoolean(context.getString(R.string.pref_already_notified), false)
+                        .apply();
                 // start discharging service if enabled
                 boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
                 if (serviceEnabled) { // discharging service is enabled -> start it

@@ -15,6 +15,7 @@ import com.laudien.p1xelfehler.batterywarner.Helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static com.laudien.p1xelfehler.batterywarner.Helper.NotificationHelper.ID_NOT_ROOTED;
@@ -40,7 +41,8 @@ public class ChargingReceiver extends BroadcastReceiver {
                 DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
                 NotificationHelper.cancelNotification(context, ID_WARNING_LOW); // cancel warning low notification
                 // reset already notified
-                sharedPreferences.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+                SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
                 if (!startService(context)) { // if current charging type is not enabled check again in 10s to make sure it is correct
                     new Handler().postDelayed(new Runnable() {
                         @Override

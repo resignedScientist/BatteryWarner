@@ -21,6 +21,7 @@ import com.laudien.p1xelfehler.batterywarner.Receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.Services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.DischargingService;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -61,7 +62,8 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
         if (batteryStatus != null) {
             boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
             if (isChecked) { // turned on
-                sharedPreferences.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
+                SharedPreferences temporaryPrefs = context.getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
+                temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
                 if (isCharging) {
                     context.startService(new Intent(context, ChargingService.class));
                 } else {

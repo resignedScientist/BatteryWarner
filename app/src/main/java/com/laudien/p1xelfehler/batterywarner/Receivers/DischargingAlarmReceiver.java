@@ -15,6 +15,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.util.Calendar;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * A BroadcastReceiver called by the AlarmManager of the system.
  * It sets itself in shorter and shorter time distances depending on the difference to the
@@ -32,8 +34,8 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
      * @param context An instance of the Context class.
      */
     public static void cancelDischargingAlarm(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        long intentTime = sharedPreferences.getLong(context.getString(R.string.pref_intent_time), -1);
+        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+        long intentTime = temporaryPrefs.getLong(context.getString(R.string.pref_intent_time), -1);
         if (intentTime == -1) {
             return;
         }
@@ -92,11 +94,11 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
             );
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(
-                        AlarmManager.RTC,
-                        currentTime + interval,
-                        pendingIntent
-                );
+            alarmManager.setExact(
+                    AlarmManager.RTC,
+                    currentTime + interval,
+                    pendingIntent
+            );
             /*} else {
                 alarmManager.set(
                         AlarmManager.RTC,
@@ -104,7 +106,11 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
                         pendingIntent
                 );
             }*/
-            sharedPreferences.edit().putLong(context.getString(R.string.pref_intent_time), currentTime + interval).apply();
+            SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+            temporaryPrefs
+                    .edit()
+                    .putLong(context.getString(R.string.pref_intent_time), currentTime + interval)
+                    .apply();
         }
     }
 }
