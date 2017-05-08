@@ -114,14 +114,14 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
             }
             // check if resume time is reached and charging is paused and not resumed yet
-            if (!isCharging && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
+            if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
                 resumeCharging();
             }
             // stop service if everything is turned off or the device is fully charged
-            if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
+            /*if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
                     || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
                 stopSelf();
-            }
+            }*/
         }
     };
     private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
@@ -344,12 +344,14 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     return 0;
                 }
             }
+            long timeBefore = (long) smartChargingMinutes * 60 * 1000;
             long timeNow = System.currentTimeMillis();
-            while (alarmTime <= timeNow) {
+            long resumeTime = alarmTime - timeBefore;
+            while (resumeTime <= timeNow) {
                 alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
+                resumeTime = alarmTime - timeBefore;
                 Log.d(TAG, "added a day to the time!");
             }
-            long timeBefore = (long) smartChargingMinutes * 60 * 1000;
             // => Smart charging notification (only for test purposes!)
             /*DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
             String message = String.format(Locale.getDefault(),
