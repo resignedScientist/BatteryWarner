@@ -15,7 +15,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.Helper.BatteryHelper.BatteryData;
@@ -27,7 +26,6 @@ import com.laudien.p1xelfehler.batterywarner.Services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.Services.GrantRootService;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 import static android.app.Notification.PRIORITY_HIGH;
@@ -347,7 +345,6 @@ public final class NotificationHelper {
         BatteryData batteryData = BatteryHelper.getBatteryData();
         if (batteryData != null) {
             String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
-            Log.d("NotificationHelper", Arrays.toString(data));
             // prepare content view (with theme)
             int layout;
             boolean darkThemeEnabled = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
