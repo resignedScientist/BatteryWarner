@@ -223,7 +223,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         if (lastBatteryLevel != -1) {
             SharedPreferences temporaryPreferences = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPreferences.edit()
-                    .putInt(getString(R.string.pref_last_percentage), lastBatteryLevel)
                     .putInt(getString(R.string.pref_last_chargingType), chargingType)
                     .apply();
         }
