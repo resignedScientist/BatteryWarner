@@ -407,8 +407,7 @@ public final class NotificationHelper {
         return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
-    // TODO: make private again
-    public static Notification.BigTextStyle getBigTextStyle(String messageText) {
+    private static Notification.BigTextStyle getBigTextStyle(String messageText) {
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
         bigTextStyle.bigText(messageText);
         return bigTextStyle;
