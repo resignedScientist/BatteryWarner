@@ -122,6 +122,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // check if resume time is reached and charging is paused and not resumed yet
             if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
+                if (isGraphEnabled && IS_PRO) { // add a graph point for optics/correctness
+                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                }
                 resumeCharging();
             }
             // stop service if everything is turned off or the device is fully charged
