@@ -50,7 +50,10 @@ public final class RootHelper {
             throw new NotRootedException();
         }
         ToggleChargingFile toggleChargingFile = getAvailableFile();
-        Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOn, toggleChargingFile.path));
+        Shell.SU.run(new String[]{
+                String.format("echo %s > %s", toggleChargingFile.chargeOn, toggleChargingFile.path),
+                "settings put global low_power 0"
+        });
         Log.d(TAG, "Charging was enabled!");
     }
 
@@ -64,7 +67,10 @@ public final class RootHelper {
             throw new NotRootedException();
         }
         ToggleChargingFile toggleChargingFile = getAvailableFile();
-        Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOff, toggleChargingFile.path));
+        Shell.SU.run(new String[]{
+                String.format("echo %s > %s", toggleChargingFile.chargeOff, toggleChargingFile.path),
+                "settings put global low_power 1"
+        });
         Log.d(TAG, "Charging was disabled!");
     }
 
