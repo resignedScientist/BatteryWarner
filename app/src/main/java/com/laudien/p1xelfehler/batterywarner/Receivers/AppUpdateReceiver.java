@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.BROADCAST_DISCHARGING_ALARM;
@@ -78,6 +79,56 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 }
             } catch (Exception ignored) {
             }
+            // patch old shared preferences =>
+            SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+            String key = context.getString(R.string.pref_last_percentage);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // intent time
+            key = context.getString(R.string.pref_intent_time);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // already notified
+            key = context.getString(R.string.pref_already_notified);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putBoolean(key, sharedPreferences.getBoolean(key, false)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // last chargingType
+            key = context.getString(R.string.pref_last_chargingType);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, -1)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // screen on time
+            key = context.getString(R.string.value_time_screen_on);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // screen off time
+            key = context.getString(R.string.value_time_screen_off);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // screen on drain
+            key = context.getString(R.string.value_drain_screen_on);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // screen off drain
+            key = context.getString(R.string.value_drain_screen_off);
+            if (sharedPreferences.contains(key)) {
+                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                sharedPreferences.edit().remove(key).apply();
+            }
+            // <= patch old shared preferences
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
         }
