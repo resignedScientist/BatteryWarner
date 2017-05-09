@@ -81,9 +81,9 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             }
             // patch old shared preferences =>
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
-            String key = context.getString(R.string.pref_last_percentage);
+            // last percentage (remove it, it is no longer used!)
+            String key = "lastPercentage";
             if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
             // intent time
@@ -119,13 +119,13 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // screen on drain
             key = context.getString(R.string.value_drain_screen_on);
             if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, 0)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
             // screen off drain
             key = context.getString(R.string.value_drain_screen_off);
             if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
+                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, 0)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
             // <= patch old shared preferences
