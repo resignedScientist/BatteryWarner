@@ -224,6 +224,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             SharedPreferences temporaryPreferences = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPreferences.edit()
                     .putInt(getString(R.string.pref_last_percentage), lastBatteryLevel)
+                    .putInt(getString(R.string.pref_last_chargingType), chargingType)
                     .apply();
         }
         Log.d(TAG, "Service destroyed!");
