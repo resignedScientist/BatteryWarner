@@ -8,7 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.laudien.p1xelfehler.batterywarner.Preferences.SettingsFragment;
+import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
 
 /**
  * An Activity that is the frame for the SettingsFragment. It shows the version name of the app

@@ -19,7 +19,7 @@
             android:name="android.max_aspect"
             android:value="2.5" />
 
-        <activity android:name=".AppIntro.IntroActivity" />
+        <activity android:name=".appIntro.IntroActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,7 +35,7 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".Preferences.SmartChargingActivity.SmartChargingActivity"
+            android:name=".preferences.SmartChargingActivity.SmartChargingActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Preferences.InfoNotificationActivity.InfoNotificationActivity"
+            android:name=".preferences.InfoNotificationActivity.InfoNotificationActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
@@ -51,39 +51,39 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".Receivers.BootReceiver">
+        <receiver android:name=".receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.ChargingReceiver">
+        <receiver android:name=".receivers.ChargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.DischargingReceiver">
+        <receiver android:name=".receivers.DischargingReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.DischargingAlarmReceiver">
+        <receiver android:name=".receivers.DischargingAlarmReceiver">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.DISCHARGING_ALARM" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.AppUpdateReceiver">
+        <receiver android:name=".receivers.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Receivers.BothAppsInstalledReceiver">
+        <receiver android:name=".receivers.BothAppsInstalledReceiver">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".Services.OnOffTileService"
+            android:name=".services.OnOffTileService"
             android:icon="@drawable/ic_battery_alert_white"
             android:label="@string/tile_on_off"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -92,7 +92,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".Services.ToggleChargingTileService"
+            android:name=".services.ToggleChargingTileService"
             android:icon="@drawable/ic_battery_charging_full_white"
             android:label="@string/tile_charge_to_100"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -100,11 +100,11 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-        <service android:name=".Services.ChargingService" />
-        <service android:name=".Services.DischargingService" />
-        <service android:name=".Services.DisableRootFeaturesService" />
-        <service android:name=".Services.EnableChargingService" />
-        <service android:name=".Services.GrantRootService" />
-        <service android:name=".Services.BatteryInfoNotificationService" />
+        <service android:name=".services.ChargingService" />
+        <service android:name=".services.DischargingService" />
+        <service android:name=".services.DisableRootFeaturesService" />
+        <service android:name=".services.EnableChargingService" />
+        <service android:name=".services.GrantRootService" />
+        <service android:name=".services.BatteryInfoNotificationService" />
     </application>
 </manifest>

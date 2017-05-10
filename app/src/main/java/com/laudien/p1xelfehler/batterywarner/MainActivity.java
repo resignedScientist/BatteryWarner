@@ -17,9 +17,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.laudien.p1xelfehler.batterywarner.AppIntro.IntroActivity;
-import com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment;
-import com.laudien.p1xelfehler.batterywarner.Fragments.MainPageFragment;
+import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
+import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
 
 import static android.widget.Toast.LENGTH_SHORT;
 

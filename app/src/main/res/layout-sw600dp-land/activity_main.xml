@@ -11,13 +11,13 @@
 
     <fragment
         android:id="@+id/fragment_battery_info"
-        android:name="com.laudien.p1xelfehler.batterywarner.Fragments.MainPageFragment"
+        android:name="com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <fragment
         android:id="@+id/fragment_graph"
-        android:name="com.laudien.p1xelfehler.batterywarner.Fragments.GraphFragment"
+        android:name="com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

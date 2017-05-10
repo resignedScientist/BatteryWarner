@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import com.laudien.p1xelfehler.batterywarner.Fragments.HistoryFragment.HistoryFragment;
+import com.laudien.p1xelfehler.batterywarner.fragments.HistoryFragment.HistoryFragment;
 
 /**
  * Activity that shows all the charging curves that were saved.

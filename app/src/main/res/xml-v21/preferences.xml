@@ -20,7 +20,7 @@
             android:key="@string/pref_warning_low_enabled"
             android:layout="@layout/preference_checkbox"
             android:title="@string/title_enabled" />
-        <com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
             android:defaultValue="@integer/pref_warning_low_default"
             android:dependency="@string/pref_warning_low_enabled"
             android:key="@string/pref_warning_low"
@@ -34,7 +34,7 @@
             android:key="@string/pref_warning_high_enabled"
             android:layout="@layout/preference_checkbox"
             android:title="@string/title_enabled" />
-        <com.laudien.p1xelfehler.batterywarner.Preferences.SeekBarPreference
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
             android:defaultValue="80"
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_warning_high"
