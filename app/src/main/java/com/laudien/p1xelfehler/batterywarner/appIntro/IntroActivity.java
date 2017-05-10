@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.appIntro;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
@@ -59,6 +61,15 @@ public class IntroActivity extends MaterialIntroActivity {
                     .description(getString(R.string.intro_slide_3_description))
                     .build()
             );
+        } else {
+            // uninstall the free app if it is installed
+            PackageManager packageManager = getPackageManager();
+            try {
+                packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
+                sendBroadcast(new Intent().setPackage(AppInfoHelper.PACKAGE_NAME_FREE).setClassName(AppInfoHelper.PACKAGE_NAME_FREE, "BothAppsInstalledReceiver"));
+                addSlide(new UninstallSlide());
+            } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
+            }
         }
         // preference slide
         addSlide(new PreferencesSlide());

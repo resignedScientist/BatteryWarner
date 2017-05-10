@@ -1,10 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -13,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -54,12 +50,6 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        isAppInstalled();
-    }
-
-    @Override
     public void onBackPressed() {
         if (!backPressed) {
             showToast(R.string.toast_click_to_exit, LENGTH_SHORT);
@@ -73,49 +63,6 @@ public class MainActivity extends BaseActivity {
         } else {
             finishAffinity();
         }
-    }
-
-    /**
-     * Checks if 2 versions (free + pro) are installed and tells the user to uninstall the free one.
-     */
-    private void isAppInstalled() {
-        PackageManager packageManager = getPackageManager();
-        try {
-            packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
-            packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_PRO, PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
-            return;
-        }
-        // both apps are installed:
-        // disable the free application
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!AppInfoHelper.IS_PRO) {
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
-        } else {
-            sendBroadcast(new Intent().setPackage(AppInfoHelper.PACKAGE_NAME_FREE).setClassName(AppInfoHelper.PACKAGE_NAME_FREE, "BothAppsInstalledReceiver"));
-        }
-        // show the dialog
-        new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle(R.string.uninstall_title)
-                .setMessage(getString(R.string.uninstall_text))
-                .setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                })
-                .setPositiveButton(getString(R.string.uninstall_go), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Uri uri = Uri.parse("package:" + AppInfoHelper.PACKAGE_NAME_FREE);
-                        Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri);
-                        startActivity(uninstallIntent);
-                    }
-                })
-                .setIcon(R.mipmap.ic_launcher)
-                .create()
-                .show();
     }
 
     @Override
