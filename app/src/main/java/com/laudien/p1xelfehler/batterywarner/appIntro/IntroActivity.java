@@ -66,7 +66,6 @@ public class IntroActivity extends MaterialIntroActivity {
             PackageManager packageManager = getPackageManager();
             try {
                 packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
-                sendBroadcast(new Intent().setPackage(AppInfoHelper.PACKAGE_NAME_FREE).setClassName(AppInfoHelper.PACKAGE_NAME_FREE, "BothAppsInstalledReceiver"));
                 addSlide(new UninstallSlide());
             } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
             }

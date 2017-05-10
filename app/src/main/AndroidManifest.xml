@@ -72,7 +72,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.BothAppsInstalledReceiver" />
 
         <service
             android:name=".services.OnOffTileService"
