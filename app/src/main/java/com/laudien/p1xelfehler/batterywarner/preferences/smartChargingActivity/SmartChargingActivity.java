@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.preferences.SmartChargingActivity;
+package com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

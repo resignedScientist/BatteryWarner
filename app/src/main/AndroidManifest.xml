@@ -35,7 +35,7 @@
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".preferences.SmartChargingActivity.SmartChargingActivity"
+            android:name=".preferences.smartChargingActivity.SmartChargingActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".preferences.InfoNotificationActivity.InfoNotificationActivity"
+            android:name=".preferences.infoNotificationActivity.InfoNotificationActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />

@@ -21,7 +21,7 @@ import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.preferences.SmartChargingActivity.SmartChargingActivity;
+import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.GrantRootService;
