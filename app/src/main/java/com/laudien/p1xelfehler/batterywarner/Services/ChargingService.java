@@ -62,6 +62,15 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
             boolean isCharging = chargingType != 0;
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
+            Log.d(TAG, "Receiving ACTION_BATTERY_CHANGED...");
+            Log.d(TAG, "batteryLevel = " + batteryLevel);
+            Log.d(TAG, "temperature = " + temperature);
+            Log.d(TAG, "timeNow = " + timeNow);
+            Log.d(TAG, "chargingType = " + chargingType);
+            Log.d(TAG, "isCharging = " + isCharging);
+            Log.d(TAG, "isChargingTypeEnabled = " + isChargingTypeEnabled);
+            Log.d(TAG, "isChargingPaused = " + isChargingPaused);
+            Log.d(TAG, "isChargingResumed = " + isChargingResumed);
             // stop service if user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
             if (!isCharging && isChargingResumed) {
                 stopSelf();
@@ -184,6 +193,20 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
         }
+        Log.d(TAG, "warningHighEnabled = " + warningHighEnabled);
+        Log.d(TAG, "warningHigh = " + warningHigh);
+        Log.d(TAG, "isGraphEnabled = " + isGraphEnabled);
+        Log.d(TAG, "stopChargingEnabled = " + stopChargingEnabled);
+        Log.d(TAG, "smartChargingEnabled = " + smartChargingEnabled);
+        Log.d(TAG, "smartChargingLimit = " + smartChargingLimit);
+        Log.d(TAG, "acEnabled = " + acEnabled);
+        Log.d(TAG, "usbEnabled = " + usbEnabled);
+        Log.d(TAG, "wirelessEnabled = " + wirelessEnabled);
+        Log.d(TAG, "usbChargingDisabled = " + usbChargingDisabled);
+        Log.d(TAG, "smartChargingUseClock = " + smartChargingUseClock);
+        Log.d(TAG, "smartChargingMinutes = " + smartChargingMinutes);
+        Log.d(TAG, "smartChargingTime = " + smartChargingTime);
+        Log.d(TAG, "smartChargingResumeTime = " + smartChargingResumeTime);
         // register all receivers
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
@@ -286,6 +309,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private void pauseCharging() {
+        Log.d(TAG, "Pausing charging...");
         isChargingPaused = true;
         stopCharging();
     }
@@ -309,6 +333,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     }
 
     private void resumeCharging() {
+        Log.d(TAG, "Resuming charging...");
         isChargingResumed = true;
         AsyncTask.execute(new Runnable() {
             @Override
