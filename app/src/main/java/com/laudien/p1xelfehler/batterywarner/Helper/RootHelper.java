@@ -133,7 +133,7 @@ public final class RootHelper {
         if (MODEL.contains("Pixel")) {
             return new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
         }
-        if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola")) {
+        if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
             return new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
         }
         if (BRAND.equals("samsung")) {
