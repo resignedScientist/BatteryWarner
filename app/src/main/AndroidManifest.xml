@@ -66,21 +66,13 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.DischargingAlarmReceiver">
-            <intent-filter>
-                <action android:name="com.laudien.p1xelfehler.batterywarner.DISCHARGING_ALARM" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".receivers.DischargingAlarmReceiver" />
         <receiver android:name=".receivers.AppUpdateReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receivers.BothAppsInstalledReceiver">
-            <intent-filter>
-                <action android:name="com.laudien.p1xelfehler.batterywarner.BOTH_APPS_INSTALLED" />
-            </intent-filter>
-        </receiver>
+        <receiver android:name=".receivers.BothAppsInstalledReceiver" />
 
         <service
             android:name=".services.OnOffTileService"

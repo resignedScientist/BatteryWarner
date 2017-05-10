@@ -22,7 +22,6 @@ import java.util.Locale;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.BROADCAST_DISCHARGING_ALARM;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 import static java.text.DateFormat.SHORT;
 import static java.util.Calendar.HOUR_OF_DAY;
@@ -53,7 +52,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 context.startService(new Intent(context, ChargingService.class));
             } else { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(context);
-                context.sendBroadcast(new Intent(BROADCAST_DISCHARGING_ALARM));
+                context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
                 boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
                 if (serviceEnabled) {
                     context.startService(new Intent(context, DischargingService.class));

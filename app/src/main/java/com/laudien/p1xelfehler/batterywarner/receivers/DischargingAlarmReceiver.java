@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
@@ -26,7 +27,7 @@ import static android.os.Build.VERSION_CODES.KITKAT;
  * Triggers the battery low warning notification if the battery has reached the warning percentage.
  */
 public class DischargingAlarmReceiver extends BroadcastReceiver {
-
+    private final String TAG = getClass().getSimpleName();
     private SharedPreferences sharedPreferences;
     private int warningLow, batteryLevel;
 
@@ -67,6 +68,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
             warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             if (batteryLevel <= warningLow) { // warning low
                 NotificationHelper.showNotification(context, NotificationHelper.ID_WARNING_LOW);
+                Log.d(TAG, "Discharging notification triggered!");
             } else {
                 setDischargingAlarm(context); // set new alarm
             }
@@ -87,10 +89,11 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
             } else {
                 interval = context.getResources().getInteger(R.integer.interval_very_long);
             }
+            long triggerTime = currentTime + interval;
             Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
-                    (int) currentTime + interval, // request code = alarm time
+                    (int) triggerTime, // request code = alarm time
                     batteryIntent,
                     0
             );
@@ -98,21 +101,22 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
             if (SDK_INT >= KITKAT) {
                 alarmManager.setExact(
                         AlarmManager.RTC,
-                        currentTime + interval,
+                        triggerTime,
                         pendingIntent
                 );
             } else {
                 alarmManager.set(
                         AlarmManager.RTC,
-                        currentTime + interval,
+                        triggerTime,
                         pendingIntent
                 );
             }
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs
                     .edit()
-                    .putLong(context.getString(R.string.pref_intent_time), currentTime + interval)
+                    .putLong(context.getString(R.string.pref_intent_time), triggerTime)
                     .apply();
+            Log.d(TAG, "Discharging alarm set to: " + triggerTime);
         }
     }
 }

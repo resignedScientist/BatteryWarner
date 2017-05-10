@@ -164,7 +164,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getActivity();
             if (context != null) {
                 DischargingAlarmReceiver.cancelDischargingAlarm(context);
-                context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
+                context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
             }
         } else if (preference == pref_warningHigh) {
             boolean highChecked = pref_warningHigh.isChecked();

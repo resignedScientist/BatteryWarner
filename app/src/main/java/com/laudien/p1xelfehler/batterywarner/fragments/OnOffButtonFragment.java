@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
@@ -67,7 +66,7 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
                 if (isCharging) {
                     context.startService(new Intent(context, ChargingService.class));
                 } else {
-                    context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
+                    context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
                     context.startService(new Intent(context, DischargingService.class));
                 }
                 ((BaseActivity) getActivity()).showToast(R.string.toast_successfully_enabled, LENGTH_SHORT);

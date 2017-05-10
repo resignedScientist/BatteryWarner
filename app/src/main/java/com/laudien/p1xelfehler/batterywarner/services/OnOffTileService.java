@@ -11,7 +11,6 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
@@ -102,7 +101,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             if (isCharging) { // charging
                 startService(new Intent(this, ChargingService.class));
             } else { // discharging
-                sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
+                sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
                 startService(new Intent(this, DischargingService.class));
             }
             Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_enabled), Toast.LENGTH_SHORT).show();

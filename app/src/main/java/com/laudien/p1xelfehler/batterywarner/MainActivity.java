@@ -92,7 +92,7 @@ public class MainActivity extends BaseActivity {
         if (!AppInfoHelper.IS_PRO) {
             sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), false).apply();
         } else {
-            sendBroadcast(new Intent(AppInfoHelper.BROADCAST_BOTH_APPS_INSTALLED));
+            sendBroadcast(new Intent().setPackage(AppInfoHelper.PACKAGE_NAME_FREE).setClassName(AppInfoHelper.PACKAGE_NAME_FREE, "BothAppsInstalledReceiver"));
         }
         // show the dialog
         new AlertDialog.Builder(this)

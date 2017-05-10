@@ -11,9 +11,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
@@ -81,7 +81,7 @@ public class IntroActivity extends MaterialIntroActivity {
             if (isCharging) {
                 startService(new Intent(this, ChargingService.class));
             } else { // start the DischargingAlarmReceiver if discharging
-                sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM));
+                sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
                 boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
                 if (serviceEnabled) {
                     startService(new Intent(this, DischargingService.class));

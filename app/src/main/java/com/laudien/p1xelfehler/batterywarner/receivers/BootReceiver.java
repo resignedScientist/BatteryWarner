@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
@@ -43,7 +42,7 @@ public class BootReceiver extends BroadcastReceiver {
                         if (serviceEnabled) { // discharging service enabled -> start it
                             context.startService(new Intent(context, DischargingService.class));
                         } else { // discharging service disabled -> use DischargingAlarmReceiver
-                            context.sendBroadcast(new Intent(AppInfoHelper.BROADCAST_DISCHARGING_ALARM)); // start discharging alarm if enabled
+                            context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class)); // start discharging alarm if enabled
                         }
                     }
                 }
