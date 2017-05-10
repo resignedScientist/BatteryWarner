@@ -64,7 +64,7 @@ public class ChargingReceiver extends BroadcastReceiver {
      * BatteryManager does not know instantly with which charging type the device is charging.
      */
     private boolean startService(final Context context) {
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return false;
         }

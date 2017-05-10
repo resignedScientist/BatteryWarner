@@ -16,6 +16,8 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Calendar;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.KITKAT;
 
 /**
  * A BroadcastReceiver called by the AlarmManager of the system.
@@ -53,7 +55,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;
         }
@@ -93,19 +95,19 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
                     0
             );
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(
-                    AlarmManager.RTC,
-                    currentTime + interval,
-                    pendingIntent
-            );
-            /*} else {
+            if (SDK_INT >= KITKAT) {
+                alarmManager.setExact(
+                        AlarmManager.RTC,
+                        currentTime + interval,
+                        pendingIntent
+                );
+            } else {
                 alarmManager.set(
                         AlarmManager.RTC,
                         currentTime + interval,
                         pendingIntent
                 );
-            }*/
+            }
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs
                     .edit()

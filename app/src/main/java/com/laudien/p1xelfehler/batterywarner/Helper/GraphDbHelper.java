@@ -281,12 +281,14 @@ public class GraphDbHelper extends SQLiteOpenHelper {
      * @return Returns true if the database is in SQLite format, false if not.
      */
     public boolean isValidDatabase(String filePath) {
-        try (FileReader fileReader = new FileReader(filePath)) {
+        try {
             if (isTableEmpty(filePath)) {
                 return false;
             }
+            FileReader fileReader = new FileReader(filePath);
             char[] buffer = new char[16];
             fileReader.read(buffer, 0, 16); // read first 16 bytes
+            fileReader.close();
             String string = String.valueOf(buffer);
             return string.equals("SQLite format 3\u0000");
         } catch (Exception e) {

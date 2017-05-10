@@ -44,7 +44,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // start info notification service
             context.startService(new Intent(context, BatteryInfoNotificationService.class));
 
-            Intent batteryStatus = context.registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
+            Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
             if (batteryStatus == null) {
                 return;
             }

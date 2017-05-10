@@ -53,6 +53,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="0dp"
         app:layout_constraintBottom_toTopOf="@id/textView_chargingTime"
         app:layout_constraintRight_toRightOf="parent"

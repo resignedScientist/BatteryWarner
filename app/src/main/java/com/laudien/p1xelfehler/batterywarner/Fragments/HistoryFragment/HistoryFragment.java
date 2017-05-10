@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
@@ -241,7 +243,18 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             Arrays.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File o1, File o2) {
-                    return -Long.compare(o1.lastModified(), o2.lastModified());
+                    if (SDK_INT >= KITKAT) {
+                        return -Long.compare(o1.lastModified(), o2.lastModified());
+                    } else { // before KitKat
+                        if (o1.lastModified() == o2.lastModified()) {
+                            return 0;
+                        }
+                        if (o1.lastModified() > o2.lastModified()) {
+                            return -1;
+                        } else { // o1.lastModified() < o2.lastModified()
+                            return 1;
+                        }
+                    }
                 }
             });
             for (File file : files) {
