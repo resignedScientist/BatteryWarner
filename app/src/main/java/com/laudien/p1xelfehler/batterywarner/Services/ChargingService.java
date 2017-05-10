@@ -63,14 +63,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             boolean isCharging = chargingType != 0;
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
             Log.d(TAG, "Receiving ACTION_BATTERY_CHANGED...");
-            Log.d(TAG, "batteryLevel = " + batteryLevel);
-            Log.d(TAG, "temperature = " + temperature);
-            Log.d(TAG, "timeNow = " + timeNow);
-            Log.d(TAG, "chargingType = " + chargingType);
-            Log.d(TAG, "isCharging = " + isCharging);
-            Log.d(TAG, "isChargingTypeEnabled = " + isChargingTypeEnabled);
-            Log.d(TAG, "isChargingPaused = " + isChargingPaused);
-            Log.d(TAG, "isChargingResumed = " + isChargingResumed);
             // stop service if user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
             if (!isCharging && isChargingResumed) {
                 stopSelf();
