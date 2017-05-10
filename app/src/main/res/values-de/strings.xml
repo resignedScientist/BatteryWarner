@@ -55,7 +55,7 @@
     <string name="toast_charging_type_disabled">Die jetzige Lademethode ist deaktiviert!</string>
     <string name="uninstall_title">Kostenlose Version deinstallieren!</string>
     <string name="uninstall_text">Sowohl die Pro als auch die kostenlose Version der App sind installiert. Bitte deinstalliere die kostenlose App!</string>
-    <string name="uninstall_go">Deinstallieren</string>
+    <string name="uninstall_go">Deinstallieren!</string>
     <string name="notification_sound_disabled">Achtung! Der Ton abgeschaltet!</string>
     <string name="title_notification_sound">Benachrichtigunston</string>
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
@@ -93,7 +93,7 @@
     <string name="info_date">Datum</string>
     <string name="notification_grant_root">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
     <string name="title_stop_charging">Laden automatisch abbrechen [Root]</string>
-    <string name="summary_stop_charging">Stoppt das Laden, sobald die Batterie-Warnung erscheint.</string>
+    <string name="summary_stop_charging">Stoppt das Laden, sobald die Batterie-Warnung erscheint. Funktioniert nicht auf jedem Gerät!</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
     <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
@@ -132,7 +132,7 @@
     <string name="title_enable_sound">Warnton aktivieren</string>
     <string name="notification_button_grant_root">Root erlauben</string>
     <string name="notification_button_enable_charging">Laden aktivieren</string>
-    <string name="summary_usb_charging_disabled">Verhindert, dass das Gerät bei einer USB-Verbindung lädt.</string>
+    <string name="summary_usb_charging_disabled">Verhindert, dass das Gerät bei einer USB-Verbindung lädt. Funktioniert nicht auf jedem Gerät!</string>
     <string name="title_notifications_off_warning">Warne, wenn der Ton aus ist</string>
     <string name="tile_charge_to_100">Lade auf 100%</string>
     <string name="title_info_notification_enabled">Info-Benachrichtigung aktivieren</string>

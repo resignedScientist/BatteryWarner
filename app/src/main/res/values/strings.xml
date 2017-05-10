@@ -100,9 +100,9 @@
     <string name="title_charging_curve">Charging curve</string>
     <string name="title_history">History</string>
     <!-- preference summaries -->
-    <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached.</string>
+    <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
     <string name="summary_discharging_service_enabled">Runs a service at any time in background!</string>
-    <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb.</string>
+    <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
     <string name="summary_dependency">has to be enabled for that!</string>
     <string name="summary_disabled">Disabled</string>
