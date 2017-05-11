@@ -22,10 +22,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
@@ -144,7 +144,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (preference == switch_darkTheme) {
             Context context = getActivity();
             if (context != null && context instanceof SettingsActivity) {
-                ((BaseActivity) context).showToast(R.string.toast_theme_changed, LENGTH_SHORT);
+                ToastHelper.sendToast(context, R.string.toast_theme_changed, LENGTH_SHORT);
             }
         } else if (preference == ringtonePreference) {
             Context context = getActivity();

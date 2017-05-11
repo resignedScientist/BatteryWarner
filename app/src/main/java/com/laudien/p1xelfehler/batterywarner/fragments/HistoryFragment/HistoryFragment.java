@@ -18,9 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -129,7 +129,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         public void onClick(DialogInterface dialogInterface, int i) {
                             int currentPosition = viewPager.getCurrentItem();
                             if (adapter.removeItem(currentPosition)) {
-                                ((BaseActivity) (getActivity())).showToast(R.string.toast_success_delete_graph, LENGTH_SHORT);
+                                ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                                 if (adapter.getCount() == 0) {
                                     textView_nothingSaved.setVisibility(VISIBLE);
                                     textView_fileName.setText("");
@@ -140,13 +140,13 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                                     disableButtons();
                                 }
                             } else {
-                                ((BaseActivity) (getActivity())).showToast(R.string.toast_error_deleting, LENGTH_SHORT);
+                                ToastHelper.sendToast(getContext(), R.string.toast_error_deleting, LENGTH_SHORT);
                             }
                         }
                     }).setNegativeButton(getString(R.string.dialog_button_cancel), null)
                     .create().show();
         } else {
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_no_graphs_saved, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
     }
 
@@ -160,18 +160,18 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             if (adapter.removeAllItems()) {
-                                ((BaseActivity) (getActivity())).showToast(R.string.toast_success_delete_all_graphs, LENGTH_SHORT);
+                                ToastHelper.sendToast(getContext(), R.string.toast_success_delete_all_graphs, LENGTH_SHORT);
                                 textView_nothingSaved.setVisibility(VISIBLE);
                                 textView_fileName.setText("");
                                 disableButtons();
                             } else {
-                                ((BaseActivity) (getActivity())).showToast(R.string.toast_error_deleting, LENGTH_SHORT);
+                                ToastHelper.sendToast(getContext(), R.string.toast_error_deleting, LENGTH_SHORT);
                             }
                         }
                     }).setNegativeButton(getString(R.string.dialog_button_cancel), null)
                     .create().show();
         } else {
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_no_graphs_saved, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
     }
 
@@ -179,7 +179,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         if (adapter.getCount() != 0) {
             adapter.getCurrentFragment().showInfo();
         } else {
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_no_graphs_saved, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
     }
 
@@ -190,7 +190,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     private void showRenameDialog() {
         if (adapter.getCount() == 0) {
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_no_graphs_saved, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
             return;
         }
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -210,17 +210,17 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                         String newName = editText.getText().toString();
                         if (!newName.equals(oldName)) {
                             if (newName.contains("/")) {
-                                ((BaseActivity) (getActivity())).showToast(R.string.toast_error_renaming_wrong_characters, LENGTH_SHORT);
+                                ToastHelper.sendToast(getContext(), R.string.toast_error_renaming_wrong_characters, LENGTH_SHORT);
                             } else {
                                 File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
                                 if (newFile.exists()) {
-                                    ((BaseActivity) (getActivity())).showToast(String.format(Locale.getDefault(), "%s '%s'!",
+                                    ToastHelper.sendToast(getContext(), String.format(Locale.getDefault(), "%s '%s'!",
                                             getString(R.string.toast_graph_name_already_exists), newName), LENGTH_SHORT);
                                 } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
                                     textView_fileName.setText(newName);
-                                    ((BaseActivity) (getActivity())).showToast(R.string.toast_success_renaming, LENGTH_SHORT);
+                                    ToastHelper.sendToast(getContext(), R.string.toast_success_renaming, LENGTH_SHORT);
                                 } else {
-                                    ((BaseActivity) (getActivity())).showToast(R.string.toast_error_renaming, LENGTH_SHORT);
+                                    ToastHelper.sendToast(getContext(), R.string.toast_error_renaming, LENGTH_SHORT);
                                 }
                             }
                         }

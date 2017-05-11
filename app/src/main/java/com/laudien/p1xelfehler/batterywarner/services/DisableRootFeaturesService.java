@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * A Service started by the app which disables all the root features.
@@ -17,8 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 public class DisableRootFeaturesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, getString(R.string.toast_root_denied),
-                Toast.LENGTH_LONG).show();
+        ToastHelper.sendToast(this, R.string.toast_root_denied, LENGTH_LONG);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit()
                 .putBoolean(getString(R.string.pref_stop_charging), false)

@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
 
@@ -124,7 +124,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
                 .putLong(getString(R.string.value_time_screen_off), 0)
                 .apply();
         showNoData();
-        ((BaseActivity) getActivity()).showToast(R.string.toast_reset_data_success, LENGTH_SHORT);
+        ToastHelper.sendToast(getContext(), R.string.toast_reset_data_success, LENGTH_SHORT);
     }
 
     public void setOnBatteryColorChangedListener(OnBatteryColorChangedListener onBatteryColorChangedListener) {

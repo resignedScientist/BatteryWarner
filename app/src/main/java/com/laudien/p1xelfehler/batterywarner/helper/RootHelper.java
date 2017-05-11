@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.TwoStatePreference;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -18,6 +17,7 @@ import eu.chainfire.libsuperuser.Shell;
 import static android.os.Build.BRAND;
 import static android.os.Build.MODEL;
 import static android.os.Build.PRODUCT;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Helper class that helps with all root queries in the app.
@@ -112,7 +112,7 @@ public final class RootHelper {
                 protected void onPostExecute(Boolean rooted) {
                     super.onPostExecute(rooted);
                     if (!rooted) { // show a toast if not rooted
-                        Toast.makeText(context, context.getString(R.string.toast_not_rooted), Toast.LENGTH_SHORT).show();
+                        ToastHelper.sendToast(context, R.string.toast_not_rooted, LENGTH_SHORT);
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {

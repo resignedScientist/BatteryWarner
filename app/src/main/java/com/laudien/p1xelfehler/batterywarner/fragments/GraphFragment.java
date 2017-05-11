@@ -26,10 +26,10 @@ import android.view.ViewGroup;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 
 import java.io.File;
@@ -204,7 +204,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_not_pro_short, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_not_pro_short, LENGTH_SHORT);
             return false;
         }
         switch (id) {
@@ -213,10 +213,10 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     if (series != null) {
                         showResetDialog();
                     } else {
-                        ((BaseActivity) (getActivity())).showToast(R.string.toast_nothing_to_delete, LENGTH_SHORT);
+                        ToastHelper.sendToast(getContext(), R.string.toast_nothing_to_delete, LENGTH_SHORT);
                     }
                 } else {
-                    ((BaseActivity) (getActivity())).showToast(R.string.toast_disabled_in_settings, LENGTH_SHORT);
+                    ToastHelper.sendToast(getContext(), R.string.toast_disabled_in_settings, LENGTH_SHORT);
                 }
                 break;
             case R.id.menu_open_history:
@@ -401,7 +401,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
             }
         } else { // there is no graph or the graph does not have enough data
-            ((BaseActivity) (getActivity())).showToast(R.string.toast_nothing_to_save, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), R.string.toast_nothing_to_save, LENGTH_SHORT);
         }
     }
 
@@ -421,7 +421,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     public void onClick(DialogInterface dialogInterface, int i) {
                         GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(getContext());
                         graphDbHelper.resetTable();
-                        ((BaseActivity) (getActivity())).showToast(R.string.toast_success_delete_graph, LENGTH_SHORT);
+                        ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
     }
@@ -451,7 +451,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             } else {
                 message = R.string.toast_error_saving;
             }
-            ((BaseActivity) (getActivity())).showToast(message, LENGTH_SHORT);
+            ToastHelper.sendToast(getContext(), message, LENGTH_SHORT);
         }
     }
 }

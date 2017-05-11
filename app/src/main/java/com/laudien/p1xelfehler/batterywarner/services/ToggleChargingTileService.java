@@ -7,15 +7,16 @@ import android.preference.PreferenceManager;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
 import static android.service.quicksettings.Tile.STATE_INACTIVE;
 import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
@@ -67,7 +68,7 @@ public class ToggleChargingTileService extends TileService {
                         super.onPostExecute(b);
                         switch (b) {
                             case RESULT_NOT_ROOTED:
-                                Toast.makeText(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG).show();
+                                ToastHelper.sendToast(ToggleChargingTileService.this, R.string.toast_not_rooted, LENGTH_LONG);
                                 break;
                             case RESULT_STOP_CHARGING_NOT_WORKING:
                                 NotificationHelper.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
@@ -80,7 +81,7 @@ public class ToggleChargingTileService extends TileService {
                     }
                 }.execute();
             } else {
-                Toast.makeText(getApplicationContext(), R.string.toast_not_pro, Toast.LENGTH_SHORT).show();
+                ToastHelper.sendToast(getApplicationContext(), R.string.toast_not_pro, LENGTH_SHORT);
             }
         } else { // activating the tile
             tile.setState(STATE_ACTIVE);

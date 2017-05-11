@@ -14,9 +14,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.laudien.p1xelfehler.batterywarner.BaseActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -82,7 +82,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             final TwoStatePreference preference = (TwoStatePreference) findPreference(key);
             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
             if (!stopChargingEnabled && getActivity() != null) {
-                ((BaseActivity) getActivity()).showToast(R.string.toast_stop_charging_not_enabled, LENGTH_SHORT);
+                ToastHelper.sendToast(getActivity(), R.string.toast_stop_charging_not_enabled, LENGTH_SHORT);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

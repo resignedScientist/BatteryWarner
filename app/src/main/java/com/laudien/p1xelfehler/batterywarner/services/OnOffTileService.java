@@ -9,13 +9,14 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
 import static android.service.quicksettings.Tile.STATE_ACTIVE;
 import static android.service.quicksettings.Tile.STATE_INACTIVE;
+import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
@@ -71,11 +72,11 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         super.onClick();
         Log.d(TAG, "Tile clicked!");
         if (!IS_PRO) { // not pro
-            Toast.makeText(getApplicationContext(), R.string.toast_not_pro, Toast.LENGTH_SHORT).show();
+            ToastHelper.sendToast(getApplicationContext(), R.string.toast_not_pro, LENGTH_SHORT);
             return;
         }
         if (firstStart) { // intro not finished
-            Toast.makeText(getApplicationContext(), getString(R.string.toast_finish_intro_first), Toast.LENGTH_SHORT).show();
+            ToastHelper.sendToast(getApplicationContext(), R.string.toast_finish_intro_first, LENGTH_SHORT);
             return;
         }
         boolean isActive = tile.getState() == STATE_ACTIVE;
@@ -92,7 +93,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             if (!isCharging) { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
-            Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_disabled), Toast.LENGTH_SHORT).show();
+            ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_disabled, LENGTH_SHORT);
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
             SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
@@ -111,7 +112,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
                     sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
                 }
             }
-            Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_enabled), Toast.LENGTH_SHORT).show();
+            ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_enabled, LENGTH_SHORT);
         }
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();
         tile.updateTile();
