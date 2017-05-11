@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -16,13 +15,13 @@ import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.services.BatteryInfoNotificationService;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
@@ -86,19 +85,20 @@ public class IntroActivity extends MaterialIntroActivity {
         sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus != null) {
-            // start the service if charging
-            boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
-            if (isCharging) {
-                startService(new Intent(this, ChargingService.class));
-            } else { // start the DischargingAlarmReceiver if discharging
+            boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
+            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+            boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+            boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+            if (dischargingServiceEnabled || infoNotificationEnabled) {
+                startService(new Intent(this, DischargingService.class));
+            } else if (warningLowEnabled) {
+                DischargingAlarmReceiver.cancelDischargingAlarm(this);
                 sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
-                boolean serviceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-                if (serviceEnabled) {
-                    startService(new Intent(this, DischargingService.class));
-                }
+            }
+            if (isCharging) { // charging -> start ChargingService
+                startService(new Intent(this, ChargingService.class));
             }
         }
-        startService(new Intent(this, BatteryInfoNotificationService.class));
         Toast.makeText(getApplicationContext(), getString(R.string.intro_finish_toast), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
     }

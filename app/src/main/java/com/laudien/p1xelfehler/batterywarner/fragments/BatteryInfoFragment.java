@@ -43,7 +43,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     public static final byte COLOR_HIGH = 2;
     public static final byte COLOR_OK = 3;
     private boolean isCharging;
-    private boolean notificationEnabled;
+    private boolean infoNotificationEnabled;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
     private SharedPreferences sharedPreferences;
@@ -55,7 +55,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             isCharging = BatteryHelper.isCharging(batteryStatus);
-            if (!notificationEnabled) {
+            if (!infoNotificationEnabled) {
                 batteryData.update(batteryStatus, context, sharedPreferences);
             }
         }
@@ -93,7 +93,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         super.onStart();
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        notificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         Context context = getActivity();
         if (context != null) {
             // register receivers

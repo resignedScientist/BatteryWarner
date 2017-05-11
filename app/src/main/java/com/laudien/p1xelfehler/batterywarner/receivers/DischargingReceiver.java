@@ -54,11 +54,14 @@ public class DischargingReceiver extends BroadcastReceiver {
                         .putBoolean(context.getString(R.string.pref_already_notified), false)
                         .apply();
                 // start discharging service if enabled
-                boolean serviceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-                if (serviceEnabled) { // discharging service is enabled -> start it
-                    context.startService(new Intent(context, DischargingService.class));
-                } else { // else start DischargingReceiver which notifies or sets alarm
-                    context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
+                boolean infoNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+                if (!infoNotificationEnabled) {
+                    boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+                    if (dischargingServiceEnabled) { // discharging service is enabled -> start it
+                        context.startService(new Intent(context, DischargingService.class));
+                    } else { // else start DischargingReceiver which notifies or sets alarm
+                        context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
+                    }
                 }
             }
         }

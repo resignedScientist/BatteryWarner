@@ -95,14 +95,21 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_disabled), Toast.LENGTH_SHORT).show();
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
-            tile.setState(STATE_ACTIVE);
             SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
-            if (isCharging) { // charging
+            if (isCharging) {
                 startService(new Intent(this, ChargingService.class));
-            } else { // discharging
-                sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
+            }
+            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+            boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+            if (!isCharging && dischargingServiceEnabled || infoNotificationEnabled) { // start DischargingService
                 startService(new Intent(this, DischargingService.class));
+            } else { // start DischargingAlarmReceiver (if needed)
+                boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+                if (warningLowEnabled) {
+                    DischargingAlarmReceiver.cancelDischargingAlarm(this);
+                    sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
+                }
             }
             Toast.makeText(getApplicationContext(), getString(R.string.toast_successfully_enabled), Toast.LENGTH_SHORT).show();
         }
