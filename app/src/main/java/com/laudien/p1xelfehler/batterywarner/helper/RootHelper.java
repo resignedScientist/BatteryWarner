@@ -46,6 +46,7 @@ public final class RootHelper {
      * @throws NotRootedException thrown if the app has no root permissions.
      */
     public static void enableCharging() throws NotRootedException, NoBatteryFileFoundException {
+        Log.d(TAG, "Enabling charging...");
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
@@ -60,6 +61,7 @@ public final class RootHelper {
      * @throws NotRootedException thrown if the app has no root permissions.
      */
     public static void disableCharging() throws NotRootedException, NoBatteryFileFoundException {
+        Log.d(TAG, "Disabling charging...");
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
