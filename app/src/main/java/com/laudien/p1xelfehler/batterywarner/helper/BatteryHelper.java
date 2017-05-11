@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 
@@ -373,19 +374,32 @@ public class BatteryHelper {
             if (listeners == null) {
                 listeners = new ArrayList<>(1);
             }
-            listeners.add(listener);
+            if (!listeners.contains(listener)) {
+                listeners.add(listener);
+            } else {
+                Log.d(getClass().getSimpleName(), "The given listener is already in the list!");
+            }
         }
 
         public void unregisterOnBatteryValueChangedListener(OnBatteryValueChangedListener listener) {
-            if (listener != null) {
+            if (listeners != null && listener != null && listeners.contains(listener)) {
                 listeners.remove(listener);
+            } else {
+                Log.d(getClass().getSimpleName(), "unregisterOnBatteryValueChangedListener called without any registered listener!");
             }
         }
 
         private void notifyListeners(int index) {
-            if (listeners != null) {
-                for (OnBatteryValueChangedListener listener : listeners) {
-                    listener.onBatteryValueChanged(index);
+            if (listeners != null && !listeners.isEmpty()) {
+                OnBatteryValueChangedListener listener;
+                for (byte i = 0; i < listeners.size(); i++) {
+                    listener = listeners.get(i);
+                    if (listener != null) {
+                        listener.onBatteryValueChanged(index);
+                    } else { // remove listener if it is null
+                        listeners.remove(i);
+                        Log.d(getClass().getSimpleName(), "Forgot to unregister a listener! Listener was removed from the list!");
+                    }
                 }
             }
         }
