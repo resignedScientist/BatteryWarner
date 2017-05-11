@@ -266,6 +266,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
 
     private void setDischargingServiceEnabled(boolean enabled) {
         dischargingServiceEnabled = enabled;
+        rebuildNotification(enabled);
         if (enabled) {
             temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             screenOnDrain = temporaryPrefs.getInt(getString(R.string.value_drain_screen_on), 0);
@@ -275,7 +276,6 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             temporaryPrefs.registerOnSharedPreferenceChangeListener(this);
         } else {
             if (infoNotificationEnabled) {
-                rebuildNotification(false);
                 if (temporaryPrefs != null) {
                     temporaryPrefs.unregisterOnSharedPreferenceChangeListener(this);
                     temporaryPrefs = null;
