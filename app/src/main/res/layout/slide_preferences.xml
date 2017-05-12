@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<agency.tango.materialintroscreen.parallax.ParallaxLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/preference_slide"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:text="@string/intro_slide_prefs_title"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        app:layout_parallaxFactor="0.4" />
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/intro_slide_prefs_description"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_parallaxFactor="0.2" />
 
     <fragment
-        android:id="@+id/pustekuchen"
         android:name="com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="80dp"
-        android:tag="test" />
-</LinearLayout>
+        android:layout_marginBottom="80dp" />
+</agency.tango.materialintroscreen.parallax.ParallaxLinearLayout>
