@@ -92,7 +92,7 @@ public abstract class MaterialIntroActivity extends AppCompatActivity {
         adapter = new SlidesAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
         pageIndicator.setViewPager(viewPager);
 
         nextButtonTranslationWrapper = new NextButtonTranslationWrapper(nextButton);
