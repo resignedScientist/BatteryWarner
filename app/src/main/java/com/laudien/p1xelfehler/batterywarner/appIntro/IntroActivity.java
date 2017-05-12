@@ -39,7 +39,6 @@ public class IntroActivity extends MaterialIntroActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        enableLastSlideAlphaExitTransition(true); // enable that nice transition at the end
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         addSlide(new BatterySlide()); // first slide
         if (!IS_PRO) { // free version
