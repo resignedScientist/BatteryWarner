@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">material-intro-screen</string>
     <string name="grant_permissions">Berechtigungen erteilen</string>
     <string name="impassable_slide">Du kannst diese Seite nicht überspringen!</string>
     <string name="please_grant_permissions">Bitte erteile die benötigten Berechtigungen</string>

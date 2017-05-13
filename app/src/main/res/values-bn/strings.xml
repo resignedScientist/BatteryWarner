@@ -69,7 +69,7 @@
     <string name="summary_disabled">বন্ধ</string>
     <string name="summary_discharging_service_enabled">যে কোন সময় ব্যাকগ্রাউন্ডে অ্যাপ সার্ভিস চালু করবে!</string>
     <string name="summary_info_dark_theme">ব্যাটারির তথ্য নোটিফিকেশনের জন্যও কাল থিম ব্যবহার।</string>
-    <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে।</string>
+    <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে। আপাতত সব মোবাইলে এটা কাজ করবে না! আপাতত সব মোবাইলে এটা কাজ করবে না!</string>
     <string name="summary_usb_charging_disabled">পিসিতে ইউএসবি সংযোগ করলেও চার্জ হবে না, চার্জিং বন্ধ করবে।</string>
     <string name="tile_charge_to_100">১০০% পর্যন্ত চার্জ</string>
     <string name="tile_on_off">ব্যাটারি সংকেতসমূহ</string>

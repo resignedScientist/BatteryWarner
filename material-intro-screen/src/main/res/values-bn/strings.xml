@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">material-intro-screen</string>
-    <string name="grant_permissions">Grant permissions</string>
-    <string name="impassable_slide">Can\'t pass this slide.</string>
-    <string name="please_grant_permissions">Please grant needed permissions</string>
+    <string name="grant_permissions">অনুমতি প্রদান</string>
+    <string name="please_grant_permissions">দয়া করে প্রয়োজনীয় অনুমতি প্রদান করুন</string>
+    <string name="impassable_slide">এই স্লাইডটি পার হওয়া যাচ্ছে না।</string>
 </resources>
