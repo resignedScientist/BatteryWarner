@@ -69,8 +69,8 @@
     <string name="summary_disabled">Désactivé</string>
     <string name="summary_discharging_service_enabled">Exécute en permanence un service en arrière-plan !</string>
     <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
-    <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint.</string>
-    <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB.</string>
+    <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
+    <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB (ne fonctionne pas pour tous les appareils).</string>
     <string name="tile_charge_to_100">Charger à 100%</string>
     <string name="tile_on_off">Alertes de batterie</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
