@@ -100,7 +100,11 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
      * @return Returns the database file of the fragment at the given position.
      */
     File getFile(int position) {
-        return files.get(position);
+        if (!files.isEmpty()) {
+            return files.get(position);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -30,6 +32,7 @@ import java.util.Locale;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
@@ -63,6 +66,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         adapter = new HistoryPagerAdapter(getFragmentManager(), readGraphs());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
+        onPageSelected(viewPager.getCurrentItem());
         return view;
     }
 
@@ -86,15 +90,8 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_next:
-                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
-                break;
-            case R.id.btn_prev:
-                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
-                break;
-        }
+    public void onClick(final View v) {
+        viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
     }
 
     @Override
@@ -104,7 +101,20 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
 
     @Override
     public void onPageSelected(int position) {
-        textView_fileName.setText(adapter.getFile(position).getName());
+        File file = adapter.getFile(position);
+        if (file != null) {
+            textView_fileName.setText(file.getName());
+        }
+        if (adapter.getCount() - 1 <= position) {
+            slideOut(btn_next);
+        } else {
+            slideIn(btn_next);
+        }
+        if (position <= 0) {
+            slideOut(btn_prev);
+        } else {
+            slideIn(btn_prev);
+        }
     }
 
     @Override
@@ -133,11 +143,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                                 if (adapter.getCount() == 0) {
                                     textView_nothingSaved.setVisibility(VISIBLE);
                                     textView_fileName.setText("");
-                                } else { // min 1 item is there
-                                    textView_fileName.setText(adapter.getFile(currentPosition).getName());
-                                }
-                                if (adapter.getCount() < 2) {
-                                    disableButtons();
                                 }
                             } else {
                                 ToastHelper.sendToast(getContext(), R.string.toast_error_deleting, LENGTH_SHORT);
@@ -163,7 +168,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                                 ToastHelper.sendToast(getContext(), R.string.toast_success_delete_all_graphs, LENGTH_SHORT);
                                 textView_nothingSaved.setVisibility(VISIBLE);
                                 textView_fileName.setText("");
-                                disableButtons();
+                                onPageSelected(-1);
                             } else {
                                 ToastHelper.sendToast(getContext(), R.string.toast_error_deleting, LENGTH_SHORT);
                             }
@@ -181,11 +186,6 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         } else {
             ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
-    }
-
-    private void disableButtons() {
-        btn_next.setEnabled(false);
-        btn_prev.setEnabled(false);
     }
 
     private void showRenameDialog() {
@@ -271,9 +271,52 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
         } else { // no files in the database folder
             textView_nothingSaved.setVisibility(VISIBLE); // show "nothing saved"
         }
-        if (fileList.size() < 2) { // disable buttons if not needed
-            disableButtons();
-        }
         return fileList;
+    }
+
+    private void slideIn(final View view) {
+        if (view.getVisibility() != VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_in_bottom);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    view.setVisibility(VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            view.startAnimation(animation);
+        }
+    }
+
+    private void slideOut(final View view) {
+        if (view.getVisibility() == VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    view.setVisibility(INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            view.startAnimation(animation);
+        }
     }
 }

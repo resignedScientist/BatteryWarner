@@ -39,7 +39,7 @@ public class BatterySlide extends SlideFragment {
         }
         // image
         ImageView imageView = (ImageView) view.findViewById(R.id.image_slide);
-        imageView.setImageResource(R.drawable.battery_status_full_white_big);
+        imageView.setImageResource(R.drawable.ic_battery_status_full_white_256dp);
         ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk), imageView);
         imageView.setVisibility(VISIBLE);
         return view;

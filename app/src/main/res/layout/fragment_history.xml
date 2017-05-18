@@ -32,13 +32,15 @@
         android:paddingEnd="16dp"
         android:paddingStart="16dp">
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_prev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:scaleX="-1"
-            app:srcCompat="@drawable/ic_keyboard_arrow_right_white" />
+            app:elevation="2dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
 
         <TextView
             android:id="@+id/textView_fileName"
@@ -46,11 +48,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            app:srcCompat="@drawable/ic_keyboard_arrow_right_white" />
+            app:elevation="2dp"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
     </FrameLayout>
 </LinearLayout>
