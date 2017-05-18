@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        app:srcCompat="@drawable/battery_status_full_white" />
+        app:srcCompat="@drawable/ic_battery_status_full_white_128dp" />
 
     <ScrollView
         android:layout_width="wrap_content"

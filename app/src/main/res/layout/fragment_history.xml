@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:scaleX="-1"
-            app:srcCompat="@drawable/ic_keyboard_arrow_right_white" />
+            app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
 
         <TextView
             android:id="@+id/textView_fileName"
@@ -51,6 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            app:srcCompat="@drawable/ic_keyboard_arrow_right_white" />
+            app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
     </FrameLayout>
 </LinearLayout>
