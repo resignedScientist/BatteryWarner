@@ -41,7 +41,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                 // reset already notified
                 SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
                 temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-                context.registerReceiver(new BroadcastReceiver() {
+                context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent batteryStatus) {
                         if (batteryStatus != null) {
