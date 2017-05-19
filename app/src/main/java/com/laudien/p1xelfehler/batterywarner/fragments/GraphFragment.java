@@ -412,7 +412,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
-                .setIcon(R.mipmap.ic_launcher)
+                .setIcon(R.drawable.ic_launcher)
                 .setTitle(R.string.dialog_title_are_you_sure)
                 .setMessage(R.string.dialog_message_delete_graph)
                 .setNegativeButton(R.string.dialog_button_cancel, null)

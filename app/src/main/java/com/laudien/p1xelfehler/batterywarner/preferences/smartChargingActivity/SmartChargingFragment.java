@@ -110,7 +110,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
                     .setView(R.layout.fragment_smart_charging)
                     .setCancelable(true)
                     .setPositiveButton(R.string.dialog_button_close, null)
-                    .setIcon(R.mipmap.ic_launcher)
+                    .setIcon(R.drawable.ic_launcher)
                     .create()
                     .show();
         }

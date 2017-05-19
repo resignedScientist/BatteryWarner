@@ -133,7 +133,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             new AlertDialog.Builder(getContext()).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_graph)
-                    .setIcon(R.mipmap.ic_launcher)
+                    .setIcon(R.drawable.ic_launcher)
                     .setPositiveButton(getString(R.string.dialog_button_yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -160,7 +160,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
             new AlertDialog.Builder(getContext()).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_all_graphs)
-                    .setIcon(R.mipmap.ic_launcher)
+                    .setIcon(R.drawable.ic_launcher)
                     .setPositiveButton(getString(R.string.dialog_button_yes), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -203,7 +203,7 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                 .setTitle(getString(R.string.menu_rename_graph))
                 .setView(view)
                 .setNegativeButton(getString(R.string.dialog_button_cancel), null)
-                .setIcon(R.mipmap.ic_launcher)
+                .setIcon(R.drawable.ic_launcher)
                 .setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -150,7 +150,7 @@ class InfoObject {
                 .setView(view)
                 .setCancelable(true)
                 .setPositiveButton(context.getString(R.string.dialog_button_close), null)
-                .setIcon(R.mipmap.ic_launcher)
+                .setIcon(R.drawable.ic_launcher)
                 .create()
                 .show();
     }
