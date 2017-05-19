@@ -39,7 +39,6 @@
             android:layout_gravity="start"
             android:scaleX="-1"
             app:elevation="2dp"
-            app:fabSize="mini"
             app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
 
         <TextView
@@ -54,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             app:elevation="2dp"
-            app:fabSize="mini"
             app:srcCompat="@drawable/ic_arrow_forward_white_24dp" />
     </FrameLayout>
 </LinearLayout>

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_info"
-        android:icon="@drawable/ic_info_outline_white_24dp"
+        android:icon="@drawable/ic_info_outline_white_32dp"
         android:title="@string/dialog_title_information"
         app:showAsAction="always" />
 </menu>
