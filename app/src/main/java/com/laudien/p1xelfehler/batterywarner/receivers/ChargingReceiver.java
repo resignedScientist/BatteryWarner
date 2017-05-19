@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -16,7 +15,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING;
@@ -43,14 +41,15 @@ public class ChargingReceiver extends BroadcastReceiver {
                 // reset already notified
                 SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
                 temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-                if (!startService(context)) { // if current charging type is not enabled check again in 10s to make sure it is correct
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            startService(context);
+                context.registerReceiver(new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent batteryStatus) {
+                        if (batteryStatus != null) {
+                            startService(context, batteryStatus);
+                            context.unregisterReceiver(this);
                         }
-                    }, 10000);
-                }
+                    }
+                }, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             }
         }
     }
@@ -59,15 +58,8 @@ public class ChargingReceiver extends BroadcastReceiver {
      * Checks if enabled, asks for root, starts the service and shows the silent mode notification.
      *
      * @param context An instance of the Context class.
-     * @return Returns true if the current charging type is enabled, false if not. False will trigger
-     * a timer to double check in 10 seconds if everything is correct. This is done, because sometimes the
-     * BatteryManager does not know instantly with which charging type the device is charging.
      */
-    private boolean startService(final Context context) {
-        Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) {
-            return false;
-        }
+    private void startService(final Context context, Intent batteryStatus) {
         int chargingType = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isCharging = chargingType != 0;
@@ -90,7 +82,7 @@ public class ChargingReceiver extends BroadcastReceiver {
                         }
                     }
                 });
-                return false; // stop the method here, do repeat after 10s (= false)
+                return;
             } else if (stopChargingEnabled) { // if stop charging feature is enabled
                 // check/ask for root
                 AsyncTask.execute(new Runnable() {
@@ -106,9 +98,6 @@ public class ChargingReceiver extends BroadcastReceiver {
             context.startService(new Intent(context, ChargingService.class)); // start the charging service
             // show a notification if silent/vibrate mode is enabled
             NotificationHelper.showNotification(context, NotificationHelper.ID_SILENT_MODE);
-            return true;
-        } else {
-            return false;
         }
     }
 }
