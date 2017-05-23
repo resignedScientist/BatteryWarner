@@ -13,7 +13,6 @@ import com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 
 import java.io.File;
-import java.util.Calendar;
 
 /**
  * Fragment that loads a charging curve from a file path given in the arguments.
@@ -75,26 +74,16 @@ public class HistoryPageFragment extends BasicGraphFragment {
         }
     }
 
-    /**
-     * Returns the date the graph was created in milliseconds.
-     * If the time is older than 1000000000 ms (Unix time but in ms), it returns the date the file was last modified.
-     * This is done because of back compatibility to older versions of the app where not the
-     * real time but the time difference was saved.
-     *
-     * @return Returns the date the graph was created in milliseconds or the current time if no
-     * file path was given in the arguments.
-     */
     @Override
-    protected long getCreationTime() {
-        if (file != null) {
-            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-            long creationTime = GraphDbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
-            if (creationTime < 1000000000) {
-                creationTime = file.lastModified();
-            }
-            return creationTime;
-        }
-        return Calendar.getInstance().getTimeInMillis();
+    protected long getEndTime() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        return dbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
+    }
+
+    @Override
+    protected long getStartTime() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        return dbHelper.getStartTime(dbHelper.getReadableDatabase(file.getPath()));
     }
 
     /**

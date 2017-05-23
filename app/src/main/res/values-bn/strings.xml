@@ -24,7 +24,7 @@
     <string name="info_charging_speed">চার্জের গতি</string>
     <string name="info_charging_time">চার্জের সময়</string>
     <string name="info_current">বিদ্যুৎ</string>
-    <string name="info_date">তারিখ</string>
+    <string name="info_startTime">Start</string>
     <string name="info_health">স্বাস্থ্য</string>
     <string name="info_max_temp">সর্বোচ্চ তাপমাত্রা</string>
     <string name="info_min_temp">সর্বনিম্ন তাপমাত্রা</string>
@@ -36,9 +36,9 @@
     <string name="intro_finish_toast">চলুন ব্যাটারির দীর্ঘায়ুর প্রক্রিয়া শুরু করা যাক!</string>
     <string name="intro_slide_1_description">এটি মোবাইলের ব্যাটারির আয়ুকে বৃদ্ধি করবে!</string>
     <string name="intro_slide_1_title">Battery Warner এ স্বাগতম!</string>
-    <string formatted="false" name="intro_slide_2_description">নির্মাতারা বলেন, মোবাইলের ব্যাটারি দীর্ঘদিন স্থায়ী হবে, যদি ব্যাটারি দীর্ঘ সময় ধরে ১০০% চার্জ না হয় অথবা ০% পর্যন্ত না পৌঁছায়!</string>
+    <string name="intro_slide_2_description" formatted="false">নির্মাতারা বলেন, মোবাইলের ব্যাটারি দীর্ঘদিন স্থায়ী হবে, যদি ব্যাটারি দীর্ঘ সময় ধরে ১০০% চার্জ না হয় অথবা ০% পর্যন্ত না পৌঁছায়!</string>
     <string name="intro_slide_2_title">কিভাবে এটা করবে?</string>
-    <string formatted="false" name="intro_slide_3_description">এর মানে হচ্ছে ব্যাটারির সীমা ০-১০০% না রেখে ২০-৮০% রাখতে হবে!</string>
+    <string name="intro_slide_3_description" formatted="false">এর মানে হচ্ছে ব্যাটারির সীমা ০-১০০% না রেখে ২০-৮০% রাখতে হবে!</string>
     <string name="intro_slide_3_title">দীর্ঘায়ুর জন্য \"flat\" চার্জ করতে হবে!</string>
     <string name="intro_slide_prefs_description">প্রয়োজনমত অ্যাপ ব্যবস্থাপনা এখান থেকে করুন!</string>
     <string name="intro_slide_prefs_title">তাহলে শুরু করা যাক!</string>
@@ -142,4 +142,5 @@
     <string name="uninstall_go">আনইন্সটল করুন!</string>
     <string name="uninstall_text">ক্রয়কৃত অ্যাপ এবং ফ্রী অ্যাপ দুটোই ইন্সটল করা আছে! দয়া করে ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
     <string name="uninstall_title">ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
+    <string name="info_endTime">Ende</string>
 </resources>

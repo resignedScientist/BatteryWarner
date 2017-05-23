@@ -69,25 +69,35 @@ public class GraphDbHelper extends SQLiteOpenHelper {
         return instance;
     }
 
+    private static Cursor getCursor(SQLiteDatabase db) {
+        return db.query(TABLE_NAME, columns, null, null, null, null,
+                "length(" + TABLE_COLUMN_TIME + "), " + TABLE_COLUMN_TIME);
+    }
+
     /**
      * Returns the latest time in the given database.
      *
      * @param db A readable database.
      * @return The highest (latest) time in the database. If the database is empty, it will return 0.
      */
-    public static long getEndTime(SQLiteDatabase db) {
+    public long getEndTime(SQLiteDatabase db) {
         Cursor cursor = getCursor(db);
         long result = 0;
         if (cursor.moveToLast()) {
-            result = cursor.getLong(0);
+            result = cursor.getLong(cursor.getColumnIndex(TABLE_COLUMN_TIME));
         }
         db.close();
         return result;
     }
 
-    private static Cursor getCursor(SQLiteDatabase db) {
-        return db.query(TABLE_NAME, columns, null, null, null, null,
-                "length(" + TABLE_COLUMN_TIME + "), " + TABLE_COLUMN_TIME);
+    public long getStartTime(SQLiteDatabase db) {
+        Cursor cursor = getCursor(db);
+        long result = 0;
+        if (cursor.moveToFirst()) {
+            result = cursor.getLong(cursor.getColumnIndex(TABLE_COLUMN_TIME));
+        }
+        db.close();
+        return result;
     }
 
     @Override

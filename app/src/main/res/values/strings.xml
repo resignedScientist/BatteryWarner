@@ -190,7 +190,8 @@
     <string name="info_screen_on">Screen on</string>
     <string name="info_screen_off">Screen off</string>
     <!-- graph information -->
-    <string name="info_date">Date</string>
+    <string name="info_startTime">Start</string>
+    <string name="info_endTime">Finished</string>
     <string name="info_max_temp">Highest temperature</string>
     <string name="info_min_temp">Lowest temperature</string>
     <string name="info_charging_time">Charging time</string>

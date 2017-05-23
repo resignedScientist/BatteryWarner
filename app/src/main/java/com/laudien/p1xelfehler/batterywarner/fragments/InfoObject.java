@@ -18,19 +18,19 @@ import java.util.Locale;
  */
 class InfoObject {
     private double timeInMinutes, maxTemp, minTemp, percentCharged;
-    private long creationTime;
+    private long startTime, endTime;
 
     /**
      * Constructor of the InfoObject. All values must be provided.
      *
-     * @param creationTime   The time the graph was created.
+     * @param endTime        The time the graph was created.
      * @param timeInMinutes  The time of charging in minutes.
      * @param maxTemp        The maximal battery temperature while charging.
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    InfoObject(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        updateValues(creationTime, timeInMinutes, maxTemp, minTemp, percentCharged);
+    InfoObject(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        updateValues(startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -74,14 +74,20 @@ class InfoObject {
     /**
      * With that method you can update this instance of the InfoObject without creating a new one.
      *
-     * @param creationTime   The time the graph was created.
+     * @param startTime      The time of the first point in the graph.
+     * @param endTime        The time of the last point in the graph.
      * @param timeInMinutes  The time of charging in minutes.
      * @param maxTemp        The maximal battery temperature while charging.
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    void updateValues(long creationTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        this.creationTime = creationTime;
+    void updateValues(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        this.startTime = startTime;
+        updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
+    }
+
+    void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+        this.endTime = endTime;
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
@@ -96,6 +102,8 @@ class InfoObject {
     void showDialog(Context context) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_graph_info, null);
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        // charging time
         TextView textView_totalTime = (TextView) view.findViewById(R.id.textView_totalTime);
         textView_totalTime.setText(String.format(
                 Locale.getDefault(),
@@ -103,17 +111,23 @@ class InfoObject {
                 context.getString(R.string.info_charging_time),
                 getTimeString(context))
         );
-        String date = context.getString(R.string.health_unknown);
-        if (creationTime > 1000000000) {
-            date = DateFormat.getDateInstance(DateFormat.SHORT).format(creationTime);
-        }
-        TextView textView_date = (TextView) view.findViewById(R.id.textView_date);
-        textView_date.setText(String.format(
+        // start time
+        TextView textView_startTime = (TextView) view.findViewById(R.id.textView_startTime);
+        textView_startTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
-                context.getString(R.string.info_date),
-                date
+                context.getString(R.string.info_startTime),
+                dateFormat.format(startTime)
         ));
+        // end time
+        TextView textView_endTime = (TextView) view.findViewById(R.id.textView_endTime);
+        textView_endTime.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                context.getString(R.string.info_endTime),
+                dateFormat.format(endTime)
+        ));
+        // charging speed
         TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
         double speed = percentCharged * 60 / timeInMinutes;
         if (Double.isNaN(speed)) {
@@ -131,6 +145,7 @@ class InfoObject {
                     speed)
             );
         }
+        // max temperature
         TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
@@ -138,6 +153,7 @@ class InfoObject {
                 context.getString(R.string.info_max_temp),
                 maxTemp)
         );
+        // min temperature
         TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(
                 Locale.getDefault(),
@@ -145,6 +161,7 @@ class InfoObject {
                 context.getString(R.string.info_min_temp),
                 minTemp)
         );
+        // build dialog
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.dialog_title_graph_info))
                 .setView(view)

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,37 +10,44 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
+        android:id="@+id/textView_startTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        tools:text="Start: 19.02.2017 14:28 Uhr" />
+
+    <TextView
+        android:id="@+id/textView_endTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        tools:text="Ende: 19.02.2017 15:28 Uhr" />
+
+    <TextView
         android:id="@+id/textView_totalTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ladezeit: 1 h 30 min"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/textView_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Datum: 19.02.2017"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        tools:text="Ladezeit: 1 h 30 min" />
 
     <TextView
         android:id="@+id/textView_speed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ladegeschwindigkeit: 70%/h"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        tools:text="Ladegeschwindigkeit: 70%/h" />
 
     <TextView
         android:id="@+id/textView_maxTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Maximale Temperatur: 35°C"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        tools:text="Maximale Temperatur: 35°C" />
 
     <TextView
         android:id="@+id/textView_minTemp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Minimale Temperatur: 20°C"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        tools:text="Minimale Temperatur: 20°C" />
 </LinearLayout>

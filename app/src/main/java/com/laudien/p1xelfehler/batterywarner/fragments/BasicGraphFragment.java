@@ -116,7 +116,9 @@ public abstract class BasicGraphFragment extends Fragment {
      *
      * @return Returns time the graph was created in milliseconds.
      */
-    protected abstract long getCreationTime();
+    protected abstract long getEndTime();
+
+    protected abstract long getStartTime();
 
     /**
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
@@ -149,10 +151,10 @@ public abstract class BasicGraphFragment extends Fragment {
      * information about the graphs.
      */
     protected void createOrUpdateInfoObject() {
-        long creationTime = getCreationTime();
         if (infoObject == null) {
             infoObject = new InfoObject(
-                    creationTime,
+                    getStartTime(),
+                    getEndTime(),
                     series[TYPE_PERCENTAGE].getHighestValueX(),
                     series[TYPE_TEMPERATURE].getHighestValueY(),
                     series[TYPE_TEMPERATURE].getLowestValueY(),
@@ -160,7 +162,8 @@ public abstract class BasicGraphFragment extends Fragment {
             );
         } else {
             infoObject.updateValues(
-                    creationTime,
+                    getStartTime(),
+                    getEndTime(),
                     series[TYPE_PERCENTAGE].getHighestValueX(),
                     series[TYPE_TEMPERATURE].getHighestValueY(),
                     series[TYPE_TEMPERATURE].getLowestValueY(),

@@ -104,7 +104,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 "%s/%s",
                 DATABASE_HISTORY_PATH,
                 DateFormat.getDateInstance(SHORT)
-                        .format(GraphDbHelper.getEndTime(dbHelper.getReadableDatabase()))
+                        .format(dbHelper.getEndTime(dbHelper.getReadableDatabase()))
                         .replace("/", "_")
         );
         // rename the file if it already exists
@@ -265,9 +265,15 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * @return Returns the date the graph was created in milliseconds.
      */
     @Override
-    protected long getCreationTime() {
+    protected long getEndTime() {
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return GraphDbHelper.getEndTime(dbHelper.getReadableDatabase());
+        return dbHelper.getEndTime(dbHelper.getReadableDatabase());
+    }
+
+    @Override
+    protected long getStartTime() {
+        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+        return dbHelper.getStartTime(dbHelper.getReadableDatabase());
     }
 
     /**
