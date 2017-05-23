@@ -142,5 +142,5 @@
     <string name="uninstall_go">আনইন্সটল করুন!</string>
     <string name="uninstall_text">ক্রয়কৃত অ্যাপ এবং ফ্রী অ্যাপ দুটোই ইন্সটল করা আছে! দয়া করে ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
     <string name="uninstall_title">ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
-    <string name="info_endTime">Ende</string>
+    <string name="info_endTime">Finished</string>
 </resources>
