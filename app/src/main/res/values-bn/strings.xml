@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="app_name">Battery Warner</string>
+
     <string name="charging">চার্জিং</string>
+
     <string name="checkbox_battery_level">ব্যাটারি সীমা (%)</string>
     <string name="checkbox_temperature">তাপমাত্রা (°সে.)</string>
+
     <string name="dialog_button_cancel">বাতিল</string>
     <string name="dialog_button_close">বন্ধ</string>
     <string name="dialog_button_ok">আচ্ছা</string>
@@ -13,6 +16,7 @@
     <string name="dialog_title_are_you_sure">আপনি নিশ্চিত?</string>
     <string name="dialog_title_graph_info">লেখ-চিত্রের তথ্য</string>
     <string name="dialog_title_information">তথ্য</string>
+
     <string name="health_cold">ঠাণ্ডা</string>
     <string name="health_dead">মৃত</string>
     <string name="health_good">ভালো</string>
@@ -20,32 +24,37 @@
     <string name="health_overvoltage">অতিরিক্ত ভোল্টেজ</string>
     <string name="health_unknown">অজানা</string>
     <string name="health_unspecified_failure">অযাচিত ব্যর্থতা!</string>
+
     <string name="info_battery_level">ব্যাটারি সীমা</string>
     <string name="info_charging_speed">চার্জের গতি</string>
     <string name="info_charging_time">চার্জের সময়</string>
     <string name="info_current">বিদ্যুৎ</string>
-    <string name="info_startTime">Start</string>
+    <string name="info_endTime">Finished</string>
     <string name="info_health">স্বাস্থ্য</string>
     <string name="info_max_temp">সর্বোচ্চ তাপমাত্রা</string>
     <string name="info_min_temp">সর্বনিম্ন তাপমাত্রা</string>
     <string name="info_screen_off">স্ক্রিন বন্ধ</string>
     <string name="info_screen_on">স্ক্রিন চালু</string>
+    <string name="info_startTime">Start</string>
     <string name="info_technology">প্রযুক্তি</string>
     <string name="info_temperature">তাপমাত্রা</string>
     <string name="info_voltage">ভোল্টেজ</string>
+
     <string name="intro_finish_toast">চলুন ব্যাটারির দীর্ঘায়ুর প্রক্রিয়া শুরু করা যাক!</string>
     <string name="intro_slide_1_description">এটি মোবাইলের ব্যাটারির আয়ুকে বৃদ্ধি করবে!</string>
     <string name="intro_slide_1_title">Battery Warner এ স্বাগতম!</string>
-    <string name="intro_slide_2_description" formatted="false">নির্মাতারা বলেন, মোবাইলের ব্যাটারি দীর্ঘদিন স্থায়ী হবে, যদি ব্যাটারি দীর্ঘ সময় ধরে ১০০% চার্জ না হয় অথবা ০% পর্যন্ত না পৌঁছায়!</string>
+    <string formatted="false" name="intro_slide_2_description">নির্মাতারা বলেন, মোবাইলের ব্যাটারি দীর্ঘদিন স্থায়ী হবে, যদি ব্যাটারি দীর্ঘ সময় ধরে ১০০% চার্জ না হয় অথবা ০% পর্যন্ত না পৌঁছায়!</string>
     <string name="intro_slide_2_title">কিভাবে এটা করবে?</string>
-    <string name="intro_slide_3_description" formatted="false">এর মানে হচ্ছে ব্যাটারির সীমা ০-১০০% না রেখে ২০-৮০% রাখতে হবে!</string>
+    <string formatted="false" name="intro_slide_3_description">এর মানে হচ্ছে ব্যাটারির সীমা ০-১০০% না রেখে ২০-৮০% রাখতে হবে!</string>
     <string name="intro_slide_3_title">দীর্ঘায়ুর জন্য \"flat\" চার্জ করতে হবে!</string>
     <string name="intro_slide_prefs_description">প্রয়োজনমত অ্যাপ ব্যবস্থাপনা এখান থেকে করুন!</string>
     <string name="intro_slide_prefs_title">তাহলে শুরু করা যাক!</string>
     <string name="intro_slide_thank_you_description">আপনি আফসোস করবেন না! :)</string>
     <string name="intro_slide_thank_you_title">অ্যাপটি ক্রয়ের জন্য ধন্যবাদ!</string>
+
     <string name="main_switch_off">প্রধান  সুইচ: অচল</string>
     <string name="main_switch_on">প্রধান সুইচ: সচল</string>
+
     <string name="menu_delete">বাতিল</string>
     <string name="menu_delete_all">সবগুলো বাগিল</string>
     <string name="menu_open_history">বিবরণ খুলুন</string>
@@ -53,6 +62,7 @@
     <string name="menu_rename_graph">লেখ-চিত্রের পুনরায় নামকরণ</string>
     <string name="menu_reset">নবায়ন</string>
     <string name="menu_save_to_history">পূর্বের বিবরণীতে সংরক্ষণ</string>
+
     <string name="notification_button_enable_charging">চার্জিং সচল</string>
     <string name="notification_button_grant_root">রুট অনুমোদন</string>
     <string name="notification_charging_disabled">অ্যাপ চার্জিং বন্ধ রেখেছে! পুনরায় চালু করতে এখানে ট্যাপ করুন!</string>
@@ -64,18 +74,23 @@
     <string name="notification_stop_charging_not_working">এ অ্যাপের দ্বারা আপনার মোবাইলে চার্জিং বন্ধ করা যাচ্ছে না!</string>
     <string name="notification_warning_high">ব্যাটারির সীমা উপরে আছে</string>
     <string name="notification_warning_low">ব্যাটারির সীমা নিচে আছে</string>
+
     <string name="smart_charging_explanation">এটি তাদের জন্য যারা সারারাত মোবাইল চার্জ দিয়ে রাখেন সম্পূর্ণ চার্জ হবার জন্য। নির্ধারিত সীমা পর্যন্ত চার্জ হবার পর চার্জিং বন্ধ করে দিবে এবং নির্ধারণ করা সময় পর্যন্ত বন্ধ থাকবে। সময় অতিক্রান্ত হবার পরে পুনরায় নির্ধারিত সীমা পর্যন্ত চার্জ হবে। এতে করে ব্যাটারি অতিরিক্ত চার্জ হওয়া থেকে ঠিক থাকবে এবং ব্যাটারির আয়ুষ্কাল বৃদ্ধি পাবে।</string>
+
     <string name="summary_dependency">এর জন্য চালু থাকতে হবে!</string>
     <string name="summary_disabled">বন্ধ</string>
     <string name="summary_discharging_service_enabled">যে কোন সময় ব্যাকগ্রাউন্ডে অ্যাপ সার্ভিস চালু করবে!</string>
     <string name="summary_info_dark_theme">ব্যাটারির তথ্য নোটিফিকেশনের জন্যও কাল থিম ব্যবহার।</string>
     <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে। আপাতত সব মোবাইলে এটা কাজ করবে না! আপাতত সব মোবাইলে এটা কাজ করবে না!</string>
     <string name="summary_usb_charging_disabled">পিসিতে ইউএসবি সংযোগ করলেও চার্জ হবে না, চার্জিং বন্ধ করবে।</string>
+
     <string name="tile_charge_to_100">১০০% পর্যন্ত চার্জ</string>
     <string name="tile_on_off">ব্যাটারি সংকেতসমূহ</string>
+
     <string name="time_format_hours_comma_minutes">১ ঘ. ৩০.৫ মি.</string>
     <string name="time_format_hours_minutes">১ ঘ. ৩০ মি.</string>
     <string name="time_format_hours_minutes_seconds">১ ঘ. ৩০ মি. ৩০ সে.</string>
+
     <string name="title_ac_enabled">এসি চার্জের সংকেত</string>
     <string name="title_advanced_features">উচ্চতর সেবাসমূহ</string>
     <string name="title_charging_curve">চার্জিং বক্ররেখা</string>
@@ -112,6 +127,7 @@
     <string name="title_usb_charging_disabled"> ইউএসবি চার্জিং বন্ধ [রুট]</string>
     <string name="title_usb_enabled">ইউএসবি চার্জের সংকেত</string>
     <string name="title_wireless_enabled">ওয়্যারলেস চার্জের সংকেত</string>
+
     <string name="toast_charging_type_disabled">বর্তমান চার্জের ধরণ সেটিংসে বন্ধ করা রয়েছে!</string>
     <string name="toast_click_to_exit">অ্যাপ থেকে বের হবার জন্য পুনরায় ট্যাপ করুন!</string>
     <string name="toast_disabled_in_settings">সেটিংসে বন্ধ আছে!</string>
@@ -139,8 +155,10 @@
     <string name="toast_successfully_disabled">বন্ধ করতে সক্ষম হয়েছে!</string>
     <string name="toast_successfully_enabled">সফলভাবে চালু হয়েছে!</string>
     <string name="toast_theme_changed">সেটিংস বন্ধ করলেই থিম চালু হবে!</string>
+
     <string name="uninstall_go">আনইন্সটল করুন!</string>
     <string name="uninstall_text">ক্রয়কৃত অ্যাপ এবং ফ্রী অ্যাপ দুটোই ইন্সটল করা আছে! দয়া করে ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
     <string name="uninstall_title">ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
-    <string name="info_endTime">Finished</string>
+    <string name="title_power_saving_mode">Enable power saving mode</string>
+    <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
 </resources>

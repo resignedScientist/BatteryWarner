@@ -91,6 +91,14 @@ public final class RootHelper {
         }
     }
 
+    public static void togglePowerSavingMode(boolean turnOn) throws NotRootedException {
+        if (isRootAvailable()) {
+            Shell.SU.run("settings put global low_power " + (turnOn ? "1" : "0"));
+        } else {
+            throw new NotRootedException();
+        }
+    }
+
     public static void handleRootDependingPreference(final Context context, final TwoStatePreference twoStatePreference) {
         if (context != null && twoStatePreference.isChecked()) {
             new AsyncTask<Void, Void, Boolean>() {

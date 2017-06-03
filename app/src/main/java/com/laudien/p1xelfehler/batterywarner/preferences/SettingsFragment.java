@@ -47,7 +47,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningLow, pref_warningHigh, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
-            pref_usb_disabled, pref_stopCharging, pref_battery_info_notification;
+            pref_usb_disabled, pref_stopCharging, pref_battery_info_notification, pref_power_saving_mode;
     private RingtonePreference ringtonePreference;
     private Preference pref_smart_charging, pref_info_notification_items;
 
@@ -71,6 +71,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
         pref_battery_info_notification = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
         pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
+        pref_power_saving_mode = (TwoStatePreference) findPreference(getString(R.string.pref_power_saving_mode));
 
         Context context = getActivity();
         if (context != null) {
@@ -190,7 +191,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     }
                 }
             }
-        } else if (preference == pref_stopCharging || preference == pref_usb_disabled) { // root features
+        } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
             RootHelper.handleRootDependingPreference(getActivity(), twoStatePreference);
             if (preference == pref_stopCharging) {

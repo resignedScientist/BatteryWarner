@@ -165,10 +165,11 @@ public final class NotificationHelper {
         }
     }
 
-    private static void showWarningLowNotification(Context context, SharedPreferences sharedPreferences) {
+    private static void showWarningLowNotification(final Context context, SharedPreferences sharedPreferences) {
         SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+        boolean powerSavingModeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
         if (!alreadyNotified && warningLowEnabled) {
             temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
@@ -186,6 +187,20 @@ public final class NotificationHelper {
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_WARNING_LOW, builder.build());
+            // enable power saving mode
+            if (powerSavingModeEnabled) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootHelper.togglePowerSavingMode(true);
+                        } catch (RootHelper.NotRootedException e) {
+                            e.printStackTrace();
+                            showNotRootedNotification(context);
+                        }
+                    }
+                });
+            }
         }
     }
 
