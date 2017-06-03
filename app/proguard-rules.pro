@@ -16,3 +16,4 @@
 #   public *;
 #}
 -dontwarn android.**
+-keep public class com.laudien.p1xelfehler.batterywarner.**
