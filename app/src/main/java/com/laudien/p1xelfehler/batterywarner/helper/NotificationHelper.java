@@ -150,7 +150,7 @@ public final class NotificationHelper {
             int warningHigh = defaultPrefs.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(getSmallIconRes())
                     .setSound(getWarningSound(context, defaultPrefs))
                     .setVibrate(getWarningVibratePattern(context, defaultPrefs))
                     .setPriority(PRIORITY_HIGH)
@@ -175,7 +175,7 @@ public final class NotificationHelper {
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(getSmallIconRes())
                     .setSound(getWarningSound(context, sharedPreferences))
                     .setVibrate(getWarningVibratePattern(context, sharedPreferences))
                     .setPriority(PRIORITY_HIGH)
@@ -221,7 +221,7 @@ public final class NotificationHelper {
             if (!areNotificationsEnabled || ringerMode == AudioManager.RINGER_MODE_SILENT || ringerMode == AudioManager.RINGER_MODE_VIBRATE) {
                 String messageText = context.getString(R.string.notification_sound_disabled);
                 Notification.Builder builder = new Notification.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(getSmallIconRes())
                         .setSound(getDefaultSound())
                         .setVibrate(VIBRATE_PATTERN)
                         .setPriority(PRIORITY_HIGH)
@@ -248,7 +248,7 @@ public final class NotificationHelper {
                                     new Intent(context, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
                             String messageText = context.getString(R.string.notification_charging_disabled);
                             Notification.Builder builder = new Notification.Builder(context)
-                                    .setSmallIcon(R.drawable.ic_launcher)
+                                    .setSmallIcon(getSmallIconRes())
                                     .setPriority(PRIORITY_LOW)
                                     .setContentTitle(context.getString(R.string.app_name))
                                     .setContentText(messageText)
@@ -280,7 +280,7 @@ public final class NotificationHelper {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(getSmallIconRes())
                     .setSound(getDefaultSound())
                     .setVibrate(VIBRATE_PATTERN)
                     .setPriority(Notification.PRIORITY_LOW)
@@ -303,7 +303,7 @@ public final class NotificationHelper {
             PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
             PendingIntent deleteIntent = PendingIntent.getService(context, 0, new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setSmallIcon(getSmallIconRes())
                     .setSound(getDefaultSound())
                     .setVibrate(VIBRATE_PATTERN)
                     .setPriority(PRIORITY_HIGH)
@@ -311,7 +311,7 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(clickIntent)
-                    .addAction(R.drawable.ic_done_white_32dp, context.getString(R.string.notification_button_grant_root), clickIntent)
+                    .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
                     .setDeleteIntent(deleteIntent)
                     .setAutoCancel(true);
             NotificationManager notificationManager = (NotificationManager)
@@ -325,7 +325,7 @@ public final class NotificationHelper {
         PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
         PendingIntent deleteIntent = PendingIntent.getService(context, 0, new Intent(context, DisableRootFeaturesService.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(getSmallIconRes())
                 .setSound(getDefaultSound())
                 .setVibrate(VIBRATE_PATTERN)
                 .setPriority(PRIORITY_HIGH)
@@ -334,7 +334,7 @@ public final class NotificationHelper {
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
                 .setDeleteIntent(deleteIntent)
-                .addAction(R.drawable.ic_done_white_32dp, context.getString(R.string.notification_button_grant_root), clickIntent)
+                .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
                 .setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);
@@ -345,7 +345,7 @@ public final class NotificationHelper {
         String messageText = context.getString(R.string.notification_no_alarm_time_found);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, new Intent(context, SmartChargingActivity.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(getSmallIconRes())
                 .setSound(getDefaultSound())
                 .setVibrate(VIBRATE_PATTERN)
                 .setPriority(PRIORITY_HIGH)
@@ -373,14 +373,14 @@ public final class NotificationHelper {
                 layout = R.layout.notification_battery_info;
             }
             RemoteViews contentView = new RemoteViews(context.getPackageName(), layout);
-            contentView.setImageViewResource(R.id.img_battery, R.drawable.ic_launcher);
+            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
             // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)
                     .setContentIntent(getDefaultClickIntent(context))
                     .setPriority(Notification.PRIORITY_LOW)
                     .setContentTitle(context.getString(R.string.title_info_notification))
-                    .setSmallIcon(R.drawable.ic_launcher);
+                    .setSmallIcon(getSmallIconRes());
             // load data in notification
             String message = splitMessageData(data, contentView);
             if (message == null) { // no items enabled
@@ -430,6 +430,10 @@ public final class NotificationHelper {
 
     private static PendingIntent getDefaultClickIntent(Context context) {
         return PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
+    }
+
+    private static int getSmallIconRes() {
+        return R.mipmap.ic_launcher;
     }
 
     private static String splitMessageData(String[] data, RemoteViews contentView) {

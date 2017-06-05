@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
+import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity {
                 tabLayout.setupWithViewPager(viewPager);
             }
         }
+        NotificationHelper.showNotification(this, NotificationHelper.ID_GRANT_ROOT);
     }
 
     @Override
