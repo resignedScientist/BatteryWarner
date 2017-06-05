@@ -49,7 +49,6 @@ public class MainActivity extends BaseActivity {
                 tabLayout.setupWithViewPager(viewPager);
             }
         }
-        NotificationHelper.showNotification(this, NotificationHelper.ID_GRANT_ROOT);
     }
 
     @Override
