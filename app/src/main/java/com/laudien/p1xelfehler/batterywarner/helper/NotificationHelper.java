@@ -35,6 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
 import static android.os.Build.VERSION_CODES.N;
 import static android.view.View.GONE;
 
@@ -373,7 +374,9 @@ public final class NotificationHelper {
                 layout = R.layout.notification_battery_info;
             }
             RemoteViews contentView = new RemoteViews(context.getPackageName(), layout);
-            contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher);
+            if (SDK_INT == LOLLIPOP || SDK_INT == LOLLIPOP_MR1) {
+                contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
+            }
             // basic notification
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setOngoing(true)

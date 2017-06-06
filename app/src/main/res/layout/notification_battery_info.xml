@@ -3,22 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
+    android:paddingBottom="@dimen/info_notification_padding"
     android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+    android:paddingRight="8dp"
+    android:paddingTop="@dimen/info_notification_padding">
 
     <ImageView
         android:id="@+id/img_battery"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="8dp"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/textView_message_left"
+        style="@style/InfoNotificationTextStyle.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textSize="12sp" />
+        android:layout_gravity="center_vertical" />
 
     <TextView
         android:id="@+id/view_middleLine"
@@ -32,8 +35,8 @@
 
     <TextView
         android:id="@+id/textView_message_right"
+        style="@style/InfoNotificationTextStyle.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textSize="12sp" />
+        android:layout_gravity="center_vertical" />
 </LinearLayout>
