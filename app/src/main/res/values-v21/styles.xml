@@ -1,7 +1,8 @@
 <resources>
 
     <style name="InfoNotificationTextStyle.Light" parent="InfoNotificationTextStyle">
-        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.StatusBar.EventContent
+        </item>
     </style>
 
     <style name="InfoNotificationTextStyle.Dark" parent="InfoNotificationTextStyle">
