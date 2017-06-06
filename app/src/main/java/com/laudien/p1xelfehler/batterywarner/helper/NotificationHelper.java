@@ -386,6 +386,7 @@ public final class NotificationHelper {
                     .setSmallIcon(getSmallIconRes());
             // load data in notification
             String message = splitMessageData(data, contentView);
+            builder.setContentText(message);
             if (message == null) { // no items enabled
                 contentView.setViewVisibility(R.id.view_middleLine, GONE);
                 contentView.setViewVisibility(R.id.textView_message_right, GONE);
