@@ -386,14 +386,14 @@ public final class NotificationHelper {
                     .setSmallIcon(getSmallIconRes());
             // load data in notification
             String message = splitMessageData(data, contentView);
-            builder.setContentText(message);
             if (message == null) { // no items enabled
                 contentView.setViewVisibility(R.id.view_middleLine, GONE);
                 contentView.setViewVisibility(R.id.textView_message_right, GONE);
                 message = context.getString(R.string.notification_message_no_items_enabled);
                 contentView.setTextViewText(R.id.textView_message_left, message);
             }
-            builder.setCustomBigContentView(contentView);
+            builder.setContentText(message)
+                    .setCustomBigContentView(contentView);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_BATTERY_INFO, builder.build());
         }
