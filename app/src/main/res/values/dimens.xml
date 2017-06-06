@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_size_battery_info">16sp</dimen>
+
+    <!-- Padding in the battery info notification -->
+    <dimen name="info_notification_padding">16dp</dimen>
 </resources>
