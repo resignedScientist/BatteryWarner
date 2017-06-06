@@ -43,9 +43,9 @@
     <string name="intro_finish_toast">Faisons en sorte que votre batterie dure plus longtemps !</string>
     <string name="intro_slide_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie !</string>
     <string name="intro_slide_1_title">Bienvenue dans Battery Warner !</string>
-    <string name="intro_slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement à 100% la batterie ou de ne pas la laisser se vider à 0% afin d\'allonger sa durée de vie.</string>
+    <string formatted="false" name="intro_slide_2_description">Les fabricants conseillent de ne pas charger complètement à 100% la batterie ou de ne pas la laisser se vider à 0% afin d\'allonger sa durée de vie.</string>
     <string name="intro_slide_2_title">Comment cela fonctionne ?</string>
-    <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0-100%</string>
+    <string formatted="false" name="intro_slide_3_description">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0-100%</string>
     <string name="intro_slide_3_title">Pour augmenter cette durée de vie, vous devez donc changer vos comportements habituels !</string>
     <string name="intro_slide_prefs_description">Modifiez les paramètres ici !</string>
     <string name="intro_slide_prefs_title">C\'est parti !</string>
@@ -81,6 +81,7 @@
     <string name="summary_disabled">Désactivé</string>
     <string name="summary_discharging_service_enabled">Exécute en permanence un service en arrière-plan !</string>
     <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
+    <string name="summary_power_saving_mode">Active l\\\'économiseur de batterie quand l\\\'alerte de batterie faible est déclenchée</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
     <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB (ne fonctionne pas pour tous les appareils).</string>
 
@@ -113,6 +114,7 @@
     <string name="title_minutes_before">Minutes avant :</string>
     <string name="title_notification_sound">Sonnerie de notification</string>
     <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
+    <string name="title_power_saving_mode">Activer l\\\'économiseur de batterie</string>
     <string name="title_preferences">Paramètres</string>
     <string name="title_root_features">Fonctionnalités Root</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
@@ -159,6 +161,4 @@
     <string name="uninstall_go">Désinstallez-la !</string>
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
-    <string name="title_power_saving_mode">Activer l\\\'économiseur de batterie</string>
-    <string name="summary_power_saving_mode">Active l\\\'économiseur de batterie quand l\\\'alerte de batterie faible est déclenchée</string>
 </resources>
