@@ -27,6 +27,7 @@ import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
+import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
@@ -37,6 +38,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
+import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
  * A Fragment that shows the default settings and adds some functionality to some settings when
@@ -50,8 +53,25 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_usb_disabled, pref_stopCharging, pref_battery_info_notification, pref_power_saving_mode;
     private RingtonePreference ringtonePreference;
     private Preference pref_smart_charging, pref_info_notification_items;
+    private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
+        @Override
+        protected void disablePreferences(String preferenceKey) {
+            if (preferenceKey.equals(getString(R.string.pref_stop_charging))) {
+                pref_stopCharging.setChecked(false);
+            } else if (preferenceKey.equals(getString(R.string.pref_smart_charging_enabled))) {
+                SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+                sharedPreferences.edit()
+                        .putBoolean(getString(R.string.pref_smart_charging_enabled), false)
+                        .apply();
+                setSmartChargingSummary(sharedPreferences);
+            } else if (preferenceKey.equals(getString(R.string.pref_usb_charging_disabled))) {
+                pref_usb_disabled.setChecked(false);
+            } else if (preferenceKey.equals(getString(R.string.pref_power_saving_mode))) {
+                pref_power_saving_mode.setChecked(false);
+            }
+        }
+    };
 
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
@@ -80,9 +100,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             String sound = sharedPreferences.getString(getString(R.string.pref_sound_uri), "");
             Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
             ringtonePreference.setSummary(ringtone.getTitle(context));
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
         }
 
-        if (!AppInfoHelper.IS_PRO) {
+        if (!IS_PRO) {
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
             pref_timeFormat.setEnabled(false);
@@ -105,14 +127,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             });
             category_graph.addPreference(pref_pro);
         }
-
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -120,7 +134,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onResume();
         pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
         pref_usb.setEnabled(!pref_usb_disabled.isChecked());
-        if (AppInfoHelper.IS_PRO) {
+        if (IS_PRO) {
             pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         }
         Context context = getActivity();
@@ -128,6 +142,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             setInfoNotificationSubtitle(sharedPreferences);
             setSmartChargingSummary(sharedPreferences);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Context context = getActivity();
+        if (context != null) {
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            context.unregisterReceiver(rootCheckFinishedReceiver);
         }
     }
 
@@ -193,7 +217,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
-            RootHelper.handleRootDependingPreference(getActivity(), twoStatePreference);
+            if (twoStatePreference.isChecked()) {
+                RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
+            }
             if (preference == pref_stopCharging) {
                 pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();

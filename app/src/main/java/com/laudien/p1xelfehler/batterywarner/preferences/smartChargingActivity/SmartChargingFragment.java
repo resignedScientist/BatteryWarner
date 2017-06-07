@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,15 +19,25 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference;
+import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 public class SmartChargingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private TimePickerPreference timePickerPreference;
     private SwitchPreference alarmTimeSwitch;
+    private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
+        @Override
+        protected void disablePreferences(String preferenceKey) {
+            if (preferenceKey.equals(getString(R.string.pref_smart_charging_enabled))) {
+                ((TwoStatePreference) findPreference(preferenceKey)).setChecked(false);
+            }
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +54,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             seekBar_limit.setMin(warningHigh);
+            context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
         }
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
@@ -74,6 +86,10 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
     public void onDestroy() {
         super.onDestroy();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        Context context = getActivity();
+        if (context != null) {
+            context.unregisterReceiver(rootCheckFinishedReceiver);
+        }
     }
 
     @Override
@@ -81,16 +97,18 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
         if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
             final TwoStatePreference preference = (TwoStatePreference) findPreference(key);
             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
-            if (!stopChargingEnabled && getActivity() != null) {
-                ToastHelper.sendToast(getActivity(), R.string.toast_stop_charging_not_enabled, LENGTH_SHORT);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        preference.setChecked(false);
-                    }
-                }, getResources().getInteger(R.integer.root_check_switch_back_delay));
-            } else {
-                RootHelper.handleRootDependingPreference(getActivity(), preference);
+            if (getActivity() != null) {
+                if (!stopChargingEnabled) {
+                    ToastHelper.sendToast(getActivity(), R.string.toast_stop_charging_not_enabled, LENGTH_SHORT);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            preference.setChecked(false);
+                        }
+                    }, getResources().getInteger(R.integer.root_check_switch_back_delay));
+                } else {
+                    RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
+                }
             }
         } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             if (alarmTimeSwitch.isChecked()) { // remove preference key if checked to force the preference to always load the default alarm time

@@ -1,13 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.Looper;
-import android.preference.TwoStatePreference;
 import android.util.Log;
-
-import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +14,9 @@ import eu.chainfire.libsuperuser.Shell;
 import static android.os.Build.BRAND;
 import static android.os.Build.MODEL;
 import static android.os.Build.PRODUCT;
-import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
+import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.EXTRA_PREFERENCE;
+import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.EXTRA_ROOT_ALLOWED;
 
 /**
  * Helper class that helps with all root queries in the app.
@@ -99,37 +98,26 @@ public final class RootHelper {
         }
     }
 
-    public static void handleRootDependingPreference(final Context context, final TwoStatePreference twoStatePreference) {
-        if (context != null && twoStatePreference.isChecked()) {
-            new AsyncTask<Void, Void, Boolean>() {
-                // returns false if not rooted
+    public static void handleRootDependingPreference(final Context context, final String preference) {
+        if (context != null) {
+            AsyncTask.execute(new Runnable() {
                 @Override
-                protected Boolean doInBackground(Void... voids) {
+                public void run() {
+                    Intent intent = new Intent(ACTION_ROOT_CHECK_FINISHED);
+                    intent.putExtra(EXTRA_PREFERENCE, preference);
+                    boolean rootAllowed = true;
                     try {
                         RootHelper.isChargingEnabled();
                     } catch (RootHelper.NotRootedException e) {
-                        return false;
+                        rootAllowed = false;
                     } catch (NoBatteryFileFoundException e) {
                         NotificationHelper.showNotification(context,
                                 NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
                     }
-                    return true;
+                    intent.putExtra(EXTRA_ROOT_ALLOWED, rootAllowed);
+                    context.sendBroadcast(intent);
                 }
-
-                @Override
-                protected void onPostExecute(Boolean rooted) {
-                    super.onPostExecute(rooted);
-                    if (!rooted) { // show a toast if not rooted
-                        ToastHelper.sendToast(context, R.string.toast_not_rooted, LENGTH_SHORT);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                twoStatePreference.setChecked(false);
-                            }
-                        }, context.getResources().getInteger(R.integer.root_check_switch_back_delay));
-                    }
-                }
-            }.execute();
+            });
         }
     }
 
