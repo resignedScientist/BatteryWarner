@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.fragments.history;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -189,49 +191,51 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
     }
 
     private void showRenameDialog() {
-        if (adapter.getCount() == 0) {
-            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
-            return;
-        }
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_rename, null);
-        final EditText editText = (EditText) view.findViewById(R.id.editText);
-        final String oldName = adapter.getFile(viewPager.getCurrentItem()).getName();
-        editText.setText(oldName);
-        AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setCancelable(true)
-                .setTitle(getString(R.string.menu_rename_graph))
-                .setView(view)
-                .setNegativeButton(getString(R.string.dialog_button_cancel), null)
-                .setIcon(R.mipmap.ic_launcher)
-                .setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        String newName = editText.getText().toString();
-                        if (!newName.equals(oldName)) {
-                            if (newName.contains("/")) {
-                                ToastHelper.sendToast(getContext(), R.string.toast_error_renaming_wrong_characters, LENGTH_SHORT);
+        if (adapter.getCount() > 0) {
+            final String oldName = adapter.getFile(viewPager.getCurrentItem()).getName();
+            final Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.dialog_rename);
+            final EditText editText = (EditText) dialog.findViewById(R.id.editText);
+            editText.setText(oldName);
+            Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+            btn_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newName = editText.getText().toString();
+                    if (!newName.equals(oldName)) {
+                        if (newName.contains("/")) {
+                            ToastHelper.sendToast(getContext(), R.string.toast_error_renaming_wrong_characters, LENGTH_SHORT);
+                        } else {
+                            File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
+                            if (newFile.exists()) {
+                                ToastHelper.sendToast(getContext(), String.format(Locale.getDefault(), "%s '%s'!",
+                                        getString(R.string.toast_graph_name_already_exists), newName), LENGTH_SHORT);
+                            } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
+                                textView_fileName.setText(newName);
+                                ToastHelper.sendToast(getContext(), R.string.toast_success_renaming, LENGTH_SHORT);
                             } else {
-                                File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
-                                if (newFile.exists()) {
-                                    ToastHelper.sendToast(getContext(), String.format(Locale.getDefault(), "%s '%s'!",
-                                            getString(R.string.toast_graph_name_already_exists), newName), LENGTH_SHORT);
-                                } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
-                                    textView_fileName.setText(newName);
-                                    ToastHelper.sendToast(getContext(), R.string.toast_success_renaming, LENGTH_SHORT);
-                                } else {
-                                    ToastHelper.sendToast(getContext(), R.string.toast_error_renaming, LENGTH_SHORT);
-                                }
+                                ToastHelper.sendToast(getContext(), R.string.toast_error_renaming, LENGTH_SHORT);
                             }
                         }
                     }
-                })
-                .create();
-        Window window = dialog.getWindow();
-        if (window != null) { // show keyboard
-            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    dialog.dismiss();
+                }
+            });
+            Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            Window window = dialog.getWindow();
+            if (window != null) { // show keyboard
+                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            }
+            dialog.show();
+        } else { // no graphs saved
+            ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
-        dialog.show();
     }
 
     private ArrayList<File> readGraphs() {
