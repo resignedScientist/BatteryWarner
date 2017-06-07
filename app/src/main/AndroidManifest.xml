@@ -96,5 +96,6 @@
         <service android:name=".services.DisableRootFeaturesService" />
         <service android:name=".services.EnableChargingService" />
         <service android:name=".services.GrantRootService" />
+        <service android:name=".services.TogglePowerSavingService" />
     </application>
 </manifest>

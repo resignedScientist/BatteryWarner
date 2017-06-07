@@ -43,9 +43,9 @@
     <string name="intro_finish_toast">Auf dass dein Akku länger lebt!</string>
     <string name="intro_slide_1_description">Diese App hilft deinem Akku, länger zu leben!</string>
     <string name="intro_slide_1_title">Willkommen beim BatteryWarner!</string>
-    <string formatted="false" name="intro_slide_2_description">Laut Hersteller hat der Akku eine höhere Haltbarkeit, wenn man ihn weder zu lange auf 100% lässt, noch komplett entlädt!</string>
+    <string name="intro_slide_2_description" formatted="false">Laut Hersteller hat der Akku eine höhere Haltbarkeit, wenn man ihn weder zu lange auf 100% lässt, noch komplett entlädt!</string>
     <string name="intro_slide_2_title">Wie macht die App das?</string>
-    <string formatted="false" name="intro_slide_3_description">Das bedeutet, dass man den Akkustand z.B. zwischen 20-80% hält, anstatt zwischen 0-100%!</string>
+    <string name="intro_slide_3_description" formatted="false">Das bedeutet, dass man den Akkustand z.B. zwischen 20-80% hält, anstatt zwischen 0-100%!</string>
     <string name="intro_slide_3_title">Für die höchste Haltbarkeit, muss man \"flach\" laden!</string>
     <string name="intro_slide_prefs_description">Stelle hier direkt alles ein!</string>
     <string name="intro_slide_prefs_title">Und los geht\'s!</string>
@@ -161,4 +161,5 @@
     <string name="uninstall_title">Kostenlose Version deinstallieren!</string>
     <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
     <string name="summary_power_saving_mode">Aktiviert den Energiesparmodus, sobald die Batterie-niedrig Warnung erscheint.</string>
+    <string name="notification_button_toggle_power_saving">Energiesparmodus umschalten</string>
 </resources>

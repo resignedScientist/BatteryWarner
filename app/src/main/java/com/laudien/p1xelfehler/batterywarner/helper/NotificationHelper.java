@@ -25,6 +25,7 @@ import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.S
 import com.laudien.p1xelfehler.batterywarner.services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.GrantRootService;
+import com.laudien.p1xelfehler.batterywarner.services.TogglePowerSavingService;
 
 import java.util.Locale;
 
@@ -170,7 +171,7 @@ public final class NotificationHelper {
         SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
-        boolean powerSavingModeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
+        boolean prefPowerSavingModeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
         if (!alreadyNotified && warningLowEnabled) {
             temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
@@ -185,11 +186,8 @@ public final class NotificationHelper {
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
-            NotificationManager notificationManager = (NotificationManager)
-                    context.getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(ID_WARNING_LOW, builder.build());
             // enable power saving mode
-            if (powerSavingModeEnabled) {
+            if (SDK_INT >= LOLLIPOP && prefPowerSavingModeEnabled) {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -201,7 +199,14 @@ public final class NotificationHelper {
                         }
                     }
                 });
+                Intent exitPowerSaveIntent = new Intent(context, TogglePowerSavingService.class);
+                PendingIntent pendingIntent = PendingIntent.getService(context, 0, exitPowerSaveIntent, 0);
+                builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, context.getString(R.string.notification_button_toggle_power_saving), pendingIntent);
             }
+            // build and show notification
+            NotificationManager notificationManager = (NotificationManager)
+                    context.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(ID_WARNING_LOW, builder.build());
         }
     }
 

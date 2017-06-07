@@ -164,6 +164,7 @@
     <string name="notification_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="notification_button_grant_root">Grant root</string>
     <string name="notification_button_enable_charging">Enable charging</string>
+    <string name="notification_button_toggle_power_saving">Toggle power saving mode</string>
     <!-- battery health -->
     <string name="health_good">Good</string>
     <string name="health_unknown">Unknown</string>
