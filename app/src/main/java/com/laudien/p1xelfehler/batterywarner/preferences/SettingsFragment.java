@@ -217,7 +217,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
-            if (twoStatePreference.isChecked()) {
+            if (twoStatePreference != null && twoStatePreference.isChecked()) {
                 RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
             }
             if (preference == pref_stopCharging) {
