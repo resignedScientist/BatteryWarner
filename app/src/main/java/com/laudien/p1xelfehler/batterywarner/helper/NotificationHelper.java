@@ -171,7 +171,7 @@ public final class NotificationHelper {
         SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
-        boolean prefPowerSavingModeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
+        boolean prefPowerSavingModeEnabled = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
         if (!alreadyNotified && warningLowEnabled) {
             temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
