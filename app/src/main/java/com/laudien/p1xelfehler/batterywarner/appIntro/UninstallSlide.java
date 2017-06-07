@@ -12,13 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
-import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragment;
 
 public class UninstallSlide extends SlideFragment {
@@ -41,13 +38,13 @@ public class UninstallSlide extends SlideFragment {
                         @Override
                         public void onReceive(Context context, Intent intent) {
                             if (intent != null && intent.hasExtra(Intent.EXTRA_UID) && intent.getIntExtra(Intent.EXTRA_UID, 0) == packageId) {
-                                ((MaterialIntroActivity) getActivity()).next();
+                                next();
                             }
                         }
                     }, intentFilter);
                     startActivity(uninstallIntent);
                 } catch (PackageManager.NameNotFoundException e) {
-                    ((MaterialIntroActivity) getActivity()).next();
+                    next();
                 }
             }
         });

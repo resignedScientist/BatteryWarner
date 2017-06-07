@@ -1,5 +1,6 @@
 package agency.tango.materialintroscreen;
 
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -165,5 +166,15 @@ public class SlideFragment extends ParallaxFragment {
         List<String> list = new ArrayList<>(permissions);
         list.removeAll(Collections.singleton(null));
         return list.toArray(new String[list.size()]);
+    }
+
+    /**
+     * Skip to the next slide
+     */
+    protected void next() {
+        Activity activity = getActivity();
+        if (activity instanceof MaterialIntroActivity) {
+            ((MaterialIntroActivity) activity).next();
+        }
     }
 }

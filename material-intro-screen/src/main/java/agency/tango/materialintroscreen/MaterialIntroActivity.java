@@ -427,6 +427,13 @@ public abstract class MaterialIntroActivity extends AppCompatActivity {
         return ContextCompat.getColor(this, color);
     }
 
+    /**
+     * Skip to the next slide
+     */
+    protected void next() {
+        nextButton.callOnClick();
+    }
+
     private class ColorTransitionScrollListener implements IPageScrolledListener {
         @Override
         public void pageScrolled(int position, float offset) {
@@ -471,9 +478,5 @@ public abstract class MaterialIntroActivity extends AppCompatActivity {
                 performFinish();
             }
         }
-    }
-
-    public void next(){
-        nextButton.callOnClick();
     }
 }
