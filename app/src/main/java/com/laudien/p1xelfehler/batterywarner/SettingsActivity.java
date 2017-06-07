@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
  */
 public class SettingsActivity extends BaseActivity {
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,7 +27,7 @@ public class SettingsActivity extends BaseActivity {
         toolbar.setTitle(getString(R.string.title_preferences));
         try { // put version code in subtitle of the toolbar
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            toolbar.setSubtitle(pInfo.versionName);
+            toolbar.setSubtitle(String.format("%s (%d)", pInfo.versionName, pInfo.versionCode));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
