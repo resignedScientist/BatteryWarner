@@ -105,7 +105,7 @@
     <string name="title_graph_enabled">Activer la courbe de charge</string>
     <string name="title_high_battery_warning">Alerte de batterie élevée :</string>
     <string name="title_history">Historique</string>
-    <string name="title_info_dark_theme">Appliquer à la notification d'infos</string>
+    <string name="title_info_dark_theme">Appliquer à la notification d\'infos</string>
     <string name="title_info_notification">Notification d\'infos batterie</string>
     <string name="title_info_notification_enabled">Activer la notification d\'infos</string>
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
@@ -114,7 +114,7 @@
     <string name="title_minutes_before">Minutes avant :</string>
     <string name="title_notification_sound">Sonnerie de notification</string>
     <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
-    <string name="title_power_saving_mode">Activer l\\\'économiseur de batterie</string>
+    <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
     <string name="title_preferences">Paramètres</string>
     <string name="title_root_features">Fonctionnalités Root</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
