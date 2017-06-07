@@ -164,4 +164,6 @@
     <string name="notification_button_toggle_power_saving">Toggle power saving mode</string>
     <string name="info_endTime">Finished</string>
     <string name="info_startTime">Start</string>
+    <string name="title_reset_battery_stats">Reset battery stats</string>
+    <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
 </resources>

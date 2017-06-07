@@ -21,7 +21,7 @@
     <string name="pref_enable_sound" translatable="false">enableSound</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
-    <string name="pref_reset_battery_stats">resetBatteryStats</string>
+    <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
