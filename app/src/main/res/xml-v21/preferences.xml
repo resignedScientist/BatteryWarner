@@ -108,6 +108,11 @@
             android:key="@string/pref_power_saving_mode"
             android:summary="@string/summary_power_saving_mode"
             android:title="@string/title_power_saving_mode" />
+        <SwitchPreference
+            android:summary="@string/summary_reset_battery_stats"
+            android:dependency="@string/pref_stop_charging"
+            android:key="@string/pref_reset_battery_stats"
+            android:title="@string/title_reset_battery_stats" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_advanced_features">
         <SwitchPreference

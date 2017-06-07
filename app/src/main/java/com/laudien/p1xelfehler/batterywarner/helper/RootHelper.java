@@ -90,9 +90,26 @@ public final class RootHelper {
         }
     }
 
+    /**
+     * Toggles the power saving mode on or off.
+     * @param turnOn True = turn power saving mode on, False = turn it off
+     * @throws NotRootedException thrown if the app has no root permissions.
+     */
     public static void togglePowerSavingMode(boolean turnOn) throws NotRootedException {
         if (isRootAvailable()) {
             Shell.SU.run("settings put global low_power " + (turnOn ? "1" : "0"));
+        } else {
+            throw new NotRootedException();
+        }
+    }
+
+    /**
+     * Resets the android internal battery stats
+     * @throws NotRootedException thrown if the app has no root permissions.
+     */
+    public static void resetBatteryStats() throws NotRootedException {
+        if (isRootAvailable()){
+            Shell.SU.run("dumpsys batterystats --reset");
         } else {
             throw new NotRootedException();
         }

@@ -142,10 +142,11 @@ public final class NotificationHelper {
         }
     }
 
-    private static void showWarningHighNotification(Context context, SharedPreferences defaultPrefs) {
+    private static void showWarningHighNotification(final Context context, SharedPreferences defaultPrefs) {
         SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningHighEnabled = defaultPrefs.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
         boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
+        boolean resetBatteryStats = defaultPrefs.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
         // show notification
         if (!alreadyNotified && warningHighEnabled) {
             temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
@@ -164,6 +165,20 @@ public final class NotificationHelper {
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_WARNING_HIGH, builder.build());
+            // reset the android internal battery stats
+            if (resetBatteryStats){
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootHelper.resetBatteryStats();
+                        } catch (RootHelper.NotRootedException e) {
+                            e.printStackTrace();
+                            showNotRootedNotification(context);
+                        }
+                    }
+                });
+            }
         }
     }
 

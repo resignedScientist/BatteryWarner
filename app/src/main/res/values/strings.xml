@@ -21,6 +21,7 @@
     <string name="pref_enable_sound" translatable="false">enableSound</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
+    <string name="pref_reset_battery_stats">resetBatteryStats</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
@@ -96,6 +97,7 @@
     <string name="title_charging_limit">Charging limit:</string>
     <string name="title_smart_charging_enabled">Smart Charging enabled</string>
     <string name="title_power_saving_mode">Enable power saving mode</string>
+    <string name="title_reset_battery_stats">Reset battery stats</string>
     <!-- other titles -->
     <string name="title_preferences">Preferences</string>
     <string name="title_main_page">Main page</string>
@@ -109,6 +111,7 @@
     <string name="summary_dependency">has to be enabled for that!</string>
     <string name="summary_disabled">Disabled</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
+    <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
