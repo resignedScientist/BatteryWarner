@@ -161,5 +161,7 @@
     <string name="uninstall_go">Désinstallez-la !</string>
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
+
+    <!-- new strings -->
     <string name="notification_button_toggle_power_saving">Toggle power saving mode</string>
 </resources>

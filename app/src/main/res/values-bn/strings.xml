@@ -29,13 +29,11 @@
     <string name="info_charging_speed">চার্জের গতি</string>
     <string name="info_charging_time">চার্জের সময়</string>
     <string name="info_current">বিদ্যুৎ</string>
-    <string name="info_endTime">Finished</string>
     <string name="info_health">স্বাস্থ্য</string>
     <string name="info_max_temp">সর্বোচ্চ তাপমাত্রা</string>
     <string name="info_min_temp">সর্বনিম্ন তাপমাত্রা</string>
     <string name="info_screen_off">স্ক্রিন বন্ধ</string>
     <string name="info_screen_on">স্ক্রিন চালু</string>
-    <string name="info_startTime">Start</string>
     <string name="info_technology">প্রযুক্তি</string>
     <string name="info_temperature">তাপমাত্রা</string>
     <string name="info_voltage">ভোল্টেজ</string>
@@ -81,7 +79,6 @@
     <string name="summary_disabled">বন্ধ</string>
     <string name="summary_discharging_service_enabled">যে কোন সময় ব্যাকগ্রাউন্ডে অ্যাপ সার্ভিস চালু করবে!</string>
     <string name="summary_info_dark_theme">ব্যাটারির তথ্য নোটিফিকেশনের জন্যও কাল থিম ব্যবহার।</string>
-    <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
     <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে। আপাতত সব মোবাইলে এটা কাজ করবে না! আপাতত সব মোবাইলে এটা কাজ করবে না!</string>
     <string name="summary_usb_charging_disabled">পিসিতে ইউএসবি সংযোগ করলেও চার্জ হবে না, চার্জিং বন্ধ করবে।</string>
 
@@ -114,7 +111,6 @@
     <string name="title_minutes_before">মিনিট আগে:</string>
     <string name="title_notification_sound">নোটিফিকেশন শব্দ সংকেত</string>
     <string name="title_notifications_off_warning">সতর্ক করা হবে যদি শব্দ-সংকেত বন্ধ থাকে</string>
-    <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_preferences">ব্যবস্থাপনা</string>
     <string name="title_root_features">রুট সেবাসমূহ</string>
     <string name="title_smart_charging">স্মার্ট চার্জিং [রুট]</string>
@@ -161,5 +157,11 @@
     <string name="uninstall_go">আনইন্সটল করুন!</string>
     <string name="uninstall_text">ক্রয়কৃত অ্যাপ এবং ফ্রী অ্যাপ দুটোই ইন্সটল করা আছে! দয়া করে ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
     <string name="uninstall_title">ফ্রী অ্যাপটি আগে আনইন্সটল করে নিন!</string>
+
+    <!-- new strings -->
+    <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
+    <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="notification_button_toggle_power_saving">Toggle power saving mode</string>
+    <string name="info_endTime">Finished</string>
+    <string name="info_startTime">Start</string>
 </resources>
