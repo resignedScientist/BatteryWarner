@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.fragments.HistoryFragment;
+package com.laudien.p1xelfehler.batterywarner.fragments.history;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
