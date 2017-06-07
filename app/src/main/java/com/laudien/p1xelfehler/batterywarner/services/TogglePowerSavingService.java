@@ -11,6 +11,10 @@ import android.support.annotation.RequiresApi;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 
+/**
+ * An IntentService called by the app that toggles power saving mode.
+ * It automatically checks if the power saving mode is enabled and toggles it on/off.
+ */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class TogglePowerSavingService extends IntentService {
     public TogglePowerSavingService() {
