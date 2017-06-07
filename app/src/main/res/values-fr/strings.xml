@@ -65,6 +65,7 @@
 
     <string name="notification_button_enable_charging">Activer la charge</string>
     <string name="notification_button_grant_root">Accorder l\'accès Root</string>
+    <string name="notification_button_toggle_power_saving">Basculer en mode d\'économiseur de batterie</string>
     <string name="notification_charging_disabled">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
     <string name="notification_grant_root">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="notification_message_no_items_enabled">Aucun élément activé !</string>
@@ -82,6 +83,7 @@
     <string name="summary_discharging_service_enabled">Exécute en permanence un service en arrière-plan !</string>
     <string name="summary_info_dark_theme">Utilise le thème sombre également pour la notification d\'infos batterie.</string>
     <string name="summary_power_saving_mode">Active l\'économiseur de batterie quand l\'alerte de batterie faible est déclenchée</string>
+    <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de \l'alerte de batterie élevée.</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
     <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB (ne fonctionne pas pour tous les appareils).</string>
 
@@ -116,6 +118,7 @@
     <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
     <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
     <string name="title_preferences">Paramètres</string>
+    <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie</string>
     <string name="title_root_features">Fonctionnalités Root</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
     <string name="title_smart_charging_enabled">Smart Charging activé</string>
@@ -163,7 +166,4 @@
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
 
     <!-- new strings -->
-    <string name="notification_button_toggle_power_saving">Basculer en mode d\'économiseur de batterie</string>
-    <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie</string>
-    <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de \l'alerte de batterie élevée.</string>
 </resources>
