@@ -164,6 +164,6 @@
 
     <!-- new strings -->
     <string name="notification_button_toggle_power_saving">Basculer en mode d\'économiseur de batterie</string>
-    <string name="title_reset_battery_stats">Reset battery stats</string>
-    <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
+    <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie</string>
+    <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de \l'alerte de batterie élevée.</string>
 </resources>
