@@ -472,4 +472,8 @@ public abstract class MaterialIntroActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void next(){
+        nextButton.callOnClick();
+    }
 }
