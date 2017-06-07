@@ -25,6 +25,8 @@ public class DisableRootFeaturesService extends Service {
                 .putBoolean(getString(R.string.pref_stop_charging), false)
                 .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
                 .putBoolean(getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(getString(R.string.pref_power_saving_mode), false)
+                .putBoolean(getString(R.string.pref_reset_battery_stats), false)
                 .apply();
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
