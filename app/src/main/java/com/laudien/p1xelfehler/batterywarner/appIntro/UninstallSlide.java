@@ -1,6 +1,9 @@
 package com.laudien.p1xelfehler.batterywarner.appIntro;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
+import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragment;
 
 public class UninstallSlide extends SlideFragment {
@@ -25,9 +31,24 @@ public class UninstallSlide extends SlideFragment {
         uninstallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("package:" + AppInfoHelper.PACKAGE_NAME_FREE);
-                Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri);
-                startActivity(uninstallIntent);
+                try {
+                    final int packageId = getContext().getPackageManager().getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, 0).applicationInfo.uid;
+                    Uri uri = Uri.parse("package:" + AppInfoHelper.PACKAGE_NAME_FREE);
+                    Intent uninstallIntent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE, uri);
+                    IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
+                    intentFilter.addDataScheme("package");
+                    getContext().registerReceiver(new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent != null && intent.hasExtra(Intent.EXTRA_UID) && intent.getIntExtra(Intent.EXTRA_UID, 0) == packageId) {
+                                ((MaterialIntroActivity) getActivity()).next();
+                            }
+                        }
+                    }, intentFilter);
+                    startActivity(uninstallIntent);
+                } catch (PackageManager.NameNotFoundException e) {
+                    ((MaterialIntroActivity) getActivity()).next();
+                }
             }
         });
         return view;
