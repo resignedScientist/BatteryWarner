@@ -15,11 +15,11 @@ import static com.laudien.p1xelfehler.batterywarner.fragments.history.HistoryPag
  * A FragmentStatePagerAdapter that is used by the HistoryFragment to load HistoryPageFragments
  * into a ViewPager.
  */
-class HistoryPagerAdapter extends FragmentStatePagerAdapter {
+public class HistoryPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<File> files;
     private HistoryPageFragment currentFragment; // the current item
 
-    HistoryPagerAdapter(FragmentManager fm, ArrayList<File> files) {
+    public HistoryPagerAdapter(FragmentManager fm, ArrayList<File> files) {
         super(fm);
         this.files = files;
     }
@@ -56,7 +56,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
      *
      * @return Returns the fragment that is currently shown in the foreground.
      */
-    HistoryPageFragment getCurrentFragment() {
+    public HistoryPageFragment getCurrentFragment() {
         return currentFragment;
     }
 
@@ -66,7 +66,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
      * @param position The position of the fragment in the ViewPager.
      * @return Returns true, if the file was successfully removed, false if not.
      */
-    boolean removeItem(int position) {
+    public boolean removeItem(int position) {
         if (position < files.size() && position >= 0) {
             File file = files.get(position);
             if (file.delete()) {
@@ -78,7 +78,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
         return false;
     }
 
-    boolean removeAllItems() {
+    public boolean removeAllItems() {
         if (!files.isEmpty()) {
             for (File f : files) {
                 if (!f.delete()) {
@@ -99,7 +99,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
      * @param position The position of the fragment in the ViewPager.
      * @return Returns the database file of the fragment at the given position.
      */
-    File getFile(int position) {
+    public File getFile(int position) {
         if (!files.isEmpty()) {
             return files.get(position);
         } else {
@@ -114,7 +114,7 @@ class HistoryPagerAdapter extends FragmentStatePagerAdapter {
      * @param newFile  The new file with the new name to which the file should be renamed.
      * @return Returns true, if the renaming was successful, false if not.
      */
-    boolean renameFile(int position, File newFile) {
+    public boolean renameFile(int position, File newFile) {
         if (position < files.size() && position >= 0) {
             File oldFile = files.get(position);
             if (oldFile.renameTo(newFile)) {
