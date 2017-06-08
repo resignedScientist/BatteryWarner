@@ -43,9 +43,11 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintTop_toTopOf="@+id/img_battery"
         android:layout_marginTop="8dp"
-        tools:layout_editor_absoluteX="946dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toEndOf="@+id/fragment_battery_info"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="1.0" />
 
     <fragment
         android:id="@+id/fragment_graph"
