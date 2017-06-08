@@ -15,17 +15,12 @@
         android:layout_marginRight="16dp"
         app:srcCompat="@drawable/ic_battery_status_full_white_128dp" />
 
-    <ScrollView
+    <fragment
+        android:id="@+id/fragment_battery_info"
+        android:name="com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical">
-
-        <fragment
-            android:id="@+id/fragment_battery_info"
-            android:name="com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
 
     <Space
         android:layout_width="match_parent"

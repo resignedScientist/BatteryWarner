@@ -1,11 +1,11 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -100,11 +100,19 @@ class InfoObject {
      * @param context An instance of the Context class.
      */
     void showDialog(Context context) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_graph_info, null);
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_graph_info);
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        // close button
+        Button btn_close = (Button) dialog.findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         // charging time
-        TextView textView_totalTime = (TextView) view.findViewById(R.id.textView_totalTime);
+        TextView textView_totalTime = (TextView) dialog.findViewById(R.id.textView_totalTime);
         textView_totalTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -112,7 +120,7 @@ class InfoObject {
                 getTimeString(context))
         );
         // start time
-        TextView textView_startTime = (TextView) view.findViewById(R.id.textView_startTime);
+        TextView textView_startTime = (TextView) dialog.findViewById(R.id.textView_startTime);
         textView_startTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -120,7 +128,7 @@ class InfoObject {
                 dateFormat.format(startTime)
         ));
         // end time
-        TextView textView_endTime = (TextView) view.findViewById(R.id.textView_endTime);
+        TextView textView_endTime = (TextView) dialog.findViewById(R.id.textView_endTime);
         textView_endTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -128,7 +136,7 @@ class InfoObject {
                 dateFormat.format(endTime)
         ));
         // charging speed
-        TextView textView_speed = (TextView) view.findViewById(R.id.textView_speed);
+        TextView textView_speed = (TextView) dialog.findViewById(R.id.textView_speed);
         double speed = percentCharged * 60 / timeInMinutes;
         if (Double.isNaN(speed)) {
             textView_speed.setText(String.format(
@@ -146,7 +154,7 @@ class InfoObject {
             );
         }
         // max temperature
-        TextView textView_maxTemp = (TextView) view.findViewById(R.id.textView_maxTemp);
+        TextView textView_maxTemp = (TextView) dialog.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
@@ -154,22 +162,15 @@ class InfoObject {
                 maxTemp)
         );
         // min temperature
-        TextView textView_minTemp = (TextView) view.findViewById(R.id.textView_minTemp);
+        TextView textView_minTemp = (TextView) dialog.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
                 context.getString(R.string.info_min_temp),
                 minTemp)
         );
-        // build dialog
-        new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.dialog_title_graph_info))
-                .setView(view)
-                .setCancelable(true)
-                .setPositiveButton(context.getString(R.string.dialog_button_close), null)
-                .setIcon(R.mipmap.ic_launcher)
-                .create()
-                .show();
+        // show dialog
+        dialog.show();
     }
 
     /**

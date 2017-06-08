@@ -1,14 +1,28 @@
 <resources>
 
     <!-- Default theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <!-- Dark Theme -->
-    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" />
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar" />
+
+    <!-- Toolbar style -->
+    <style name="BaseToolbarStyle">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="titleTextColor">@android:color/primary_text_dark</item>
+        <item name="subtitleTextColor">@android:color/secondary_text_dark</item>
+        <item name="colorControlNormal">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:theme">@style/BaseToolbarStyle</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="BaseToolbarStyle" />
 
     <!-- TabLayout Theme -->
     <style name="TabLayoutTheme" parent="Widget.Design.TabLayout">

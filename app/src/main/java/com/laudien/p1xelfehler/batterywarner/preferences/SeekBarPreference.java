@@ -1,14 +1,13 @@
 package com.laudien.p1xelfehler.batterywarner.preferences;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.preference.Preference;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -156,22 +155,29 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     }
 
     private void showDialog() {
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        View view = layoutInflater.inflate(R.layout.dialog_number_picker, null);
-        final NumberPicker numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_number_picker);
+        final NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.numberPicker);
         numberPicker.setMinValue(min);
         numberPicker.setMaxValue(max);
         numberPicker.setValue(getValue());
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        new AlertDialog.Builder(getContext())
-                .setView(view)
-                .setNegativeButton(R.string.dialog_button_cancel, null)
-                .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        setValue(numberPicker.getValue());
-                    }
-                }).create().show();
+        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setValue(numberPicker.getValue());
+                dialog.dismiss();
+            }
+        });
+        Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private int getValue() {

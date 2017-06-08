@@ -1363,7 +1363,7 @@ public class CustomViewPager extends ViewGroup {
                     int widthMode = MeasureSpec.AT_MOST;
                     int heightMode = MeasureSpec.AT_MOST;
                     boolean consumeVertical = vgrav == Gravity.TOP || vgrav == Gravity.BOTTOM;
-                    boolean consumeHorizontal = hgrav == Gravity.LEFT || hgrav == Gravity.RIGHT;
+                    boolean consumeHorizontal = hgrav == Gravity.START || hgrav == Gravity.END;
 
                     if (consumeVertical) {
                         widthMode = MeasureSpec.EXACTLY;
@@ -1489,7 +1489,7 @@ public class CustomViewPager extends ViewGroup {
                         default:
                             childLeft = paddingLeft;
                             break;
-                        case Gravity.LEFT:
+                        case Gravity.START:
                             childLeft = paddingLeft;
                             paddingLeft += child.getMeasuredWidth();
                             break;
@@ -1497,7 +1497,7 @@ public class CustomViewPager extends ViewGroup {
                             childLeft = Math.max((width - child.getMeasuredWidth()) / 2,
                                     paddingLeft);
                             break;
-                        case Gravity.RIGHT:
+                        case Gravity.END:
                             childLeft = width - paddingRight - child.getMeasuredWidth();
                             paddingRight += child.getMeasuredWidth();
                             break;
@@ -1663,7 +1663,7 @@ public class CustomViewPager extends ViewGroup {
                     default:
                         childLeft = paddingLeft;
                         break;
-                    case Gravity.LEFT:
+                    case Gravity.START:
                         childLeft = paddingLeft;
                         paddingLeft += child.getWidth();
                         break;
@@ -1671,7 +1671,7 @@ public class CustomViewPager extends ViewGroup {
                         childLeft = Math.max((width - child.getMeasuredWidth()) / 2,
                                 paddingLeft);
                         break;
-                    case Gravity.RIGHT:
+                    case Gravity.END:
                         childLeft = width - paddingRight - child.getMeasuredWidth();
                         paddingRight += child.getMeasuredWidth();
                         break;

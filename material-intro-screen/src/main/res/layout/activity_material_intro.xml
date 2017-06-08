@@ -6,9 +6,9 @@
     android:id="@+id/coordinator_layout_slide"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:background="@android:color/transparent"
     android:orientation="vertical">
 
     <agency.tango.materialintroscreen.widgets.OverScrollViewPager
@@ -46,10 +46,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:background="@drawable/button_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_previous"
-                android:visibility="invisible" />
+                android:scaleX="-1"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_next" />
 
             <ImageButton
                 android:id="@+id/button_skip"
@@ -57,10 +59,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:background="@drawable/button_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_skip"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_skip" />
 
             <agency.tango.materialintroscreen.widgets.InkPageIndicator
                 android:id="@+id/indicator"
@@ -80,10 +83,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/button_background"
                 android:padding="16dp"
-                android:src="@drawable/ic_next" />
+                app:srcCompat="@drawable/ic_next" />
         </LinearLayout>
     </LinearLayout>
 

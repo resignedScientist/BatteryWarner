@@ -8,4 +8,14 @@
     <style name="InfoNotificationTextStyle.Dark" parent="InfoNotificationTextStyle">
         <item name="android:textColor">@android:color/primary_text_dark</item>
     </style>
+
+    <!-- dark notification theme -->
+    <style name="AppTheme.Dark.Notification">
+        <item name="android:background">@color/dark_background</item>
+    </style>
+
+    <!-- Toolbar style -->
+    <style name="ToolbarStyle" parent="BaseToolbarStyle">
+        <item name="android:elevation">4dp</item>
+    </style>
 </resources>
