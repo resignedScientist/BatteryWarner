@@ -83,7 +83,7 @@
     <string name="summary_discharging_service_enabled">Exécute en permanence un service en arrière-plan !</string>
     <string name="summary_info_dark_theme">Utilise le thème sombre également pour la notification d\'infos batterie.</string>
     <string name="summary_power_saving_mode">Active l\'économiseur de batterie quand l\'alerte de batterie faible est déclenchée</string>
-    <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de \l'alerte de batterie élevée.</string>
+    <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de l\'alerte de batterie élevée.</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
     <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB (ne fonctionne pas pour tous les appareils).</string>
 
