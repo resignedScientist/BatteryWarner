@@ -65,6 +65,4 @@
             android:textSize="@dimen/text_size_battery_info"
             tools:text="Screen off: 33,33 %/h" />
     </LinearLayout>
-
-
 </ScrollView>
