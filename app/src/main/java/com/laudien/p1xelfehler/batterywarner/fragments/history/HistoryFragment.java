@@ -13,8 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -24,6 +22,7 @@ import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.io.File;
@@ -228,11 +227,9 @@ public class HistoryFragment extends Fragment implements View.OnClickListener, V
                     dialog.dismiss();
                 }
             });
-            Window window = dialog.getWindow();
-            if (window != null) { // show keyboard
-                window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }
             dialog.show();
+            // show keyboard
+            KeyboardHelper.showKeyboard(dialog.getWindow());
         } else { // no graphs saved
             ToastHelper.sendToast(getContext(), R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
