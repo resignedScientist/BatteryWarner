@@ -11,10 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.ImageHelper;
+import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_LOW;
@@ -35,20 +34,20 @@ public class MainPageFragment extends Fragment {
         boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         setHasOptionsMenu(dischargingServiceEnabled);
         View view = inflater.inflate(R.layout.fragment_main_page, container, false);
-        final ImageView img_battery = (ImageView) view.findViewById(R.id.img_battery);
+        final BatteryView img_battery = (BatteryView) view.findViewById(R.id.img_battery);
         infoFragment = (BatteryInfoFragment) getChildFragmentManager().findFragmentById(R.id.fragment_battery_info);
         infoFragment.setOnBatteryColorChangedListener(new BatteryInfoFragment.OnBatteryColorChangedListener() {
             @Override
             public void onColorChanged(byte colorID) {
                 switch (colorID) {
                     case COLOR_LOW:
-                        ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryLow), img_battery);
+                        img_battery.setColor(getContext().getResources().getColor(R.color.colorBatteryLow));
                         break;
                     case COLOR_OK:
-                        ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryOk), img_battery);
+                        img_battery.setColor(getContext().getResources().getColor(R.color.colorBatteryOk));
                         break;
                     case COLOR_HIGH:
-                        ImageHelper.setImageColor(getContext().getResources().getColor(R.color.colorBatteryHigh), img_battery);
+                        img_battery.setColor(getContext().getResources().getColor(R.color.colorBatteryHigh));
                         break;
                 }
             }

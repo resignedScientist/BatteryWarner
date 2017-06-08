@@ -5,4 +5,7 @@
         <attr name="slider_min" format="integer" />
         <attr name="unit" format="string" />
     </declare-styleable>
+    <declare-styleable name="BatteryView">
+        <attr name="color" format="color" />
+    </declare-styleable>
 </resources>

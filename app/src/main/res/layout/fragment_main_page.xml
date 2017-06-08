@@ -6,7 +6,7 @@
     android:padding="16dp">
 
 
-    <ImageView
+    <com.laudien.p1xelfehler.batterywarner.views.BatteryView
         android:id="@+id/img_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
