@@ -197,7 +197,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         }
     }
 
-    interface OnBatteryColorChangedListener {
+    public interface OnBatteryColorChangedListener {
         void onColorChanged(byte colorID);
     }
 }
