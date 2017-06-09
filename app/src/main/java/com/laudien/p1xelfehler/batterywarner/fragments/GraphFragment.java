@@ -110,7 +110,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         // rename the file if it already exists
         File outputFile = new File(outputFileDir);
         String baseFileDir = outputFileDir;
-        for (byte i = 1; outputFile.exists() && i < 127; i++){
+        for (byte i = 1; outputFile.exists() && i < 127; i++) {
             outputFileDir = baseFileDir + " (" + i + ")";
             outputFile = new File(outputFileDir);
         }
@@ -118,7 +118,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         try {
             File directory = new File(DATABASE_HISTORY_PATH);
             if (!directory.exists()) {
-                if (!directory.mkdirs()){
+                if (!directory.mkdirs()) {
                     return false;
                 }
             }
@@ -205,7 +205,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         int id = item.getItemId();
         if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
             ToastHelper.sendToast(getContext(), R.string.toast_not_pro_short, LENGTH_SHORT);
-            return false;
+            return true;
         }
         switch (id) {
             case R.id.menu_reset:
@@ -218,7 +218,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 } else {
                     ToastHelper.sendToast(getContext(), R.string.toast_disabled_in_settings, LENGTH_SHORT);
                 }
-                break;
+                return true;
             case R.id.menu_open_history:
                 openHistory();
                 return true;
@@ -228,8 +228,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             case R.id.menu_info:
                 showInfo();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
