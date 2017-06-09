@@ -2,8 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title"
+        app:layout_constraintTop_toBottomOf="@+id/title"
         tools:text="Start: 19.02.2017 14:28 Uhr" />
 
     <TextView
@@ -68,9 +68,12 @@
         tools:text="Minimale Temperatur: 20°C" />
 
     <TextView
-        android:id="@+id/textView_title"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/ic_launcher"
+        android:drawableStart="@mipmap/ic_launcher"
+        android:gravity="center_vertical"
         android:text="@string/dialog_title_graph_info"
         android:textAppearance="@android:style/TextAppearance.DialogWindowTitle"
         app:layout_constraintEnd_toEndOf="parent"
