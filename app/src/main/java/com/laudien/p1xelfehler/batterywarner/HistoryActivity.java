@@ -82,18 +82,19 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         switch (item.getItemId()) {
             case R.id.menu_rename:
                 showRenameDialog();
-                break;
+                return true;
             case R.id.menu_delete:
                 showDeleteDialog();
-                break;
+                return true;
             case R.id.menu_delete_all:
                 showDeleteAllDialog();
-                break;
+                return true;
             case R.id.menu_info:
                 showGraphInfo();
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
     }
 
     @Override

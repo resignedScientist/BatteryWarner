@@ -17,7 +17,6 @@ import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
-import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
@@ -101,8 +100,10 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
