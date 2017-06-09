@@ -21,8 +21,6 @@ import java.io.File;
  * Provides some functionality to change or remove the file.
  */
 public class HistoryPageFragment extends BasicGraphFragment {
-
-    private static final int PERMISSION_REQUEST_CODE = 70;
     /**
      * The key for the file path in the argument bundle.
      */
