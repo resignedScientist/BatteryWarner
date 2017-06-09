@@ -8,12 +8,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -21,7 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.fragments.history.HistoryPagerAdapter;
+import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
@@ -38,6 +42,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
+import static com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment.EXTRA_FILE_PATH;
 
 /**
  * Activity that shows all the charging curves that were saved.
@@ -57,6 +62,13 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         setToolbarTitle(getString(R.string.title_history));
+        textView_nothingSaved = (TextView) findViewById(R.id.textView_nothingSaved);
+        textView_fileName = (TextView) findViewById(R.id.textView_fileName);
+        btn_next = (ImageButton) findViewById(R.id.btn_next);
+        btn_next.setOnClickListener(this);
+        btn_prev = (ImageButton) findViewById(R.id.btn_prev);
+        btn_prev.setOnClickListener(this);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
         // check for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -67,8 +79,9 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                     },
                     PERMISSION_REQUEST_CODE
             );
+        } else {
+            loadFragment();
         }
-        loadFragment();
     }
 
     @Override
@@ -106,18 +119,11 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                     return;
                 }
             }
-            loadFragment();
+            recreate();
         }
     }
 
     private void loadFragment() {
-        textView_nothingSaved = (TextView) findViewById(R.id.textView_nothingSaved);
-        textView_fileName = (TextView) findViewById(R.id.textView_fileName);
-        btn_next = (ImageButton) findViewById(R.id.btn_next);
-        btn_next.setOnClickListener(this);
-        btn_prev = (ImageButton) findViewById(R.id.btn_prev);
-        btn_prev.setOnClickListener(this);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
         adapter = new HistoryPagerAdapter(getSupportFragmentManager(), readGraphs());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
@@ -347,5 +353,120 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     public void onClick(View v) {
         viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
+    }
+
+    /**
+     * A FragmentStatePagerAdapter that loads HistoryPageFragments into the ViewPager.
+     */
+    private class HistoryPagerAdapter extends FragmentStatePagerAdapter {
+        private ArrayList<File> files;
+        private HistoryPageFragment currentFragment; // the current item
+
+        HistoryPagerAdapter(FragmentManager fm, ArrayList<File> files) {
+            super(fm);
+            this.files = files;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            HistoryPageFragment fragment = new HistoryPageFragment();
+            Bundle bundle = new Bundle(1);
+            bundle.putString(EXTRA_FILE_PATH, files.get(position).getPath());
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return files.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            if (currentFragment != object) {
+                currentFragment = (HistoryPageFragment) object;
+            }
+            super.setPrimaryItem(container, position, object);
+        }
+
+        /**
+         * Returns the fragment that is currently shown in the foreground.
+         *
+         * @return Returns the fragment that is currently shown in the foreground.
+         */
+        HistoryPageFragment getCurrentFragment() {
+            return currentFragment;
+        }
+
+        /**
+         * Removes the database file of the fragment at the given position.
+         *
+         * @param position The position of the fragment in the ViewPager.
+         * @return Returns true, if the file was successfully removed, false if not.
+         */
+        boolean removeItem(int position) {
+            if (position < files.size() && position >= 0) {
+                File file = files.get(position);
+                if (file.delete()) {
+                    files.remove(file);
+                    notifyDataSetChanged();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        boolean removeAllItems() {
+            if (!files.isEmpty()) {
+                for (File f : files) {
+                    if (!f.delete()) {
+                        return false;
+                    }
+                }
+                files = new ArrayList<>();
+                notifyDataSetChanged();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * Get the database file of the fragment at the given position.
+         *
+         * @param position The position of the fragment in the ViewPager.
+         * @return Returns the database file of the fragment at the given position.
+         */
+        File getFile(int position) {
+            if (!files.isEmpty()) {
+                return files.get(position);
+            } else {
+                return null;
+            }
+        }
+
+        /**
+         * Rename the history file of a given position.
+         *
+         * @param position The position of the fragment in the ViewPager.
+         * @param newFile  The new file with the new name to which the file should be renamed.
+         * @return Returns true, if the renaming was successful, false if not.
+         */
+        boolean renameFile(int position, File newFile) {
+            if (position < files.size() && position >= 0) {
+                File oldFile = files.get(position);
+                if (oldFile.renameTo(newFile)) {
+                    files.set(position, newFile);
+                    notifyDataSetChanged();
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

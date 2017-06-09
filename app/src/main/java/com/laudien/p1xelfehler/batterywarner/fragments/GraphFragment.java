@@ -40,7 +40,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
@@ -436,11 +435,11 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * Starts the HistoryActivity after asking for the storage permission.
      */
     public void openHistory() {
-        if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+        //if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
             startActivity(new Intent(getContext(), HistoryActivity.class)); // open history
-        } else { // permission not granted -> ask for permission
+        /*} else { // permission not granted -> ask for permission
             requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_OPEN_HISTORY);
-        }
+        }*/
     }
 
     private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
