@@ -45,18 +45,9 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:text="Ladezeit: 999s" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="384dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="397dp" />
-
     <Switch
         android:id="@+id/switch_percentage"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
@@ -69,7 +60,7 @@
 
     <Switch
         android:id="@+id/switch_temp"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
