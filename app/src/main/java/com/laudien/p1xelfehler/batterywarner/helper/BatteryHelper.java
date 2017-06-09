@@ -19,7 +19,6 @@ import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT;
 import static android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE;
 import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
-import static android.os.BatteryManager.BATTERY_PROPERTY_CURRENT_NOW;
 import static android.os.BatteryManager.EXTRA_HEALTH;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
@@ -198,7 +197,7 @@ public class BatteryHelper {
             setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-                setCurrent(batteryManager.getLongProperty(BATTERY_PROPERTY_CURRENT_NOW), context);
+                setCurrent(batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
             }
             setScreenOn(BatteryHelper.getScreenOn(context), context);
             setScreenOff(BatteryHelper.getScreenOff(context), context);

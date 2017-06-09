@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -444,6 +445,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {

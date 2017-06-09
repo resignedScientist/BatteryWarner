@@ -122,7 +122,7 @@
     <string name="intro_slide_2_title">How does it do that?</string>
     <string name="intro_slide_2_description" formatted="false">Manufacturers say that your battery has a longer life, if you do not let the battery too long at 100% or reach 0%!</string>
     <string name="intro_slide_3_title">For the longest life, you have to charge \"flat\"!</string>
-    <string name="intro_slide_3_description" formatted="false">That means keeping the battery level for example between 20–80% instead of 0-100%!</string>
+    <string name="intro_slide_3_description" formatted="false">That means keeping the battery level for example between 20–80% instead of 0–100%!</string>
     <string name="intro_slide_prefs_title">Let\'s get started!</string>
     <string name="intro_slide_prefs_description">Choose your settings right here!</string>
     <string name="intro_slide_thank_you_title">Thank you for purchasing the pro Version!</string>

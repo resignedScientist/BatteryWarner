@@ -14,8 +14,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
-import static android.service.quicksettings.Tile.STATE_ACTIVE;
-import static android.service.quicksettings.Tile.STATE_INACTIVE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
@@ -47,13 +45,13 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             }
             // set state from shared preferences
             if (isEnabled) {
-                tile.setState(STATE_ACTIVE);
+                tile.setState(Tile.STATE_ACTIVE);
             } else {
-                tile.setState(STATE_INACTIVE);
+                tile.setState(Tile.STATE_INACTIVE);
             }
 
         } else { // free version
-            tile.setState(STATE_INACTIVE);
+            tile.setState(Tile.STATE_INACTIVE);
         }
         tile.updateTile();
     }
@@ -79,7 +77,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_finish_intro_first, LENGTH_SHORT);
             return;
         }
-        boolean isActive = tile.getState() == STATE_ACTIVE;
+        boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
@@ -89,7 +87,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
 
         if (isActive) { // disable battery warnings
             Log.d(TAG, "Disabling battery warnings...");
-            tile.setState(STATE_INACTIVE);
+            tile.setState(Tile.STATE_INACTIVE);
             if (!isCharging) { // discharging
                 DischargingAlarmReceiver.cancelDischargingAlarm(this);
             }
@@ -122,7 +120,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_is_enabled))) {
             boolean isEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_is_enabled_default));
-            tile.setState(isEnabled ? STATE_ACTIVE : STATE_INACTIVE);
+            tile.setState(isEnabled ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         }
     }
 }

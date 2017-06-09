@@ -45,7 +45,7 @@
     <string name="intro_slide_1_title">Bienvenue dans Battery Warner !</string>
     <string name="intro_slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement à 100% la batterie ou de ne pas la laisser se vider à 0% afin d\'allonger sa durée de vie.</string>
     <string name="intro_slide_2_title">Comment cela fonctionne ?</string>
-    <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0-100%</string>
+    <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0–100%</string>
     <string name="intro_slide_3_title">Pour augmenter cette durée de vie, vous devez donc changer vos comportements habituels !</string>
     <string name="intro_slide_prefs_description">Modifiez les paramètres ici !</string>
     <string name="intro_slide_prefs_title">C\'est parti !</string>

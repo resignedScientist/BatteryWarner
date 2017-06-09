@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -24,7 +25,6 @@ import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
 import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
-import static android.os.BatteryManager.BATTERY_PLUGGED_WIRELESS;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
@@ -156,7 +156,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_ac_enabled), context.getResources().getBoolean(R.bool.pref_ac_enabled_default));
             case BATTERY_PLUGGED_USB:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_usb_enabled), context.getResources().getBoolean(R.bool.pref_usb_enabled_default));
-            case BATTERY_PLUGGED_WIRELESS:
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_wireless_enabled), context.getResources().getBoolean(R.bool.pref_wireless_enabled_default));
             default: // discharging or unknown charging type
                 return false;
@@ -292,7 +292,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 return acEnabled;
             case BATTERY_PLUGGED_USB:
                 return usbEnabled;
-            case BATTERY_PLUGGED_WIRELESS:
+            case BatteryManager.BATTERY_PLUGGED_WIRELESS:
                 return wirelessEnabled;
             default: // discharging
                 return false;

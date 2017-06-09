@@ -45,7 +45,7 @@
     <string name="intro_slide_1_title">Willkommen beim BatteryWarner!</string>
     <string name="intro_slide_2_description" formatted="false">Laut Hersteller hat der Akku eine höhere Haltbarkeit, wenn man ihn weder zu lange auf 100% lässt, noch komplett entlädt!</string>
     <string name="intro_slide_2_title">Wie macht die App das?</string>
-    <string name="intro_slide_3_description" formatted="false">Das bedeutet, dass man den Akkustand z.B. zwischen 20-80% hält, anstatt zwischen 0-100%!</string>
+    <string name="intro_slide_3_description" formatted="false">Das bedeutet, dass man den Akkustand z.B. zwischen 20–80% hält, anstatt zwischen 0–100%!</string>
     <string name="intro_slide_3_title">Für die höchste Haltbarkeit, muss man \"flach\" laden!</string>
     <string name="intro_slide_prefs_description">Stelle hier direkt alles ein!</string>
     <string name="intro_slide_prefs_title">Und los geht\'s!</string>

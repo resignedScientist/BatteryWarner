@@ -18,45 +18,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        tools:background="@color/colorBatteryOk"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:srcCompat="@drawable/ic_battery_status_full_white_128dp" />
+        app:srcCompat="@drawable/ic_battery_status_full_white_128dp"
+        tools:background="@color/colorBatteryOk" />
 
     <fragment
         android:id="@+id/fragment_battery_info"
         android:name="com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment"
-        app:layout_constraintStart_toEndOf="@id/img_battery"
-        app:layout_constraintTop_toTopOf="@id/img_battery"
-        app:layout_constraintBottom_toBottomOf="@id/img_battery"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp" />
+        app:layout_constraintBottom_toBottomOf="@id/img_battery"
+        app:layout_constraintStart_toEndOf="@id/img_battery"
+        app:layout_constraintTop_toTopOf="@id/img_battery" />
 
     <fragment
         android:id="@+id/fragment_toggle_button"
         android:name="com.laudien.p1xelfehler.batterywarner.fragments.OnOffButtonFragment"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_battery"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="@+id/img_battery"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"
-        app:layout_constraintStart_toEndOf="@+id/fragment_battery_info"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintHorizontal_bias="1.0" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/img_battery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/fragment_battery_info"
+        app:layout_constraintTop_toTopOf="@+id/img_battery" />
 
     <fragment
         android:id="@+id/fragment_graph"
         android:name="com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/img_battery" />
 </android.support.constraint.ConstraintLayout>

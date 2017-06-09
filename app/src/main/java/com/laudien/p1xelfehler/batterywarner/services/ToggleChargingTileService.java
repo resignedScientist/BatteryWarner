@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,8 +14,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
-import static android.service.quicksettings.Tile.STATE_ACTIVE;
-import static android.service.quicksettings.Tile.STATE_INACTIVE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
@@ -36,17 +35,18 @@ public class ToggleChargingTileService extends TileService {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
         if (stopChargingEnabled) {
-            tile.setState(STATE_INACTIVE);
+            tile.setState(Tile.STATE_INACTIVE);
         } else {
-            tile.setState(STATE_ACTIVE);
+            tile.setState(Tile.STATE_ACTIVE);
         }
         tile.updateTile();
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void onClick() {
         super.onClick();
-        boolean isActive = tile.getState() == STATE_ACTIVE;
+        boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         if (isActive) { // deactivating the tile
             if (IS_PRO) {
                 new AsyncTask<Void, Void, Byte>() {
@@ -73,7 +73,7 @@ public class ToggleChargingTileService extends TileService {
                             case RESULT_STOP_CHARGING_NOT_WORKING:
                                 NotificationHelper.showNotification(ToggleChargingTileService.this, ID_STOP_CHARGING_NOT_WORKING);
                             case RESULT_OK:
-                                tile.setState(STATE_INACTIVE);
+                                tile.setState(Tile.STATE_INACTIVE);
                                 tile.updateTile();
                                 sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), true).apply();
                                 break;
@@ -84,7 +84,7 @@ public class ToggleChargingTileService extends TileService {
                 ToastHelper.sendToast(getApplicationContext(), R.string.toast_not_pro, LENGTH_SHORT);
             }
         } else { // activating the tile
-            tile.setState(STATE_ACTIVE);
+            tile.setState(Tile.STATE_ACTIVE);
             sharedPreferences.edit().putBoolean(getString(R.string.pref_stop_charging), false).apply();
             tile.updateTile();
         }
