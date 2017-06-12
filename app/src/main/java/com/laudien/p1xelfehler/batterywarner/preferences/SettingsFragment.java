@@ -25,6 +25,7 @@ import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
@@ -204,7 +205,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getActivity();
             if (context != null && highChecked) {
                 // start service without resetting the graph
-                context.startService(new Intent(context, ChargingService.class));
+                ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
             }
         } else if (preference == pref_graphEnabled) {
             boolean checked = pref_graphEnabled.isChecked();
@@ -215,7 +216,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 if (batteryStatus != null) {
                     boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
                     if (isCharging) {
-                        context.startService(new Intent(context, ChargingService.class));
+                        ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
                     }
                 }
             }
@@ -238,7 +239,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (activity != null) {
                 DischargingAlarmReceiver.cancelDischargingAlarm(activity);
                 if (checked) { // start service if checked
-                    activity.startService(new Intent(activity, DischargingService.class));
+                    ServiceHelper.startForegroundService(activity, new Intent(activity, DischargingService.class));
                 } else if (pref_warningLow.isChecked()) { // start DischargingAlarmReceiver
                     activity.sendBroadcast(new Intent(activity, DischargingAlarmReceiver.class));
                 }
@@ -249,14 +250,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
             Context context = getActivity();
             if (context != null) {
-                context.startService(new Intent(context, ChargingService.class));
+                ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
             }
         } else if (preference == pref_battery_info_notification) {
             if (pref_battery_info_notification != null) {
                 Context context = getActivity();
                 if (context != null) {
                     if (pref_battery_info_notification.isChecked()) {
-                        context.startService(new Intent(context, DischargingService.class));
+                        ServiceHelper.startForegroundService(context, new Intent(context, DischargingService.class));
                     }
                 }
             }

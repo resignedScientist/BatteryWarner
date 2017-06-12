@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
@@ -97,12 +98,12 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) {
-                startService(new Intent(this, ChargingService.class));
+                ServiceHelper.startForegroundService(this, new Intent(this, ChargingService.class));
             }
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
             if (!isCharging && dischargingServiceEnabled || infoNotificationEnabled) { // start DischargingService
-                startService(new Intent(this, DischargingService.class));
+                ServiceHelper.startForegroundService(this, new Intent(this, DischargingService.class));
             } else { // start DischargingAlarmReceiver (if needed)
                 boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
                 if (warningLowEnabled) {

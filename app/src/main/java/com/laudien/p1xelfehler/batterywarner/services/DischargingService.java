@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,6 +27,7 @@ import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_SCREEN_ON;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.O;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_HEALTH;
@@ -157,6 +159,16 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 registerReceiver(screenOnReceiver, new IntentFilter(ACTION_SCREEN_ON));
                 registerReceiver(screenOffReceiver, new IntentFilter(ACTION_SCREEN_OFF));
                 registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
+                if (Build.VERSION.SDK_INT >= O) {
+                    Notification.Builder builder = new Notification.Builder(this)
+                            .setSmallIcon(NotificationHelper.getSmallIconRes())
+                            .setContentTitle("Discharging Service")
+                            .setContentText("Discharging Service is running...")
+                            .setContentIntent(null)
+                            .setAutoCancel(true)
+                            .setChannelId("info_notification");
+                    startForeground(1337, builder.build());
+                }
             } else {
                 stopSelf();
             }
