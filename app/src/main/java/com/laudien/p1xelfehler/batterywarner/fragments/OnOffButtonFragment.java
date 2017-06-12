@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
@@ -64,12 +65,12 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
                 SharedPreferences temporaryPrefs = context.getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
                 temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
                 if (isCharging) {
-                    context.startService(new Intent(context, ChargingService.class));
+                    ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
                 }
                 boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
                 boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
                 if (!isCharging && dischargingServiceEnabled || infoNotificationEnabled) { // start DischargingService
-                    context.startService(new Intent(context, DischargingService.class));
+                    ServiceHelper.startForegroundService(context, new Intent(context, DischargingService.class));
                 } else { // start DischargingAlarmReceiver (if needed)
                     boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
                     if (warningLowEnabled) {

@@ -1,8 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,6 +12,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -20,7 +23,9 @@ import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
+import static android.app.Notification.PRIORITY_HIGH;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
@@ -29,6 +34,7 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.O;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
@@ -202,6 +208,16 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         registerReceiver(ringerModeChangedReceiver, new IntentFilter(RINGER_MODE_CHANGED_ACTION));
+        if (Build.VERSION.SDK_INT >= O) {
+            Notification.Builder builder = new Notification.Builder(this)
+                    .setSmallIcon(NotificationHelper.getSmallIconRes())
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("Charging Service is running...")
+                    .setContentIntent(null)
+                    .setAutoCancel(true)
+                    .setChannelId("info_notification");
+            startForeground(1337, builder.build());
+        }
         Log.d(TAG, "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -240,6 +256,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .putInt(getString(R.string.pref_last_chargingType), chargingType)
                     .apply();
         }
+        // start discharging service
+        ServiceHelper.startForegroundService(this, new Intent(this, DischargingService.class));
         Log.d(TAG, "Service destroyed!");
     }
 
