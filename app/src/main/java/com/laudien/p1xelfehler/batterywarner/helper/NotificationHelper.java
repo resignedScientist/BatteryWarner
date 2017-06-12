@@ -512,7 +512,7 @@ public final class NotificationHelper {
         return PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
     }
 
-    public static int getSmallIconRes() {
+    private static int getSmallIconRes() {
         return R.mipmap.ic_launcher;
     }
 

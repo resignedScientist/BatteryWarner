@@ -160,8 +160,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 registerReceiver(screenOffReceiver, new IntentFilter(ACTION_SCREEN_OFF));
                 registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
                 if (Build.VERSION.SDK_INT >= O) {
-                    Notification.Builder builder = new Notification.Builder(this)
-                            .setSmallIcon(NotificationHelper.getSmallIconRes())
+                    Notification.Builder builder = new Notification.Builder(this, "info_notification")
+                            .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle("Discharging Service")
                             .setContentText("Discharging Service is running...")
                             .setContentIntent(null)
