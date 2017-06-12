@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -152,7 +153,9 @@ public final class NotificationHelper {
             temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
             int warningHigh = defaultPrefs.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             Notification.Builder builder = new Notification.Builder(context)
+                    .setChannelId("battery_warnings")
                     .setSmallIcon(getSmallIconRes())
                     .setSound(getWarningSound(context, defaultPrefs))
                     .setVibrate(getWarningVibratePattern(context, defaultPrefs))
@@ -162,8 +165,6 @@ public final class NotificationHelper {
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
-            NotificationManager notificationManager = (NotificationManager)
-                    context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_WARNING_HIGH, builder.build());
             // reset the android internal battery stats
             if (resetBatteryStats){
@@ -487,6 +488,24 @@ public final class NotificationHelper {
         } else {
             return null;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void createNotificationChannels(Context context){
+        NotificationChannel channel = new NotificationChannel(
+                "battery_warnings",
+                "Battery warnings",
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription("Warning high and warning low notifications");
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATE_PATTERN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(false);
+        channel.setSound(getDefaultSound(), null);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
 
     private static class IdNotFoundException extends RuntimeException {

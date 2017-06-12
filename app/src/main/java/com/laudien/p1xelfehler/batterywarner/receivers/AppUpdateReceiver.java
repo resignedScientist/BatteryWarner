@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -80,6 +81,10 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 sharedPreferences.edit().remove(key).apply();
             }
             // <= patch old shared preferences
+            // create notification channels
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationHelper.createNotificationChannels(context);
+            }
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             // start the services
