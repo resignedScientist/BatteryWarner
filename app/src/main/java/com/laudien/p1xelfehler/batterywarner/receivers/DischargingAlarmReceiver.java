@@ -16,6 +16,9 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 
 import java.util.Calendar;
 
+import static android.app.AlarmManager.RTC;
+import static android.app.AlarmManager.RTC_WAKEUP;
+import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.KITKAT;
@@ -42,7 +45,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
         if (intentTime == -1) {
             return;
         }
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         Intent batteryIntent = new Intent(context, DischargingAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context,
@@ -80,8 +83,10 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
         if (!dischargingServiceEnabled) {
             long currentTime = Calendar.getInstance().getTimeInMillis();
             int interval;
+            boolean veryShort = false;
             if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_very_short)) {
                 interval = context.getResources().getInteger(R.integer.interval_very_short);
+                veryShort = true;
             } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_short)) {
                 interval = context.getResources().getInteger(R.integer.interval_short);
             } else if (batteryLevel <= warningLow + context.getResources().getInteger(R.integer.difference_long)) {
@@ -97,19 +102,12 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
                     batteryIntent,
                     0
             );
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            int alarmType = veryShort ? RTC_WAKEUP : RTC;
             if (SDK_INT >= KITKAT) {
-                alarmManager.setExact(
-                        AlarmManager.RTC,
-                        triggerTime,
-                        pendingIntent
-                );
-            } else {
-                alarmManager.set(
-                        AlarmManager.RTC,
-                        triggerTime,
-                        pendingIntent
-                );
+                alarmManager.setExact(alarmType, triggerTime, pendingIntent);
+            } else { // below KitKat
+                alarmManager.set(alarmType, triggerTime, pendingIntent);
             }
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs
