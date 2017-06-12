@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
+import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.services.DisableRootFeaturesService;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
@@ -155,16 +157,19 @@ public final class NotificationHelper {
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setChannelId("battery_warnings")
                     .setSmallIcon(getSmallIconRes())
-                    .setSound(getWarningSound(context, defaultPrefs))
-                    .setVibrate(getWarningVibratePattern(context, defaultPrefs))
-                    .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setChannelId("battery_warnings");
+            } else {
+                builder.setSound(getWarningSound(context, defaultPrefs))
+                        .setVibrate(getWarningVibratePattern(context, defaultPrefs))
+                        .setPriority(PRIORITY_HIGH);
+            }
             notificationManager.notify(ID_WARNING_HIGH, builder.build());
             // reset the android internal battery stats
             if (resetBatteryStats){
@@ -194,14 +199,18 @@ public final class NotificationHelper {
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(getSmallIconRes())
-                    .setSound(getWarningSound(context, sharedPreferences))
-                    .setVibrate(getWarningVibratePattern(context, sharedPreferences))
-                    .setPriority(PRIORITY_HIGH)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setChannelId("battery_warnings");
+            } else {
+                builder.setSound(getWarningSound(context, sharedPreferences))
+                        .setVibrate(getWarningVibratePattern(context, sharedPreferences))
+                        .setPriority(PRIORITY_HIGH);
+            }
             // enable power saving mode
             if (SDK_INT >= LOLLIPOP && prefPowerSavingModeEnabled) {
                 AsyncTask.execute(new Runnable() {
@@ -398,14 +407,8 @@ public final class NotificationHelper {
             if (SDK_INT == LOLLIPOP || SDK_INT == LOLLIPOP_MR1) {
                 contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
             }
-            // basic notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setOngoing(true)
-                    .setContentIntent(getDefaultClickIntent(context))
-                    .setPriority(Notification.PRIORITY_LOW)
-                    .setContentTitle(context.getString(R.string.title_info_notification))
-                    .setSmallIcon(getSmallIconRes());
-            // load data in notification
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            // prepare battery data
             String message = splitMessageData(data, contentView);
             if (message == null) { // no items enabled
                 contentView.setViewVisibility(R.id.view_middleLine, GONE);
@@ -413,10 +416,35 @@ public final class NotificationHelper {
                 message = context.getString(R.string.notification_message_no_items_enabled);
                 contentView.setTextViewText(R.id.textView_message_left, message);
             }
-            builder.setContentText(message)
-                    .setCustomBigContentView(contentView);
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(ID_BATTERY_INFO, builder.build());
+            // click intent
+            Intent clickIntent = new Intent(context, InfoNotificationActivity.class);
+            PendingIntent clickPendingIntent = PendingIntent.getActivity(context, ID_BATTERY_INFO, clickIntent, 0);
+            // show notification
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Notification.Builder builder = new Notification.Builder(context)
+                        .setOngoing(true)
+                        .setContentIntent(clickPendingIntent)
+                        .setContentTitle(context.getString(R.string.title_info_notification))
+                        .setSmallIcon(getSmallIconRes())
+                        .setContentText(message)
+                        .setCustomBigContentView(contentView);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    builder.setChannelId("info_notification");
+                } else {
+                    builder.setPriority(Notification.PRIORITY_LOW);
+                }
+                notificationManager.notify(ID_BATTERY_INFO, builder.build());
+            } else { // API lower than N
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                        .setOngoing(true)
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .setContentIntent(clickPendingIntent)
+                        .setContentTitle(context.getString(R.string.title_info_notification))
+                        .setCustomBigContentView(contentView)
+                        .setContentText(message)
+                        .setSmallIcon(getSmallIconRes());
+                notificationManager.notify(ID_BATTERY_INFO, builder.build());
+            }
         }
     }
 
@@ -432,6 +460,11 @@ public final class NotificationHelper {
         } else {
             return null;
         }
+    }
+
+    private static Uri getWarningSound(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return getWarningSound(context, sharedPreferences);
     }
 
     private static long[] getWarningVibratePattern(Context context, SharedPreferences sharedPreferences) {
@@ -492,19 +525,36 @@ public final class NotificationHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void createNotificationChannels(Context context){
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        // battery warnings
         NotificationChannel channel = new NotificationChannel(
                 "battery_warnings",
                 "Battery warnings",
                 NotificationManager.IMPORTANCE_HIGH
         );
-        channel.setDescription("Warning high and warning low notifications");
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build();
+        channel.setDescription("All kinds of battery warnings.");
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setShowBadge(false);
-        channel.setSound(getDefaultSound(), null);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        channel.setSound(getWarningSound(context), audioAttributes);
+        notificationManager.createNotificationChannel(channel);
+        // info notification
+        channel = new NotificationChannel(
+                "info_notification",
+                "Battery Info",
+                NotificationManager.IMPORTANCE_MIN
+        );
+        channel.setDescription("The permanent notification with all the battery infos.");
+        channel.enableLights(false);
+        channel.enableVibration(false);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(false);
         notificationManager.createNotificationChannel(channel);
     }
 
