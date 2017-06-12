@@ -41,7 +41,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
@@ -62,7 +61,6 @@ import static java.text.DateFormat.SHORT;
 public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.DatabaseChangedListener {
 
     private static final int REQUEST_SAVE_GRAPH = 10;
-    private static final int REQUEST_OPEN_HISTORY = 20;
     private SharedPreferences sharedPreferences;
     private GraphDbHelper graphDbHelper;
     private boolean graphEnabled;
@@ -221,7 +219,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 }
                 return true;
             case R.id.menu_open_history:
-                openHistory();
+                startActivity(new Intent(getContext(), HistoryActivity.class));
                 return true;
             case R.id.menu_save_to_history:
                 saveGraph();
@@ -237,12 +235,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PERMISSION_GRANTED) {
-            if (requestCode == REQUEST_SAVE_GRAPH) {
-                new SaveGraphTask().execute(); // restart the saving of the graph
-            } else if (requestCode == REQUEST_OPEN_HISTORY) {
-                openHistory();
-            }
+        if (grantResults[0] == PERMISSION_GRANTED && requestCode == REQUEST_SAVE_GRAPH) {
+            new SaveGraphTask().execute(); // restart the saving of the graph
         }
     }
 
@@ -434,18 +428,6 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 }).create().show();
     }
 
-    /**
-     * Starts the HistoryActivity after asking for the storage permission.
-     */
-    public void openHistory() {
-        if (ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-            startActivity(new Intent(getContext(), HistoryActivity.class)); // open history
-        } else { // permission not granted -> ask for permission
-            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, REQUEST_OPEN_HISTORY);
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
     private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... voids) {

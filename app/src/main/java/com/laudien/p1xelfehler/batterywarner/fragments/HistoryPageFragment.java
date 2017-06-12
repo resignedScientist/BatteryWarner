@@ -1,7 +1,10 @@
-package com.laudien.p1xelfehler.batterywarner.fragments.history;
+package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 
 import java.io.File;
@@ -19,7 +21,6 @@ import java.io.File;
  * Provides some functionality to change or remove the file.
  */
 public class HistoryPageFragment extends BasicGraphFragment {
-
     /**
      * The key for the file path in the argument bundle.
      */
@@ -66,9 +67,13 @@ public class HistoryPageFragment extends BasicGraphFragment {
      */
     @Override
     protected LineGraphSeries<DataPoint>[] getSeries() {
-        if (file != null && file.exists()) {
-            GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-            return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (file != null && file.exists()) {
+                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
+                return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
