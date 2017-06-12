@@ -99,7 +99,7 @@
     <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
     <!-- other titles -->
-    <string name="title_preferences">Preferences</string>
+    <string name="title_preferences">Settings</string>
     <string name="title_main_page">Main page</string>
     <string name="title_charging_curve">Charging curve</string>
     <string name="title_history">History</string>
