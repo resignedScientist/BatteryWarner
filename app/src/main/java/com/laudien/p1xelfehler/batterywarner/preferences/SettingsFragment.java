@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -29,8 +28,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
-import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -70,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 pref_usb_disabled.setChecked(false);
             } else if (preferenceKey.equals(getString(R.string.pref_power_saving_mode))) {
                 pref_power_saving_mode.setChecked(false);
-            } else if (preferenceKey.equals(getString(R.string.pref_reset_battery_stats))){
+            } else if (preferenceKey.equals(getString(R.string.pref_reset_battery_stats))) {
                 pref_reset_battery_stats.setChecked(false);
             }
         }
@@ -202,25 +199,22 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
                 pref_smart_charging.setSummary(getString(R.string.summary_disabled));
             }
-            Context context = getActivity();
-            if (context != null && highChecked) {
-                // start service without resetting the graph
-                ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
+            if (highChecked) {
+                Context context = getActivity();
+                if (context != null) {
+                    ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
+                }
             }
         } else if (preference == pref_graphEnabled) {
             boolean checked = pref_graphEnabled.isChecked();
             pref_autoSave.setEnabled(checked);
             Context context = getActivity();
             if (context != null && checked) {
-                Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                if (batteryStatus != null) {
-                    boolean isCharging = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) != 0;
-                    if (isCharging) {
-                        ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
-                    }
-                }
+                ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
             }
-        } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode || preference == pref_reset_battery_stats) { // root features
+        } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode || preference == pref_reset_battery_stats)
+
+        { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
             if (twoStatePreference != null && twoStatePreference.isChecked()) {
                 RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
@@ -233,35 +227,34 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
             }
-        } else if (preference == pref_dischargingService) {
-            boolean checked = pref_dischargingService.isChecked();
+        } else if (preference == pref_dischargingService)
+
+        {
             Activity activity = getActivity();
             if (activity != null) {
-                DischargingAlarmReceiver.cancelDischargingAlarm(activity);
-                if (checked) { // start service if checked
-                    ServiceHelper.startForegroundService(activity, new Intent(activity, DischargingService.class));
-                } else if (pref_warningLow.isChecked()) { // start DischargingAlarmReceiver
-                    activity.sendBroadcast(new Intent(activity, DischargingAlarmReceiver.class));
-                }
+                ServiceHelper.startService(activity, sharedPreferences, ServiceHelper.ID_DISCHARGING);
                 setInfoNotificationSubtitle(sharedPreferences);
             }
         } else if ((preference == pref_ac && pref_ac.isChecked())
                 || (preference == pref_usb && pref_usb.isChecked())
-                || (preference == pref_wireless && pref_wireless.isChecked())) {
+                || (preference == pref_wireless && pref_wireless.isChecked()))
+
+        {
             Context context = getActivity();
             if (context != null) {
-                ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
+                ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
             }
         } else if (preference == pref_battery_info_notification) {
             if (pref_battery_info_notification != null) {
                 Context context = getActivity();
                 if (context != null) {
                     if (pref_battery_info_notification.isChecked()) {
-                        ServiceHelper.startForegroundService(context, new Intent(context, DischargingService.class));
+                        ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_DISCHARGING);
                     }
                 }
             }
         }
+
     }
 
     private void setInfoNotificationSubtitle(SharedPreferences sharedPreferences) {

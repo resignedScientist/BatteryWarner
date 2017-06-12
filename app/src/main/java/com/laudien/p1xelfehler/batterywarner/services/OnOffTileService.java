@@ -98,18 +98,9 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             if (isCharging) {
-                ServiceHelper.startForegroundService(this, new Intent(this, ChargingService.class));
-            }
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-            if (!isCharging && dischargingServiceEnabled || infoNotificationEnabled) { // start DischargingService
-                ServiceHelper.startForegroundService(this, new Intent(this, DischargingService.class));
-            } else { // start DischargingAlarmReceiver (if needed)
-                boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-                if (warningLowEnabled) {
-                    DischargingAlarmReceiver.cancelDischargingAlarm(this);
-                    sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
-                }
+                ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
+            } else { // start DischargingService
+                ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
             }
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_enabled, LENGTH_SHORT);
         }

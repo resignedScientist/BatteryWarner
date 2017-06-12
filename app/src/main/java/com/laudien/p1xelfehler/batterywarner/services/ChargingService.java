@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,7 +24,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
-import static android.app.Notification.PRIORITY_HIGH;
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
@@ -42,6 +40,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -257,7 +256,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .apply();
         }
         // start discharging service
-        ServiceHelper.startForegroundService(this, new Intent(this, DischargingService.class));
+        ServiceHelper.startService(this, sharedPreferences, ID_DISCHARGING);
         Log.d(TAG, "Service destroyed!");
     }
 

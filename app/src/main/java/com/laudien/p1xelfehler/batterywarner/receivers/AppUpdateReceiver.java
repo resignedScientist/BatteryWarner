@@ -1,10 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.receivers;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -13,12 +11,8 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
-import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
 /**
@@ -92,22 +86,8 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             // start the services
-            Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
-            if (batteryStatus != null) {
-                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
-                boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-                boolean infoNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-                boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-                if (dischargingServiceEnabled || infoNotificationEnabled) {
-                    ServiceHelper.startForegroundService(context, new Intent(context, DischargingService.class));
-                } else if (warningLowEnabled) {
-                    DischargingAlarmReceiver.cancelDischargingAlarm(context);
-                    context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
-                }
-                if (isCharging) { // charging -> start ChargingService
-                    ServiceHelper.startForegroundService(context, new Intent(context, ChargingService.class));
-                }
-            }
+            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
+            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_DISCHARGING);
         }
     }
 }

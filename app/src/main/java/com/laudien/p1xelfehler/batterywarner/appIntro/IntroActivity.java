@@ -1,7 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.appIntro;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,14 +15,10 @@ import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
-import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
-import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
@@ -86,23 +81,12 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onFinish();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
-        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null) {
-            boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-            boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-            if (dischargingServiceEnabled || infoNotificationEnabled) {
-                ServiceHelper.startForegroundService(this, new Intent(this, DischargingService.class));
-            } else if (warningLowEnabled) {
-                DischargingAlarmReceiver.cancelDischargingAlarm(this);
-                sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
-            }
-            if (isCharging) { // charging -> start ChargingService
-                ServiceHelper.startForegroundService(this, new Intent(this, ChargingService.class));
-            }
-        }
+        // start services
+        ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
+        ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
+        // send toast
         ToastHelper.sendToast(getApplicationContext(), R.string.intro_finish_toast, LENGTH_SHORT);
+        // start MainActivity
         startActivity(new Intent(this, MainActivity.class));
     }
 }
