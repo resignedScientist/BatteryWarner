@@ -1,6 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
@@ -184,24 +187,24 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         if (smartChargingLimit < warningHigh) {
             smartChargingLimit = warningHigh;
         }
-        Log.d(TAG, "warningHighEnabled = " + warningHighEnabled);
-        Log.d(TAG, "warningHigh = " + warningHigh);
-        Log.d(TAG, "isGraphEnabled = " + isGraphEnabled);
-        Log.d(TAG, "stopChargingEnabled = " + stopChargingEnabled);
-        Log.d(TAG, "smartChargingEnabled = " + smartChargingEnabled);
-        Log.d(TAG, "smartChargingLimit = " + smartChargingLimit);
-        Log.d(TAG, "acEnabled = " + acEnabled);
-        Log.d(TAG, "usbEnabled = " + usbEnabled);
-        Log.d(TAG, "wirelessEnabled = " + wirelessEnabled);
-        Log.d(TAG, "usbChargingDisabled = " + usbChargingDisabled);
-        Log.d(TAG, "smartChargingUseClock = " + smartChargingUseClock);
-        Log.d(TAG, "smartChargingMinutes = " + smartChargingMinutes);
-        Log.d(TAG, "smartChargingTime = " + smartChargingTime);
-        Log.d(TAG, "smartChargingResumeTime = " + smartChargingResumeTime);
         // register all receivers
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         registerReceiver(ringerModeChangedReceiver, new IntentFilter(RINGER_MODE_CHANGED_ACTION));
+        Intent clickIntent = new Intent(this, MainActivity.class);
+        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, 1500, clickIntent, 0);
+        // build ongoing notification
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText("Charging Service is running...")
+                .setContentIntent(clickPendingIntent);
+        if (Build.VERSION.SDK_INT >= O) {
+            builder.setChannelId("info_notification");
+        } else {
+            builder.setPriority(Notification.PRIORITY_LOW);
+        }
+        startForeground(1500, builder.build());
         Log.d(TAG, "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }
