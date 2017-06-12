@@ -30,7 +30,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
                 return; // return if intro was not finished
 
-            // patch old shared preferences =>
+            // patch old shared preferences v1.109(144) =>
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
             // last percentage (remove it, it is no longer used!)
             String key = "lastPercentage";
