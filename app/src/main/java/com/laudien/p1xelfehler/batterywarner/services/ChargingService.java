@@ -252,7 +252,12 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_warning_high_enabled))) {
+        if (key.equals(getString(R.string.pref_charging_service_enabled))) {
+            if (!sharedPreferences.getBoolean(key, true)) {
+                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_HIGH);
+                stopSelf();
+            }
+        } else if (key.equals(getString(R.string.pref_warning_high_enabled))) {
             warningHighEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
         } else if (key.equals(getString(R.string.pref_warning_high))) {
             warningHigh = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_high_default));

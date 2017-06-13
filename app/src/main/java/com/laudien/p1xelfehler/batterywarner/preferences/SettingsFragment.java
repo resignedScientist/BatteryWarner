@@ -48,7 +48,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private TwoStatePreference pref_autoSave, pref_warningHigh, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
-            pref_reset_battery_stats;
+            pref_reset_battery_stats, pref_chargingService;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items;
     private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
@@ -86,6 +86,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
+        pref_chargingService = (TwoStatePreference) findPreference(getString(R.string.pref_charging_service_enabled));
         pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
@@ -212,6 +213,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             } else if (preference == pref_usb_disabled) {
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
+            }
+        } else if (preference == pref_chargingService) {
+            Context context = getContext();
+            if (context != null) {
+                if (pref_chargingService.isChecked()) {
+                    ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                }
+                setInfoNotificationSubtitle(sharedPreferences);
             }
         } else if (preference == pref_dischargingService) {
             Context context = getContext();
