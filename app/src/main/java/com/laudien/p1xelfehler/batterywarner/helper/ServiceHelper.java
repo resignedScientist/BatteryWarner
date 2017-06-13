@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -31,7 +32,8 @@ public class ServiceHelper {
                 if (warningHighEnabled) {
                     Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     boolean isCharging = batteryStatus == null || batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
-                    if (isCharging) {
+                    int batteryLevel = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
+                    if (isCharging && batteryLevel < 100) {
                         startService(context, new Intent(context, ChargingService.class));
                     }
                 }
