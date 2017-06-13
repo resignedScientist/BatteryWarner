@@ -10,13 +10,15 @@
     <string name="pref_graph_enabled" translatable="false">graphEnabled</string>
     <string name="pref_graph_autosave" translatable="false">graphAutoSave</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
-    <string name="pref_sound_uri" translatable="false">savedSoundUri</string>
+    <string name="pref_sound_uri_high" translatable="false">savedSoundUriHigh</string>
+    <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_high" translatable="false">warningHigh</string>
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
+    <string name="pref_charging_service_enabled" translatable="false">chargingServiceEnabled</string>
     <string name="pref_discharging_service_enabled" translatable="false">dischargingServiceEnabled</string>
     <string name="pref_enable_sound" translatable="false">enableSound</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
@@ -87,7 +89,7 @@
     <string name="title_enable_sound">Enable warning sound</string>
     <string name="title_info_notification_enabled">Enable info notification</string>
     <string name="title_info_notification">Info notification</string>
-    <string name="title_info_notification_items">Shown in notification</string>
+    <string name="title_info_notification_items">Shown in info notification</string>
     <string name="title_notifications_off_warning">Warn if the sound is disabled</string>
     <string name="title_info_dark_theme">Apply on info notification</string>
     <string name="title_get_pro">Click here to get pro version!</string>

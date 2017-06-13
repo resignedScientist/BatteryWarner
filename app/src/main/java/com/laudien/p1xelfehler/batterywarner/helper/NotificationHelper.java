@@ -412,7 +412,7 @@ public final class NotificationHelper {
     private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {
         boolean soundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
         if (soundEnabled) {
-            String uri = sharedPreferences.getString(context.getString(R.string.pref_sound_uri), "");
+            String uri = sharedPreferences.getString(context.getString(R.string.pref_sound_uri_high), "");
             if (!uri.equals("")) {
                 return Uri.parse(uri); // saved URI
             } else {

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -12,15 +11,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
@@ -30,14 +26,11 @@ import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
  * A Fragment that shows the default settings and adds some functionality to some settings when
@@ -77,7 +70,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        switch_darkTheme = (TwoStatePreference) findPreference(getString(R.string.pref_dark_theme_enabled));
+        /*switch_darkTheme = (TwoStatePreference) findPreference(getString(R.string.pref_dark_theme_enabled));
         ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri));
         pref_autoSave = (TwoStatePreference) findPreference(getString(R.string.pref_graph_autosave));
         pref_graphEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_graph_enabled));
@@ -128,10 +121,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             });
             category_graph.addPreference(pref_pro);
-        }
+        }*/
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
@@ -145,9 +138,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             setInfoNotificationSubtitle(sharedPreferences);
             setSmartChargingSummary(sharedPreferences);
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onDetach() {
         super.onDetach();
         Context context = getActivity();
@@ -155,7 +148,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
             context.unregisterReceiver(rootCheckFinishedReceiver);
         }
-    }
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
