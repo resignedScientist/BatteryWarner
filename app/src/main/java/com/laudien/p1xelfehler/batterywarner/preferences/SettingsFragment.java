@@ -48,7 +48,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private TwoStatePreference pref_autoSave, pref_warningHigh, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
-            pref_reset_battery_stats, pref_chargingService;
+            pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items;
     private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
@@ -93,6 +93,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
         pref_power_saving_mode = (TwoStatePreference) findPreference(getString(R.string.pref_power_saving_mode));
         pref_reset_battery_stats = (TwoStatePreference) findPreference(getString(R.string.pref_reset_battery_stats));
+        pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
 
         Context context = getContext();
         if (context != null) {
@@ -236,6 +237,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getContext();
             if (context != null) {
                 ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+            }
+        } else if (preference == pref_darkInfoNotification) {
+            Context context = getContext();
+            if (context != null) {
+                ServiceHelper.restartService(getContext(), sharedPreferences, ID_DISCHARGING);
             }
         }
     }
