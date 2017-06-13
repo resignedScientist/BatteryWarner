@@ -138,7 +138,13 @@ public class DischargingService extends Service {
     }
 
     private RemoteViews createNotificationContent() {
-        RemoteViews notificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info);
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_dark_theme), getResources().getBoolean(R.bool.pref_info_dark_theme_default));
+        RemoteViews notificationContent;
+        if (darkThemeEnabled) { // dark theme
+            notificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info_dark);
+        } else { // default theme
+            notificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info);
+        }
         if (SDK_INT == LOLLIPOP || SDK_INT == LOLLIPOP_MR1) {
             notificationContent.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
         }
