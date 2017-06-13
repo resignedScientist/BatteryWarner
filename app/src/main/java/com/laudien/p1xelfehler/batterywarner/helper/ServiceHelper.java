@@ -45,7 +45,7 @@ public class ServiceHelper {
                     context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
                 }
             } else {
-                throw new RuntimeException("Service id not found!");
+                throw new RuntimeException("Unknown service id!");
             }
         }
     }
@@ -56,5 +56,18 @@ public class ServiceHelper {
         } else {
             context.startService(intent);
         }
+    }
+
+    public static void restartService(Context context, @Nullable SharedPreferences sharedPreferences, byte serviceID) {
+        Intent intent;
+        if (serviceID == ID_CHARGING) {
+            intent = new Intent(context, ChargingService.class);
+        } else if (serviceID == ID_DISCHARGING) {
+            intent = new Intent(context, DischargingService.class);
+        } else {
+            throw new RuntimeException("Unknown service id!");
+        }
+        context.stopService(intent);
+        startService(context, sharedPreferences, serviceID);
     }
 }

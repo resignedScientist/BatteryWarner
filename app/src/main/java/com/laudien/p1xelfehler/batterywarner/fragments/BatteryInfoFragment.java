@@ -68,14 +68,14 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
-        textView_technology = (TextView) view.findViewById(R.id.textView_technology);
-        textView_temp = (TextView) view.findViewById(R.id.textView_temp);
-        textView_health = (TextView) view.findViewById(R.id.textView_health);
-        textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
-        textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
-        textView_current = (TextView) view.findViewById(R.id.textView_current);
-        textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
-        textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
+        textView_technology = view.findViewById(R.id.textView_technology);
+        textView_temp = view.findViewById(R.id.textView_temp);
+        textView_health = view.findViewById(R.id.textView_health);
+        textView_batteryLevel = view.findViewById(R.id.textView_batteryLevel);
+        textView_voltage = view.findViewById(R.id.textView_voltage);
+        textView_current = view.findViewById(R.id.textView_current);
+        textView_screenOn = view.findViewById(R.id.textView_screenOn);
+        textView_screenOff = view.findViewById(R.id.textView_screenOff);
 
         if (SDK_INT < LOLLIPOP) {
             textView_current.setVisibility(GONE);
@@ -99,7 +99,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             // register receivers
             Intent batteryStatus = context.registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
-            batteryData.addOnBatteryValueChangedListener(this);
+            batteryData.registerOnBatteryValueChangedListener(this);
             // refresh TextViews
             for (byte i = 0; i < batteryData.getAsArray().length; i++) {
                 onBatteryValueChanged(i);

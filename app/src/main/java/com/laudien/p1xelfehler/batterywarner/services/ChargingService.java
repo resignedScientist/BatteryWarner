@@ -52,7 +52,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISC
  * If the pro version is used, it saves the graph using the static method in the GraphFragment.
  */
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+    private static final int NOTIFICATION_ID = 2001;
     private final String TAG = getClass().getSimpleName();
     private boolean warningHighEnabled, isGraphEnabled, acEnabled, usbEnabled, wirelessEnabled,
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
@@ -196,7 +196,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         registerReceiver(ringerModeChangedReceiver, new IntentFilter(RINGER_MODE_CHANGED_ACTION));
         Intent clickIntent = new Intent(this, MainActivity.class);
-        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, 1500, clickIntent, 0);
+        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, clickIntent, 0);
         // build ongoing notification
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -208,7 +208,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         } else {
             builder.setPriority(Notification.PRIORITY_LOW);
         }
-        startForeground(1500, builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
         Log.d(TAG, "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }

@@ -15,15 +15,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
-import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.GrantRootService;
@@ -38,10 +34,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O;
-import static android.view.View.GONE;
 
 /**
  * Helper class to show a notification with the given type. All notifications used in the app are listed here.
@@ -50,39 +44,38 @@ public final class NotificationHelper {
     /**
      * Notification id of the notification that warns if silent/vibrate mode is turned on.
      */
-    public static final int ID_SILENT_MODE = 1337;
+    public static final int ID_SILENT_MODE = 1001;
     /**
      * Notification id of the notification that warns that the battery is above X%.
      */
-    public static final int ID_WARNING_HIGH = 1338;
+    public static final int ID_WARNING_HIGH = 1002;
     /**
      * Notification id of the notification that warns that the battery is below Y%.
      */
-    public static final int ID_WARNING_LOW = 1339;
+    public static final int ID_WARNING_LOW = 1003;
     /**
      * Notification id of the notification that the user has to click/dismiss after the device is unplugged.
      * Only shown if the stop charging feature is enabled.
      */
-    public static final int ID_STOP_CHARGING = 1340;
+    public static final int ID_STOP_CHARGING = 1004;
     /**
      * Notification id of the notification that asks the user for root again after the app was updated.
      */
-    public static final int ID_GRANT_ROOT = 1341;
+    public static final int ID_GRANT_ROOT = 1005;
     /**
      * Notification id of the notification that tells the user that the stop charging feature is not working
      * on this device.
      */
-    public static final int ID_STOP_CHARGING_NOT_WORKING = 1342;
+    public static final int ID_STOP_CHARGING_NOT_WORKING = 1006;
     /**
      * Notification id of the notification that asks for root again if app has no root rights anymore.
      */
-    public static final int ID_NOT_ROOTED = 1343;
+    public static final int ID_NOT_ROOTED = 1007;
     /**
      * Notification id of the notification that tells the user that no alarm was found in the alarm app
      **/
-    public static final int ID_NO_ALARM_TIME_FOUND = 1344;
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static final int ID_BATTERY_INFO = 1345;
+    public static final int ID_NO_ALARM_TIME_FOUND = 1008;
+
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
     private NotificationHelper() {
@@ -122,9 +115,6 @@ public final class NotificationHelper {
                     break;
                 case ID_NO_ALARM_TIME_FOUND:
                     showNoAlarmTimeFoundNotification(context);
-                    break;
-                case ID_BATTERY_INFO:
-                    showBatteryInfoNotification(context, sharedPreferences);
                     break;
                 default:
                     throw new IdNotFoundException();
@@ -412,64 +402,6 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static void showBatteryInfoNotification(Context context, SharedPreferences sharedPreferences) {
-        BatteryData batteryData = BatteryHelper.getBatteryData();
-        if (batteryData != null) {
-            String[] data = batteryData.getEnabledOnly(context, sharedPreferences);
-            // prepare content view (with theme)
-            int layout;
-            boolean darkThemeEnabled = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
-            boolean notificationUsesTheme = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_info_dark_theme), context.getResources().getBoolean(R.bool.pref_info_dark_theme_default));
-            if (darkThemeEnabled && notificationUsesTheme) {
-                layout = R.layout.notification_battery_info_dark;
-            } else {
-                layout = R.layout.notification_battery_info;
-            }
-            RemoteViews contentView = new RemoteViews(context.getPackageName(), layout);
-            if (SDK_INT == LOLLIPOP || SDK_INT == LOLLIPOP_MR1) {
-                contentView.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
-            }
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            // prepare battery data
-            String message = splitMessageData(data, contentView);
-            if (message == null) { // no items enabled
-                contentView.setViewVisibility(R.id.view_middleLine, GONE);
-                contentView.setViewVisibility(R.id.textView_message_right, GONE);
-                message = context.getString(R.string.notification_message_no_items_enabled);
-                contentView.setTextViewText(R.id.textView_message_left, message);
-            }
-            // click intent
-            Intent clickIntent = new Intent(context, InfoNotificationActivity.class);
-            PendingIntent clickPendingIntent = PendingIntent.getActivity(context, ID_BATTERY_INFO, clickIntent, 0);
-            // show notification
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Notification.Builder builder = new Notification.Builder(context)
-                        .setOngoing(true)
-                        .setContentIntent(clickPendingIntent)
-                        .setContentTitle(context.getString(R.string.title_info_notification))
-                        .setSmallIcon(getSmallIconRes())
-                        .setContentText(message)
-                        .setCustomBigContentView(contentView);
-                if (Build.VERSION.SDK_INT >= O) {
-                    builder.setChannelId("info_notification");
-                } else {
-                    builder.setPriority(Notification.PRIORITY_LOW);
-                }
-                notificationManager.notify(ID_BATTERY_INFO, builder.build());
-            } else { // API lower than N
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                        .setOngoing(true)
-                        .setPriority(Notification.PRIORITY_LOW)
-                        .setContentIntent(clickPendingIntent)
-                        .setContentTitle(context.getString(R.string.title_info_notification))
-                        .setCustomBigContentView(contentView)
-                        .setContentText(message)
-                        .setSmallIcon(getSmallIconRes());
-                notificationManager.notify(ID_BATTERY_INFO, builder.build());
-            }
-        }
-    }
-
     private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {
         boolean soundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
         if (soundEnabled) {
@@ -514,35 +446,6 @@ public final class NotificationHelper {
 
     private static int getSmallIconRes() {
         return R.mipmap.ic_launcher;
-    }
-
-    private static String splitMessageData(String[] data, RemoteViews contentView) {
-        if (data.length > 0) {
-            if (data.length <= 3) {
-                contentView.setViewVisibility(R.id.textView_message_right, GONE);
-                contentView.setViewVisibility(R.id.view_middleLine, GONE);
-                String message = data[0];
-                for (byte i = 1; i < data.length; i++) {
-                    message = message.concat("\n").concat(data[i]);
-                }
-                contentView.setTextViewText(R.id.textView_message_left, message);
-                return message;
-            } else {
-                String message_left = data[0], message_right = data[1];
-                for (byte i = 2; i < data.length; i++) {
-                    if (i % 2 == 0) {
-                        message_left = message_left.concat("\n").concat(data[i]);
-                    } else {
-                        message_right = message_right.concat("\n").concat(data[i]);
-                    }
-                }
-                contentView.setTextViewText(R.id.textView_message_left, message_left);
-                contentView.setTextViewText(R.id.textView_message_right, message_right);
-                return message_left;
-            }
-        } else {
-            return null;
-        }
     }
 
     @RequiresApi(api = O)

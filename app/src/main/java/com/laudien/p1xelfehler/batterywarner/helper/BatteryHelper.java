@@ -222,7 +222,7 @@ public class BatteryHelper {
          * @param sharedPreferences An instance of the SharedPreferences class.
          * @return Returns enabled data as String array with correct formats to show to the user.
          */
-        String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
+        public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
             boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
             boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
             enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
@@ -369,7 +369,7 @@ public class BatteryHelper {
             }
         }
 
-        public void addOnBatteryValueChangedListener(OnBatteryValueChangedListener listener) {
+        public void registerOnBatteryValueChangedListener(OnBatteryValueChangedListener listener) {
             if (listeners == null) {
                 listeners = new ArrayList<>(1);
             }
