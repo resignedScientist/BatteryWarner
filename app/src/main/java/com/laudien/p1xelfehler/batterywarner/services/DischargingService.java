@@ -59,7 +59,7 @@ public class DischargingService extends Service {
     private NotificationCompat.Builder compatBuilder;
     private Notification.Builder builder;
     private NotificationManager notificationManager;
-    private boolean alreadyNotified;
+    private boolean alreadyNotified, warningLowEnabled;
     private int warningLow;
 
     @Nullable
@@ -74,6 +74,7 @@ public class DischargingService extends Service {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
         alreadyNotified = temporaryPrefs.getBoolean(getString(R.string.pref_already_notified), false);
+        warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         batteryChangedReceiver = new BatteryChangedReceiver();
@@ -153,9 +154,14 @@ public class DischargingService extends Service {
 
     private void updateNotification() {
         String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
-        updateNotificationContent(data);
-        Notification notification = SDK_INT > N ? builder.build() : compatBuilder.build();
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        String message = updateNotificationContent(data);
+        if (SDK_INT >= N) {
+            builder.setContentText(message);
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } else {
+            compatBuilder.setContentText(message);
+            notificationManager.notify(NOTIFICATION_ID, compatBuilder.build());
+        }
     }
 
     private String updateNotificationContent(String[] data) {
@@ -195,7 +201,7 @@ public class DischargingService extends Service {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
             batteryData.update(batteryStatus, DischargingService.this, sharedPreferences);
-            if (!alreadyNotified) {
+            if (!alreadyNotified && warningLowEnabled) {
                 boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
                 if (!isCharging) {
                     int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
