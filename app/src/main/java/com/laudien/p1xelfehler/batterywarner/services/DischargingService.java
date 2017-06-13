@@ -139,7 +139,7 @@ public class DischargingService extends Service {
     }
 
     private RemoteViews createNotificationContent() {
-        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_dark_theme), getResources().getBoolean(R.bool.pref_info_dark_theme_default));
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_info_notification), getResources().getBoolean(R.bool.pref_dark_info_notification_default));
         RemoteViews notificationContent;
         if (darkThemeEnabled) { // dark theme
             notificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info_dark);

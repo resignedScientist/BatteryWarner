@@ -46,7 +46,7 @@
     <string name="pref_info_current" translatable="false">infoCurrent</string>
     <string name="pref_info_screen_on" translatable="false">infoScreenOn</string>
     <string name="pref_info_screen_off" translatable="false">infoScreenOff</string>
-    <string name="pref_info_dark_theme" translatable="false">infoDarkTheme</string>
+    <string name="pref_dark_info_notification" translatable="false">infoDarkTheme</string>
     <!-- Not directly changeable by user -->
     <string name="prefs_temporary" translatable="false">TemporaryPrefs</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -91,7 +91,7 @@
     <string name="title_info_notification">Info notification</string>
     <string name="title_info_notification_items">Shown in info notification</string>
     <string name="title_notifications_off_warning">Warn if the sound is disabled</string>
-    <string name="title_info_dark_theme">Apply on info notification</string>
+    <string name="title_info_dark_theme">Dark info notification</string>
     <string name="title_get_pro">Click here to get pro version!</string>
     <string name="title_smart_charging_time">The time you wake up:</string>
     <string name="title_smart_charging_use_alarm_clock_time">Use the next alarm clock time</string>

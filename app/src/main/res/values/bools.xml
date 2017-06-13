@@ -28,9 +28,9 @@
     <bool name="pref_info_battery_level_default">false</bool>
     <bool name="pref_info_voltage_default">true</bool>
     <bool name="pref_info_current_default">false</bool>
-    <bool name="pref_info_screen_on_default">true</bool>
-    <bool name="pref_info_screen_off_default">true</bool>
-    <bool name="pref_info_dark_theme_default">false</bool>
+    <bool name="pref_info_screen_on_default">false</bool>
+    <bool name="pref_info_screen_off_default">false</bool>
+    <bool name="pref_dark_info_notification_default">false</bool>
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_reset_battery_stats_default">false</bool>
 </resources>

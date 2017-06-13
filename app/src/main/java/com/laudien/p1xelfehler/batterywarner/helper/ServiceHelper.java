@@ -38,13 +38,9 @@ public class ServiceHelper {
                     }
                 }
             } else if (serviceID == ID_DISCHARGING) {
-                boolean infoNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
                 boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-                boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-                if (infoNotificationEnabled || dischargingServiceEnabled) {
+                if (dischargingServiceEnabled) {
                     startService(context, new Intent(context, DischargingService.class));
-                } else if (warningLowEnabled) {
-                    context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
                 }
             } else {
                 throw new RuntimeException("Unknown service id!");

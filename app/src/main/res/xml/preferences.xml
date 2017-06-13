@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="Discharging Service">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/pref_discharging_service_enabled_default"
             android:key="@string/pref_discharging_service_enabled"
             android:title="@string/title_enabled" />
@@ -33,14 +33,12 @@
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory
-        android:dependency="@string/pref_discharging_service_enabled"
-        android:title="Charging Service">
-        <CheckBoxPreference
+    <PreferenceCategory android:title="Charging Service">
+        <SwitchPreference
             android:defaultValue="@bool/pref_charging_service_enabled_default"
             android:key="@string/pref_charging_service_enabled"
             android:title="@string/title_enabled" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/pref_warning_high_enabled_default"
             android:dependency="@string/pref_charging_service_enabled"
             android:key="@string/pref_warning_high_enabled"
@@ -64,16 +62,18 @@
         android:dependency="@string/pref_charging_service_enabled"
         android:key="@string/pref_stats"
         android:title="@string/title_stats">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/pref_graph_enabled_default"
             android:key="@string/pref_graph_enabled"
             android:title="@string/title_graph_enabled" />
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/pref_graph_autosave_default"
+            android:dependency="@string/pref_graph_enabled"
             android:key="@string/pref_graph_autosave"
             android:title="@string/title_graph_autosave" />
         <ListPreference
             android:defaultValue="@string/pref_time_format_default"
+            android:dependency="@string/pref_graph_enabled"
             android:entries="@array/timeFormats"
             android:entryValues="@array/timeFormats_values"
             android:key="@string/pref_time_format"
@@ -81,15 +81,67 @@
             android:title="@string/title_time_format" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_theming">
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="@bool/pref_dark_theme_enabled_default"
             android:key="@string/pref_dark_theme_enabled"
             android:title="@string/title_dark_theme_enabled" />
-        <CheckBoxPreference
-            android:defaultValue="@bool/pref_info_dark_theme_default"
-            android:dependency="@string/pref_dark_theme_enabled"
-            android:key="@string/pref_info_dark_theme"
+        <SwitchPreference
+            android:defaultValue="@bool/pref_dark_info_notification_default"
+            android:key="@string/pref_dark_info_notification"
             android:summary="@string/summary_info_dark_theme"
             android:title="@string/title_info_dark_theme" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_root_features">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_stop_charging_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_stop_charging"
+            android:summary="@string/summary_stop_charging"
+            android:title="@string/title_stop_charging" />
+        <Preference
+            android:dependency="@string/pref_warning_high_enabled"
+            android:key="@string/pref_smart_charging_enabled"
+            android:title="@string/title_smart_charging">
+            <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
+        </Preference>
+        <SwitchPreference
+            android:defaultValue="@bool/pref_usb_charging_disabled_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_usb_charging_disabled"
+            android:summary="@string/summary_usb_charging_disabled"
+            android:title="@string/title_usb_charging_disabled" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_power_saving_mode_default"
+            android:dependency="@string/pref_discharging_service_enabled"
+            android:key="@string/pref_power_saving_mode"
+            android:summary="@string/summary_power_saving_mode"
+            android:title="@string/title_power_saving_mode" />
+        <SwitchPreference
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_reset_battery_stats"
+            android:summary="@string/summary_reset_battery_stats"
+            android:title="@string/title_reset_battery_stats" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_advanced_features">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_ac_enabled_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_ac_enabled"
+            android:title="@string/title_ac_enabled" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_usb_enabled_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_usb_enabled"
+            android:title="@string/title_usb_enabled" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_wireless_enabled_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_wireless_enabled"
+            android:title="@string/title_wireless_enabled" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_notifications_off_warning_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_notifications_off_warning"
+            android:title="@string/title_notifications_off_warning" />
     </PreferenceCategory>
 </PreferenceScreen>
