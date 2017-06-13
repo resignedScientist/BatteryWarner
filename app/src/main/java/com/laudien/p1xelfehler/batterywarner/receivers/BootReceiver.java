@@ -31,8 +31,8 @@ public class BootReceiver extends BroadcastReceiver {
                     SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
                     temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default)).apply();
                     // start services/receivers
-                    ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
-                    ServiceHelper.startService(context, sharedPreferences, ID_DISCHARGING);
+                    ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ID_CHARGING);
+                    ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ID_DISCHARGING);
                 }
             }
         }

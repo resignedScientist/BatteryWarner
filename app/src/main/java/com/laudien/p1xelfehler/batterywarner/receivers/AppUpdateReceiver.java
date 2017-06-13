@@ -86,8 +86,8 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             // start the services
-            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
-            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_DISCHARGING);
+            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
+            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
         }
     }
 }
