@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -128,10 +129,16 @@ public final class NotificationHelper {
      * @param context        An instance of the Context class.
      * @param notificationID The id of the notification - usually one of the id constants.
      */
-    public static void cancelNotification(Context context, int... notificationID) {
+    public static void cancelNotification(Context context, @Nullable SharedPreferences temporaryPrefs, int... notificationID) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         for (int id : notificationID) {
             notificationManager.cancel(id);
+            if (id == ID_WARNING_LOW || id == ID_WARNING_HIGH) {
+                if (temporaryPrefs == null) {
+                    temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                }
+                temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
+            }
         }
     }
 

@@ -36,10 +36,10 @@ public class ChargingReceiver extends BroadcastReceiver {
             boolean firstStart = sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default));
             boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
             if (!firstStart && isEnabled) { // if intro was finished and main switch is turned on
-                DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
-                NotificationHelper.cancelNotification(context, ID_WARNING_LOW); // cancel warning low notification
-                // reset already notified
                 SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                DischargingAlarmReceiver.cancelDischargingAlarm(context); // cancel discharging alarm
+                NotificationHelper.cancelNotification(context, temporaryPrefs, ID_WARNING_LOW); // cancel warning low notification
+                // reset already notified
                 temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
                 context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
                     @Override

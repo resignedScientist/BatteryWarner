@@ -31,7 +31,7 @@ public class GrantRootService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         boolean rooted = RootHelper.isRootAvailable();
-        NotificationHelper.cancelNotification(this, ID_GRANT_ROOT, ID_NOT_ROOTED);
+        NotificationHelper.cancelNotification(this, null, ID_GRANT_ROOT, ID_NOT_ROOTED);
         if (rooted) { // rooting was allowed now
             Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             if (batteryStatus != null) {

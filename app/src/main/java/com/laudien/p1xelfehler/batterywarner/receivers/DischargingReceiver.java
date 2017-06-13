@@ -33,7 +33,7 @@ public class DischargingReceiver extends BroadcastReceiver {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
                 short delay = 0; // add a delay for the dismissing of the notification if stop charging is enabled
-                SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
+                final SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
                 int lastChargingType = temporaryPrefs.getInt(context.getString(R.string.pref_last_chargingType), -1);
                 boolean stopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
                 boolean usbDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
@@ -45,7 +45,7 @@ public class DischargingReceiver extends BroadcastReceiver {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
+                        NotificationHelper.cancelNotification(context, temporaryPrefs, ID_WARNING_HIGH);
                     }
                 }, delay);
                 // reset already notified

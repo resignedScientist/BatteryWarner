@@ -20,8 +20,13 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 
+import static android.content.Intent.ACTION_BATTERY_CHANGED;
+import static android.content.Intent.ACTION_POWER_CONNECTED;
+import static android.content.Intent.ACTION_POWER_DISCONNECTED;
+import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
@@ -34,7 +39,9 @@ import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.Battery
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
 
 /**
  * Background service that runs while discharging. It logs the percentage loss and times
@@ -43,8 +50,9 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
  */
 public class DischargingService extends Service {
     private static final int NOTIFICATION_ID = 3001;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences, temporaryPrefs;
     private BatteryChangedReceiver batteryChangedReceiver;
+    private ChargingStateChangedReceiver chargingStateChangedReceiver;
     private BatteryData batteryData;
     private MyOnBatteryValueChangedListener onBatteryValueChangedListener;
     private RemoteViews notificationContent;
@@ -64,18 +72,22 @@ public class DischargingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(getClass().getSimpleName(), "Starting service...");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences tempPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-        alreadyNotified = tempPrefs.getBoolean(getString(R.string.pref_already_notified), false);
+        temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
+        alreadyNotified = temporaryPrefs.getBoolean(getString(R.string.pref_already_notified), false);
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         batteryChangedReceiver = new BatteryChangedReceiver();
         onBatteryValueChangedListener = new MyOnBatteryValueChangedListener();
-        Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         batteryData = BatteryHelper.getBatteryData(batteryStatus, this, sharedPreferences);
         notificationContent = createNotificationContent();
         Notification notification = createNotification();
         startForeground(NOTIFICATION_ID, notification);
         batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
+        chargingStateChangedReceiver = new ChargingStateChangedReceiver();
+        IntentFilter chargingStateChangedFilter = new IntentFilter(ACTION_POWER_CONNECTED);
+        chargingStateChangedFilter.addAction(ACTION_POWER_DISCONNECTED);
+        registerReceiver(chargingStateChangedReceiver, chargingStateChangedFilter);
         Log.d(getClass().getSimpleName(), "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -85,6 +97,7 @@ public class DischargingService extends Service {
         super.onDestroy();
         Log.d(getClass().getSimpleName(), "Destroying service...");
         unregisterReceiver(batteryChangedReceiver);
+        unregisterReceiver(chargingStateChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
         Log.d(getClass().getSimpleName(), "Service destroyed!");
     }
@@ -177,10 +190,13 @@ public class DischargingService extends Service {
         public void onReceive(Context context, Intent batteryStatus) {
             batteryData.update(batteryStatus, DischargingService.this, sharedPreferences);
             if (!alreadyNotified) {
-                int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
-                if (batteryLevel <= warningLow) {
-                    alreadyNotified = true;
-                    NotificationHelper.showNotification(getApplicationContext(), ID_WARNING_LOW);
+                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
+                if (!isCharging) {
+                    int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
+                    if (batteryLevel <= warningLow) {
+                        alreadyNotified = true;
+                        NotificationHelper.showNotification(getApplicationContext(), ID_WARNING_LOW);
+                    }
                 }
             }
         }
@@ -216,6 +232,24 @@ public class DischargingService extends Service {
                     break;
             }
             updateNotification();
+        }
+    }
+
+    private class ChargingStateChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action) {
+                case ACTION_POWER_CONNECTED:
+                    ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                    break;
+                case ACTION_POWER_DISCONNECTED:
+                    NotificationHelper.cancelNotification(context, temporaryPrefs, ID_WARNING_HIGH);
+                    break;
+                default:
+                    return;
+            }
+            alreadyNotified = false;
         }
     }
 }
