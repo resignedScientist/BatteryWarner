@@ -48,7 +48,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHAR
  * for screen on and off and saves it in the default shared preferences.
  * It stops automatically if the user starts to charge or it is disabled in the settings.
  */
-public class DischargingService extends Service {
+public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int NOTIFICATION_ID = 3001;
     private SharedPreferences sharedPreferences, temporaryPrefs;
     private BatteryChangedReceiver batteryChangedReceiver;
@@ -59,7 +59,7 @@ public class DischargingService extends Service {
     private NotificationCompat.Builder compatBuilder;
     private Notification.Builder builder;
     private NotificationManager notificationManager;
-    private boolean alreadyNotified, warningLowEnabled;
+    private boolean alreadyNotified = false, warningLowEnabled;
     private int warningLow;
 
     @Nullable
@@ -73,7 +73,6 @@ public class DischargingService extends Service {
         Log.d(getClass().getSimpleName(), "Starting service...");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-        alreadyNotified = temporaryPrefs.getBoolean(getString(R.string.pref_already_notified), false);
         warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -89,6 +88,7 @@ public class DischargingService extends Service {
         IntentFilter chargingStateChangedFilter = new IntentFilter(ACTION_POWER_CONNECTED);
         chargingStateChangedFilter.addAction(ACTION_POWER_DISCONNECTED);
         registerReceiver(chargingStateChangedReceiver, chargingStateChangedFilter);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         Log.d(getClass().getSimpleName(), "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -101,6 +101,25 @@ public class DischargingService extends Service {
         unregisterReceiver(chargingStateChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
         Log.d(getClass().getSimpleName(), "Service destroyed!");
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_discharging_service_enabled))) {
+            if (!sharedPreferences.getBoolean(key, true)) {
+                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_LOW);
+                stopSelf();
+            }
+        } else if (key.equals(getString(R.string.pref_warning_low))) {
+            warningLow = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_low_default));
+        } else if (key.equals(getString(R.string.pref_warning_low_enabled))) {
+            warningLowEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+            if (warningLowEnabled) {
+                alreadyNotified = false;
+            } else {
+                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_LOW);
+            }
+        }
     }
 
     private Notification createNotification() {
@@ -206,6 +225,10 @@ public class DischargingService extends Service {
                 if (!isCharging) {
                     int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
                     if (batteryLevel <= warningLow) {
+                        // make sure the notification will be shown
+                        temporaryPrefs.edit()
+                                .putBoolean(getString(R.string.pref_already_notified), false)
+                                .apply();
                         alreadyNotified = true;
                         NotificationHelper.showNotification(getApplicationContext(), ID_WARNING_LOW);
                     }

@@ -28,8 +28,8 @@ public class ServiceHelper {
         if (isEnabled) {
             DischargingAlarmReceiver.cancelDischargingAlarm(context);
             if (serviceID == ID_CHARGING) {
-                boolean warningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-                if (warningHighEnabled) {
+                boolean chargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_charging_service_enabled), context.getResources().getBoolean(R.bool.pref_charging_service_enabled_default));
+                if (chargingServiceEnabled) {
                     Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
                     boolean isCharging = batteryStatus == null || batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
                     int batteryLevel = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
@@ -56,7 +56,7 @@ public class ServiceHelper {
         }
     }
 
-    public static void restartService(Context context, @Nullable SharedPreferences sharedPreferences, byte serviceID) {
+    private static void stopService(Context context, byte serviceID) {
         Intent intent;
         if (serviceID == ID_CHARGING) {
             intent = new Intent(context, ChargingService.class);
@@ -66,6 +66,10 @@ public class ServiceHelper {
             throw new RuntimeException("Unknown service id!");
         }
         context.stopService(intent);
+    }
+
+    public static void restartService(Context context, @Nullable SharedPreferences sharedPreferences, byte serviceID) {
+        stopService(context, serviceID);
         startService(context, sharedPreferences, serviceID);
     }
 }
