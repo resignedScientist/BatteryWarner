@@ -133,7 +133,7 @@ public class DischargingService extends Service {
                     .setCustomBigContentView(notificationContent)
                     .setContentText(message)
                     .setSmallIcon(R.mipmap.ic_launcher);
-            return builder.build();
+            return compatBuilder.build();
         }
     }
 
