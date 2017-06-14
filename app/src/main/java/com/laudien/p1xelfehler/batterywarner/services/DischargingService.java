@@ -26,6 +26,8 @@ import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivit
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.content.Intent.ACTION_POWER_CONNECTED;
 import static android.content.Intent.ACTION_POWER_DISCONNECTED;
+import static android.content.Intent.ACTION_SCREEN_OFF;
+import static android.content.Intent.ACTION_SCREEN_ON;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -53,8 +55,9 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private SharedPreferences sharedPreferences, temporaryPrefs;
     private BatteryChangedReceiver batteryChangedReceiver;
     private ChargingStateChangedReceiver chargingStateChangedReceiver;
-    private BatteryData batteryData;
     private MyOnBatteryValueChangedListener onBatteryValueChangedListener;
+    private ScreenStateChangedReceiver screenStateChangedReceiver;
+    private BatteryData batteryData;
     private RemoteViews notificationContent;
     private NotificationCompat.Builder compatBuilder;
     private Notification.Builder builder;
@@ -88,6 +91,10 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         IntentFilter chargingStateChangedFilter = new IntentFilter(ACTION_POWER_CONNECTED);
         chargingStateChangedFilter.addAction(ACTION_POWER_DISCONNECTED);
         registerReceiver(chargingStateChangedReceiver, chargingStateChangedFilter);
+        screenStateChangedReceiver = new ScreenStateChangedReceiver();
+        IntentFilter screenStateFilter = new IntentFilter(ACTION_SCREEN_ON);
+        screenStateFilter.addAction(ACTION_SCREEN_OFF);
+        registerReceiver(screenStateChangedReceiver, screenStateFilter);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         Log.d(getClass().getSimpleName(), "Service started!");
         return super.onStartCommand(intent, flags, startId);
@@ -99,6 +106,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         Log.d(getClass().getSimpleName(), "Destroying service...");
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(chargingStateChangedReceiver);
+        unregisterReceiver(screenStateChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
         Log.d(getClass().getSimpleName(), "Service destroyed!");
     }
@@ -285,6 +293,20 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     return;
             }
             alreadyNotified = false;
+        }
+    }
+
+    private class ScreenStateChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_SCREEN_ON)) { // screen on
+                Log.d(DischargingService.class.getSimpleName(), "screen on received!");
+                registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            } else if (action.equals(ACTION_SCREEN_OFF)) { // screen off
+                Log.d(DischargingService.class.getSimpleName(), "screen off received!");
+                unregisterReceiver(batteryChangedReceiver);
+            }
         }
     }
 }
