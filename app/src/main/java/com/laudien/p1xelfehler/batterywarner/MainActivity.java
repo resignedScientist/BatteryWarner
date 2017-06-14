@@ -19,6 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
@@ -26,6 +27,8 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_LOW;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_OK;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -75,6 +78,9 @@ public class MainActivity extends BaseActivity {
                     }
                 });
             }
+            // start services just in case
+            ServiceHelper.startService(this, sharedPreferences, ID_CHARGING);
+            ServiceHelper.startService(this, sharedPreferences, ID_DISCHARGING);
         }
     }
 

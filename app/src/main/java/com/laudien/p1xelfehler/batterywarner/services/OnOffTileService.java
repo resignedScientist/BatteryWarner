@@ -1,7 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -13,7 +11,6 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
-import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
@@ -80,28 +77,17 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) {
-            return;
-        }
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) != 0;
 
         if (isActive) { // disable battery warnings
             Log.d(TAG, "Disabling battery warnings...");
             tile.setState(Tile.STATE_INACTIVE);
-            if (!isCharging) { // discharging
-                DischargingAlarmReceiver.cancelDischargingAlarm(this);
-            }
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_disabled, LENGTH_SHORT);
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
             SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
             temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
-            if (isCharging) {
-                ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
-            } else { // start DischargingService
-                ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
-            }
+            ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
+            ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_enabled, LENGTH_SHORT);
         }
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();

@@ -224,7 +224,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         public void onReceive(Context context, Intent batteryStatus) {
             batteryData.update(batteryStatus, DischargingService.this, sharedPreferences);
             if (!alreadyNotified && warningLowEnabled) {
-                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
+                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) > 0;
                 if (!isCharging) {
                     int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
                     if (batteryLevel <= warningLow) {

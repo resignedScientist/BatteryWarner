@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
 import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
 
@@ -26,7 +25,6 @@ public class ServiceHelper {
         }
         boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
         if (isEnabled) {
-            DischargingAlarmReceiver.cancelDischargingAlarm(context);
             if (serviceID == ID_CHARGING) {
                 boolean chargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_charging_service_enabled), context.getResources().getBoolean(R.bool.pref_charging_service_enabled_default));
                 if (chargingServiceEnabled) {

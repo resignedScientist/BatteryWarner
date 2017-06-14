@@ -26,7 +26,7 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
             if (!measureBatteryDrainEnabled) {
-                String summary = String.format(Locale.getDefault(), "'%s' %s", getString(R.string.title_discharging_service_enabled), getString(R.string.summary_dependency));
+                String summary = String.format(Locale.getDefault(), "'%s' %s", getString(R.string.title_measure_battery_drain), getString(R.string.summary_dependency));
                 Preference pref_screenOn = findPreference(getString(R.string.pref_info_screen_on));
                 pref_screenOn.setEnabled(false);
                 pref_screenOn.setSummary(summary);
