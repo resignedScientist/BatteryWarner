@@ -161,7 +161,7 @@ public final class NotificationHelper {
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
             if (Build.VERSION.SDK_INT >= O) {
-                builder.setChannelId("battery_warnings");
+                builder.setChannelId(context.getString(R.string.channel_battery_warnings));
             } else {
                 builder.setSound(getWarningSound(context, defaultPrefs))
                         .setVibrate(getWarningVibratePattern(context, defaultPrefs))
@@ -202,7 +202,7 @@ public final class NotificationHelper {
                     .setContentIntent(getDefaultClickIntent(context))
                     .setAutoCancel(true);
             if (Build.VERSION.SDK_INT >= O) {
-                builder.setChannelId("battery_warnings");
+                builder.setChannelId(context.getString(R.string.channel_battery_warnings));
             } else {
                 builder.setSound(getWarningSound(context, sharedPreferences))
                         .setVibrate(getWarningVibratePattern(context, sharedPreferences))
@@ -256,7 +256,7 @@ public final class NotificationHelper {
                         .setContentIntent(getDefaultClickIntent(context))
                         .setAutoCancel(true);
                 if (SDK_INT >= O) {
-                    builder.setChannelId("other_warnings");
+                    builder.setChannelId(context.getString(R.string.channel_other_warnings));
                 } else {
                     builder.setSound(getDefaultSound())
                             .setVibrate(VIBRATE_PATTERN)
@@ -288,7 +288,7 @@ public final class NotificationHelper {
                                     .addAction(R.drawable.ic_battery_charging_full_white_24dp, context.getString(R.string.notification_button_enable_charging), pendingIntent)
                                     .setOngoing(true);
                             if (SDK_INT >= O) {
-                                builder.setChannelId("stop_charging");
+                                builder.setChannelId(context.getString(R.string.channel_battery_warnings));
                             } else {
                                 builder.setPriority(PRIORITY_LOW);
                             }
@@ -323,7 +323,7 @@ public final class NotificationHelper {
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);
             if (SDK_INT >= O) {
-                builder.setChannelId("other_warnings");
+                builder.setChannelId(context.getString(R.string.channel_other_warnings));
             } else {
                 builder.setSound(getDefaultSound())
                         .setVibrate(VIBRATE_PATTERN)
@@ -351,7 +351,7 @@ public final class NotificationHelper {
                     .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
                     .setAutoCancel(true);
             if (SDK_INT >= O) {
-                builder.setChannelId("other_warnings");
+                builder.setChannelId(context.getString(R.string.channel_other_warnings));
             } else {
                 builder.setSound(getDefaultSound())
                         .setVibrate(VIBRATE_PATTERN)
@@ -376,7 +376,7 @@ public final class NotificationHelper {
                 .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
                 .setAutoCancel(true);
         if (SDK_INT >= O) {
-            builder.setChannelId("other_warnings");
+            builder.setChannelId(context.getString(R.string.channel_other_warnings));
         } else {
             builder.setSound(getDefaultSound())
                     .setVibrate(VIBRATE_PATTERN)
@@ -398,7 +398,7 @@ public final class NotificationHelper {
                 .setContentIntent(clickIntent)
                 .setAutoCancel(true);
         if (SDK_INT >= O) {
-            builder.setChannelId("other_warnings");
+            builder.setChannelId(context.getString(R.string.channel_other_warnings));
         } else {
             builder.setSound(getDefaultSound())
                     .setVibrate(VIBRATE_PATTERN)
@@ -460,7 +460,7 @@ public final class NotificationHelper {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         // battery warnings
         NotificationChannel channel = new NotificationChannel(
-                "battery_warnings",
+                context.getString(R.string.channel_battery_warnings),
                 "Battery warnings",
                 NotificationManager.IMPORTANCE_MAX
         );
@@ -478,11 +478,11 @@ public final class NotificationHelper {
         notificationManager.createNotificationChannel(channel);
         // info notification
         channel = new NotificationChannel(
-                "info_notification",
+                context.getString(R.string.channel_battery_info),
                 "Battery Info",
                 NotificationManager.IMPORTANCE_MIN
         );
-        channel.setDescription("The permanent notification with all the battery infos.");
+        channel.setDescription("The permanent notification with all the battery infos and the 'Charging Service' notification run under this category.");
         channel.enableLights(false);
         channel.enableVibration(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -490,7 +490,7 @@ public final class NotificationHelper {
         notificationManager.createNotificationChannel(channel);
         // other warnings
         channel = new NotificationChannel(
-                "other_warnings",
+                context.getString(R.string.channel_other_warnings),
                 "Other warnings",
                 NotificationManager.IMPORTANCE_MAX
         );
@@ -501,17 +501,6 @@ public final class NotificationHelper {
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setShowBadge(true);
         notificationManager.createNotificationChannel(channel);
-        // stop charging notification
-        channel = new NotificationChannel(
-                "stop_charging",
-                "Charging Stopped",
-                NotificationManager.IMPORTANCE_MIN
-        );
-        channel.setDescription("Notification that is shown when the charging has been stopped by the app. You can enable the charging again within this notification.");
-        channel.enableLights(false);
-        channel.enableVibration(false);
-        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        channel.setShowBadge(true);
     }
 
     private static class IdNotFoundException extends RuntimeException {

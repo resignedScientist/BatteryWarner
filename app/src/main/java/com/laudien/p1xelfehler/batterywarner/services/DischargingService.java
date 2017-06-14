@@ -141,7 +141,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     .setContentText(message)
                     .setCustomBigContentView(notificationContent);
             if (SDK_INT >= O) {
-                builder.setChannelId("info_notification");
+                builder.setChannelId(getString(R.string.channel_battery_info));
             } else { // Android N (API 24/25)
                 builder.setPriority(Notification.PRIORITY_LOW);
             }

@@ -163,7 +163,9 @@
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
     <string name="title_measure_battery_drain">Measure battery drain</string>
-    <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off separately.</string>
+    <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off in percent per hour.</string>
+    <string name="notification_charging_service">Charging Service is running…</string>
+    <string name="notification_title_charging_service">Charging Service</string>
 
     <!-- new strings -->
 </resources>

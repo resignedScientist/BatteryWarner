@@ -198,11 +198,11 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         // build ongoing notification
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Charging service")
-                .setContentText("Charging Service is running...")
+                .setContentTitle(getString(R.string.notification_title_charging_service))
+                .setContentText(getString(R.string.notification_charging_service))
                 .setContentIntent(clickPendingIntent);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId("info_notification");
+            builder.setChannelId(getString(R.string.channel_battery_info));
         } else {
             builder.setPriority(Notification.PRIORITY_LOW);
         }
