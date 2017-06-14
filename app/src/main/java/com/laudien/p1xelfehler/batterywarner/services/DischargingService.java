@@ -28,7 +28,6 @@ import static android.content.Intent.ACTION_POWER_CONNECTED;
 import static android.content.Intent.ACTION_POWER_DISCONNECTED;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_SCREEN_ON;
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
@@ -224,7 +223,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         public void onReceive(Context context, Intent batteryStatus) {
             batteryData.update(batteryStatus, DischargingService.this, sharedPreferences);
             if (!alreadyNotified && warningLowEnabled) {
-                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) > 0;
+                boolean isCharging = BatteryHelper.isCharging(batteryStatus);
                 if (!isCharging) {
                     int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
                     if (batteryLevel <= warningLow) {
