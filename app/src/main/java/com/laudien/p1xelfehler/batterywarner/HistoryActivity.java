@@ -80,7 +80,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                     PERMISSION_REQUEST_CODE
             );
         } else {
-            loadFragment();
+            loadGraph();
         }
     }
 
@@ -124,7 +124,40 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         }
     }
 
-    private void loadFragment() {
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        File file = adapter.getFile(position);
+        if (file != null) {
+            textView_fileName.setText(file.getName());
+        }
+        if (adapter.getCount() - 1 <= position) {
+            slideOut(btn_next);
+        } else {
+            slideIn(btn_next);
+        }
+        if (position <= 0) {
+            slideOut(btn_prev);
+        } else {
+            slideIn(btn_prev);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
+    }
+
+    private void loadGraph() {
         adapter = new HistoryPagerAdapter(getSupportFragmentManager(), readGraphs());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
@@ -185,7 +218,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                                 ToastHelper.sendToast(HistoryActivity.this, R.string.toast_success_delete_graph, LENGTH_SHORT);
                                 if (adapter.getCount() == 0) {
                                     textView_nothingSaved.setVisibility(VISIBLE);
-                                    textView_fileName.setText("");
                                 }
                             } else {
                                 ToastHelper.sendToast(HistoryActivity.this, R.string.toast_error_deleting, LENGTH_SHORT);
@@ -210,7 +242,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                             if (adapter.removeAllItems()) {
                                 ToastHelper.sendToast(HistoryActivity.this, R.string.toast_success_delete_all_graphs, LENGTH_SHORT);
                                 textView_nothingSaved.setVisibility(VISIBLE);
-                                textView_fileName.setText("");
                                 onPageSelected(-1);
                             } else {
                                 ToastHelper.sendToast(HistoryActivity.this, R.string.toast_error_deleting, LENGTH_SHORT);
@@ -236,9 +267,9 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
             final String oldName = adapter.getFile(viewPager.getCurrentItem()).getName();
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dialog_rename);
-            final EditText editText = (EditText) dialog.findViewById(R.id.editText);
+            final EditText editText = dialog.findViewById(R.id.editText);
             editText.setText(oldName);
-            Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+            Button btn_ok = dialog.findViewById(R.id.btn_ok);
             btn_ok.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -262,7 +293,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                     dialog.dismiss();
                 }
             });
-            Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+            Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
             btn_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -323,39 +354,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         }
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        File file = adapter.getFile(position);
-        if (file != null) {
-            textView_fileName.setText(file.getName());
-        }
-        if (adapter.getCount() - 1 <= position) {
-            slideOut(btn_next);
-        } else {
-            slideIn(btn_next);
-        }
-        if (position <= 0) {
-            slideOut(btn_prev);
-        } else {
-            slideIn(btn_prev);
-        }
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
-    }
-
     /**
      * A FragmentStatePagerAdapter that loads HistoryPageFragments into the ViewPager.
      */
@@ -393,6 +391,16 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                 currentFragment = (HistoryPageFragment) object;
             }
             super.setPrimaryItem(container, position, object);
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            if (getCount() == 0) {
+                textView_fileName.setText("");
+            } else {
+                textView_fileName.setText(files.get(viewPager.getCurrentItem()).getName());
+            }
         }
 
         /**
