@@ -3,11 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="Discharging Service">
         <SwitchPreference
-            android:defaultValue="@bool/pref_measure_battery_drain_default"
-            android:key="@string/pref_measure_battery_drain"
-            android:summary="@string/summary_measure_battery_drain"
-            android:title="@string/title_measure_battery_drain" />
-        <SwitchPreference
             android:defaultValue="@bool/pref_warning_low_enabled_default"
             android:key="@string/pref_warning_low_enabled"
             android:title="Enable warning notification" />
@@ -31,6 +26,16 @@
             android:title="@string/title_info_notification_items">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
         </Preference>
+        <SwitchPreference
+            android:defaultValue="@bool/pref_power_saving_mode_default"
+            android:key="@string/pref_power_saving_mode"
+            android:summary="@string/summary_power_saving_mode"
+            android:title="@string/title_power_saving_mode" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_measure_battery_drain_default"
+            android:key="@string/pref_measure_battery_drain"
+            android:summary="@string/summary_measure_battery_drain"
+            android:title="@string/title_measure_battery_drain" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Charging Service">
         <SwitchPreference
@@ -56,6 +61,29 @@
             android:title="Warning percentage:"
             app:slider_min="@integer/pref_slider_high_min"
             app:unit="%" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_stop_charging_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_stop_charging"
+            android:summary="@string/summary_stop_charging"
+            android:title="@string/title_stop_charging" />
+        <Preference
+            android:dependency="@string/pref_warning_high_enabled"
+            android:key="@string/pref_smart_charging_enabled"
+            android:title="@string/title_smart_charging">
+            <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
+        </Preference>
+        <SwitchPreference
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_reset_battery_stats"
+            android:summary="@string/summary_reset_battery_stats"
+            android:title="@string/title_reset_battery_stats" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_usb_charging_disabled_default"
+            android:dependency="@string/pref_charging_service_enabled"
+            android:key="@string/pref_usb_charging_disabled"
+            android:summary="@string/summary_usb_charging_disabled"
+            android:title="@string/title_usb_charging_disabled" />
     </PreferenceCategory>
     <PreferenceCategory
         android:dependency="@string/pref_charging_service_enabled"
@@ -89,36 +117,6 @@
             android:key="@string/pref_dark_info_notification"
             android:summary="@string/summary_info_dark_theme"
             android:title="@string/title_info_dark_theme" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/title_root_features">
-        <SwitchPreference
-            android:defaultValue="@bool/pref_stop_charging_default"
-            android:dependency="@string/pref_charging_service_enabled"
-            android:key="@string/pref_stop_charging"
-            android:summary="@string/summary_stop_charging"
-            android:title="@string/title_stop_charging" />
-        <Preference
-            android:dependency="@string/pref_warning_high_enabled"
-            android:key="@string/pref_smart_charging_enabled"
-            android:title="@string/title_smart_charging">
-            <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
-        </Preference>
-        <SwitchPreference
-            android:defaultValue="@bool/pref_usb_charging_disabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
-            android:key="@string/pref_usb_charging_disabled"
-            android:summary="@string/summary_usb_charging_disabled"
-            android:title="@string/title_usb_charging_disabled" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_power_saving_mode_default"
-            android:key="@string/pref_power_saving_mode"
-            android:summary="@string/summary_power_saving_mode"
-            android:title="@string/title_power_saving_mode" />
-        <SwitchPreference
-            android:dependency="@string/pref_charging_service_enabled"
-            android:key="@string/pref_reset_battery_stats"
-            android:summary="@string/summary_reset_battery_stats"
-            android:title="@string/title_reset_battery_stats" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_advanced_features">
         <SwitchPreference
