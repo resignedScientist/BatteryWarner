@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -132,7 +131,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
 
     @Override
     public void onPageSelected(int position) {
-        Log.d(getClass().getSimpleName(), "onPageSelected()");
         File file = adapter.getFile(position);
         if (file != null) {
             textView_fileName.setText(file.getName());
@@ -398,7 +396,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         @Override
         public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
-            Log.d(getClass().getSimpleName(), "notifyDataSetChanged");
             if (getCount() == 0) {
                 textView_fileName.setText("");
             } else {
