@@ -24,17 +24,16 @@ import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragmen
  * Contains a button for toggling all warnings or logging of the app.
  */
 public class MainPageFragment extends Fragment {
-
-    BatteryInfoFragment infoFragment;
+    private BatteryInfoFragment infoFragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-        setHasOptionsMenu(dischargingServiceEnabled);
+        boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
+        setHasOptionsMenu(measureBatteryDrainEnabled);
         View view = inflater.inflate(R.layout.fragment_main_page, container, false);
-        final BatteryView img_battery = (BatteryView) view.findViewById(R.id.img_battery);
+        final BatteryView img_battery = view.findViewById(R.id.img_battery);
         infoFragment = (BatteryInfoFragment) getChildFragmentManager().findFragmentById(R.id.fragment_battery_info);
         infoFragment.setOnBatteryColorChangedListener(new BatteryInfoFragment.OnBatteryColorChangedListener() {
             @Override

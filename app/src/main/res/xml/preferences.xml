@@ -7,6 +7,11 @@
             android:key="@string/pref_discharging_service_enabled"
             android:title="@string/title_enabled" />
         <SwitchPreference
+            android:defaultValue="@bool/pref_measure_battery_drain_default"
+            android:key="@string/pref_measure_battery_drain"
+            android:summary="@string/summary_measure_battery_drain"
+            android:title="@string/title_measure_battery_drain" />
+        <SwitchPreference
             android:defaultValue="@bool/pref_warning_low_enabled_default"
             android:dependency="@string/pref_discharging_service_enabled"
             android:key="@string/pref_warning_low_enabled"

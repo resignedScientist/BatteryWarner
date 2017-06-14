@@ -65,7 +65,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
         textView_technology = view.findViewById(R.id.textView_technology);
@@ -81,7 +81,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             textView_current.setVisibility(GONE);
         }
         // hide the screen on/off TextViews if discharging service is disabled
-        if (!dischargingServiceEnabled) {
+        if (!measureBatteryDrainEnabled) {
             textView_screenOn.setVisibility(GONE);
             textView_screenOff.setVisibility(GONE);
         }
@@ -112,6 +112,37 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         super.onStop();
         getActivity().unregisterReceiver(batteryChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(this);
+    }
+
+    @Override
+    public void onBatteryValueChanged(int index) {
+        switch (index) {
+            case INDEX_TECHNOLOGY:
+                textView_technology.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_TEMPERATURE:
+                textView_temp.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_HEALTH:
+                textView_health.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_BATTERY_LEVEL:
+                textView_batteryLevel.setText(batteryData.getValueString(index));
+                setBatteryColor();
+                break;
+            case INDEX_VOLTAGE:
+                textView_voltage.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_CURRENT:
+                textView_current.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_SCREEN_ON:
+                textView_screenOn.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_SCREEN_OFF:
+                textView_screenOff.setText(batteryData.getValueString(index));
+                break;
+        }
     }
 
     public void resetDischargingStats() {
@@ -163,37 +194,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
                     }
                 }
             }
-        }
-    }
-
-    @Override
-    public void onBatteryValueChanged(int index) {
-        switch (index) {
-            case INDEX_TECHNOLOGY:
-                textView_technology.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_TEMPERATURE:
-                textView_temp.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_HEALTH:
-                textView_health.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_BATTERY_LEVEL:
-                textView_batteryLevel.setText(batteryData.getValueString(index));
-                setBatteryColor();
-                break;
-            case INDEX_VOLTAGE:
-                textView_voltage.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_CURRENT:
-                textView_current.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_SCREEN_ON:
-                textView_screenOn.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_SCREEN_OFF:
-                textView_screenOff.setText(batteryData.getValueString(index));
-                break;
         }
     }
 
