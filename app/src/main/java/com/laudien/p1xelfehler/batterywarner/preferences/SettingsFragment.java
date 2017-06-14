@@ -46,7 +46,7 @@ import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedR
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningHigh, pref_usb, pref_ac,
-            pref_wireless, pref_graphEnabled, switch_darkTheme, pref_dischargingService,
+            pref_wireless, pref_graphEnabled, switch_darkTheme,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
@@ -87,7 +87,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
         pref_chargingService = (TwoStatePreference) findPreference(getString(R.string.pref_charging_service_enabled));
-        pref_dischargingService = (TwoStatePreference) findPreference(getString(R.string.pref_discharging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
         pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
@@ -223,14 +222,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
                 setInfoNotificationSubtitle(sharedPreferences);
             }
-        } else if (preference == pref_dischargingService) {
-            Context context = getContext();
-            if (context != null) {
-                if (pref_dischargingService.isChecked()) {
-                    ServiceHelper.startService(context, sharedPreferences, ID_DISCHARGING);
-                }
-                setInfoNotificationSubtitle(sharedPreferences);
-            }
         } else if ((preference == pref_ac && pref_ac.isChecked())
                 || (preference == pref_usb && pref_usb.isChecked())
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
@@ -265,12 +256,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             enabledItems.add(getString(R.string.info_voltage));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
             enabledItems.add(getString(R.string.info_current));
-        if (pref_dischargingService.isChecked()) {
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
-                enabledItems.add(getString(R.string.info_screen_on));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
-                enabledItems.add(getString(R.string.info_screen_off));
-        }
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
+            enabledItems.add(getString(R.string.info_screen_on));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
+            enabledItems.add(getString(R.string.info_screen_off));
         if (!enabledItems.isEmpty()) {
             String summary = enabledItems.get(0);
             for (byte i = 0; i < enabledItems.size(); i++) {

@@ -224,15 +224,15 @@ public class BatteryHelper {
          */
         public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
             boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+            boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_measure_battery_drain), context.getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
             enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
             enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
             enabledBooleans[INDEX_HEALTH] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
             enabledBooleans[INDEX_BATTERY_LEVEL] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
             enabledBooleans[INDEX_VOLTAGE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
             enabledBooleans[INDEX_CURRENT] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
-            enabledBooleans[INDEX_SCREEN_ON] = dischargingServiceEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
-            enabledBooleans[INDEX_SCREEN_OFF] = dischargingServiceEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
+            enabledBooleans[INDEX_SCREEN_ON] = measureBatteryDrainEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
+            enabledBooleans[INDEX_SCREEN_OFF] = measureBatteryDrainEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
             // add enabled strings to array
             String[] enabledValues = new String[NUMBER_OF_ITEMS];
             byte count = 0;

@@ -19,7 +19,6 @@
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
     <string name="pref_charging_service_enabled" translatable="false">chargingServiceEnabled</string>
-    <string name="pref_discharging_service_enabled" translatable="false">dischargingServiceEnabled</string>
     <string name="pref_enable_sound" translatable="false">enableSound</string>
     <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
@@ -82,7 +81,6 @@
     <string name="title_time_format">Time format</string>
     <string name="title_graph_autosave">Save automatically</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
-    <string name="title_discharging_service_enabled">Log percent per hour</string>
     <string name="title_advanced_features">Advanced features</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
@@ -109,7 +107,6 @@
     <string name="title_history">History</string>
     <!-- preference summaries -->
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
-    <string name="summary_discharging_service_enabled">Runs a service at any time in background!</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_info_dark_theme">Use the dark theme also for the battery info notification.</string>
     <string name="summary_dependency">has to be enabled for that!</string>

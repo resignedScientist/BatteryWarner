@@ -79,7 +79,7 @@ public class DischargingAlarmReceiver extends BroadcastReceiver {
     }
 
     private void setDischargingAlarm(Context context) {
-        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_measure_battery_drain), context.getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
         if (!dischargingServiceEnabled) {
             long currentTime = Calendar.getInstance().getTimeInMillis();
             int interval;

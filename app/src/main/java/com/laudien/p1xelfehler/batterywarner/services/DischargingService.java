@@ -113,12 +113,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_discharging_service_enabled))) {
-            if (!sharedPreferences.getBoolean(key, true)) {
-                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_LOW);
-                stopSelf();
-            }
-        } else if (key.equals(getString(R.string.pref_warning_low))) {
+        if (key.equals(getString(R.string.pref_warning_low))) {
             warningLow = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_low_default));
         } else if (key.equals(getString(R.string.pref_warning_low_enabled))) {
             warningLowEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_low_enabled_default));

@@ -3,17 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="Discharging Service">
         <SwitchPreference
-            android:defaultValue="@bool/pref_discharging_service_enabled_default"
-            android:key="@string/pref_discharging_service_enabled"
-            android:title="@string/title_enabled" />
-        <SwitchPreference
             android:defaultValue="@bool/pref_measure_battery_drain_default"
             android:key="@string/pref_measure_battery_drain"
             android:summary="@string/summary_measure_battery_drain"
             android:title="@string/title_measure_battery_drain" />
         <SwitchPreference
             android:defaultValue="@bool/pref_warning_low_enabled_default"
-            android:dependency="@string/pref_discharging_service_enabled"
             android:key="@string/pref_warning_low_enabled"
             android:title="Enable warning notification" />
         <RingtonePreference
@@ -32,7 +27,6 @@
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
         <Preference
-            android:dependency="@string/pref_discharging_service_enabled"
             android:key="@string/pref_info_notification_items"
             android:title="@string/title_info_notification_items">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
@@ -117,7 +111,6 @@
             android:title="@string/title_usb_charging_disabled" />
         <SwitchPreference
             android:defaultValue="@bool/pref_power_saving_mode_default"
-            android:dependency="@string/pref_discharging_service_enabled"
             android:key="@string/pref_power_saving_mode"
             android:summary="@string/summary_power_saving_mode"
             android:title="@string/title_power_saving_mode" />
