@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
@@ -35,7 +36,6 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.O;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_SILENT_MODE;
@@ -83,7 +83,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             if (batteryLevel != lastBatteryLevel) { // if battery level changed
                 // add a value to the database
-                if (isGraphEnabled && IS_PRO) {
+                if (isGraphEnabled && AppInfoHelper.isPro()) {
                     lastBatteryLevel = batteryLevel;
                     if (!graphChanged) { // reset table if it is the first value
                         graphChanged = true;
@@ -119,7 +119,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // check if resume time is reached and charging is paused and not resumed yet
             if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
-                if (isGraphEnabled && IS_PRO) { // add a graph point for optics/correctness
+                if (isGraphEnabled && AppInfoHelper.isPro()) { // add a graph point for optics/correctness
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 }
                 resumeCharging();

@@ -8,12 +8,12 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * Handles the QS tile of the app. It works only on Android 7.0 and above and
@@ -32,7 +32,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         super.onStartListening();
         Log.d(TAG, "start listening!");
         tile = getQsTile();
-        if (IS_PRO) { // pro version
+        if (AppInfoHelper.isPro()) { // pro version
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             // check if the intro was finished first
@@ -67,7 +67,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
     public void onClick() {
         super.onClick();
         Log.d(TAG, "Tile clicked!");
-        if (!IS_PRO) { // not pro
+        if (!AppInfoHelper.isPro()) { // not pro
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_not_pro, LENGTH_SHORT);
             return;
         }

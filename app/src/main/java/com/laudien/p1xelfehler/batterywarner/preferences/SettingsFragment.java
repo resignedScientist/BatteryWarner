@@ -35,7 +35,6 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
@@ -105,7 +104,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
         }
 
-        if (!IS_PRO) {
+        if (!AppInfoHelper.isPro()) {
             pref_graphEnabled.setEnabled(false);
             Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
             pref_timeFormat.setEnabled(false);
@@ -128,17 +127,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             });
             category_graph.addPreference(pref_pro);
         }
-
-        if (SDK_INT >= O) {
-            // warning high sound
-            Preference preference = findPreference(getString(R.string.pref_sound_uri_high));
-            preference.setEnabled(false);
-            preference.setSummary("Since android O you have to do this in the notification settings of android!");
-            // warning low sound
-            preference = findPreference(getString(R.string.pref_sound_uri_low));
-            preference.setEnabled(false);
-            preference.setSummary("Since android O you have to do this in the notification settings of android!");
-        }
     }
 
     @Override
@@ -146,7 +134,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onResume();
         pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
         pref_usb.setEnabled(!pref_usb_disabled.isChecked());
-        if (IS_PRO) {
+        if (AppInfoHelper.isPro()) {
             pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         }
         Context context = getContext();

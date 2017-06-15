@@ -30,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected void setToolbarTitle() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (AppInfoHelper.IS_PRO) {
+        if (AppInfoHelper.isPro()) {
             toolbar.setTitle(getString(R.string.app_name) + " Pro");
         } else {
             toolbar.setTitle(getString(R.string.app_name));
