@@ -257,10 +257,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             enabledItems.add(getString(R.string.info_voltage));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
             enabledItems.add(getString(R.string.info_current));
-        if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
-            enabledItems.add(getString(R.string.info_screen_on));
-        if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
-            enabledItems.add(getString(R.string.info_screen_off));
+        if (sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default))) {
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
+                enabledItems.add(getString(R.string.info_screen_on));
+            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
+                enabledItems.add(getString(R.string.info_screen_off));
+        }
         if (!enabledItems.isEmpty()) {
             String summary = enabledItems.get(0);
             for (byte i = 0; i < enabledItems.size(); i++) {
