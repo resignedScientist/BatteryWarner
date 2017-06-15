@@ -67,8 +67,6 @@
     <string name="uninstall_text">The free and the pro app are both installed! Please uninstall the free app first!</string>
     <string name="uninstall_go">Uninstall it!</string>
     <!-- preference titles -->
-    <string name="title_low_battery_warning">Low battery warning:</string>
-    <string name="title_high_battery_warning">High battery warning:</string>
     <string name="title_ac_enabled">Warning on AC charging</string>
     <string name="title_usb_enabled">Warning on USB charging</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
@@ -78,15 +76,12 @@
     <string name="title_theming">Theming</string>
     <string name="title_stats">Stats</string>
     <string name="title_sound_uri">Choose notification Sound</string>
-    <string name="title_notification_sound">Notification sound</string>
     <string name="title_time_format">Time format</string>
     <string name="title_graph_autosave">Save automatically</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
     <string name="title_advanced_features">Advanced features</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
-    <string name="title_root_features">Root features</string>
-    <string name="title_enable_sound">Enable warning sound</string>
     <string name="title_info_notification_enabled">Enable info notification</string>
     <string name="title_info_notification">Info notification</string>
     <string name="title_info_notification_items">Shown in info notification</string>

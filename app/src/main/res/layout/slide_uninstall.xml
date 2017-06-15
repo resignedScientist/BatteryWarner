@@ -7,14 +7,12 @@
     android:padding="16dp">
 
     <agency.tango.materialintroscreen.parallax.ParallaxLinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
