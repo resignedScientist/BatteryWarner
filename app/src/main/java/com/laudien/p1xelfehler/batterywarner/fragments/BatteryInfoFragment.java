@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -35,15 +33,12 @@ import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.Battery
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
-import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
 
 public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatteryValueChangedListener {
 
     public static final byte COLOR_LOW = 1;
     public static final byte COLOR_HIGH = 2;
     public static final byte COLOR_OK = 3;
-    private boolean isCharging;
-    private boolean infoNotificationEnabled;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
     private SharedPreferences sharedPreferences;
@@ -51,15 +46,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private BatteryData batteryData;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
-    private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent batteryStatus) {
-            isCharging = BatteryHelper.isCharging(batteryStatus);
-            if (!infoNotificationEnabled) {
-                batteryData.update(batteryStatus, context, sharedPreferences);
-            }
-        }
-    };
 
     @Nullable
     @Override
@@ -93,12 +79,10 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         super.onStart();
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         Context context = getActivity();
         if (context != null) {
             // register receivers
-            Intent batteryStatus = context.registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            isCharging = BatteryHelper.isCharging(batteryStatus);
+            Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
             batteryData.registerOnBatteryValueChangedListener(this);
             // refresh TextViews
@@ -111,7 +95,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(batteryChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(this);
     }
 
@@ -186,14 +169,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             currentColor = nextColor;
             if (onBatteryColorChangedListener != null) {
                 onBatteryColorChangedListener.onColorChanged(nextColor);
-            }
-            if (nextColor == COLOR_LOW) {
-                if (!isCharging) {
-                    Context context = getActivity();
-                    if (context != null) {
-                        NotificationHelper.showNotification(context, ID_WARNING_LOW);
-                    }
-                }
             }
         }
     }
