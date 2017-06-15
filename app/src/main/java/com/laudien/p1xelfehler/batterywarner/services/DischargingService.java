@@ -61,7 +61,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private NotificationCompat.Builder compatBuilder;
     private Notification.Builder builder;
     private NotificationManager notificationManager;
-    private boolean alreadyNotified = false, warningLowEnabled;
+    private boolean alreadyNotified = false;
+    private boolean warningLowEnabled;
     private int warningLow;
 
     @Nullable
@@ -82,10 +83,13 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         onBatteryValueChangedListener = new MyOnBatteryValueChangedListener();
         Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         batteryData = BatteryHelper.getBatteryData(batteryStatus, this, sharedPreferences);
-        notificationContent = createNotificationContent();
-        Notification notification = createNotification();
-        startForeground(NOTIFICATION_ID, notification);
-        batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
+        boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        if (infoNotificationEnabled) {
+            batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
+            notificationContent = createNotificationContent();
+            Notification notification = createNotification();
+            startForeground(NOTIFICATION_ID, notification);
+        }
         chargingStateChangedReceiver = new ChargingStateChangedReceiver();
         IntentFilter chargingStateChangedFilter = new IntentFilter(ACTION_POWER_CONNECTED);
         chargingStateChangedFilter.addAction(ACTION_POWER_DISCONNECTED);

@@ -46,7 +46,7 @@ import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedR
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningHighEnabled, pref_usb, pref_ac,
-            pref_wireless, pref_graphEnabled, switch_darkTheme,
+            pref_wireless, pref_graphEnabled, switch_darkTheme, pref_infoNotificationEnabled,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
@@ -93,6 +93,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_power_saving_mode = (TwoStatePreference) findPreference(getString(R.string.pref_power_saving_mode));
         pref_reset_battery_stats = (TwoStatePreference) findPreference(getString(R.string.pref_reset_battery_stats));
         pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
+        pref_infoNotificationEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
 
         Context context = getContext();
         if (context != null) {
@@ -229,7 +230,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null) {
                 ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
             }
-        } else if (preference == pref_darkInfoNotification) {
+        } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
             if (context != null) {
                 ServiceHelper.restartService(getContext(), sharedPreferences, ID_DISCHARGING);

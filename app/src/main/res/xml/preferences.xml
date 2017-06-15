@@ -69,6 +69,10 @@
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_info_notification_enabled_default"
+            android:key="@string/pref_info_notification_enabled"
+            android:title="@string/title_info_notification_enabled" />
         <Preference
             android:key="@string/pref_info_notification_items"
             android:title="@string/title_info_notification_items">
