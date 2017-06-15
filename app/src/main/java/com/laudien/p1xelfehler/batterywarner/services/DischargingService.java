@@ -63,6 +63,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private NotificationManager notificationManager;
     private boolean alreadyNotified = false;
     private boolean warningLowEnabled;
+    private boolean infoNotificationEnabled;
     private int warningLow;
 
     @Nullable
@@ -83,7 +84,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         onBatteryValueChangedListener = new MyOnBatteryValueChangedListener();
         Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         batteryData = BatteryHelper.getBatteryData(batteryStatus, this, sharedPreferences);
-        boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (infoNotificationEnabled) {
             batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
             notificationContent = createNotificationContent();
@@ -125,6 +126,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             } else {
                 NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_LOW);
             }
+        } else if (key.equals(getString(R.string.pref_info_notification_enabled))) {
+            infoNotificationEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         }
     }
 
@@ -178,14 +181,16 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     }
 
     private void updateNotification() {
-        String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
-        String message = updateNotificationContent(data);
-        if (SDK_INT >= N) {
-            builder.setContentText(message);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
-        } else {
-            compatBuilder.setContentText(message);
-            notificationManager.notify(NOTIFICATION_ID, compatBuilder.build());
+        if (infoNotificationEnabled) {
+            String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
+            String message = updateNotificationContent(data);
+            if (SDK_INT >= N) {
+                builder.setContentText(message);
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+            } else {
+                compatBuilder.setContentText(message);
+                notificationManager.notify(NOTIFICATION_ID, compatBuilder.build());
+            }
         }
     }
 
