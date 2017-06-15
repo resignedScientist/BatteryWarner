@@ -33,7 +33,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
-import static android.os.Build.VERSION_CODES.O;
+import static android.os.Build.VERSION_CODES.N;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
@@ -284,7 +284,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setRingtoneSummary(boolean warningHigh) {
-        if (SDK_INT < O) {
+        if (SDK_INT <= N) {
             Context context = getActivity();
             if (context != null) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
