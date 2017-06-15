@@ -159,4 +159,11 @@
     <string name="summary_measure_battery_drain">Den Akkuverbrauch unterteilt in Bildschirm an/aus in Prozent pro Stunde messen.</string>
     <string name="notification_charging_service">Lade-Service läuft...</string>
     <string name="notification_title_charging_service">Lade-Service</string>
+    <string name="title_charging_notification">Aktiviere Lade-Benachrichtigung</string>
+    <string name="title_discharging_notification">Aktiviere Entlade-Benachrichtigung</string>
+    <string name="title_charging_service">Lade-Service</string>
+    <string name="title_discharging_service">Entlade-Service</string>
+    <string name="summary_notification_sound">Ab Android O muss der Benachrichtigungston in den Android-Einstellungen eingestellt werden. Hier klicken, um die Einstellungen zu öffnen!</string>
+    <string name="summary_warning_high_enabled">Zeige eine Batterie-hoch-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
+    <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
 </resources>

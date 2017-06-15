@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="Charging Service">
+    <PreferenceCategory android:title="@string/title_charging_service">
         <SwitchPreference
             android:defaultValue="@bool/pref_charging_service_enabled_default"
             android:key="@string/pref_charging_service_enabled"
@@ -10,7 +10,8 @@
             android:defaultValue="@bool/pref_warning_high_enabled_default"
             android:dependency="@string/pref_charging_service_enabled"
             android:key="@string/pref_warning_high_enabled"
-            android:title="Enable warning notification" />
+            android:summary="@string/summary_warning_high_enabled"
+            android:title="@string/title_charging_notification" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="@string/pref_warning_high_enabled"
@@ -49,11 +50,12 @@
             android:summary="@string/summary_reset_battery_stats"
             android:title="@string/title_reset_battery_stats" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Discharging Service">
+    <PreferenceCategory android:title="@string/title_discharging_service">
         <SwitchPreference
             android:defaultValue="@bool/pref_warning_low_enabled_default"
             android:key="@string/pref_warning_low_enabled"
-            android:title="Enable warning notification" />
+            android:summary="@string/summary_warning_low_enabled"
+            android:title="@string/title_discharging_notification" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="@string/pref_warning_low_enabled"
