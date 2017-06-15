@@ -51,7 +51,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHAR
  */
 public class DischargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int NOTIFICATION_ID = 3001;
-    private SharedPreferences sharedPreferences, temporaryPrefs;
+    private SharedPreferences sharedPreferences;
     private BatteryChangedReceiver batteryChangedReceiver;
     private ChargingStateChangedReceiver chargingStateChangedReceiver;
     private MyOnBatteryValueChangedListener onBatteryValueChangedListener;
@@ -76,7 +76,6 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(getClass().getSimpleName(), "Starting service...");
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
         warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -124,7 +123,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             if (warningLowEnabled) {
                 alreadyNotified = false;
             } else {
-                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_LOW);
+                NotificationHelper.cancelNotification(this, ID_WARNING_LOW);
             }
         } else if (key.equals(getString(R.string.pref_info_notification_enabled))) {
             infoNotificationEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
@@ -236,10 +235,6 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 if (!isCharging) {
                     int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
                     if (batteryLevel <= warningLow) {
-                        // make sure the notification will be shown
-                        temporaryPrefs.edit()
-                                .putBoolean(getString(R.string.pref_already_notified), false)
-                                .apply();
                         alreadyNotified = true;
                         NotificationHelper.showNotification(getApplicationContext(), ID_WARNING_LOW);
                     }
@@ -290,7 +285,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
                     break;
                 case ACTION_POWER_DISCONNECTED:
-                    NotificationHelper.cancelNotification(context, temporaryPrefs, ID_WARNING_HIGH);
+                    NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
                     break;
                 default:
                     return;

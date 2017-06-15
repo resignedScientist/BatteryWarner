@@ -13,7 +13,6 @@
     <bool name="pref_checkBox_percent_default">true</bool>
     <bool name="pref_checkBox_temperature_default">true</bool>
     <bool name="pref_is_enabled_default">true</bool>
-    <bool name="pref_already_notified_default">false</bool>
     <bool name="pref_charging_service_enabled_default">true</bool>
     <bool name="pref_usb_charging_disabled_default">false</bool>
     <bool name="pref_smart_charging_enabled_default">false</bool>

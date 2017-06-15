@@ -16,7 +16,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -53,8 +52,6 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
         Context context = getContext();
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
         if (isChecked) { // turned on
-            SharedPreferences temporaryPrefs = context.getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-            temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             // start services
             ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
             ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_DISCHARGING);

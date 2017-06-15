@@ -42,12 +42,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
-            // already notified
-            key = context.getString(R.string.pref_already_notified);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putBoolean(key, sharedPreferences.getBoolean(key, false)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
             // last chargingType
             key = context.getString(R.string.pref_last_chargingType);
             if (sharedPreferences.contains(key)) {

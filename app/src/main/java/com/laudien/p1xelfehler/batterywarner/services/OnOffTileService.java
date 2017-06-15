@@ -84,8 +84,6 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_disabled, LENGTH_SHORT);
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
-            SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-            temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
             ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
             ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_enabled, LENGTH_SHORT);

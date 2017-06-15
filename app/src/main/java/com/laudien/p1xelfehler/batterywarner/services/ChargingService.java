@@ -137,7 +137,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int ringerMode = audioManager.getRingerMode();
             if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                NotificationHelper.cancelNotification(context, null, ID_SILENT_MODE);
+                NotificationHelper.cancelNotification(context, ID_SILENT_MODE);
                 unregisterReceiver(this);
             }
         }
@@ -169,7 +169,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationHelper.cancelNotification(this, null, ID_WARNING_LOW, ID_SILENT_MODE);
+        NotificationHelper.cancelNotification(this, ID_WARNING_LOW, ID_SILENT_MODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // read the variables from the shared preferences
         warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
@@ -254,7 +254,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_charging_service_enabled))) {
             if (!sharedPreferences.getBoolean(key, true)) {
-                NotificationHelper.cancelNotification(this, sharedPreferences, ID_WARNING_HIGH);
+                NotificationHelper.cancelNotification(this, ID_WARNING_HIGH);
                 stopSelf();
             }
         } else if (key.equals(getString(R.string.pref_warning_high_enabled))) {
@@ -343,7 +343,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             public void run() {
                 try {
                     RootHelper.enableCharging();
-                    NotificationHelper.cancelNotification(ChargingService.this, null, ID_STOP_CHARGING);
+                    NotificationHelper.cancelNotification(ChargingService.this, ID_STOP_CHARGING);
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
                     NotificationHelper.showNotification(ChargingService.this, ID_NOT_ROOTED);

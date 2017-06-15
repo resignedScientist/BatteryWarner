@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -30,7 +29,6 @@ import java.util.Locale;
 import static android.app.Notification.PRIORITY_HIGH;
 import static android.app.Notification.PRIORITY_LOW;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
-import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.media.RingtoneManager.TYPE_NOTIFICATION;
 import static android.os.Build.VERSION.SDK_INT;
@@ -129,27 +127,18 @@ public final class NotificationHelper {
      * @param context        An instance of the Context class.
      * @param notificationID The id of the notification - usually one of the id constants.
      */
-    public static void cancelNotification(Context context, @Nullable SharedPreferences temporaryPrefs, int... notificationID) {
+    public static void cancelNotification(Context context, int... notificationID) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         for (int id : notificationID) {
             notificationManager.cancel(id);
-            if (id == ID_WARNING_LOW || id == ID_WARNING_HIGH) {
-                if (temporaryPrefs == null) {
-                    temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
-                }
-                temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), false).apply();
-            }
         }
     }
 
     private static void showWarningHighNotification(final Context context, SharedPreferences defaultPrefs) {
-        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningHighEnabled = defaultPrefs.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-        boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
         boolean resetBatteryStats = defaultPrefs.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
         // show notification
-        if (!alreadyNotified && warningHighEnabled) {
-            temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
+        if (warningHighEnabled) {
             int warningHigh = defaultPrefs.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_high), warningHigh);
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -186,12 +175,9 @@ public final class NotificationHelper {
     }
 
     private static void showWarningLowNotification(final Context context, SharedPreferences sharedPreferences) {
-        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-        boolean alreadyNotified = temporaryPrefs.getBoolean(context.getString(R.string.pref_already_notified), context.getResources().getBoolean(R.bool.pref_already_notified_default));
         boolean prefPowerSavingModeEnabled = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(context.getString(R.string.pref_power_saving_mode), context.getResources().getBoolean(R.bool.pref_power_saving_mode_default));
-        if (!alreadyNotified && warningLowEnabled) {
-            temporaryPrefs.edit().putBoolean(context.getString(R.string.pref_already_notified), true).apply();
+        if (warningLowEnabled) {
             int warningLow = sharedPreferences.getInt(context.getString(R.string.pref_warning_low), context.getResources().getInteger(R.integer.pref_warning_low_default));
             String messageText = String.format(Locale.getDefault(), "%s %d%%!", context.getString(R.string.notification_warning_low), warningLow);
             Notification.Builder builder = new Notification.Builder(context)
