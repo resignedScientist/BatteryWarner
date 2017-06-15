@@ -12,13 +12,19 @@
             android:key="@string/pref_warning_high_enabled"
             android:summary="@string/summary_warning_high_enabled"
             android:title="@string/title_charging_notification" />
-        <RingtonePreference
-            android:defaultValue="content://settings/system/notification_sound"
+        <Preference
             android:dependency="@string/pref_warning_high_enabled"
-            android:key="@string/pref_sound_uri_high"
-            android:ringtoneType="notification"
-            android:showSilent="false"
-            android:title="@string/title_sound_uri" />
+            android:summary="@string/summary_notification_sound"
+            android:title="@string/title_sound_uri">
+            <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
+                <extra
+                    android:name="android.provider.extra.CHANNEL_ID"
+                    android:value="@string/channel_battery_warnings" />
+                <extra
+                    android:name="android.provider.extra.APP_PACKAGE"
+                    android:value="@string/package_name" />
+            </intent>
+        </Preference>
         <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
             android:defaultValue="80"
             android:dependency="@string/pref_warning_high_enabled"
@@ -56,13 +62,19 @@
             android:key="@string/pref_warning_low_enabled"
             android:summary="@string/summary_warning_low_enabled"
             android:title="@string/title_discharging_notification" />
-        <RingtonePreference
-            android:defaultValue="content://settings/system/notification_sound"
+        <Preference
             android:dependency="@string/pref_warning_low_enabled"
-            android:key="@string/pref_sound_uri_low"
-            android:ringtoneType="notification"
-            android:showSilent="false"
-            android:title="@string/title_sound_uri" />
+            android:summary="@string/summary_notification_sound"
+            android:title="@string/title_sound_uri">
+            <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
+                <extra
+                    android:name="android.provider.extra.CHANNEL_ID"
+                    android:value="@string/channel_battery_warnings" />
+                <extra
+                    android:name="android.provider.extra.APP_PACKAGE"
+                    android:value="@string/package_name" />
+            </intent>
+        </Preference>
         <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
             android:defaultValue="@integer/pref_warning_low_default"
             android:dependency="@string/pref_warning_low_enabled"
@@ -71,12 +83,7 @@
             app:slider_max="@integer/pref_slider_low_max"
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_info_notification_enabled_default"
-            android:key="@string/pref_info_notification_enabled"
-            android:title="@string/title_info_notification_enabled" />
         <Preference
-            android:dependency="@string/pref_info_notification_enabled"
             android:key="@string/pref_info_notification_items"
             android:title="@string/title_info_notification_items">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />

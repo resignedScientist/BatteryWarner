@@ -1,7 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -10,12 +8,12 @@ import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
-import com.laudien.p1xelfehler.batterywarner.receivers.DischargingAlarmReceiver;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * Handles the QS tile of the app. It works only on Android 7.0 and above and
@@ -34,7 +32,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         super.onStartListening();
         Log.d(TAG, "start listening!");
         tile = getQsTile();
-        if (IS_PRO) { // pro version
+        if (AppInfoHelper.isPro()) { // pro version
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             // check if the intro was finished first
@@ -69,7 +67,7 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
     public void onClick() {
         super.onClick();
         Log.d(TAG, "Tile clicked!");
-        if (!IS_PRO) { // not pro
+        if (!AppInfoHelper.isPro()) { // not pro
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_not_pro, LENGTH_SHORT);
             return;
         }
@@ -79,37 +77,15 @@ public class OnOffTileService extends TileService implements SharedPreferences.O
         }
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus == null) {
-            return;
-        }
-        boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) != 0;
 
         if (isActive) { // disable battery warnings
             Log.d(TAG, "Disabling battery warnings...");
             tile.setState(Tile.STATE_INACTIVE);
-            if (!isCharging) { // discharging
-                DischargingAlarmReceiver.cancelDischargingAlarm(this);
-            }
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_disabled, LENGTH_SHORT);
         } else { // enable battery warnings
             Log.d(TAG, "Enabling battery warnings...");
-            SharedPreferences temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-            temporaryPrefs.edit().putBoolean(getString(R.string.pref_already_notified), false).apply();
-            if (isCharging) {
-                startService(new Intent(this, ChargingService.class));
-            }
-            boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-            boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-            if (!isCharging && dischargingServiceEnabled || infoNotificationEnabled) { // start DischargingService
-                startService(new Intent(this, DischargingService.class));
-            } else { // start DischargingAlarmReceiver (if needed)
-                boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-                if (warningLowEnabled) {
-                    DischargingAlarmReceiver.cancelDischargingAlarm(this);
-                    sendBroadcast(new Intent(this, DischargingAlarmReceiver.class));
-                }
-            }
+            ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_CHARGING);
+            ServiceHelper.startService(this, sharedPreferences, ServiceHelper.ID_DISCHARGING);
             ToastHelper.sendToast(getApplicationContext(), R.string.toast_successfully_enabled, LENGTH_SHORT);
         }
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), !isActive).apply();

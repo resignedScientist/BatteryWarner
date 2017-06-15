@@ -14,6 +14,8 @@
 
 \.idea/
 
-app/1\.108-special
+app/beta/release/
 
-app/release/
+app/free/release/
+
+app/pro/release/

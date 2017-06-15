@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -17,6 +19,8 @@ import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
+import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
@@ -24,6 +28,8 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_LOW;
 import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_OK;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -36,7 +42,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationHelper.createNotificationChannels(this);
+        }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
         if (firstStart) {
@@ -44,7 +52,8 @@ public class MainActivity extends BaseActivity {
             finish();
         } else {
             setContentView(R.layout.activity_main);
-            setToolbarTitle();
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
             if (viewPager != null) { // phones only
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -71,6 +80,9 @@ public class MainActivity extends BaseActivity {
                     }
                 });
             }
+            // start services just in case
+            ServiceHelper.startService(this, sharedPreferences, ID_CHARGING);
+            ServiceHelper.startService(this, sharedPreferences, ID_DISCHARGING);
         }
     }
 

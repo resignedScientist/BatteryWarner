@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData;
-import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -35,15 +33,12 @@ import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.Battery
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
-import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
 
 public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatteryValueChangedListener {
 
     public static final byte COLOR_LOW = 1;
     public static final byte COLOR_HIGH = 2;
     public static final byte COLOR_OK = 3;
-    private boolean isCharging;
-    private boolean infoNotificationEnabled;
     private byte currentColor = 0;
     private int warningLow, warningHigh;
     private SharedPreferences sharedPreferences;
@@ -51,37 +46,28 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private BatteryData batteryData;
     private OnBatteryColorChangedListener onBatteryColorChangedListener;
-    private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent batteryStatus) {
-            isCharging = BatteryHelper.isCharging(batteryStatus);
-            if (!infoNotificationEnabled) {
-                batteryData.update(batteryStatus, context, sharedPreferences);
-            }
-        }
-    };
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean dischargingServiceEnabled = sharedPreferences.getBoolean(getString(R.string.pref_discharging_service_enabled), getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
+        boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
         View view = inflater.inflate(R.layout.fragment_battery_infos, container, false);
 
-        textView_technology = (TextView) view.findViewById(R.id.textView_technology);
-        textView_temp = (TextView) view.findViewById(R.id.textView_temp);
-        textView_health = (TextView) view.findViewById(R.id.textView_health);
-        textView_batteryLevel = (TextView) view.findViewById(R.id.textView_batteryLevel);
-        textView_voltage = (TextView) view.findViewById(R.id.textView_voltage);
-        textView_current = (TextView) view.findViewById(R.id.textView_current);
-        textView_screenOn = (TextView) view.findViewById(R.id.textView_screenOn);
-        textView_screenOff = (TextView) view.findViewById(R.id.textView_screenOff);
+        textView_technology = view.findViewById(R.id.textView_technology);
+        textView_temp = view.findViewById(R.id.textView_temp);
+        textView_health = view.findViewById(R.id.textView_health);
+        textView_batteryLevel = view.findViewById(R.id.textView_batteryLevel);
+        textView_voltage = view.findViewById(R.id.textView_voltage);
+        textView_current = view.findViewById(R.id.textView_current);
+        textView_screenOn = view.findViewById(R.id.textView_screenOn);
+        textView_screenOff = view.findViewById(R.id.textView_screenOff);
 
         if (SDK_INT < LOLLIPOP) {
             textView_current.setVisibility(GONE);
         }
         // hide the screen on/off TextViews if discharging service is disabled
-        if (!dischargingServiceEnabled) {
+        if (!measureBatteryDrainEnabled) {
             textView_screenOn.setVisibility(GONE);
             textView_screenOff.setVisibility(GONE);
         }
@@ -93,13 +79,12 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         super.onStart();
         warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
         warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
-        infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         Context context = getActivity();
         if (context != null) {
             // register receivers
-            Intent batteryStatus = context.registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
-            batteryData.addOnBatteryValueChangedListener(this);
+            batteryData.registerOnBatteryValueChangedListener(this);
             // refresh TextViews
             for (byte i = 0; i < batteryData.getAsArray().length; i++) {
                 onBatteryValueChanged(i);
@@ -110,8 +95,38 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().unregisterReceiver(batteryChangedReceiver);
         batteryData.unregisterOnBatteryValueChangedListener(this);
+    }
+
+    @Override
+    public void onBatteryValueChanged(int index) {
+        switch (index) {
+            case INDEX_TECHNOLOGY:
+                textView_technology.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_TEMPERATURE:
+                textView_temp.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_HEALTH:
+                textView_health.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_BATTERY_LEVEL:
+                textView_batteryLevel.setText(batteryData.getValueString(index));
+                setBatteryColor();
+                break;
+            case INDEX_VOLTAGE:
+                textView_voltage.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_CURRENT:
+                textView_current.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_SCREEN_ON:
+                textView_screenOn.setText(batteryData.getValueString(index));
+                break;
+            case INDEX_SCREEN_OFF:
+                textView_screenOff.setText(batteryData.getValueString(index));
+                break;
+        }
     }
 
     public void resetDischargingStats() {
@@ -155,45 +170,6 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
             if (onBatteryColorChangedListener != null) {
                 onBatteryColorChangedListener.onColorChanged(nextColor);
             }
-            if (nextColor == COLOR_LOW) {
-                if (!isCharging) {
-                    Context context = getActivity();
-                    if (context != null) {
-                        NotificationHelper.showNotification(context, ID_WARNING_LOW);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onBatteryValueChanged(int index) {
-        switch (index) {
-            case INDEX_TECHNOLOGY:
-                textView_technology.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_TEMPERATURE:
-                textView_temp.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_HEALTH:
-                textView_health.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_BATTERY_LEVEL:
-                textView_batteryLevel.setText(batteryData.getValueString(index));
-                setBatteryColor();
-                break;
-            case INDEX_VOLTAGE:
-                textView_voltage.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_CURRENT:
-                textView_current.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_SCREEN_ON:
-                textView_screenOn.setText(batteryData.getValueString(index));
-                break;
-            case INDEX_SCREEN_OFF:
-                textView_screenOff.setText(batteryData.getValueString(index));
-                break;
         }
     }
 

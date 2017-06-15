@@ -18,12 +18,14 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
@@ -34,13 +36,14 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.O;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NO_ALARM_TIME_FOUND;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_SILENT_MODE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -50,7 +53,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
  * If the pro version is used, it saves the graph using the static method in the GraphFragment.
  */
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+    private static final int NOTIFICATION_ID = 2001;
     private final String TAG = getClass().getSimpleName();
     private boolean warningHighEnabled, isGraphEnabled, acEnabled, usbEnabled, wirelessEnabled,
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
@@ -80,7 +83,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             if (batteryLevel != lastBatteryLevel) { // if battery level changed
                 // add a value to the database
-                if (isGraphEnabled && IS_PRO) {
+                if (isGraphEnabled && AppInfoHelper.isPro()) {
                     lastBatteryLevel = batteryLevel;
                     if (!graphChanged) { // reset table if it is the first value
                         graphChanged = true;
@@ -92,10 +95,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     // show the warning high notification if the battery level reached it
                     if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
                         alreadyNotified = true;
-                        // make sure that already notified is false in the shared preferences before notifying
-                        getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE).edit()
-                                .putBoolean(getString(R.string.pref_already_notified), false)
-                                .apply();
                         // show warning high notification
                         NotificationHelper.showNotification(context, ID_WARNING_HIGH);
                     }
@@ -120,7 +119,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // check if resume time is reached and charging is paused and not resumed yet
             if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
-                if (isGraphEnabled && IS_PRO) { // add a graph point for optics/correctness
+                if (isGraphEnabled && AppInfoHelper.isPro()) { // add a graph point for optics/correctness
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 }
                 resumeCharging();
@@ -170,6 +169,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        NotificationHelper.cancelNotification(this, ID_WARNING_LOW, ID_SILENT_MODE);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // read the variables from the shared preferences
         warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
@@ -194,19 +194,19 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
         registerReceiver(ringerModeChangedReceiver, new IntentFilter(RINGER_MODE_CHANGED_ACTION));
         Intent clickIntent = new Intent(this, MainActivity.class);
-        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, 1500, clickIntent, 0);
+        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, clickIntent, 0);
         // build ongoing notification
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText("Charging Service is running...")
+                .setContentTitle(getString(R.string.notification_title_charging_service))
+                .setContentText(getString(R.string.notification_charging_service))
                 .setContentIntent(clickPendingIntent);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId("info_notification");
+            builder.setChannelId(getString(R.string.channel_battery_info));
         } else {
             builder.setPriority(Notification.PRIORITY_LOW);
         }
-        startForeground(1500, builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
         Log.d(TAG, "Service started!");
         return super.onStartCommand(intent, flags, startId);
     }
@@ -245,12 +245,19 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     .putInt(getString(R.string.pref_last_chargingType), chargingType)
                     .apply();
         }
+        // start discharging service
+        ServiceHelper.startService(this, sharedPreferences, ID_DISCHARGING);
         Log.d(TAG, "Service destroyed!");
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_warning_high_enabled))) {
+        if (key.equals(getString(R.string.pref_charging_service_enabled))) {
+            if (!sharedPreferences.getBoolean(key, true)) {
+                NotificationHelper.cancelNotification(this, ID_WARNING_HIGH);
+                stopSelf();
+            }
+        } else if (key.equals(getString(R.string.pref_warning_high_enabled))) {
             warningHighEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
         } else if (key.equals(getString(R.string.pref_warning_high))) {
             warningHigh = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_high_default));

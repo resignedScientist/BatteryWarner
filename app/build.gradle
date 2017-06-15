@@ -8,9 +8,11 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 159
-        versionName "1.114-beta2"
+        versionCode 160
+        versionName "1.114"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resValue 'string', 'package_name', applicationId
+        resValue 'string', 'app_name', 'Battery Warner'
     }
     buildTypes {
         release {
@@ -22,6 +24,28 @@ android {
         debug {
             minifyEnabled false
             debuggable true
+        }
+    }
+
+    flavorDimensions "default"
+    productFlavors{
+        pro {
+            applicationId "com.laudien.p1xelfehler.batterywarner_pro"
+            versionNameSuffix "-pro"
+            resValue 'string', 'app_name', 'Battery Warner Pro'
+            dimension "default"
+        }
+        free {
+            applicationId "com.laudien.p1xelfehler.batterywarner"
+            versionNameSuffix "-free"
+            resValue 'string', 'app_name', 'Battery Warner Free'
+            dimension "default"
+        }
+        beta {
+            applicationId "com.laudien.p1xelfehler.batterywarner_pro"
+            versionNameSuffix "-beta"
+            resValue 'string', 'app_name', 'Battery Warner Beta'
+            dimension "default"
         }
     }
 }

@@ -3,18 +3,16 @@ package com.laudien.p1xelfehler.batterywarner.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
-import com.laudien.p1xelfehler.batterywarner.services.DischargingService;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
 /**
@@ -30,6 +28,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
                 return; // return if intro was not finished
 
+            Log.d(getClass().getSimpleName(), "App update received!");
             // patch old shared preferences v1.109(144) =>
             SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
             // last percentage (remove it, it is no longer used!)
@@ -41,12 +40,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             key = context.getString(R.string.pref_intent_time);
             if (sharedPreferences.contains(key)) {
                 temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // already notified
-            key = context.getString(R.string.pref_already_notified);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putBoolean(key, sharedPreferences.getBoolean(key, false)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
             // last chargingType
@@ -80,25 +73,15 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 sharedPreferences.edit().remove(key).apply();
             }
             // <= patch old shared preferences
+            // create notification channels
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationHelper.createNotificationChannels(context);
+            }
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             // start the services
-            Intent batteryStatus = context.getApplicationContext().registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
-            if (batteryStatus != null) {
-                boolean isCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1) != 0;
-                boolean dischargingServiceEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_discharging_service_enabled), context.getResources().getBoolean(R.bool.pref_discharging_service_enabled_default));
-                boolean infoNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_info_notification_enabled), context.getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
-                boolean warningLowEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
-                if (dischargingServiceEnabled || infoNotificationEnabled) {
-                    context.startService(new Intent(context, DischargingService.class));
-                } else if (warningLowEnabled) {
-                    DischargingAlarmReceiver.cancelDischargingAlarm(context);
-                    context.sendBroadcast(new Intent(context, DischargingAlarmReceiver.class));
-                }
-                if (isCharging) { // charging -> start ChargingService
-                    context.startService(new Intent(context, ChargingService.class));
-                }
-            }
+            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
+            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
         }
     }
 }
