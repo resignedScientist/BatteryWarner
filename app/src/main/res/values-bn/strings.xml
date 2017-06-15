@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="app_name">Battery Warner</string>
-
     <string name="charging">চার্জিং</string>
 
     <string name="checkbox_battery_level">ব্যাটারি সীমা (%)</string>

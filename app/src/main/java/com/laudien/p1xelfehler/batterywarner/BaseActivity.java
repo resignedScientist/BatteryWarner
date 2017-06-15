@@ -26,19 +26,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Sets the toolbar title to the proper app name depending on if it is the pro version or not.
-     */
-    protected void setToolbarTitle() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (AppInfoHelper.isPro()) {
-            toolbar.setTitle(getString(R.string.app_name) + " Pro");
-        } else {
-            toolbar.setTitle(getString(R.string.app_name));
-        }
-        setSupportActionBar(toolbar);
-    }
-
-    /**
      * Method to easily change the title of the toolbar.
      *
      * @param title Title to apply to the toolbar.

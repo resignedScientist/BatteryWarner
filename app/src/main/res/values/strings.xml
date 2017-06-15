@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Battery Warner</string>
     <!-- Shared Preference Keys -->
     <!-- Settings -->
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
