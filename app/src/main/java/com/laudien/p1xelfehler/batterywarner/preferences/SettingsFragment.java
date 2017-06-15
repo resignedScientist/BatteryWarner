@@ -33,6 +33,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
+import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
@@ -45,7 +46,7 @@ import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedR
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int REQUEST_AUTO_SAVE = 70;
-    private TwoStatePreference pref_autoSave, pref_warningHigh, pref_usb, pref_ac,
+    private TwoStatePreference pref_autoSave, pref_warningHighEnabled, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
@@ -81,7 +82,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         ringtonePreference_low = (RingtonePreference) findPreference(getString(R.string.pref_sound_uri_low));
         pref_autoSave = (TwoStatePreference) findPreference(getString(R.string.pref_graph_autosave));
         pref_graphEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_graph_enabled));
-        pref_warningHigh = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
+        pref_warningHighEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
         pref_usb = (TwoStatePreference) findPreference(getString(R.string.pref_usb_enabled));
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
@@ -126,6 +127,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             });
             category_graph.addPreference(pref_pro);
+        }
+
+        if (SDK_INT >= O) {
+            // warning high sound
+            Preference preference = findPreference(getString(R.string.pref_sound_uri_high));
+            preference.setEnabled(false);
+            preference.setSummary("Since android O you have to do this in the notification settings of android!");
+            // warning low sound
+            preference = findPreference(getString(R.string.pref_sound_uri_low));
+            preference.setEnabled(false);
+            preference.setSummary("Since android O you have to do this in the notification settings of android!");
         }
     }
 
@@ -181,8 +193,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_AUTO_SAVE);
             }
-        } else if (preference == pref_warningHigh) {
-            boolean highChecked = pref_warningHigh.isChecked();
+        } else if (preference == pref_warningHighEnabled) {
+            boolean highChecked = pref_warningHighEnabled.isChecked();
             if (!highChecked) {
                 pref_stopCharging.setChecked(false);
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
@@ -280,13 +292,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setRingtoneSummary(boolean warningHigh) {
-        Context context = getActivity();
-        if (context != null) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            String sound = sharedPreferences.getString(getString(warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low), "");
-            Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
-            Preference preference = warningHigh ? ringtonePreference_high : ringtonePreference_low;
-            preference.setSummary(ringtone.getTitle(context));
+        if (SDK_INT < O) {
+            Context context = getActivity();
+            if (context != null) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                String sound = sharedPreferences.getString(getString(warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low), "");
+                Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
+                Preference preference = warningHigh ? ringtonePreference_high : ringtonePreference_low;
+                preference.setSummary(ringtone.getTitle(context));
+            }
         }
     }
 }

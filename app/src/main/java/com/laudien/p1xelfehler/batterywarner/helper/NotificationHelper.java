@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -33,6 +32,7 @@ import static android.app.Notification.PRIORITY_LOW;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static android.media.RingtoneManager.TYPE_NOTIFICATION;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.N;
@@ -159,13 +159,13 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
-                    .setAutoCancel(true);
+                    .setAutoCancel(true)
+                    .setSound(getWarningSound(context, defaultPrefs, true))
+                    .setVibrate(VIBRATE_PATTERN);
             if (Build.VERSION.SDK_INT >= O) {
                 builder.setChannelId(context.getString(R.string.channel_battery_warnings));
             } else {
-                builder.setSound(getWarningSound(context, defaultPrefs))
-                        .setVibrate(getWarningVibratePattern(context, defaultPrefs))
-                        .setPriority(PRIORITY_HIGH);
+                builder.setPriority(PRIORITY_HIGH);
             }
             notificationManager.notify(ID_WARNING_HIGH, builder.build());
             // reset the android internal battery stats
@@ -200,13 +200,13 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(getDefaultClickIntent(context))
-                    .setAutoCancel(true);
+                    .setAutoCancel(true)
+                    .setSound(getWarningSound(context, sharedPreferences, false))
+                    .setVibrate(VIBRATE_PATTERN);
             if (Build.VERSION.SDK_INT >= O) {
                 builder.setChannelId(context.getString(R.string.channel_battery_warnings));
             } else {
-                builder.setSound(getWarningSound(context, sharedPreferences))
-                        .setVibrate(getWarningVibratePattern(context, sharedPreferences))
-                        .setPriority(PRIORITY_HIGH);
+                builder.setPriority(PRIORITY_HIGH);
             }
             // enable power saving mode
             if (SDK_INT >= LOLLIPOP && prefPowerSavingModeEnabled) {
@@ -254,13 +254,13 @@ public final class NotificationHelper {
                         .setContentText(messageText)
                         .setStyle(getBigTextStyle(messageText))
                         .setContentIntent(getDefaultClickIntent(context))
-                        .setAutoCancel(true);
+                        .setAutoCancel(true)
+                        .setSound(getDefaultSound())
+                        .setVibrate(VIBRATE_PATTERN);
                 if (SDK_INT >= O) {
                     builder.setChannelId(context.getString(R.string.channel_other_warnings));
                 } else {
-                    builder.setSound(getDefaultSound())
-                            .setVibrate(VIBRATE_PATTERN)
-                            .setPriority(PRIORITY_HIGH);
+                    builder.setPriority(PRIORITY_HIGH);
                 }
                 notificationManager.notify(ID_SILENT_MODE, builder.build());
             }
@@ -321,13 +321,13 @@ public final class NotificationHelper {
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
+                    .setAutoCancel(true)
+                    .setSound(getDefaultSound())
+                    .setVibrate(VIBRATE_PATTERN);
             if (SDK_INT >= O) {
                 builder.setChannelId(context.getString(R.string.channel_other_warnings));
             } else {
-                builder.setSound(getDefaultSound())
-                        .setVibrate(VIBRATE_PATTERN)
-                        .setPriority(PRIORITY_HIGH);
+                builder.setPriority(PRIORITY_HIGH);
             }
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(NOTIFICATION_SERVICE);
@@ -349,13 +349,13 @@ public final class NotificationHelper {
                     .setStyle(getBigTextStyle(messageText))
                     .setContentIntent(clickIntent)
                     .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
-                    .setAutoCancel(true);
+                    .setAutoCancel(true)
+                    .setSound(getDefaultSound())
+                    .setVibrate(VIBRATE_PATTERN);
             if (SDK_INT >= O) {
                 builder.setChannelId(context.getString(R.string.channel_other_warnings));
             } else {
-                builder.setSound(getDefaultSound())
-                        .setVibrate(VIBRATE_PATTERN)
-                        .setPriority(PRIORITY_HIGH);
+                builder.setPriority(PRIORITY_HIGH);
             }
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(NOTIFICATION_SERVICE);
@@ -374,13 +374,13 @@ public final class NotificationHelper {
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
                 .addAction(R.drawable.ic_done_white_24dp, context.getString(R.string.notification_button_grant_root), clickIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setSound(getDefaultSound())
+                .setVibrate(VIBRATE_PATTERN);
         if (SDK_INT >= O) {
             builder.setChannelId(context.getString(R.string.channel_other_warnings));
         } else {
-            builder.setSound(getDefaultSound())
-                    .setVibrate(VIBRATE_PATTERN)
-                    .setPriority(PRIORITY_HIGH);
+            builder.setPriority(PRIORITY_HIGH);
         }
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);
@@ -396,49 +396,31 @@ public final class NotificationHelper {
                 .setContentText(messageText)
                 .setStyle(getBigTextStyle(messageText))
                 .setContentIntent(clickIntent)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setSound(getDefaultSound())
+                .setVibrate(VIBRATE_PATTERN);
         if (SDK_INT >= O) {
             builder.setChannelId(context.getString(R.string.channel_other_warnings));
         } else {
-            builder.setSound(getDefaultSound())
-                    .setVibrate(VIBRATE_PATTERN)
-                    .setPriority(PRIORITY_HIGH);
+            builder.setPriority(PRIORITY_HIGH);
         }
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences) {
-        boolean soundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
-        if (soundEnabled) {
-            String uri = sharedPreferences.getString(context.getString(R.string.pref_sound_uri_high), "");
-            if (!uri.equals("")) {
-                return Uri.parse(uri); // saved URI
-            } else {
-                return getDefaultSound(); // default URI
-            }
+    private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences, boolean warningHigh) {
+        int pref_id = warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low;
+        String uri = sharedPreferences.getString(context.getString(pref_id), "");
+        if (uri.equals("")) {
+            return getDefaultSound();
         } else {
-            return null;
-        }
-    }
-
-    private static Uri getWarningSound(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return getWarningSound(context, sharedPreferences);
-    }
-
-    private static long[] getWarningVibratePattern(Context context, SharedPreferences sharedPreferences) {
-        boolean isSoundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
-        if (isSoundEnabled) {
-            return VIBRATE_PATTERN;
-        } else {
-            return null;
+            return Uri.parse(uri);
         }
     }
 
     private static Uri getDefaultSound() {
-        return RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        return RingtoneManager.getDefaultUri(TYPE_NOTIFICATION);
     }
 
     private static Notification.BigTextStyle getBigTextStyle(String messageText) {
@@ -464,17 +446,12 @@ public final class NotificationHelper {
                 "Battery warnings",
                 NotificationManager.IMPORTANCE_MAX
         );
-        AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_UNKNOWN)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build();
         channel.setDescription("All kinds of battery warnings.");
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setShowBadge(false);
-        channel.setSound(getWarningSound(context), audioAttributes);
         notificationManager.createNotificationChannel(channel);
         // info notification
         channel = new NotificationChannel(
