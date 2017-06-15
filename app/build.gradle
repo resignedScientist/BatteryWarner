@@ -28,7 +28,7 @@ android {
     }
 
     flavorDimensions "default"
-    productFlavors{
+    productFlavors {
         pro {
             applicationId "com.laudien.p1xelfehler.batterywarner_pro"
             versionNameSuffix "-pro"
@@ -45,6 +45,12 @@ android {
             applicationId "com.laudien.p1xelfehler.batterywarner_pro"
             versionNameSuffix "-beta"
             resValue 'string', 'app_name', 'Battery Warner Beta'
+            dimension "default"
+        }
+        freeBeta {
+            applicationId "com.laudien.p1xelfehler.batterywarner"
+            versionNameSuffix "-freeBeta"
+            resValue 'string', 'app_name', 'Battery Warner Free (Beta)'
             dimension "default"
         }
     }
