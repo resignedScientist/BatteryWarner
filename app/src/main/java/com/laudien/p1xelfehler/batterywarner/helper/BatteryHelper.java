@@ -49,18 +49,6 @@ public class BatteryHelper {
         return batteryData;
     }
 
-    /**
-     * Returns existing BatteryData object or null if it does not exist. It does not create a new one.
-     *
-     * @return Existing BatteryData object or null if it does not exist.
-     */
-    static BatteryData getBatteryData() {
-        if (batteryData == null) {
-            return null;
-        }
-        return batteryData;
-    }
-
     private static String getHealthString(Context context, int health) {
         switch (health) {
             case BATTERY_HEALTH_COLD:
@@ -179,17 +167,15 @@ public class BatteryHelper {
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
         private BatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
-            update(batteryStatus, context, sharedPreferences);
+            update(batteryStatus, context);
         }
 
         /**
          * Updates all the data that is in the batteryStatus intent and the SharedPreferences given.
-         *
-         * @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+         *  @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
          * @param context           An instance of the Context class.
-         * @param sharedPreferences An instance of the SharedPreferences class.
          */
-        public void update(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
+        public void update(Intent batteryStatus, Context context) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
             setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
             setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1), context);
@@ -263,34 +249,36 @@ public class BatteryHelper {
             return values[index];
         }
 
-        /**
-         * Get the value with the given index as object.
-         *
-         * @param index One of the INDEX attributes that determine which value should be returned.
-         * @return Returns the value with the given index as object or null if there is no object with that index.
-         */
-        public Object getValue(int index) {
-            switch (index) {
-                case INDEX_TECHNOLOGY:
-                    return technology;
-                case INDEX_TEMPERATURE:
-                    return temperature;
-                case INDEX_HEALTH:
-                    return health;
-                case INDEX_BATTERY_LEVEL:
-                    return batteryLevel;
-                case INDEX_VOLTAGE:
-                    return voltage;
-                case INDEX_CURRENT:
-                    return current;
-                case INDEX_SCREEN_ON:
-                    return screenOn;
-                case INDEX_SCREEN_OFF:
-                    return screenOff;
-                default:
-                    return null;
-            }
-        }
+// --Commented out by Inspection START (16.06.2017 14:22):
+//        /**
+//         * Get the value with the given index as object.
+//         *
+//         * @param index One of the INDEX attributes that determine which value should be returned.
+//         * @return Returns the value with the given index as object or null if there is no object with that index.
+//         */
+//        public Object getValue(int index) {
+//            switch (index) {
+//                case INDEX_TECHNOLOGY:
+//                    return technology;
+//                case INDEX_TEMPERATURE:
+//                    return temperature;
+//                case INDEX_HEALTH:
+//                    return health;
+//                case INDEX_BATTERY_LEVEL:
+//                    return batteryLevel;
+//                case INDEX_VOLTAGE:
+//                    return voltage;
+//                case INDEX_CURRENT:
+//                    return current;
+//                case INDEX_SCREEN_ON:
+//                    return screenOn;
+//                case INDEX_SCREEN_OFF:
+//                    return screenOff;
+//                default:
+//                    return null;
+//            }
+//        }
+// --Commented out by Inspection STOP (16.06.2017 14:22)
 
         private void setTechnology(String technology, Context context) {
             if (this.technology == null || !this.technology.equals(technology)) {

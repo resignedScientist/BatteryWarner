@@ -270,7 +270,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * not-pro text under the GraphView.
      */
     @Override
-    protected void loadSeries() {
+    void loadSeries() {
         if (AppInfoHelper.isPro()) {
             super.loadSeries();
         } else {
@@ -283,7 +283,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * not charging. It also shows if there is no or not enough data to show a graph.
      */
     @Override
-    protected void setTimeText() {
+    void setTimeText() {
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;

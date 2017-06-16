@@ -252,7 +252,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private class BatteryChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent batteryStatus) {
-            batteryData.update(batteryStatus, DischargingService.this, sharedPreferences);
+            batteryData.update(batteryStatus, DischargingService.this);
             if (!alreadyNotified && warningLowEnabled) {
                 boolean isCharging = BatteryHelper.isCharging(batteryStatus);
                 if (!isCharging) {
