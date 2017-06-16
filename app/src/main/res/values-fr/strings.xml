@@ -155,6 +155,8 @@
     <string name="uninstall_go">Désinstallez-la !</string>
     <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
+
+    <!-- new strings -->
     <string name="title_measure_battery_drain">Measure battery drain</string>
     <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off in percent per hour.</string>
     <string name="notification_charging_service">Charging Service is running…</string>
@@ -176,6 +178,4 @@
     <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
-
-    <!-- new strings -->
 </resources>
