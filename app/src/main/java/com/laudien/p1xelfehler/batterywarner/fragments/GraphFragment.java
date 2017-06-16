@@ -6,10 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -79,10 +77,6 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      */
     public static boolean saveGraph(Context context) {
         Log.d("GraphSaver", "Saving graph...");
-        // throw exception if in main thread
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            throw new RuntimeException("Do not save the graph in main thread!");
-        }
         // return if permissions are not granted
         if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -235,7 +229,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PERMISSION_GRANTED && requestCode == REQUEST_SAVE_GRAPH) {
-            new SaveGraphTask().execute(); // restart the saving of the graph
+            saveGraph(); // restart the saving of the graph
         }
     }
 
@@ -396,8 +390,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         if (graphView.getSeries().size() > 0 && series[TYPE_PERCENTAGE].getHighestValueX() > 0) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-                // save graph
-                new SaveGraphTask().execute();
+                // save graph and show toast
+                boolean success = saveGraph(getContext());
+                ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
             } else { // permission not granted -> ask for permission
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
             }
@@ -425,23 +420,5 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                         ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
-    }
-
-    private class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            return saveGraph(getContext());
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            int message;
-            if (success) {
-                message = R.string.toast_success_saving;
-            } else {
-                message = R.string.toast_error_saving;
-            }
-            ToastHelper.sendToast(getContext(), message, LENGTH_SHORT);
-        }
     }
 }
