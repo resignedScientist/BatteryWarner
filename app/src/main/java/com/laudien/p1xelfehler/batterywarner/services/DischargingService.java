@@ -322,6 +322,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             String action = intent.getAction();
             switch (action) {
                 case ACTION_POWER_CONNECTED:
+                    NotificationHelper.cancelNotification(context, ID_WARNING_LOW);
                     ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
                     break;
                 case ACTION_POWER_DISCONNECTED:
