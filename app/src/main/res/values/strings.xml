@@ -119,6 +119,8 @@
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
     <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
+    <string name="summary_graph_enabled">Record a graph while charging.</string>
+    <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>

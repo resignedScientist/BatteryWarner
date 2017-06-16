@@ -174,4 +174,6 @@
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
     <string name="summary_notifications_off_warning">Eine Warnung anzeigen, wenn das Ladegerät angeschlossen wird, der Benachrichtigungs-Ton jedoch deaktiviert ist.</string>
+    <string name="summary_graph_autosave">Den Graphen automatisch speichern, sobald das Gerät vollständig geladen oder das Ladekabel entfernt wurde.</string>
+    <string name="summary_graph_enabled">Beim Laden eine Ladekurve aufzeichnen.</string>
 </resources>

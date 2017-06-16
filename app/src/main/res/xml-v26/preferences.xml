@@ -106,11 +106,13 @@
         <SwitchPreference
             android:defaultValue="@bool/pref_graph_enabled_default"
             android:key="@string/pref_graph_enabled"
+            android:summary="@string/summary_graph_enabled"
             android:title="@string/title_graph_enabled" />
         <SwitchPreference
             android:defaultValue="@bool/pref_graph_autosave_default"
             android:dependency="@string/pref_graph_enabled"
             android:key="@string/pref_graph_autosave"
+            android:summary="@string/summary_graph_autosave"
             android:title="@string/title_graph_autosave" />
         <ListPreference
             android:defaultValue="@string/pref_time_format_default"
