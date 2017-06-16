@@ -118,6 +118,7 @@
     <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
+    <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>

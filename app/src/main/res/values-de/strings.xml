@@ -173,4 +173,5 @@
     <string name="channel_description_battery_warnings">Alle Batterie-Warnungen, wie z.B. \'Der Akkustand ist höher als X%\'.</string>
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
+    <string name="summary_notifications_off_warning">Eine Warnung anzeigen, wenn das Ladegerät angeschlossen wird, der Benachrichtigungs-Ton jedoch deaktiviert ist.</string>
 </resources>

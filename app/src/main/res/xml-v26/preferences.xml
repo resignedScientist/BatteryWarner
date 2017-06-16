@@ -152,6 +152,7 @@
             android:defaultValue="@bool/pref_notifications_off_warning_default"
             android:dependency="@string/pref_charging_service_enabled"
             android:key="@string/pref_notifications_off_warning"
+            android:summary="@string/summary_notifications_off_warning"
             android:title="@string/title_notifications_off_warning" />
     </PreferenceCategory>
 </PreferenceScreen>
