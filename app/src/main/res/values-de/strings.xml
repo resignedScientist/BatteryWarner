@@ -166,4 +166,5 @@
     <string name="summary_notification_sound">Ab Android O muss der Benachrichtigungston in den Android-Einstellungen eingestellt werden. Hier klicken, um die Einstellungen zu öffnen!</string>
     <string name="summary_warning_high_enabled">Zeige eine Batterie-hoch-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
+    <string name="title_warning_percentage">Batterie-Warnung bei:</string>
 </resources>

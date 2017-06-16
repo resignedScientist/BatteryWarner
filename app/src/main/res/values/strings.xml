@@ -100,6 +100,7 @@
     <string name="title_discharging_notification">Enable discharging notification</string>
     <string name="title_charging_service">Charging Service</string>
     <string name="title_discharging_service">Discharging Service</string>
+    <string name="title_warning_percentage">Warning percentage:</string>
     <!-- other titles -->
     <string name="title_preferences">Settings</string>
     <string name="title_main_page">Main page</string>

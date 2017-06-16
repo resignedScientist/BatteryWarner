@@ -168,4 +168,5 @@
     <string name="title_charging_notification">Enable charging notification</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
+    <string name="title_warning_percentage">Warning percentage:</string>
 </resources>
