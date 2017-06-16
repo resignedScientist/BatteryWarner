@@ -195,7 +195,9 @@ public final class RootHelper {
     }
 
     private static class ToggleChargingFile {
-        private String path, chargeOn, chargeOff;
+        private final String path;
+        private final String chargeOn;
+        private final String chargeOff;
 
         private ToggleChargingFile(String path, String chargeOn, String chargeOff) {
             this.path = path;

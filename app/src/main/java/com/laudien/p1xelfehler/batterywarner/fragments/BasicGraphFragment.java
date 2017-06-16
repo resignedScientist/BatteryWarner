@@ -35,37 +35,36 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * The Tag for logging purposes
      */
-    protected final String TAG = getClass().getSimpleName();
+    final String TAG = getClass().getSimpleName();
     /**
      * An instance of the InfoObject holding information about the charging curve.
      */
-    protected InfoObject infoObject;
+    InfoObject infoObject;
     /**
      * The GraphView where the graphs are shown
      */
-    protected GraphView graphView;
+    GraphView graphView;
     /**
      * Checkbox which turns the percentage graph on and off.
      */
-    protected Switch switch_percentage;
+    Switch switch_percentage;
     /**
      * Checkbox which turns the temperature graph on and off.
      */
-    protected Switch switch_temp;
+    Switch switch_temp;
     /**
      * TextView that contains the title over the GraphView.
      */
-    protected TextView textView_title;
+    TextView textView_title;
     /**
      * TextView that contains the charging time.
      */
-    protected TextView textView_chargingTime;
+    TextView textView_chargingTime;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
-    protected LineGraphSeries<DataPoint>[] series;
-    private byte labelCounter;
-    private CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
+    LineGraphSeries<DataPoint>[] series;
+    private final CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             Series s = null;
@@ -87,19 +86,20 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         }
     };
+    private byte labelCounter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(getClass().getSimpleName(), "onCreateView()");
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
-        graphView = (GraphView) view.findViewById(R.id.graphView);
-        switch_percentage = (Switch) view.findViewById(R.id.switch_percentage);
+        graphView = view.findViewById(R.id.graphView);
+        switch_percentage = view.findViewById(R.id.switch_percentage);
         switch_percentage.setOnCheckedChangeListener(onSwitchChangedListener);
-        switch_temp = (Switch) view.findViewById(R.id.switch_temp);
+        switch_temp = view.findViewById(R.id.switch_temp);
         switch_temp.setOnCheckedChangeListener(onSwitchChangedListener);
-        textView_title = (TextView) view.findViewById(R.id.textView_title);
-        textView_chargingTime = (TextView) view.findViewById(R.id.textView_chargingTime);
+        textView_title = view.findViewById(R.id.textView_title);
+        textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
         loadSeries();
@@ -126,7 +126,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
      * You can override it to only do it under some conditions (for example only allow it for the pro version).
      */
-    protected void loadSeries() {
+    void loadSeries() {
         series = getSeries();
         if (series != null) {
             if (switch_percentage.isChecked()) {
@@ -152,7 +152,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * Creates a new or updates the existing instance of the InfoObject that is used to store
      * information about the graphs.
      */
-    protected void createOrUpdateInfoObject() {
+    private void createOrUpdateInfoObject() {
         if (infoObject == null) {
             infoObject = new InfoObject(
                     getStartTime(),
@@ -177,7 +177,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Sets the text of the textView_chargingTime TextView to the charging time.
      */
-    protected void setTimeText() {
+    void setTimeText() {
         if (infoObject != null) {
             textView_chargingTime.setText(String.format(
                     Locale.getDefault(),
@@ -191,7 +191,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Reloads the graphs from the database.
      */
-    protected void reload() {
+    void reload() {
         graphView.removeAllSeries();
         loadSeries();
     }
@@ -200,7 +200,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * Provides the format of the text of the x and y axis of the graph.
      * @return Returns a LabelFormatter that is used in the GraphView.
      */
-    protected LabelFormatter getLabelFormatter() {
+    private LabelFormatter getLabelFormatter() {
         return new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
@@ -229,7 +229,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Initializes the ViewPort of the GraphView. Sets the part of the x and y axis that is shown.
      */
-    protected void initGraphView() {
+    private void initGraphView() {
         Viewport viewport = graphView.getViewport();
         viewport.setXAxisBoundsManual(true);
         viewport.setYAxisBoundsManual(true);

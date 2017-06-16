@@ -24,7 +24,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     /**
      * The key for the file path in the argument bundle.
      */
-    public static String EXTRA_FILE_PATH = "filePath";
+    public static final String EXTRA_FILE_PATH = "filePath";
     private File file;
 
     @Nullable

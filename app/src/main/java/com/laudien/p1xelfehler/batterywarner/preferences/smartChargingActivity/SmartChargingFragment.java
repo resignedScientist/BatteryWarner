@@ -28,9 +28,7 @@ import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedR
 
 public class SmartChargingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private TimePickerPreference timePickerPreference;
-    private SwitchPreference alarmTimeSwitch;
-    private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
+    private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
         @Override
         protected void disablePreferences(String preferenceKey) {
             if (preferenceKey.equals(getString(R.string.pref_smart_charging_enabled))) {
@@ -38,6 +36,8 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             }
         }
     };
+    private TimePickerPreference timePickerPreference;
+    private SwitchPreference alarmTimeSwitch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -71,11 +71,6 @@ public class IntroActivity extends MaterialIntroActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onFinish() {
         super.onFinish();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

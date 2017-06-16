@@ -59,14 +59,14 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
 
     private static final int REQUEST_SAVE_GRAPH = 10;
     private SharedPreferences sharedPreferences;
-    private GraphDbHelper graphDbHelper;
-    private boolean graphEnabled;
-    private BroadcastReceiver chargingStateChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver chargingStateChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             setTimeText();
         }
     };
+    private GraphDbHelper graphDbHelper;
+    private boolean graphEnabled;
 
     /**
      * Saves the graph in the app directory to the database directory in the external storage.
@@ -405,7 +405,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * Shows the dialog to reset the graphs, meaning that the table in the
      * app directory database will be cleared.
      */
-    public void showResetDialog() {
+    private void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
                 .setIcon(R.mipmap.ic_launcher)

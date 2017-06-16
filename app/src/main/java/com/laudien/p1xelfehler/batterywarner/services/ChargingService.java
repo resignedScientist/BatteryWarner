@@ -55,13 +55,24 @@ import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISC
 public class ChargingService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int NOTIFICATION_ID = 2001;
     private final String TAG = getClass().getSimpleName();
+    private final GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(this);
+    private final BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            int ringerMode = audioManager.getRingerMode();
+            if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
+                NotificationHelper.cancelNotification(context, ID_SILENT_MODE);
+                unregisterReceiver(this);
+            }
+        }
+    };
     private boolean warningHighEnabled, isGraphEnabled, acEnabled, usbEnabled, wirelessEnabled,
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
             isChargingPaused = false, isChargingResumed = false, alreadyNotified = false;
     private int warningHigh, smartChargingLimit, smartChargingMinutes, chargingType, lastBatteryLevel = -1;
     private long smartChargingResumeTime, smartChargingTime;
-    private GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(this);
-    private BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
@@ -128,17 +139,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
                     || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
                 stopSelf();
-            }
-        }
-    };
-    private BroadcastReceiver ringerModeChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            int ringerMode = audioManager.getRingerMode();
-            if (ringerMode == AudioManager.RINGER_MODE_NORMAL) {
-                NotificationHelper.cancelNotification(context, ID_SILENT_MODE);
-                unregisterReceiver(this);
             }
         }
     };

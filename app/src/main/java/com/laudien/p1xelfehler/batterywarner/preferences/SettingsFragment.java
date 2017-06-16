@@ -51,7 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items;
-    private RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
+    private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
         @Override
         protected void disablePreferences(String preferenceKey) {
             if (preferenceKey.equals(getString(R.string.pref_stop_charging))) {

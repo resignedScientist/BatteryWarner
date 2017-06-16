@@ -96,7 +96,7 @@ public class BatteryHelper {
      * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
      * @return Returns the temperature in the correct format as double.
      */
-    public static double getTemperature(Intent batteryStatus) {
+    private static double getTemperature(Intent batteryStatus) {
         return (double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10;
     }
 
@@ -106,7 +106,7 @@ public class BatteryHelper {
      * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
      * @return Returns the voltage in the correct format as double.
      */
-    public static double getVoltage(Intent batteryStatus) {
+    private static double getVoltage(Intent batteryStatus) {
         return (double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000;
     }
 
@@ -139,7 +139,7 @@ public class BatteryHelper {
      * @return The battery percentage loss per hour when the screen is off.
      * Returns 0.0 if there is not enough data yet.
      */
-    public static double getScreenOff(Context context) {
+    private static double getScreenOff(Context context) {
         SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
         long screenOffTime = temporaryPrefs.getLong(context.getString(R.string.value_time_screen_off), 0);
         int screenOffDrain = temporaryPrefs.getInt(context.getString(R.string.value_drain_screen_off), 0);
@@ -171,7 +171,7 @@ public class BatteryHelper {
         public static final int INDEX_SCREEN_ON = 6;
         public static final int INDEX_SCREEN_OFF = 7;
         private static final int NUMBER_OF_ITEMS = 8;
-        private String[] values = new String[NUMBER_OF_ITEMS];
+        private final String[] values = new String[NUMBER_OF_ITEMS];
         private String technology;
         private int health, batteryLevel;
         private long current;
