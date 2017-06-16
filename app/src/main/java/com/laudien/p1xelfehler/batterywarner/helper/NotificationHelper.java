@@ -437,7 +437,7 @@ public final class NotificationHelper {
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        channel.setShowBadge(false);
+        channel.setShowBadge(true);
         notificationManager.createNotificationChannel(channel);
         // info notification
         channel = new NotificationChannel(
