@@ -220,7 +220,7 @@ public final class NotificationHelper {
 
     private static void showSilentModeNotification(Context context, SharedPreferences sharedPreferences) {
         boolean silentNotificationEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_notifications_off_warning), context.getResources().getBoolean(R.bool.pref_notifications_off_warning_default));
-        boolean isSoundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_enable_sound), context.getResources().getBoolean(R.bool.pref_enable_sound_default));
+        boolean isSoundEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
         if (silentNotificationEnabled && isSoundEnabled) {
             AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             int ringerMode = audioManager.getRingerMode();
