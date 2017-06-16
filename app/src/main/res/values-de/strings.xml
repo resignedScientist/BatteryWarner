@@ -157,7 +157,7 @@
     <string name="summary_reset_battery_stats">Zurücksetzen der Android-Akkustatistik sobald die Batterie-Warnung beim Laden erscheint.</string>
     <string name="title_measure_battery_drain">Akkuverbrauch messen</string>
     <string name="summary_measure_battery_drain">Den Akkuverbrauch unterteilt in Bildschirm an/aus in Prozent pro Stunde messen.</string>
-    <string name="notification_charging_service">Lade-Service läuft...</string>
+    <string name="notification_charging_service">Lade-Service läuft…</string>
     <string name="notification_title_charging_service">Lade-Service</string>
     <string name="title_charging_notification">Aktiviere Lade-Benachrichtigung</string>
     <string name="title_discharging_notification">Aktiviere Entlade-Benachrichtigung</string>
