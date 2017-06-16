@@ -243,7 +243,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         } else { // no items enabled
             notificationContent.setViewVisibility(R.id.view_middleLine, GONE);
             notificationContent.setViewVisibility(R.id.textView_message_right, GONE);
-            String message = getString(R.string.notification_message_no_items_enabled);
+            String message = getString(R.string.notification_no_items_enabled);
             notificationContent.setTextViewText(R.id.textView_message_left, message);
             return message;
         }
