@@ -1,4 +1,4 @@
 <resources>
-    <!-- Padding in the battery info notification -->
+    <!-- battery info notification -->
     <dimen name="info_notification_padding">0dp</dimen>
 </resources>

@@ -12,5 +12,7 @@
     <FrameLayout
         android:id="@+id/container_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/preference_fragment_horizontal_padding"
+        android:paddingRight="@dimen/preference_fragment_horizontal_padding" />
 </LinearLayout>

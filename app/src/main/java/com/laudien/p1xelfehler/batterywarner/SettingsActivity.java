@@ -22,7 +22,7 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.frame_layout);
+        setContentView(R.layout.preference_base_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_preferences));
         try { // put version code in subtitle of the toolbar

@@ -10,7 +10,7 @@ public class SmartChargingActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.frame_layout);
+        setContentView(R.layout.preference_base_layout);
         setToolbarTitle(getString(R.string.title_smart_charging));
         // replace container layout with SmartChargingFragment
         getFragmentManager().beginTransaction().replace(R.id.container_layout, new SmartChargingFragment()).commit();

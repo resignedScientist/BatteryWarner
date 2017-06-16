@@ -1,0 +1,4 @@
+<resources>
+    <!-- preference fragment -->
+    <dimen name="preference_fragment_horizontal_padding">64dp</dimen>
+</resources>
