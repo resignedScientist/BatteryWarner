@@ -62,8 +62,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
-    compile 'com.android.support:design:26.0.0-alpha1'
+    compile 'com.android.support:appcompat-v7:26.0.0-beta2'
+    compile 'com.android.support:design:26.0.0-beta2'
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
