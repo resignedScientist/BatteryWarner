@@ -41,6 +41,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.Battery
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TECHNOLOGY;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_SILENT_MODE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
@@ -328,7 +329,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 case ACTION_POWER_DISCONNECTED:
                     lastPercentage = -1;
                     timeChanged = System.currentTimeMillis();
-                    NotificationHelper.cancelNotification(context, ID_WARNING_HIGH);
+                    NotificationHelper.cancelNotification(context, ID_WARNING_HIGH, ID_SILENT_MODE);
                     break;
                 default:
                     return;
