@@ -169,4 +169,10 @@
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
     <string name="title_warning_percentage">Warning percentage:</string>
+    <string name="channel_title_battery_warnings">Battery Warnings</string>
+    <string name="channel_title_battery_info">Battery Information</string>
+    <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
+    <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
+    <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
 </resources>

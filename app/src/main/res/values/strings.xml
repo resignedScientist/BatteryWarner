@@ -177,6 +177,14 @@
     <string name="notification_charging_service">Charging Service is running…</string>
     <!-- notification titles -->
     <string name="notification_title_charging_service">Charging Service</string>
+    <!-- notification channel titles -->
+    <string name="channel_title_battery_warnings">Battery Warnings</string>
+    <string name="channel_title_battery_info">Battery Information</string>
+    <string name="channel_title_other_warnings">Other Warnings</string>
+    <!-- notification channel descriptions -->
+    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
+    <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
+    <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
     <!-- battery health -->
     <string name="health_good">Good</string>
     <string name="health_unknown">Unknown</string>

@@ -429,10 +429,10 @@ public final class NotificationHelper {
         // battery warnings
         NotificationChannel channel = new NotificationChannel(
                 context.getString(R.string.channel_battery_warnings),
-                "Battery warnings",
+                context.getString(R.string.channel_title_battery_warnings),
                 NotificationManager.IMPORTANCE_MAX
         );
-        channel.setDescription("All kinds of battery warnings.");
+        channel.setDescription(context.getString(R.string.channel_description_battery_warnings));
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
@@ -442,10 +442,10 @@ public final class NotificationHelper {
         // info notification
         channel = new NotificationChannel(
                 context.getString(R.string.channel_battery_info),
-                "Battery Info",
+                context.getString(R.string.channel_title_battery_info),
                 NotificationManager.IMPORTANCE_MIN
         );
-        channel.setDescription("The permanent notification with all the battery infos and the 'Charging Service' notification run under this category.");
+        channel.setDescription(context.getString(R.string.channel_description_battery_info));
         channel.enableLights(false);
         channel.enableVibration(false);
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
@@ -454,10 +454,10 @@ public final class NotificationHelper {
         // other warnings
         channel = new NotificationChannel(
                 context.getString(R.string.channel_other_warnings),
-                "Other warnings",
+                context.getString(R.string.channel_title_other_warnings),
                 NotificationManager.IMPORTANCE_MAX
         );
-        channel.setDescription("Other important warnings, for example if the app has no root access anymore.");
+        channel.setDescription(context.getString(R.string.channel_description_other_warnings));
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
