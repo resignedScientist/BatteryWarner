@@ -67,81 +67,12 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
         }
     };
+    private final BatteryChangedReceiver batteryChangedReceiver = new BatteryChangedReceiver();
     private boolean warningHighEnabled, isGraphEnabled, acEnabled, usbEnabled, wirelessEnabled,
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
             isChargingPaused = false, isChargingResumed = false, alreadyNotified = false;
     private int warningHigh, smartChargingLimit, smartChargingMinutes, chargingType, lastBatteryLevel = -1;
     private long smartChargingResumeTime, smartChargingTime;
-    private final BroadcastReceiver batteryChangedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
-            int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
-            long timeNow = System.currentTimeMillis();
-            chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
-            boolean isCharging = chargingType != 0;
-            boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
-            // stop service if user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
-            if (!isCharging && isChargingResumed) {
-                stopSelf();
-                return;
-            }
-            // stop charging and stop self if plugged in via usb but usb charging is disabled
-            if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
-                stopCharging();
-                stopSelf();
-                return;
-            }
-            if (batteryLevel != lastBatteryLevel) { // if battery level changed
-                // add a value to the database
-                if (isGraphEnabled && AppInfoHelper.isPro()) {
-                    lastBatteryLevel = batteryLevel;
-                    if (!graphChanged) { // reset table if it is the first value
-                        graphChanged = true;
-                        graphDbHelper.resetTable();
-                    }
-                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-                }
-                if (batteryLevel >= warningHigh) {
-                    // show the warning high notification if the battery level reached it
-                    if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
-                        alreadyNotified = true;
-                        // show warning high notification
-                        NotificationHelper.showNotification(context, ID_WARNING_HIGH);
-                    }
-                    // stop charging if enabled
-                    if (stopChargingEnabled) {
-                        if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
-                            pauseCharging();
-                        }
-                        if (smartChargingEnabled) {
-                            // stop charging and this service if the smart charging limit is reached
-                            if (batteryLevel >= smartChargingLimit) {
-                                stopCharging();
-                                stopSelf();
-                                return;
-                            }
-                        } else { // stop service if smart charging is disabled
-                            stopSelf();
-                            return;
-                        }
-                    }
-                }
-            }
-            // check if resume time is reached and charging is paused and not resumed yet
-            if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
-                if (isGraphEnabled && AppInfoHelper.isPro()) { // add a graph point for optics/correctness
-                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-                }
-                resumeCharging();
-            }
-            // stop service if everything is turned off or the device is fully charged
-            if ((!isCharging && !(smartChargingEnabled && isChargingPaused)) || batteryLevel == 100
-                    || (!isGraphEnabled && (!warningHighEnabled || !isChargingTypeEnabled) && !stopChargingEnabled && !smartChargingEnabled)) {
-                stopSelf();
-            }
-        }
-    };
 
     /**
      * Checks if the given charging type is enabled in settings.
@@ -259,10 +190,16 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
         } else if (key.equals(getString(R.string.pref_warning_high_enabled))) {
             warningHighEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+            if (!warningHighEnabled && !isGraphEnabled) {
+                stopSelf();
+            }
         } else if (key.equals(getString(R.string.pref_warning_high))) {
             warningHigh = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_high_default));
         } else if (key.equals(getString(R.string.pref_graph_enabled))) {
             isGraphEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            if (!warningHighEnabled && !isGraphEnabled) {
+                stopSelf();
+            }
         } else if (key.equals(getString(R.string.pref_stop_charging))) {
             stopChargingEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_stop_charging_default));
         } else if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
@@ -408,6 +345,79 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             return resumeTime; // return the resume time
         } else { // smart charging is disabled
             return 0;
+        }
+    }
+
+    private class BatteryChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
+            int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
+            long timeNow = System.currentTimeMillis();
+            chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
+            boolean isCharging = chargingType != 0;
+            boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
+            // stop service if user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
+            if (!isCharging && isChargingResumed) {
+                stopSelf();
+                return;
+            }
+            // stop charging and stop self if plugged in via usb but usb charging is disabled
+            if (usbChargingDisabled && chargingType == BATTERY_PLUGGED_USB) {
+                stopCharging();
+                stopSelf();
+                return;
+            }
+            if (batteryLevel != lastBatteryLevel) { // if battery level changed
+                // add a value to the database
+                if (isGraphEnabled && AppInfoHelper.isPro()) {
+                    lastBatteryLevel = batteryLevel;
+                    if (!graphChanged) { // reset table if it is the first value
+                        graphChanged = true;
+                        graphDbHelper.resetTable();
+                    }
+                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                }
+                if (batteryLevel >= warningHigh) {
+                    // show the warning high notification if the battery level reached it
+                    if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
+                        alreadyNotified = true;
+                        // show warning high notification
+                        NotificationHelper.showNotification(context, ID_WARNING_HIGH);
+                    }
+                    // stop charging if enabled
+                    if (stopChargingEnabled) {
+                        if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
+                            pauseCharging();
+                        }
+                        if (smartChargingEnabled) {
+                            // stop charging and this service if the smart charging limit is reached
+                            if (batteryLevel >= smartChargingLimit) {
+                                stopCharging();
+                                stopSelf();
+                                return;
+                            }
+                        } else { // stop service if smart charging is disabled
+                            stopSelf();
+                            return;
+                        }
+                    }
+                }
+            }
+            // check if resume time is reached and charging is paused and not resumed yet
+            if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
+                if (isGraphEnabled && AppInfoHelper.isPro()) { // add a graph point for optics/correctness
+                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                }
+                resumeCharging();
+            }
+            // stop service if everything is turned off or the device is fully charged
+            if (batteryLevel == 100
+                    || !isCharging && !stopChargingEnabled
+                    || !isCharging && stopChargingEnabled && !(smartChargingEnabled && isChargingPaused)
+                    || !warningHighEnabled && !isGraphEnabled) {
+                stopSelf();
+            }
         }
     }
 }
