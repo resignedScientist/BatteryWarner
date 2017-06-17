@@ -19,6 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import agency.tango.materialintroscreen.SlideFragment;
 
 public class UninstallSlide extends SlideFragment {
+    boolean shouldGoNext = false;
 
     @Nullable
     @Override
@@ -38,7 +39,7 @@ public class UninstallSlide extends SlideFragment {
                         @Override
                         public void onReceive(Context context, Intent intent) {
                             if (intent != null && intent.hasExtra(Intent.EXTRA_UID) && intent.getIntExtra(Intent.EXTRA_UID, 0) == packageId) {
-                                next();
+                                shouldGoNext = true;
                             }
                         }
                     }, intentFilter);
@@ -49,6 +50,14 @@ public class UninstallSlide extends SlideFragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (shouldGoNext) {
+            next();
+        }
     }
 
     @Override
