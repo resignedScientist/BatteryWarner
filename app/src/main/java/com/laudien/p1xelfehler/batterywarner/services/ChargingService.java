@@ -101,7 +101,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             // read the variables from the shared preferences
             warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
             isGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-            if (warningHighEnabled || isGraphEnabled) {
+            usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+            if (usbChargingDisabled || warningHighEnabled || isGraphEnabled) {
                 if (shouldShowSilentModeNotification(sharedPreferences)) {
                     NotificationHelper.showNotification(this, ID_SILENT_MODE);
                     ringerModeChangedReceiver = new RingerModeChangedReceiver();
@@ -114,7 +115,6 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 acEnabled = sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
                 usbEnabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
                 wirelessEnabled = sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-                usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
                 smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
                 smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
                 smartChargingTime = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time), -1);
