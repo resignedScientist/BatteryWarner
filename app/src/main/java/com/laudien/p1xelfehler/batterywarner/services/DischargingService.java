@@ -113,6 +113,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             screenStateFilter.addAction(ACTION_SCREEN_OFF);
             registerReceiver(screenStateChangedReceiver, screenStateFilter);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            temporaryPrefs.registerOnSharedPreferenceChangeListener(this);
             Log.d(getClass().getSimpleName(), "Service started!");
         } else {
             Log.d(getClass().getSimpleName(), "Service already running!");
@@ -135,13 +136,22 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(chargingStateChangedReceiver);
         unregisterReceiver(screenStateChangedReceiver);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        temporaryPrefs.unregisterOnSharedPreferenceChangeListener(this);
         batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
         Log.d(getClass().getSimpleName(), "Service destroyed!");
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_warning_low))) {
+        if (key.equals(getString(R.string.value_drain_screen_on))) { // reset of measured drain
+            if (sharedPreferences.getInt(key, 0) == 0) {
+                screenOnDrain = 0;
+                screenOffDrain = 0;
+                lastChangedPercentage = -1;
+                lastChangedTime = SystemClock.uptimeMillis();
+            }
+        } else if (key.equals(getString(R.string.pref_warning_low))) {
             warningLow = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_low_default));
         } else if (key.equals(getString(R.string.pref_warning_low_enabled))) {
             warningLowEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
