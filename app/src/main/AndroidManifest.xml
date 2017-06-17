@@ -19,7 +19,9 @@
             android:name="android.max_aspect"
             android:value="2.5" />
 
-        <activity android:name=".appIntro.IntroActivity" />
+        <activity
+            android:name=".appIntro.IntroActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
