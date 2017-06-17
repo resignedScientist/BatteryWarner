@@ -276,7 +276,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 }
             }
             // measure battery drain
-            if (measureBatteryDrainEnabled) {
+            if (!isCharging && measureBatteryDrainEnabled) {
                 if (lastChangedPercentage == -1) {
                     lastChangedPercentage = batteryLevel;
                 } else { // lastChangedPercentage is not -1
@@ -288,6 +288,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                         screenOffDrain += percentageDiff;
                         temporaryPrefs.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain).apply();
                     }
+                    lastChangedPercentage = batteryLevel;
                 }
             }
         }
