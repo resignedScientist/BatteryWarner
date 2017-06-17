@@ -93,7 +93,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "Starting service...");
+        Log.d(TAG, "Starting service...");
         boolean serviceUseless = false;
         if (batteryChangedReceiver == null) {
             NotificationHelper.cancelNotification(this, ID_WARNING_LOW);
@@ -128,7 +128,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
                 Log.d(TAG, "Service started!");
             } else {
-                Log.d(getClass().getSimpleName(), "Service is useless, stopping...");
+                Log.d(TAG, "Service is useless, stopping...");
                 serviceUseless = true;
             }
         } else {
@@ -449,7 +449,9 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             if (batteryLevel == 100
                     || !isCharging && !stopChargingEnabled
                     || !isCharging && stopChargingEnabled && !(smartChargingEnabled && isChargingPaused)
+                    || !isGraphEnabled && !smartChargingEnabled && batteryLevel >= warningHigh
                     || !warningHighEnabled && !isGraphEnabled) {
+                Log.d(TAG, "Charging Service not needed anymore, stopping...");
                 stopSelf();
             }
         }
