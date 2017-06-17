@@ -39,12 +39,11 @@ public class BatteryHelper {
      *
      * @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
      * @param context           An instance of the Context class.
-     * @param sharedPreferences An instance of SharedPreferences class.
      * @return The singleton object of BatteryData.
      */
-    public static BatteryData getBatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
+    public static BatteryData getBatteryData(Intent batteryStatus, Context context) {
         if (batteryData == null) {
-            batteryData = new BatteryData(batteryStatus, context, sharedPreferences);
+            batteryData = new BatteryData(batteryStatus, context);
         }
         return batteryData;
     }
@@ -166,7 +165,7 @@ public class BatteryHelper {
         private double temperature, voltage, screenOn, screenOff;
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
-        private BatteryData(Intent batteryStatus, Context context, SharedPreferences sharedPreferences) {
+        private BatteryData(Intent batteryStatus, Context context) {
             update(batteryStatus, context);
         }
 

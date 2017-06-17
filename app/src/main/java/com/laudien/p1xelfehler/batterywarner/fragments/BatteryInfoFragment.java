@@ -83,7 +83,7 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         if (context != null) {
             // register receivers
             Intent batteryStatus = context.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            batteryData = BatteryHelper.getBatteryData(batteryStatus, context, sharedPreferences);
+            batteryData = BatteryHelper.getBatteryData(batteryStatus, context);
             batteryData.registerOnBatteryValueChangedListener(this);
             // refresh TextViews
             for (byte i = 0; i < batteryData.getAsArray().length; i++) {

@@ -51,20 +51,12 @@ public class ServiceHelper {
         }
     }
 
-    private static void stopService(Context context, byte serviceID) {
-        Intent intent;
-        if (serviceID == ID_CHARGING) {
-            intent = new Intent(context, ChargingService.class);
-        } else if (serviceID == ID_DISCHARGING) {
-            intent = new Intent(context, DischargingService.class);
-        } else {
-            throw new RuntimeException("Unknown service id!");
-        }
-        context.stopService(intent);
+    private static void stopDischargingService(Context context) {
+        context.stopService(new Intent(context, DischargingService.class));
     }
 
-    public static void restartService(Context context, @Nullable SharedPreferences sharedPreferences, byte serviceID) {
-        stopService(context, serviceID);
-        startService(context, sharedPreferences, serviceID);
+    public static void restartDischargingService(Context context, @Nullable SharedPreferences sharedPreferences) {
+        stopDischargingService(context);
+        startService(context, sharedPreferences, ID_DISCHARGING);
     }
 }

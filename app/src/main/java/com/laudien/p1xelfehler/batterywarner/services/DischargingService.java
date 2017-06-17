@@ -102,7 +102,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             batteryChangedReceiver = new BatteryChangedReceiver();
             onBatteryValueChangedListener = new MyOnBatteryValueChangedListener();
             Intent batteryStatus = registerReceiver(batteryChangedReceiver, new IntentFilter(ACTION_BATTERY_CHANGED));
-            batteryData = BatteryHelper.getBatteryData(batteryStatus, this, sharedPreferences);
+            batteryData = BatteryHelper.getBatteryData(batteryStatus, this);
             chargingStateChangedReceiver = new ChargingStateChangedReceiver();
             IntentFilter chargingStateChangedFilter = new IntentFilter(ACTION_POWER_CONNECTED);
             chargingStateChangedFilter.addAction(ACTION_POWER_DISCONNECTED);

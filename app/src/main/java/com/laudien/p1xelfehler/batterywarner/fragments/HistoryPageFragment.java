@@ -90,13 +90,4 @@ public class HistoryPageFragment extends BasicGraphFragment {
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
         return dbHelper.getStartTime(dbHelper.getReadableDatabase(file.getPath()));
     }
-
-    /**
-     * Returns the database file connected to this fragment instance.
-     *
-     * @return The database file where the graphs are saved.
-     */
-    public File getFile() {
-        return file;
-    }
 }

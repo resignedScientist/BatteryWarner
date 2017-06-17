@@ -290,6 +290,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
      * @param filePath The file path of the file to be checked.
      * @return Returns true if the database is in SQLite format, false if not.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean isValidDatabase(String filePath) {
         try {
             if (isTableEmpty(filePath)) {

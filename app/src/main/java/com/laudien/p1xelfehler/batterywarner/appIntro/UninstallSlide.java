@@ -24,7 +24,7 @@ public class UninstallSlide extends SlideFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.slide_uninstall, container, false);
-        Button uninstallButton = (Button) view.findViewById(R.id.btn_uninstall);
+        Button uninstallButton = view.findViewById(R.id.btn_uninstall);
         uninstallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -104,7 +104,7 @@ class InfoObject {
         dialog.setContentView(R.layout.dialog_graph_info);
         DateFormat dateFormat = DateFormat.getDateTimeInstance();
         // close button
-        Button btn_close = (Button) dialog.findViewById(R.id.btn_close);
+        Button btn_close = dialog.findViewById(R.id.btn_close);
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +112,7 @@ class InfoObject {
             }
         });
         // charging time
-        TextView textView_totalTime = (TextView) dialog.findViewById(R.id.textView_totalTime);
+        TextView textView_totalTime = dialog.findViewById(R.id.textView_totalTime);
         textView_totalTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -120,7 +120,7 @@ class InfoObject {
                 getTimeString(context))
         );
         // start time
-        TextView textView_startTime = (TextView) dialog.findViewById(R.id.textView_startTime);
+        TextView textView_startTime = dialog.findViewById(R.id.textView_startTime);
         textView_startTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -128,7 +128,7 @@ class InfoObject {
                 dateFormat.format(startTime)
         ));
         // end time
-        TextView textView_endTime = (TextView) dialog.findViewById(R.id.textView_endTime);
+        TextView textView_endTime = dialog.findViewById(R.id.textView_endTime);
         textView_endTime.setText(String.format(
                 Locale.getDefault(),
                 "%s: %s",
@@ -136,7 +136,7 @@ class InfoObject {
                 dateFormat.format(endTime)
         ));
         // charging speed
-        TextView textView_speed = (TextView) dialog.findViewById(R.id.textView_speed);
+        TextView textView_speed = dialog.findViewById(R.id.textView_speed);
         double speed = percentCharged * 60 / timeInMinutes;
         if (Double.isNaN(speed)) {
             textView_speed.setText(String.format(
@@ -154,7 +154,7 @@ class InfoObject {
             );
         }
         // max temperature
-        TextView textView_maxTemp = (TextView) dialog.findViewById(R.id.textView_maxTemp);
+        TextView textView_maxTemp = dialog.findViewById(R.id.textView_maxTemp);
         textView_maxTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",
@@ -162,7 +162,7 @@ class InfoObject {
                 maxTemp)
         );
         // min temperature
-        TextView textView_minTemp = (TextView) dialog.findViewById(R.id.textView_minTemp);
+        TextView textView_minTemp = dialog.findViewById(R.id.textView_minTemp);
         textView_minTemp.setText(String.format(
                 Locale.getDefault(),
                 "%s: %.1f°C",

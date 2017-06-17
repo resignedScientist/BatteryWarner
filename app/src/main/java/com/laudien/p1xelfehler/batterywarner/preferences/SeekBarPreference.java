@@ -94,14 +94,14 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        textView = (TextView) view.findViewById(R.id.textView);
+        textView = view.findViewById(R.id.textView);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
             }
         });
-        seekBar = (SeekBar) view.findViewById(R.id.seekBar);
+        seekBar = view.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setMax(max - min);
         seekBar.setProgress(progress - min);
@@ -141,28 +141,15 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
         }
     }
 
-    public void setMax(int max) {
-        if (max > min) {
-            this.max = max;
-            if (progress > max) {
-                persistInt(max);
-            }
-            if (seekBar != null) {
-                seekBar.setMax(max - min);
-                seekBar.setProgress(progress - min);
-            }
-        }
-    }
-
     private void showDialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_number_picker);
-        final NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.numberPicker);
+        final NumberPicker numberPicker = dialog.findViewById(R.id.numberPicker);
         numberPicker.setMinValue(min);
         numberPicker.setMaxValue(max);
         numberPicker.setValue(getValue());
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        Button btn_ok = (Button) dialog.findViewById(R.id.btn_ok);
+        Button btn_ok = dialog.findViewById(R.id.btn_ok);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,7 +157,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
                 dialog.dismiss();
             }
         });
-        Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        Button btn_cancel = dialog.findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

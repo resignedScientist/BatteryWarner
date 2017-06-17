@@ -36,7 +36,6 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
@@ -234,7 +233,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled || preference == pref_measureBatteryDrain) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.restartService(getContext(), sharedPreferences, ID_DISCHARGING);
+                ServiceHelper.restartDischargingService(getContext(), sharedPreferences);
             }
         }
     }

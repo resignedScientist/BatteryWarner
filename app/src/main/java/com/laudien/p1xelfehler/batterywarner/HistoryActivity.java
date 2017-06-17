@@ -281,7 +281,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                             File newFile = new File(DATABASE_HISTORY_PATH + "/" + newName);
                             if (newFile.exists()) {
                                 ToastHelper.sendToast(HistoryActivity.this, String.format(Locale.getDefault(), "%s '%s'!",
-                                        getString(R.string.toast_graph_name_already_exists), newName), LENGTH_SHORT);
+                                        getString(R.string.toast_graph_name_already_exists), newName));
                             } else if (adapter.renameFile(viewPager.getCurrentItem(), newFile)) {
                                 textView_fileName.setText(newName);
                                 ToastHelper.sendToast(HistoryActivity.this, R.string.toast_success_renaming, LENGTH_SHORT);
