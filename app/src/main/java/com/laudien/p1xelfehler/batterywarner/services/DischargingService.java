@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
@@ -339,7 +340,13 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 case ACTION_POWER_DISCONNECTED:
                     lastChangedPercentage = -1;
                     lastChangedTime = SystemClock.uptimeMillis();
-                    NotificationHelper.cancelNotification(context, ID_WARNING_HIGH, ID_SILENT_MODE);
+                    boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            NotificationHelper.cancelNotification(getApplicationContext(), ID_WARNING_HIGH, ID_SILENT_MODE);
+                        }
+                    }, stopChargingEnabled ? 5000 : 0);
                     break;
                 default:
                     return;
