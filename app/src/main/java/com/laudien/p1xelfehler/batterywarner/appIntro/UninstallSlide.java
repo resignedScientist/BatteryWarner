@@ -19,7 +19,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import agency.tango.materialintroscreen.SlideFragment;
 
 public class UninstallSlide extends SlideFragment {
-    boolean shouldGoNext = false;
+    private boolean shouldGoNext = false;
 
     @Nullable
     @Override
