@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+    <string name="channel_description_battery_info">La notification permanente avec toutes les infos de la batterie et la notification \'Charging Service \'.</string>
+    <string name="channel_description_battery_warnings">Tous les types d\'alertes de batterie.</string>
+    <string name="channel_description_other_warnings">D\'autres alertes importantes, par exemple, si l\'application n\'a plus d'accès root.</string>
+    <string name="channel_title_battery_info">Informations sur la batterie</string>
+    <string name="channel_title_battery_warnings">Alertes de batterie</string>
+    <string name="channel_title_other_warnings">Autres alertes</string>
+
     <string name="charging">En charge</string>
 
     <string name="checkbox_battery_level">Niveau de batterie (%)</string>
@@ -31,21 +38,21 @@
     <string name="info_health">État </string>
     <string name="info_max_temp">Température la plus élevée </string>
     <string name="info_min_temp">Température la plus basse </string>
-    <string name="info_screen_off">Screen off </string>
-    <string name="info_screen_on">Screen on </string>
+    <string name="info_screen_off">Conso en veille </string>
+    <string name="info_screen_on">Conso en activité </string>
     <string name="info_startTime">Début</string>
     <string name="info_technology">Technologie </string>
     <string name="info_temperature">Température </string>
     <string name="info_voltage">Voltage </string>
 
     <string name="intro_finish_toast">Faisons en sorte que votre batterie dure plus longtemps !</string>
-    <string name="intro_slide_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie !</string>
+    <string name="intro_slide_1_description">Cette application permettra d\'augmenter la durée de vie de votre batterie.</string>
     <string name="intro_slide_1_title">Bienvenue dans Battery Warner !</string>
-    <string name="intro_slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement à 100% la batterie ou de ne pas la laisser se vider à 0% afin d\'allonger sa durée de vie.</string>
-    <string name="intro_slide_2_title">Comment cela fonctionne ?</string>
-    <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie chargée entre 20 et 80% et non entre 0–100%</string>
-    <string name="intro_slide_3_title">Pour augmenter cette durée de vie, vous devez donc changer vos comportements habituels !</string>
-    <string name="intro_slide_prefs_description">Modifiez les paramètres ici !</string>
+    <string name="intro_slide_2_description" formatted="false">Les fabricants conseillent de ne pas charger complètement la batterie à 100% ou de ne pas la laisser se vider à 0% afin d\'augmenter sa durée de vie.</string>
+    <string name="intro_slide_2_title">Comment cela fonctionne-t-il ?</string>
+    <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie de votre appareil chargée entre 20 et 80% et non entre 0 et 100%</string>
+    <string name="intro_slide_3_title">Pour augmenter la durée de vie de la batterie, vous devez donc changer vos comportements habituels !</string>
+    <string name="intro_slide_prefs_description">Modifiez les paramètres ici...</string>
     <string name="intro_slide_prefs_title">C\'est parti !</string>
     <string name="intro_slide_thank_you_description">Vous ne le regretterez pas ! :)</string>
     <string name="intro_slide_thank_you_title">Merci d\'avoir acheté la version Pro !</string>
@@ -65,12 +72,14 @@
     <string name="notification_button_grant_root">Accorder l\'accès Root</string>
     <string name="notification_button_toggle_power_saving">Basculer en mode d\'économiseur de batterie</string>
     <string name="notification_charging_disabled">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
+    <string name="notification_charging_service">Le service pour la charge est en cours d\'exécution…</string>
     <string name="notification_grant_root">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
-    <string name="notification_no_items_enabled">Aucun élément activé !</string>
     <string name="notification_no_alarm_time_found">Aucune alarme trouvée dans l\'application d\'alarme. Définissez une alarme dans votre application dédiée ou une heure manuellement dans Battery Warner afin d\'utiliser Smart Charging !</string>
+    <string name="notification_no_items_enabled">Aucun élément activé !</string>
     <string name="notification_not_rooted">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="notification_sound_disabled">Attention ! Le son est désactivé !</string>
     <string name="notification_stop_charging_not_working">L\'arrêt auto de charge ne semble pas fonctionner avec votre appareil ! Vous pouvez désactiver cette fonctionnalité !</string>
+    <string name="notification_title_charging_service">Service pour la charge</string>
     <string name="notification_warning_high">Niveau de batterie au-dessus de</string>
     <string name="notification_warning_low">Niveau de batterie au-dessous de</string>
 
@@ -78,11 +87,18 @@
 
     <string name="summary_dependency">Doit être activé pour cela !</string>
     <string name="summary_disabled">Désactivé</string>
+    <string name="summary_graph_autosave">Sauvegarder le graphique enregistré automatiquement dans l\'historique lorsque l\'appareil est complètement chargé ou vous débranchez le chargeur.</string>
+    <string name="summary_graph_enabled">Enregistrer un graphique pendant la charge.</string>
     <string name="summary_info_dark_theme">Utilise le thème sombre également pour la notification d\'infos batterie.</string>
+    <string name="summary_measure_battery_drain">Mesure de la décharge de la batterie écran éteint (conso en veille) et allumé (conso en activité) en pourcentage par heure.</string>
+    <string name="summary_notification_sound">Depuis Android O, vous devez régler le son dans les paramètres de notification d\'Android. Cliquez ici pour y accéder.</string>
+    <string name="summary_notifications_off_warning">Afficher une alerte, lorsque vous branchez votre chargeur avec un son de notification désactivé.</string>
     <string name="summary_power_saving_mode">Active l\'économiseur de batterie quand l\'alerte de batterie faible est déclenchée</string>
     <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de l\'alerte de batterie élevée.</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
     <string name="summary_usb_charging_disabled">Empêche l\'appareil de se recharger lorsqu\'il est branché sur port USB (ne fonctionne pas pour tous les appareils).</string>
+    <string name="summary_warning_high_enabled">Afficher une alerte de batterie élevée lorsque le pourcentage défini est atteint.</string>
+    <string name="summary_warning_low_enabled">Afficher une alerte de batterie faible lorsque le pourcentage défini est atteint.</string>
 
     <string name="tile_charge_to_100">Charger à 100%</string>
     <string name="tile_on_off">Alertes de batterie</string>
@@ -95,8 +111,12 @@
     <string name="title_advanced_features">Fonctionnalités avancées</string>
     <string name="title_charging_curve">Courbe de charge</string>
     <string name="title_charging_limit">Limite de charge :</string>
+    <string name="title_charging_notification">Activer la notification de charge</string>
+    <string name="title_charging_service">Service pour la charge</string>
     <string name="title_dark_theme_enabled">Activer le thème sombre</string>
-    <string name="title_enabled">activée</string>
+    <string name="title_discharging_notification">Activer la notification de décharge</string>
+    <string name="title_discharging_service">Service pour la décharge</string>
+    <string name="title_enabled">Activé</string>
     <string name="title_get_pro">Cliquez ici pour obtenir la version pro !</string>
     <string name="title_graph_autosave">Enregistrer automatiquement</string>
     <string name="title_graph_enabled">Activer la courbe de charge</string>
@@ -106,6 +126,7 @@
     <string name="title_info_notification_enabled">Activer la notification d\'infos</string>
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
     <string name="title_main_page">Accueil</string>
+    <string name="title_measure_battery_drain">Mesure de la décharge de la batterie</string>
     <string name="title_minutes_before">Minutes avant :</string>
     <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
     <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
@@ -122,6 +143,7 @@
     <string name="title_time_format">Format du temps</string>
     <string name="title_usb_charging_disabled">Désactiver la charge USB [Root]</string>
     <string name="title_usb_enabled">Alerte sur charge USB</string>
+    <string name="title_warning_percentage">Pourcentage d\'alerte :</string>
     <string name="title_wireless_enabled">Alerte sur charge sans fil</string>
 
     <string name="toast_charging_type_disabled">Le type de charge actuel est désactivé dans les paramètres !</string>
@@ -157,25 +179,4 @@
     <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
 
     <!-- new strings -->
-    <string name="title_measure_battery_drain">Measure battery drain</string>
-    <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off in percent per hour.</string>
-    <string name="notification_charging_service">Charging Service is running…</string>
-    <string name="notification_title_charging_service">Charging Service</string>
-    <string name="title_discharging_notification">Enable discharging notification</string>
-    <string name="title_charging_service">Charging Service</string>
-    <string name="title_discharging_service">Discharging Service</string>
-    <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
-    <string name="title_charging_notification">Enable charging notification</string>
-    <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
-    <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
-    <string name="title_warning_percentage">Warning percentage:</string>
-    <string name="channel_title_battery_warnings">Battery Warnings</string>
-    <string name="channel_title_battery_info">Battery Information</string>
-    <string name="channel_title_other_warnings">Other Warnings</string>
-    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
-    <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
-    <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
-    <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
-    <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
-    <string name="summary_graph_enabled">Record a graph while charging.</string>
 </resources>
