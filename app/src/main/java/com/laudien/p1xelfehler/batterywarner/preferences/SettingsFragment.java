@@ -235,6 +235,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null) {
                 ServiceHelper.restartDischargingService(getContext(), sharedPreferences);
             }
+            if (preference == pref_measureBatteryDrain) {
+                setInfoNotificationSubtitle(sharedPreferences);
+            }
         }
     }
 
