@@ -414,7 +414,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 }
                 if (batteryLevel >= warningHigh) {
                     // show the warning high notification if the battery level reached it
-                    if (warningHighEnabled && isChargingTypeEnabled && !alreadyNotified) {
+                    if (warningHighEnabled && !alreadyNotified) {
                         alreadyNotified = true;
                         // show warning high notification
                         NotificationHelper.showNotification(context, ID_WARNING_HIGH);
