@@ -391,8 +391,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
             boolean isCharging = chargingType != 0;
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
-            // stop service if user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
-            if (!isCharging && isChargingResumed) {
+            if (!isCharging && isChargingResumed // user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
+                    || !isChargingTypeEnabled) { // current charging type is disabled
                 stopSelf();
                 return;
             }
