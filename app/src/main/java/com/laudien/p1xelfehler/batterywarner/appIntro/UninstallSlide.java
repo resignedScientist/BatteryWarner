@@ -40,6 +40,7 @@ public class UninstallSlide extends SlideFragment {
                         public void onReceive(Context context, Intent intent) {
                             if (intent != null && intent.hasExtra(Intent.EXTRA_UID) && intent.getIntExtra(Intent.EXTRA_UID, 0) == packageId) {
                                 shouldGoNext = true;
+                                getContext().unregisterReceiver(this);
                             }
                         }
                     }, intentFilter);
