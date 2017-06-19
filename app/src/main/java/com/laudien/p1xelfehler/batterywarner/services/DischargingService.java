@@ -268,6 +268,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             batteryData.update(batteryStatus, DischargingService.this);
             boolean isCharging = BatteryHelper.isCharging(batteryStatus);
             int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, 0);
+            // show battery low warning
             if (!alreadyNotified && warningLowEnabled) {
                 if (!isCharging) {
                     if (batteryLevel <= warningLow) {
@@ -280,7 +281,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             if (!isCharging && measureBatteryDrainEnabled) {
                 if (lastChangedPercentage == -1) {
                     lastChangedPercentage = batteryLevel;
-                } else { // lastChangedPercentage is not -1
+                } else if (lastChangedPercentage != batteryLevel) { // lastChangedPercentage is not -1 and battery level has changed
                     int percentageDiff = lastChangedPercentage - batteryLevel;
                     if (isScreenOn) { // screen on
                         screenOnDrain += percentageDiff;
@@ -362,7 +363,11 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             if (action.equals(ACTION_SCREEN_ON)) {  // screen on
                 isScreenOn = true;
                 Log.d(DischargingService.class.getSimpleName(), "screen on received!");
-                registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                if (measureBatteryDrainEnabled) {
+                    batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
+                } else {
+                    registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+                }
                 if (measureBatteryDrainEnabled) {
                     long timeNow = SystemClock.uptimeMillis();
                     long timeDiff = timeNow - lastChangedTime;
@@ -374,7 +379,11 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             } else if (action.equals(ACTION_SCREEN_OFF)) { // screen off
                 isScreenOn = false;
                 Log.d(DischargingService.class.getSimpleName(), "screen off received!");
-                unregisterReceiver(batteryChangedReceiver);
+                if (measureBatteryDrainEnabled) {
+                    batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
+                } else {
+                    unregisterReceiver(batteryChangedReceiver);
+                }
                 if (measureBatteryDrainEnabled) {
                     long timeNow = SystemClock.uptimeMillis();
                     long timeDiff = timeNow - lastChangedTime;
