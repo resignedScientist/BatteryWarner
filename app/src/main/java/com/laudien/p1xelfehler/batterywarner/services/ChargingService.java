@@ -29,10 +29,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
 import static android.os.BatteryManager.BATTERY_PLUGGED_AC;
@@ -52,7 +48,6 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
-import static java.text.DateFormat.SHORT;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -347,7 +342,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 Log.d(TAG, "added a day to the time!");
             }
             // => Smart charging notification (only for test purposes!)
-            DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
+            /*DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
             String message = String.format(Locale.getDefault(),
                     "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d\n%s: %b",
                     "Charge to", warningHigh,
@@ -357,7 +352,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     "Minutes before", smartChargingMinutes,
                     "Use next alarm clock", smartChargingUseClock
             );
-            Log.d(getClass().getSimpleName(), message);
+            Log.d(getClass().getSimpleName(), message);*/
             /*((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(1346, new Notification.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Smart Charging")
