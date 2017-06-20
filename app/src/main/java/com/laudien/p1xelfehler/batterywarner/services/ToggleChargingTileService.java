@@ -9,7 +9,6 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
@@ -17,6 +16,7 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -48,7 +48,7 @@ public class ToggleChargingTileService extends TileService {
         super.onClick();
         boolean isActive = tile.getState() == Tile.STATE_ACTIVE;
         if (isActive) { // deactivating the tile
-            if (AppInfoHelper.isPro()) {
+            if (IS_PRO) {
                 new AsyncTask<Void, Void, Byte>() {
                     @Override
                     protected Byte doInBackground(Void... voids) {

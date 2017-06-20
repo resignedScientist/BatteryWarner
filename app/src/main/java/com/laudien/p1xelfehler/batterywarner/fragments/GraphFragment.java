@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
@@ -45,6 +44,7 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.DATABASE_NAME;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
@@ -88,7 +88,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
         GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
         // return if not pro or graph disabled in settings or the database has not enough data
-        if (!AppInfoHelper.isPro() || !graphEnabled || !dbHelper.hasEnoughData()) {
+        if (!IS_PRO || !graphEnabled || !dbHelper.hasEnoughData()) {
             return false;
         }
         String outputFileDir = String.format(
@@ -138,7 +138,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (AppInfoHelper.isPro()) {
+        if (IS_PRO) {
             if (graphEnabled) {
                 switch_percentage.setChecked(
                         sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
@@ -159,7 +159,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public void onResume() {
         super.onResume();
-        if (AppInfoHelper.isPro() && graphEnabled) {
+        if (IS_PRO && graphEnabled) {
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
             graphDbHelper.setDatabaseChangedListener(this);
@@ -179,7 +179,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     .putBoolean(getString(R.string.pref_checkBox_percent), switch_percentage.isChecked())
                     .putBoolean(getString(R.string.pref_checkBox_temperature), switch_temp.isChecked())
                     .apply();
-            if (AppInfoHelper.isPro()) {
+            if (IS_PRO) {
                 graphDbHelper.setDatabaseChangedListener(null);
                 getContext().unregisterReceiver(chargingStateChangedReceiver);
             }
@@ -195,7 +195,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (!AppInfoHelper.isPro() && id != R.id.menu_open_history && id != R.id.menu_settings) {
+        if (!IS_PRO && id != R.id.menu_open_history && id != R.id.menu_settings) {
             ToastHelper.sendToast(getContext(), R.string.toast_not_pro_short, LENGTH_SHORT);
             return true;
         }
@@ -241,7 +241,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      */
     @Override
     protected LineGraphSeries<DataPoint>[] getSeries() {
-        if (AppInfoHelper.isPro()) {
+        if (IS_PRO) {
             GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
             return dbHelper.getGraphs(getContext());
         }
@@ -271,7 +271,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      */
     @Override
     void loadSeries() {
-        if (AppInfoHelper.isPro()) {
+        if (IS_PRO) {
             super.loadSeries();
         } else {
             setBigText(getString(R.string.toast_not_pro), true);

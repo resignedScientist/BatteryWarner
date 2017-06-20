@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import agency.tango.materialintroscreen.SlideFragment;
+
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * A custom slide for the app intro with a battery image.
@@ -26,7 +27,7 @@ public class BatterySlide extends SlideFragment {
         TextView titleTextView = view.findViewById(R.id.txt_title_slide);
         TextView descriptionTextView = view.findViewById(R.id.txt_description_slide);
         // set title and description texts
-        if (AppInfoHelper.isPro()) { // pro version
+        if (IS_PRO) { // pro version
             titleTextView.setText(R.string.intro_slide_thank_you_title);
             descriptionTextView.setText(R.string.intro_slide_thank_you_description);
         } else { // free version

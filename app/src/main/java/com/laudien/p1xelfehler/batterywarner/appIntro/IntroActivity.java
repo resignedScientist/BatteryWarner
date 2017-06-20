@@ -20,6 +20,7 @@ import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
@@ -38,7 +39,7 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         addSlide(new BatterySlide()); // first slide
-        if (!AppInfoHelper.isPro()) { // free version
+        if (!IS_PRO) { // free version
             // second slide
             addSlide(new SlideFragmentBuilder()
                     .backgroundColor(R.color.colorIntro2)
