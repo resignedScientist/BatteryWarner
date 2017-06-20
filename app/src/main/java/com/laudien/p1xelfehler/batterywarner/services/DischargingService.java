@@ -163,6 +163,10 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             }
         } else if (key.equals(getString(R.string.pref_info_notification_enabled))) {
             infoNotificationEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        } else if (key.equals(getString(R.string.pref_is_enabled))) {
+            if (!sharedPreferences.getBoolean(key, true)) {
+                stopSelf();
+            }
         }
     }
 

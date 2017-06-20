@@ -250,6 +250,10 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 stopCharging();
                 stopSelf();
             }
+        } else if (key.equals(getString(R.string.pref_is_enabled))) {
+            if (!sharedPreferences.getBoolean(key, true)) {
+                stopSelf();
+            }
         }
     }
 
