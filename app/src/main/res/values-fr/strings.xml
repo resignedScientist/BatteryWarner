@@ -52,7 +52,7 @@
     <string name="intro_slide_2_title">Comment cela fonctionne-t-il ?</string>
     <string name="intro_slide_3_description" formatted="false">Il faut ainsi veiller à garder la batterie de votre appareil chargée entre 20 et 80% et non entre 0 et 100%</string>
     <string name="intro_slide_3_title">Pour augmenter la durée de vie de la batterie, vous devez donc changer vos comportements habituels !</string>
-    <string name="intro_slide_prefs_description">Modifiez les paramètres ici...</string>
+    <string name="intro_slide_prefs_description">Modifiez les paramètres ici…</string>
     <string name="intro_slide_prefs_title">C\'est parti !</string>
     <string name="intro_slide_thank_you_description">Vous ne le regretterez pas ! :)</string>
     <string name="intro_slide_thank_you_title">Merci d\'avoir acheté la version Pro !</string>

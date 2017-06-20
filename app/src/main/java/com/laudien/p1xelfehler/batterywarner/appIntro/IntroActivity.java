@@ -44,7 +44,7 @@ public class IntroActivity extends MaterialIntroActivity {
             addSlide(new SlideFragmentBuilder()
                     .backgroundColor(R.color.colorIntro2)
                     .buttonsColor(R.color.colorButtons)
-                    .image(R.drawable.batteries)
+                    .image(R.drawable.ic_batteries_400dp)
                     .title(getString(R.string.intro_slide_2_title))
                     .description(getString(R.string.intro_slide_2_description))
                     .build()
