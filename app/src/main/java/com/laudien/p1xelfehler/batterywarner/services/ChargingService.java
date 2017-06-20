@@ -106,7 +106,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             // read the variables from the shared preferences
             warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-            isGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            isGraphEnabled = IS_PRO && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
             if (usbChargingDisabled || warningHighEnabled || isGraphEnabled) {
                 if (shouldShowSilentModeNotification(sharedPreferences)) {
@@ -214,7 +214,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         } else if (key.equals(getString(R.string.pref_warning_high))) {
             warningHigh = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_high_default));
         } else if (key.equals(getString(R.string.pref_graph_enabled))) {
-            isGraphEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            isGraphEnabled = IS_PRO && sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (!warningHighEnabled && !isGraphEnabled) {
                 stopSelf();
             }
@@ -414,7 +414,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             if (batteryLevel != lastBatteryLevel) {
                 lastBatteryLevel = batteryLevel;
                 // add a value to the database
-                if (isGraphEnabled && IS_PRO) {
+                if (isGraphEnabled) {
                     if (!graphChanged) { // reset table if it is the first value
                         graphChanged = true;
                         graphDbHelper.resetTable();
@@ -448,7 +448,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             }
             // check if resume time is reached and charging is paused and not resumed yet
             if (!isCharging && stopChargingEnabled && smartChargingEnabled && isChargingPaused && !isChargingResumed && timeNow >= smartChargingResumeTime) {
-                if (isGraphEnabled && IS_PRO) { // add a graph point for optics/correctness
+                if (isGraphEnabled) { // add a graph point for optics/correctness
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 }
                 resumeCharging();
