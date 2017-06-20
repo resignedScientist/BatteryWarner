@@ -71,7 +71,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             stopChargingEnabled, smartChargingEnabled, smartChargingUseClock, graphChanged, usbChargingDisabled,
             isChargingPaused = false, isChargingResumed = false, alreadyNotified = false;
     private int warningHigh, smartChargingLimit, smartChargingMinutes, chargingType, lastBatteryLevel = -1;
-    private long smartChargingResumeTime, smartChargingTime;
+    private long smartChargingResumeTime, smartChargingTime, timeResumed;
 
     /**
      * Checks if the given charging type is enabled in settings.
@@ -292,6 +292,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     private void resumeCharging() {
         Log.d(TAG, "Resuming charging...");
+        timeResumed = System.currentTimeMillis();
         isChargingResumed = true;
         AsyncTask.execute(new Runnable() {
             @Override
@@ -398,7 +399,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1);
             boolean isCharging = BatteryHelper.isCharging(batteryStatus);
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
-            if (!isCharging && isChargingResumed // user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
+            if (!isCharging && isChargingResumed && timeNow - timeResumed >= 5000 // user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
                     || isCharging && !isChargingTypeEnabled) { // current charging type is disabled
                 stopSelf();
                 return;
