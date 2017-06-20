@@ -24,10 +24,15 @@ import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
 import static android.media.AudioManager.RINGER_MODE_CHANGED_ACTION;
@@ -47,6 +52,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
+import static java.text.DateFormat.SHORT;
 
 /**
  * Background service that runs while charging. It records the charging curve with the GraphDbHelper class
@@ -336,7 +342,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 Log.d(TAG, "added a day to the time!");
             }
             // => Smart charging notification (only for test purposes!)
-            /*DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
+            DateFormat formatter = DateFormat.getDateTimeInstance(SHORT, SHORT, Locale.getDefault());
             String message = String.format(Locale.getDefault(),
                     "%s: %d%%\n%s: %s\n%s: %d%%\n%s: %s\n%s: %d\n%s: %b",
                     "Charge to", warningHigh,
@@ -346,7 +352,8 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                     "Minutes before", smartChargingMinutes,
                     "Use next alarm clock", smartChargingUseClock
             );
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(1346, new Notification.Builder(this)
+            Log.d(getClass().getSimpleName(), message);
+            /*((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(1346, new Notification.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Smart Charging")
                     .setContentText(message)
@@ -384,15 +391,15 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
 
     private class BatteryChangedReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
-            int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
+        public void onReceive(Context context, Intent batteryStatus) {
+            int batteryLevel = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
+            int temperature = batteryStatus.getIntExtra(EXTRA_TEMPERATURE, 0);
             long timeNow = System.currentTimeMillis();
-            chargingType = intent.getIntExtra(EXTRA_PLUGGED, -1);
-            boolean isCharging = chargingType != 0;
+            chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1);
+            boolean isCharging = BatteryHelper.isCharging(batteryStatus);
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
             if (!isCharging && isChargingResumed // user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
-                    || !isChargingTypeEnabled) { // current charging type is disabled
+                    || isCharging && !isChargingTypeEnabled) { // current charging type is disabled
                 stopSelf();
                 return;
             }
@@ -402,36 +409,36 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
                 stopSelf();
                 return;
             }
-            if (batteryLevel != lastBatteryLevel) { // if battery level changed
+            // if battery level changed
+            if (batteryLevel != lastBatteryLevel) {
+                lastBatteryLevel = batteryLevel;
                 // add a value to the database
                 if (isGraphEnabled && AppInfoHelper.isPro()) {
-                    lastBatteryLevel = batteryLevel;
                     if (!graphChanged) { // reset table if it is the first value
                         graphChanged = true;
                         graphDbHelper.resetTable();
                     }
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 }
-                if (batteryLevel >= warningHigh) {
-                    // show the warning high notification if the battery level reached it
-                    if (warningHighEnabled && !alreadyNotified) {
+                // show warning high notification
+                if (warningHighEnabled && batteryLevel >= warningHigh) {
+                    if (!alreadyNotified) {
                         alreadyNotified = true;
-                        // show warning high notification
                         NotificationHelper.showNotification(context, ID_WARNING_HIGH);
                     }
-                    // stop charging if enabled
+                    // stop charging
                     if (stopChargingEnabled) {
-                        if (!isChargingPaused && !isChargingResumed) { // stop only if not paused and not resumed!
+                        if (!isChargingPaused && !isChargingResumed) {
                             pauseCharging();
                         }
+                        // smart charging
                         if (smartChargingEnabled) {
-                            // stop charging and this service if the smart charging limit is reached
                             if (batteryLevel >= smartChargingLimit) {
                                 stopCharging();
                                 stopSelf();
                                 return;
                             }
-                        } else { // stop service if smart charging is disabled
+                        } else { // smart charging disabled
                             stopSelf();
                             return;
                         }
