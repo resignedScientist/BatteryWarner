@@ -405,6 +405,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
             boolean isChargingTypeEnabled = isChargingTypeEnabled(chargingType);
             if (!isCharging && isChargingResumed && timeNow - timeResumed >= 5000 // user unplugs the device before the smart charging limit is reached and after the smart charging time is reached
                     || isCharging && !isChargingTypeEnabled) { // current charging type is disabled
+                Log.d(TAG, "Charging did not resume or current charging type is disabled, stopping...");
                 stopSelf();
                 return;
             }
