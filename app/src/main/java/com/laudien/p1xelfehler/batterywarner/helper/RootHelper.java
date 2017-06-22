@@ -97,6 +97,7 @@ public final class RootHelper {
      */
     public static void togglePowerSavingMode(boolean turnOn) throws NotRootedException {
         if (isRootAvailable()) {
+            Log.d(TAG, "Turning " + (turnOn ? "on" : "off") + " power saving mode...");
             Shell.SU.run("settings put global low_power " + (turnOn ? "1" : "0"));
         } else {
             throw new NotRootedException();
@@ -107,8 +108,9 @@ public final class RootHelper {
      * Resets the android internal battery stats
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void resetBatteryStats() throws NotRootedException {
+    static void resetBatteryStats() throws NotRootedException {
         if (isRootAvailable()){
+            Log.d(TAG, "Resetting android battery stats...");
             Shell.SU.run("dumpsys batterystats --reset");
         } else {
             throw new NotRootedException();
