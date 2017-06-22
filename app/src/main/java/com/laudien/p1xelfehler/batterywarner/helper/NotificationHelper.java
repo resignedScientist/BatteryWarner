@@ -136,7 +136,8 @@ public final class NotificationHelper {
 
     private static void showWarningHighNotification(final Context context, SharedPreferences defaultPrefs) {
         boolean warningHighEnabled = defaultPrefs.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-        boolean resetBatteryStats = defaultPrefs.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
+        boolean smartChargingEnabled = defaultPrefs.getBoolean(context.getString(R.string.pref_smart_charging_enabled), context.getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        boolean resetBatteryStats = !smartChargingEnabled && defaultPrefs.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
         // show notification
         if (warningHighEnabled) {
             int warningHigh = defaultPrefs.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
@@ -242,6 +243,7 @@ public final class NotificationHelper {
     private static void showStopChargingNotification(final Context context, SharedPreferences sharedPreferences) {
         boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
         boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+        final boolean resetBatteryStats = sharedPreferences.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
         if (stopChargingEnabled || usbChargingDisabled) {
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -267,6 +269,10 @@ public final class NotificationHelper {
                             NotificationManager notificationManager = (NotificationManager)
                                     context.getSystemService(NOTIFICATION_SERVICE);
                             notificationManager.notify(ID_STOP_CHARGING, builder.build());
+                            // reset the android internal battery stats
+                            if (resetBatteryStats) {
+                                RootHelper.resetBatteryStats();
+                            }
                         }
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
