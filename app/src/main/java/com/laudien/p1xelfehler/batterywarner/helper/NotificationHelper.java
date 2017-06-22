@@ -308,10 +308,18 @@ public final class NotificationHelper {
     }
 
     private static void showGrantRootNotification(Context context, SharedPreferences sharedPreferences) {
-        boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-        boolean resetBatteryStats = sharedPreferences.getBoolean(context.getString(R.string.pref_reset_battery_stats), context.getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
-        if (stopChargingEnabled || usbChargingDisabled || resetBatteryStats) {
+        // check if one of the root preferences is enabled
+        String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
+        boolean oneRootPermissionIsEnabled = false;
+        for (String key : rootPreferences) {
+            boolean enabled = sharedPreferences.getBoolean(key, false);
+            if (enabled) {
+                oneRootPermissionIsEnabled = true;
+                break;
+            }
+        }
+        // send the grant root notification only if one of the root preferences is enabled
+        if (oneRootPermissionIsEnabled) {
             String messageText = context.getString(R.string.notification_grant_root);
             PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)

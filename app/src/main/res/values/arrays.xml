@@ -11,4 +11,12 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+    <!-- An array of all root preferences -->
+    <string-array name="root_preferences" translatable="false">
+        <item>@string/pref_stop_charging</item>
+        <item>@string/pref_smart_charging_enabled</item>
+        <item>@string/pref_usb_charging_disabled</item>
+        <item>@string/pref_reset_battery_stats</item>
+        <item>@string/pref_power_saving_mode</item>
+    </string-array>
 </resources>

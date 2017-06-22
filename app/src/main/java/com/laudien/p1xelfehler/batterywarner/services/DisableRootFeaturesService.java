@@ -20,14 +20,13 @@ public class DisableRootFeaturesService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         ToastHelper.sendToast(this, R.string.toast_root_denied, LENGTH_LONG);
+        String[] rootPreferences = getResources().getStringArray(R.array.root_preferences);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit()
-                .putBoolean(getString(R.string.pref_stop_charging), false)
-                .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
-                .putBoolean(getString(R.string.pref_smart_charging_enabled), false)
-                .putBoolean(getString(R.string.pref_power_saving_mode), false)
-                .putBoolean(getString(R.string.pref_reset_battery_stats), false)
-                .apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (String key : rootPreferences) {
+            editor.putBoolean(key, false);
+        }
+        editor.apply();
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
