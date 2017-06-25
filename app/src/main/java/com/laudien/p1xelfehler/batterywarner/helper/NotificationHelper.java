@@ -20,7 +20,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
-import com.laudien.p1xelfehler.batterywarner.services.EventService;
 import com.laudien.p1xelfehler.batterywarner.services.GrantRootService;
 import com.laudien.p1xelfehler.batterywarner.services.TogglePowerSavingService;
 
@@ -128,25 +127,26 @@ public final class NotificationHelper {
         }
     }
 
-    public static void showEventNotification(Context context, String title, String message, String buttonText) {
+    public static void showEventNotification(Context context, String title, String message, String buttonText, Intent buttonIntent) {
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(SMALL_ICON_RESOURCE)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setStyle(getBigTextStyle(message))
-                .setContentIntent(getDefaultClickIntent(context))
-                .setAutoCancel(true)
-                .setSound(getDefaultSound())
-                .setVibrate(VIBRATE_PATTERN);
-        if (buttonText != null && !buttonText.equals("")) {
-            Intent buttonIntent = new Intent(context.getApplicationContext(), EventService.class);
+                .setAutoCancel(true);
+        if (buttonIntent != null && buttonText != null && !buttonText.equals("")) {
             PendingIntent pendingIntent = PendingIntent.getService(context, ID_EVENT, buttonIntent, 0);
-            builder.addAction(0, buttonText, pendingIntent);
+            builder.addAction(0, buttonText, pendingIntent)
+                    .setContentIntent(pendingIntent);
+        } else {
+            builder.setContentIntent(getDefaultClickIntent(context));
         }
         if (SDK_INT >= O) {
             builder.setChannelId(context.getString(R.string.channel_other_warnings));
         } else {
-            builder.setPriority(Notification.PRIORITY_DEFAULT);
+            builder.setPriority(Notification.PRIORITY_DEFAULT)
+                    .setSound(getDefaultSound())
+                    .setVibrate(VIBRATE_PATTERN);
         }
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(NOTIFICATION_SERVICE);

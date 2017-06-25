@@ -11,8 +11,11 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
+import com.laudien.p1xelfehler.batterywarner.services.EventService;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.M;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
@@ -75,7 +78,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             }
             // <= patch old shared preferences
             // create notification channels
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationHelper.createNotificationChannels(context);
             }
             // show notification if not rooted anymore
@@ -84,14 +87,16 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
             // show a notification on special events
-            if (!IS_PRO) {
+            if (!IS_PRO && SDK_INT >= M) {
+                Intent emailIntent = new Intent(context.getApplicationContext(), EventService.class);
                 NotificationHelper.showEventNotification(
                         context,
                         "Indonesian translator searched!",
                         "Welcome to all new Indonesian app users! :)\n" +
                                 "For giving you the best possible experience with the app I need an Indonesian translator. " +
                                 "He/She will get the pro version of the app for free!",
-                        "Write me an email!"
+                        "Write me an email!",
+                        emailIntent
                 );
             }
         }
