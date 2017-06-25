@@ -19,3 +19,7 @@ app/beta/release/
 app/free/release/
 
 app/pro/release/
+
+app/freeBeta/debug/
+
+app/freeBeta/release/
