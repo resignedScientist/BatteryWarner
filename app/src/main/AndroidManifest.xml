@@ -89,5 +89,6 @@
         <service android:name=".services.EnableChargingService" />
         <service android:name=".services.GrantRootService" />
         <service android:name=".services.TogglePowerSavingService" />
+        <service android:name=".services.EventService" />
     </application>
 </manifest>

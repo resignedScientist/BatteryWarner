@@ -13,6 +13,7 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
 /**
@@ -82,6 +83,17 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // start the services
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
+            // show a notification on special events
+            if (!IS_PRO) {
+                NotificationHelper.showEventNotification(
+                        context,
+                        "Indonesian translator searched!",
+                        "Welcome to all new Indonesian app users! :)\n" +
+                                "For giving you the best possible experience with the app I need an Indonesian translator. " +
+                                "He/She will get the pro version of the app for free!",
+                        "Write me an email!"
+                );
+            }
         }
     }
 }

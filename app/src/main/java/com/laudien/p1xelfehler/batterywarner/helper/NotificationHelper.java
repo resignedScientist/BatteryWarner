@@ -20,6 +20,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.SmartChargingActivity;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
+import com.laudien.p1xelfehler.batterywarner.services.EventService;
 import com.laudien.p1xelfehler.batterywarner.services.GrantRootService;
 import com.laudien.p1xelfehler.batterywarner.services.TogglePowerSavingService;
 
@@ -72,6 +73,12 @@ public final class NotificationHelper {
      * Notification id of the notification that tells the user that no alarm was found in the alarm app
      **/
     public static final int ID_NO_ALARM_TIME_FOUND = 1008;
+    /**
+     * Notification id that is shown on certain special events like sales.
+     * It is the only notification that cannot be used with showNotification().
+     * Use showEventNotification() instead!
+     */
+    public static final int ID_EVENT = 1009;
 
     private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
@@ -119,6 +126,31 @@ public final class NotificationHelper {
                     throw new IdNotFoundException();
             }
         }
+    }
+
+    public static void showEventNotification(Context context, String title, String message, String buttonText) {
+        Notification.Builder builder = new Notification.Builder(context)
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setStyle(getBigTextStyle(message))
+                .setContentIntent(getDefaultClickIntent(context))
+                .setAutoCancel(true)
+                .setSound(getDefaultSound())
+                .setVibrate(VIBRATE_PATTERN);
+        if (buttonText != null && !buttonText.equals("")) {
+            Intent buttonIntent = new Intent(context.getApplicationContext(), EventService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(context, ID_EVENT, buttonIntent, 0);
+            builder.addAction(0, buttonText, pendingIntent);
+        }
+        if (SDK_INT >= O) {
+            builder.setChannelId(context.getString(R.string.channel_other_warnings));
+        } else {
+            builder.setPriority(Notification.PRIORITY_DEFAULT);
+        }
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(ID_EVENT, builder.build());
     }
 
     /**
