@@ -24,9 +24,8 @@
         android:textSize="18sp"
         app:layout_parallaxFactor="0.2" />
 
-    <fragment
-        android:id="@+id/fragment_preferences"
-        android:name="com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment"
+    <FrameLayout
+        android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp" />

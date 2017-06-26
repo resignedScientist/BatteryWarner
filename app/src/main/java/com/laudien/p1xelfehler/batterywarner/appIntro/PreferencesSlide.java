@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
@@ -18,7 +19,9 @@ public class PreferencesSlide extends SlideFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.slide_preferences, container, false);
+        View view = inflater.inflate(R.layout.slide_preferences, container, false);
+        getActivity().getFragmentManager().beginTransaction().replace(R.id.container_layout, new SettingsFragment()).commit();
+        return view;
     }
 
     @Override
