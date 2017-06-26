@@ -1,0 +1,4 @@
+<resources>
+    <!-- battery info notification -->
+    <dimen name="info_text_size">14sp</dimen>
+</resources>

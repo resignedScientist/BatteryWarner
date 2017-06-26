@@ -2,6 +2,7 @@
     <!-- battery info notification -->
     <dimen name="text_size_battery_info">16sp</dimen>
     <dimen name="info_notification_padding">16dp</dimen>
+    <dimen name="info_text_size">12sp</dimen>
 
     <!-- preference fragment -->
     <dimen name="preference_fragment_horizontal_padding">0dp</dimen>
