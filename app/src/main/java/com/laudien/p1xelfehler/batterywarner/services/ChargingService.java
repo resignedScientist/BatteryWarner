@@ -152,7 +152,7 @@ public class ChargingService extends Service implements SharedPreferences.OnShar
         if (serviceUseless) {
             stopSelf();
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Nullable

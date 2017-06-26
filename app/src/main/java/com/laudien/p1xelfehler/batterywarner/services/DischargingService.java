@@ -127,7 +127,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
             Notification notification = createNotification();
             startForeground(NOTIFICATION_ID, notification);
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
