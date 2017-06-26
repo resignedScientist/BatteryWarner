@@ -161,7 +161,7 @@ public class BatteryHelper {
         private final String[] values = new String[NUMBER_OF_ITEMS];
         private String technology;
         private int health, batteryLevel;
-        private long current;
+        private int current;
         private double temperature, voltage, screenOn, screenOff;
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
@@ -182,7 +182,7 @@ public class BatteryHelper {
             setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-                setCurrent(batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
+                setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
             }
             setScreenOn(BatteryHelper.getScreenOn(context), context);
             setScreenOff(BatteryHelper.getScreenOff(context), context);
@@ -308,7 +308,7 @@ public class BatteryHelper {
         }
 
         @RequiresApi(api = LOLLIPOP)
-        private void setCurrent(long current, Context context) {
+        private void setCurrent(int current, Context context) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
                 values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / -1000);
