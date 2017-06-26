@@ -87,7 +87,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
             ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
             // show a notification on special events
-            if (!IS_PRO && SDK_INT >= M) {
+            /*if (!IS_PRO && SDK_INT >= M) {
                 Intent emailIntent = new Intent(context.getApplicationContext(), EventService.class);
                 NotificationHelper.showEventNotification(
                         context,
@@ -98,7 +98,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                         "Write me an email!",
                         emailIntent
                 );
-            }
+            }*/
         }
     }
 }

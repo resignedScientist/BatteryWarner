@@ -23,15 +23,15 @@ public class EventService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        /*Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setType("text/plain");
         emailIntent.setData(Uri.parse("mailto:"));
         emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"kontakt@norman-laudien.de"});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Indonesian translation");
         if (emailIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
-            getApplicationContext().startActivity(emailIntent);
+            startActivity(emailIntent);
         } else {
             ToastHelper.sendToast(getApplicationContext(), "No email app found!");
-        }
+        }*/
     }
 }
