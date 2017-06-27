@@ -141,4 +141,11 @@
             android:summary="@string/summary_notifications_off_warning"
             android:title="@string/title_notifications_off_warning" />
     </PreferenceCategory>
+    <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+        android:defaultValue="@integer/pref_info_text_size_default"
+        android:key="@string/pref_info_text_size"
+        android:title="@string/title_info_text_size"
+        app:slider_max="@integer/pref_info_text_size_max"
+        app:slider_min="@integer/pref_info_text_size_min"
+        app:unit="sp" />
 </PreferenceScreen>

@@ -22,6 +22,7 @@
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
     <string name="pref_measure_battery_drain" translatable="false">measureBatteryDrain</string>
+    <string name="pref_info_text_size" translatable="false">infoTextSize</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
@@ -100,6 +101,7 @@
     <string name="title_charging_service">Charging Service</string>
     <string name="title_discharging_service">Discharging Service</string>
     <string name="title_warning_percentage">Warning percentage:</string>
+    <string name="title_info_text_size">Text size of the info notification:</string>
     <!-- other titles -->
     <string name="title_preferences">Settings</string>
     <string name="title_main_page">Main page</string>

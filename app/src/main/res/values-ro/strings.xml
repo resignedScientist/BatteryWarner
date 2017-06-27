@@ -177,4 +177,7 @@
     <string name="uninstall_go">Dezinstaleaz-o!</string>
     <string name="uninstall_text">Aplicaţiile gratuită şi pro sunt instalate! Te rugăm dezinstalează aplicaţia gratuită prima dată!</string>
     <string name="uninstall_title">Dezinstalează aplicaţia gratuită prima dată!</string>
+
+    <!-- new strings -->
+    <string name="title_info_text_size">Text size of the info notification:</string>
 </resources>

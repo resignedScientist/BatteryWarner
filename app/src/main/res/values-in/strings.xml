@@ -177,4 +177,7 @@
     <string name="uninstall_go">Hapus instalasi!</string>
     <string name="uninstall_text">Kedua versi gratis dan pro terpasang! Silahkan hapus instalasi versi gratis terlebih dahulu!</string>
     <string name="uninstall_title">Hapus instalasi versi gratis terlebih dahulu!</string>
+
+    <!-- new strings -->
+    <string name="title_info_text_size">Text size of the info notification:</string>
 </resources>

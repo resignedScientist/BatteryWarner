@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -150,6 +151,10 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         // generate message
         String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
         String message = updateNotificationContent(data);
+        // set text sizes
+        int textSize = sharedPreferences.getInt(getString(R.string.pref_info_text_size), getResources().getInteger(R.integer.pref_info_text_size_default));
+        notificationContent.setTextViewTextSize(R.id.textView_message_left, TypedValue.COMPLEX_UNIT_SP, textSize);
+        notificationContent.setTextViewTextSize(R.id.textView_message_right, TypedValue.COMPLEX_UNIT_SP, textSize);
         // click intent
         Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
         PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, clickIntent, 0);

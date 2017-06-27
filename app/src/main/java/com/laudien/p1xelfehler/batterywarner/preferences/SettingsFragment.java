@@ -37,6 +37,7 @@ import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
@@ -50,7 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
-    private Preference pref_smart_charging, pref_info_notification_items;
+    private Preference pref_smart_charging, pref_info_notification_items, pref_infoTextSize;
     private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
         @Override
         protected void disablePreferences(String preferenceKey) {
@@ -94,6 +95,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_reset_battery_stats = (TwoStatePreference) findPreference(getString(R.string.pref_reset_battery_stats));
         pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
         pref_infoNotificationEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
+        pref_infoTextSize = findPreference(getString(R.string.pref_info_text_size));
 
         Context context = getContext();
         if (context != null) {
@@ -234,6 +236,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getContext();
             if (context != null) {
                 ServiceHelper.restartDischargingService(getContext(), sharedPreferences);
+            }
+        } else if (preference == pref_infoTextSize) {
+            Context context = getContext();
+            if (context != null) {
+                ServiceHelper.startService(context, sharedPreferences, ID_DISCHARGING);
             }
         }
     }

@@ -176,4 +176,7 @@
     <string name="summary_notifications_off_warning">Eine Warnung anzeigen, wenn das Ladegerät angeschlossen wird, der Benachrichtigungs-Ton jedoch deaktiviert ist.</string>
     <string name="summary_graph_autosave">Den Graphen automatisch speichern, sobald das Gerät vollständig geladen oder das Ladekabel entfernt wurde.</string>
     <string name="summary_graph_enabled">Beim Laden eine Ladekurve aufzeichnen.</string>
+
+    <!-- new strings -->
+    <string name="title_info_text_size">Text size of the info notification:</string>
 </resources>
