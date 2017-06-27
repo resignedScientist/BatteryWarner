@@ -1,8 +1,10 @@
 <resources>
     <!-- battery info notification -->
-    <dimen name="text_size_battery_info">16sp</dimen>
     <dimen name="info_notification_padding">16dp</dimen>
     <dimen name="info_text_size">14sp</dimen>
+
+    <!-- info fragment -->
+    <dimen name="info_fragment_text_size">16sp</dimen>
 
     <!-- preference fragment -->
     <dimen name="preference_fragment_horizontal_padding">0dp</dimen>

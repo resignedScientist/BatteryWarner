@@ -13,42 +13,42 @@
             android:id="@+id/textView_technology"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Technologie: Li-Io" />
 
         <TextView
             android:id="@+id/textView_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Temperatur: 25°C" />
 
         <TextView
             android:id="@+id/textView_health"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Gesundheit: OK" />
 
         <TextView
             android:id="@+id/textView_batteryLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Akkustand: 30%" />
 
         <TextView
             android:id="@+id/textView_voltage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Spannung: 3,5V" />
 
         <TextView
             android:id="@+id/textView_current"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
+            android:textSize="@dimen/info_fragment_text_size"
             tools:text="Stromstärke: 1500mAh" />
     </LinearLayout>
 </ScrollView>
