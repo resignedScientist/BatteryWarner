@@ -199,13 +199,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         if (infoNotificationEnabled) {
             String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
             String message = updateNotificationContent(data);
-            if (SDK_INT >= N) {
-                builder.setContentText(message);
-                notificationManager.notify(NOTIFICATION_ID, builder.build());
-            } else {
-                compatBuilder.setContentText(message);
-                notificationManager.notify(NOTIFICATION_ID, compatBuilder.build());
-            }
+            Notification notification = SDK_INT >= N ? builder.setContentText(message).build() : compatBuilder.setContentText(message).build();
+            notificationManager.notify(NOTIFICATION_ID, notification);
         }
     }
 
