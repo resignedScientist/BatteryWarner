@@ -3,15 +3,12 @@ package com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivi
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
-
-import java.util.Locale;
 
 public class InfoNotificationFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
@@ -22,16 +19,6 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
         Context context = getActivity();
         if (context != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
-            if (!measureBatteryDrainEnabled) {
-                String summary = String.format(Locale.getDefault(), "'%s' %s", getString(R.string.title_measure_battery_drain), getString(R.string.summary_dependency));
-                Preference pref_screenOn = findPreference(getString(R.string.pref_info_screen_on));
-                pref_screenOn.setEnabled(false);
-                pref_screenOn.setSummary(summary);
-                Preference pref_screenOff = findPreference(getString(R.string.pref_info_screen_off));
-                pref_screenOff.setEnabled(false);
-                pref_screenOff.setSummary(summary);
-            }
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         }
     }

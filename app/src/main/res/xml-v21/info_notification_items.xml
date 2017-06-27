@@ -24,12 +24,4 @@
         android:defaultValue="@bool/pref_info_current_default"
         android:key="@string/pref_info_current"
         android:title="@string/info_current" />
-    <SwitchPreference
-        android:defaultValue="@bool/pref_info_screen_on_default"
-        android:key="@string/pref_info_screen_on"
-        android:title="@string/info_screen_on" />
-    <SwitchPreference
-        android:defaultValue="@bool/pref_info_screen_off_default"
-        android:key="@string/pref_info_screen_off"
-        android:title="@string/info_screen_off" />
 </PreferenceScreen>

@@ -47,7 +47,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave, pref_warningHighEnabled, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_infoNotificationEnabled,
-            pref_usb_disabled, pref_stopCharging, pref_power_saving_mode, pref_measureBatteryDrain,
+            pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
             pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items;
@@ -94,7 +94,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_reset_battery_stats = (TwoStatePreference) findPreference(getString(R.string.pref_reset_battery_stats));
         pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
         pref_infoNotificationEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
-        pref_measureBatteryDrain = (TwoStatePreference) findPreference(getString(R.string.pref_measure_battery_drain));
 
         Context context = getContext();
         if (context != null) {
@@ -231,13 +230,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null) {
                 ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
             }
-        } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled || preference == pref_measureBatteryDrain) {
+        } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
             if (context != null) {
                 ServiceHelper.restartDischargingService(getContext(), sharedPreferences);
-            }
-            if (preference == pref_measureBatteryDrain) {
-                setInfoNotificationSubtitle(sharedPreferences);
             }
         }
     }
@@ -261,12 +257,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             enabledItems.add(getString(R.string.info_voltage));
         if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default)))
             enabledItems.add(getString(R.string.info_current));
-        if (sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default))) {
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_on), getResources().getBoolean(R.bool.pref_info_screen_on_default)))
-                enabledItems.add(getString(R.string.info_screen_on));
-            if (sharedPreferences.getBoolean(getString(R.string.pref_info_screen_off), getResources().getBoolean(R.bool.pref_info_screen_off_default)))
-                enabledItems.add(getString(R.string.info_screen_off));
-        }
         if (!enabledItems.isEmpty()) {
             String summary = enabledItems.get(0);
             for (byte i = 0; i < enabledItems.size(); i++) {

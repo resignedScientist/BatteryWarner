@@ -94,11 +94,6 @@
             android:key="@string/pref_power_saving_mode"
             android:summary="@string/summary_power_saving_mode"
             android:title="@string/title_power_saving_mode" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_measure_battery_drain_default"
-            android:key="@string/pref_measure_battery_drain"
-            android:summary="@string/summary_measure_battery_drain"
-            android:title="@string/title_measure_battery_drain" />
     </PreferenceCategory>
     <PreferenceCategory
         android:dependency="@string/pref_charging_service_enabled"

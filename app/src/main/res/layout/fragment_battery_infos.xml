@@ -50,19 +50,5 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_battery_info"
             tools:text="Stromstärke: 1500mAh" />
-
-        <TextView
-            android:id="@+id/textView_screenOn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
-            tools:text="Screen on: 33,33 %/h" />
-
-        <TextView
-            android:id="@+id/textView_screenOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_battery_info"
-            tools:text="Screen off: 33,33 %/h" />
     </LinearLayout>
 </ScrollView>

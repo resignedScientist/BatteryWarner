@@ -12,7 +12,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
 import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
 import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
@@ -37,8 +36,8 @@ public class BatteryHelper {
     /**
      * Returns existing or creates new BatteryData object with filling in the data and returns it.
      *
-     * @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
-     * @param context           An instance of the Context class.
+     * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+     * @param context       An instance of the Context class.
      * @return The singleton object of BatteryData.
      */
     public static BatteryData getBatteryData(Intent batteryStatus, Context context) {
@@ -98,48 +97,6 @@ public class BatteryHelper {
     }
 
     /**
-     * Calculates the screen-on percentage with the values in the sharedPreferences.
-     * The values were written by the DischargingService.
-     *
-     * @param context An instance of the Context class.
-     * @return The battery percentage loss per hour when the screen is on.
-     * Returns 0.0 if there is not enough data yet.
-     */
-    private static double getScreenOn(Context context) {
-        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
-        long screenOnTime = temporaryPrefs.getLong(context.getString(R.string.value_time_screen_on), 0);
-        int screenOnDrain = temporaryPrefs.getInt(context.getString(R.string.value_drain_screen_on), 0);
-        double screenOnTimeInHours = (double) screenOnTime / 3600000;
-        double screenOnPercentPerHour = screenOnDrain / screenOnTimeInHours;
-        if (screenOnPercentPerHour != 0.0 && !Double.isInfinite(screenOnPercentPerHour) && !Double.isNaN(screenOnPercentPerHour)) {
-            return screenOnDrain / screenOnTimeInHours;
-        } else {
-            return 0.0;
-        }
-    }
-
-    /**
-     * Calculates the screen-off percentage with the values in the sharedPreferences.
-     * The values were written by the DischargingService.
-     *
-     * @param context An instance of the Context class.
-     * @return The battery percentage loss per hour when the screen is off.
-     * Returns 0.0 if there is not enough data yet.
-     */
-    private static double getScreenOff(Context context) {
-        SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
-        long screenOffTime = temporaryPrefs.getLong(context.getString(R.string.value_time_screen_off), 0);
-        int screenOffDrain = temporaryPrefs.getInt(context.getString(R.string.value_drain_screen_off), 0);
-        double screenOffTimeInHours = (double) screenOffTime / 3600000;
-        double screenOffPercentPerHour = screenOffDrain / screenOffTimeInHours;
-        if (screenOffPercentPerHour != 0.0 && !Double.isInfinite(screenOffPercentPerHour) && !Double.isNaN(screenOffPercentPerHour)) {
-            return screenOffPercentPerHour;
-        } else {
-            return 0.0;
-        }
-    }
-
-    /**
      * This class holds all the data that can be shown in the BatteryInfoFragment or the info
      * notification (or else where if needed). You can set an OnBatteryValueChangedListener
      * that notifies you when the data was changed with one of the setters. It will only be called
@@ -155,14 +112,12 @@ public class BatteryHelper {
         public static final int INDEX_BATTERY_LEVEL = 3;
         public static final int INDEX_VOLTAGE = 4;
         public static final int INDEX_CURRENT = 5;
-        public static final int INDEX_SCREEN_ON = 6;
-        public static final int INDEX_SCREEN_OFF = 7;
-        private static final int NUMBER_OF_ITEMS = 8;
+        private static final int NUMBER_OF_ITEMS = 6;
         private final String[] values = new String[NUMBER_OF_ITEMS];
         private String technology;
         private int health, batteryLevel;
         private int current;
-        private double temperature, voltage, screenOn, screenOff;
+        private double temperature, voltage;
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
         private BatteryData(Intent batteryStatus, Context context) {
@@ -171,8 +126,9 @@ public class BatteryHelper {
 
         /**
          * Updates all the data that is in the batteryStatus intent and the SharedPreferences given.
-         *  @param batteryStatus     Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
-         * @param context           An instance of the Context class.
+         *
+         * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
+         * @param context       An instance of the Context class.
          */
         public void update(Intent batteryStatus, Context context) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
@@ -184,8 +140,6 @@ public class BatteryHelper {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
             }
-            setScreenOn(BatteryHelper.getScreenOn(context), context);
-            setScreenOff(BatteryHelper.getScreenOff(context), context);
         }
 
         /**
@@ -209,15 +163,12 @@ public class BatteryHelper {
          */
         public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
             boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
-            boolean measureBatteryDrainEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_measure_battery_drain), context.getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
             enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
             enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
             enabledBooleans[INDEX_HEALTH] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_health), context.getResources().getBoolean(R.bool.pref_info_health_default));
             enabledBooleans[INDEX_BATTERY_LEVEL] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_battery_level), context.getResources().getBoolean(R.bool.pref_info_battery_level_default));
             enabledBooleans[INDEX_VOLTAGE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_voltage), context.getResources().getBoolean(R.bool.pref_info_voltage_default));
             enabledBooleans[INDEX_CURRENT] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_current), context.getResources().getBoolean(R.bool.pref_info_current_default));
-            enabledBooleans[INDEX_SCREEN_ON] = measureBatteryDrainEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_on), context.getResources().getBoolean(R.bool.pref_info_screen_on_default));
-            enabledBooleans[INDEX_SCREEN_OFF] = measureBatteryDrainEnabled && sharedPreferences.getBoolean(context.getString(R.string.pref_info_screen_off), context.getResources().getBoolean(R.bool.pref_info_screen_off_default));
             // add enabled strings to array
             String[] enabledValues = new String[NUMBER_OF_ITEMS];
             byte count = 0;
@@ -329,30 +280,6 @@ public class BatteryHelper {
                 this.voltage = voltage;
                 values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.info_voltage) + ": %.3f V", voltage);
                 notifyListeners(INDEX_VOLTAGE);
-            }
-        }
-
-        private void setScreenOn(double screenOn, Context context) {
-            if (this.screenOn != screenOn || values[INDEX_SCREEN_ON] == null) {
-                this.screenOn = screenOn;
-                if (screenOn == 0.0) {
-                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.info_screen_on), "N/A");
-                } else {
-                    values[INDEX_SCREEN_ON] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.info_screen_on), screenOn);
-                }
-                notifyListeners(INDEX_SCREEN_ON);
-            }
-        }
-
-        private void setScreenOff(double screenOff, Context context) {
-            if (this.screenOff != screenOff || values[INDEX_SCREEN_OFF] == null) {
-                this.screenOff = screenOff;
-                if (screenOff == 0.0) {
-                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %s %%/h", context.getString(R.string.info_screen_off), "N/A");
-                } else {
-                    values[INDEX_SCREEN_OFF] = String.format(Locale.getDefault(), "%s: %.2f %%/h", context.getString(R.string.info_screen_off), screenOff);
-                }
-                notifyListeners(INDEX_SCREEN_OFF);
             }
         }
 

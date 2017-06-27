@@ -11,8 +11,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -69,15 +67,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     private boolean alreadyNotified = false;
     private boolean warningLowEnabled;
     private boolean infoNotificationEnabled;
-    private boolean isScreenOn;
-    private boolean measureBatteryDrainEnabled;
     private int warningLow;
-    private int lastChangedPercentage = -1;
-    private int screenOnDrain;
-    private int screenOffDrain;
-    private long screenOnTime;
-    private long screenOffTime;
-    private long lastChangedTime = SystemClock.uptimeMillis();
 
     @Nullable
     @Override
@@ -89,15 +79,8 @@ public class DischargingService extends Service implements SharedPreferences.OnS
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(getClass().getSimpleName(), "Starting service...");
         if (batteryChangedReceiver == null) {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            isScreenOn = SDK_INT >= LOLLIPOP ? powerManager.isInteractive() : powerManager.isScreenOn();
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             temporaryPrefs = getSharedPreferences(getString(R.string.prefs_temporary), MODE_PRIVATE);
-            screenOnTime = temporaryPrefs.getLong(getString(R.string.value_time_screen_on), 0);
-            screenOffTime = temporaryPrefs.getLong(getString(R.string.value_time_screen_off), 0);
-            screenOnDrain = temporaryPrefs.getInt(getString(R.string.value_drain_screen_on), 0);
-            screenOffDrain = temporaryPrefs.getInt(getString(R.string.value_drain_screen_off), 0);
-            measureBatteryDrainEnabled = sharedPreferences.getBoolean(getString(R.string.pref_measure_battery_drain), getResources().getBoolean(R.bool.pref_measure_battery_drain_default));
             warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
             warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
             notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -145,14 +128,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.value_drain_screen_on))) { // reset of measured drain
-            if (sharedPreferences.getInt(key, 0) == 0) {
-                screenOnDrain = 0;
-                screenOffDrain = 0;
-                lastChangedPercentage = -1;
-                lastChangedTime = SystemClock.uptimeMillis();
-            }
-        } else if (key.equals(getString(R.string.pref_warning_low))) {
+        if (key.equals(getString(R.string.pref_warning_low))) {
             warningLow = sharedPreferences.getInt(key, getResources().getInteger(R.integer.pref_warning_low_default));
         } else if (key.equals(getString(R.string.pref_warning_low_enabled))) {
             warningLowEnabled = sharedPreferences.getBoolean(key, getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
@@ -244,7 +220,7 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 }
                 notificationContent.setTextViewText(R.id.textView_message_left, message);
                 return message;
-            } else {
+            } else { // more then 3 items
                 String message_left = data[0], message_right = data[1];
                 for (byte i = 2; i < data.length; i++) {
                     if (i % 2 == 0) {
@@ -279,22 +255,6 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                         alreadyNotified = true;
                         NotificationHelper.showNotification(getApplicationContext(), ID_WARNING_LOW);
                     }
-                }
-            }
-            // measure battery drain
-            if (!isCharging && measureBatteryDrainEnabled) {
-                if (lastChangedPercentage == -1) {
-                    lastChangedPercentage = batteryLevel;
-                } else if (lastChangedPercentage != batteryLevel) { // lastChangedPercentage is not -1 and battery level has changed
-                    int percentageDiff = lastChangedPercentage - batteryLevel;
-                    if (isScreenOn) { // screen on
-                        screenOnDrain += percentageDiff;
-                        temporaryPrefs.edit().putInt(getString(R.string.value_drain_screen_on), screenOnDrain).apply();
-                    } else { // screen off
-                        screenOffDrain += percentageDiff;
-                        temporaryPrefs.edit().putInt(getString(R.string.value_drain_screen_off), screenOffDrain).apply();
-                    }
-                    lastChangedPercentage = batteryLevel;
                 }
             }
         }
@@ -343,8 +303,6 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                     ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
                     break;
                 case ACTION_POWER_DISCONNECTED:
-                    lastChangedPercentage = -1;
-                    lastChangedTime = SystemClock.uptimeMillis();
                     boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -365,36 +323,11 @@ public class DischargingService extends Service implements SharedPreferences.OnS
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ACTION_SCREEN_ON)) {  // screen on
-                isScreenOn = true;
                 Log.d(DischargingService.class.getSimpleName(), "screen on received!");
-                if (measureBatteryDrainEnabled) {
-                    batteryData.registerOnBatteryValueChangedListener(onBatteryValueChangedListener);
-                } else {
-                    registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                }
-                if (measureBatteryDrainEnabled) {
-                    long timeNow = SystemClock.uptimeMillis();
-                    long timeDiff = timeNow - lastChangedTime;
-                    screenOffTime += timeDiff;
-                    temporaryPrefs.edit().putLong(getString(R.string.value_time_screen_off), screenOffTime).apply();
-                    lastChangedTime = timeNow;
-
-                }
+                registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             } else if (action.equals(ACTION_SCREEN_OFF)) { // screen off
-                isScreenOn = false;
                 Log.d(DischargingService.class.getSimpleName(), "screen off received!");
-                if (measureBatteryDrainEnabled) {
-                    batteryData.unregisterOnBatteryValueChangedListener(onBatteryValueChangedListener);
-                } else {
-                    unregisterReceiver(batteryChangedReceiver);
-                }
-                if (measureBatteryDrainEnabled) {
-                    long timeNow = SystemClock.uptimeMillis();
-                    long timeDiff = timeNow - lastChangedTime;
-                    screenOnTime += timeDiff;
-                    temporaryPrefs.edit().putLong(getString(R.string.value_time_screen_on), screenOnTime).apply();
-                    lastChangedTime = timeNow;
-                }
+                unregisterReceiver(batteryChangedReceiver);
             }
         }
     }
