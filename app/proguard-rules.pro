@@ -15,5 +15,4 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontwarn android.**
--keep public class com.laudien.p1xelfehler.batterywarner.**
+-keep class com.laudien.p1xelfehler.batterywarner.**
