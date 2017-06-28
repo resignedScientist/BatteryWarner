@@ -19,6 +19,7 @@
 # Battery Warner itself
 -keep class com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment { *; }
 -keep class com.laudien.p1xelfehler.batterywarner.fragments.OnOffButtonFragment { *; }
+-keep class com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment { *; }
 
 # Material Intro Screen
 -keep class agency.tango.materialintroscreen.animations.ViewTranslationWrapper { *; }
