@@ -15,5 +15,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keep class com.laudien.p1xelfehler.batterywarner.**
+
+# Battery Warner itself
+-keep class com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment { *; }
+-keep class com.laudien.p1xelfehler.batterywarner.fragments.OnOffButtonFragment { *; }
+
+# Material Intro Screen
 -keep class agency.tango.materialintroscreen.animations.ViewTranslationWrapper { *; }
