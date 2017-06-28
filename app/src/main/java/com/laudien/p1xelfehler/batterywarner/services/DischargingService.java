@@ -327,7 +327,11 @@ public class DischargingService extends Service implements SharedPreferences.OnS
                 registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             } else if (action.equals(ACTION_SCREEN_OFF)) { // screen off
                 Log.d(DischargingService.class.getSimpleName(), "screen off received!");
-                unregisterReceiver(batteryChangedReceiver);
+                try { // crash workaround for some devices
+                    unregisterReceiver(null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
