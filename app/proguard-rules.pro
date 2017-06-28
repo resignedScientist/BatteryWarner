@@ -16,3 +16,4 @@
 #   public *;
 #}
 -keep class com.laudien.p1xelfehler.batterywarner.**
+-keep class agency.tango.materialintroscreen.animations.ViewTranslationWrapper { *; }
