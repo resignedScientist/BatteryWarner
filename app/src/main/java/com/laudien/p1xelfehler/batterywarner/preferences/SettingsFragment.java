@@ -36,8 +36,6 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
-import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
@@ -194,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (highChecked) {
                 Context context = getContext();
                 if (context != null) {
-                    ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                    ServiceHelper.startService(context, sharedPreferences);
                 }
             }
         } else if (preference == pref_graphEnabled) {
@@ -202,7 +200,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_autoSave.setEnabled(checked);
             Context context = getContext();
             if (context != null && checked) {
-                ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                ServiceHelper.startService(context, sharedPreferences);
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode || preference == pref_reset_battery_stats) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
@@ -221,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getContext();
             if (context != null) {
                 if (pref_chargingService.isChecked()) {
-                    ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                    ServiceHelper.startService(context, sharedPreferences);
                 }
                 setInfoNotificationSubtitle(sharedPreferences);
             }
@@ -230,7 +228,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.startService(context, sharedPreferences, ID_CHARGING);
+                ServiceHelper.startService(context, sharedPreferences);
             }
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
@@ -240,7 +238,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else if (preference == pref_infoTextSize) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.startService(context, sharedPreferences, ID_DISCHARGING);
+                ServiceHelper.startService(context, sharedPreferences);
             }
         }
     }

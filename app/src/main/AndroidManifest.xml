@@ -83,8 +83,7 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-        <service android:name=".services.ChargingService" />
-        <service android:name=".services.DischargingService" />
+        <service android:name=".services.BackgroundService" />
         <service android:name=".services.DisableRootFeaturesService" />
         <service android:name=".services.EnableChargingService" />
         <service android:name=".services.GrantRootService" />

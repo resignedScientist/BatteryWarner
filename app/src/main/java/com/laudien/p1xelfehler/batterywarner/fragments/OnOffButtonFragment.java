@@ -53,8 +53,7 @@ public class OnOffButtonFragment extends Fragment implements CompoundButton.OnCh
         sharedPreferences.edit().putBoolean(getString(R.string.pref_is_enabled), isChecked).apply();
         if (isChecked) { // turned on
             // start services
-            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_CHARGING);
-            ServiceHelper.startService(context, sharedPreferences, ServiceHelper.ID_DISCHARGING);
+            ServiceHelper.startService(context, sharedPreferences);
             // show toast
             ToastHelper.sendToast(context, R.string.toast_successfully_enabled, LENGTH_SHORT);
         } else { // turned off
