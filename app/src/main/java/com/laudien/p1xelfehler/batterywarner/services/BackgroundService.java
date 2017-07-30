@@ -325,9 +325,10 @@ public class BackgroundService extends Service {
                 lastBatteryLevel = -1;
                 alreadyNotified = false;
                 if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
+                    notificationManager.cancel(NOTIFICATION_ID_WARNING);
                     onStartCharging();
-                } else {
-                    onStopCharging();
+                } else if (!chargingPausedBySmartCharging) {
+                    notificationManager.cancel(NOTIFICATION_ID_WARNING);
                 }
             }
         }
@@ -342,11 +343,6 @@ public class BackgroundService extends Service {
             // reset smart charging
             chargingPausedBySmartCharging = false;
             chargingResumedBySmartCharging = false;
-        }
-
-        // device stopped charging (for whatever reason)
-        private void onStopCharging() {
-
         }
 
         private void handleCharging(Intent intent) {
