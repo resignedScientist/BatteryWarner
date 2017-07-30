@@ -56,6 +56,7 @@ public class BackgroundService extends Service {
     private int lastBatteryLevel = -1;
     private GraphDbHelper graphDbHelper;
     private boolean alreadyNotified = false;
+    private long smartChargingResumeTime;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
@@ -83,6 +84,16 @@ public class BackgroundService extends Service {
     public void onCreate() {
         super.onCreate();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+                if (s.equals(getString(R.string.pref_smart_charging_time_before))
+                        || s.equals(getString(R.string.pref_smart_charging_time))
+                        || s.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
+                    smartChargingResumeTime = getSmartChargingResumeTime();
+                }
+            }
+        });
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
@@ -392,7 +403,9 @@ public class BackgroundService extends Service {
             if (chargingPausedBySmartCharging) {
                 if (!chargingResumedBySmartCharging) {
                     chargingResumedBySmartCharging = true;
-                    long smartChargingResumeTime = getSmartChargingResumeTime();
+                    if (smartChargingResumeTime == 0) {
+                        smartChargingResumeTime = getSmartChargingResumeTime();
+                    }
                     if (timeNow >= smartChargingResumeTime) {
                         // add a graph point for optics/correctness
                         if (graphEnabled) {
