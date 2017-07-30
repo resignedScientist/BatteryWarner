@@ -8,7 +8,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 /**
@@ -29,7 +28,6 @@ public class EnableChargingService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         try {
             RootHelper.enableCharging();
-            NotificationHelper.cancelNotification(EnableChargingService.this, ID_STOP_CHARGING);
         } catch (RootHelper.NotRootedException e) {
             NotificationHelper.showNotification(EnableChargingService.this, ID_NOT_ROOTED);
             e.printStackTrace();

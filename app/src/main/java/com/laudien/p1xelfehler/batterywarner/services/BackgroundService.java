@@ -80,22 +80,30 @@ public class BackgroundService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         intentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
         intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, intentFilter);
-        // battery info notification
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         batteryData = BatteryHelper.getBatteryData(batteryChangedIntent, this);
-        String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
-        infoNotificationContent = buildInfoNotificationContent(data);
-        String message = buildInfoNotificationMessage(data);
-        Notification infoNotification = buildInfoNotification(infoNotificationContent, message);
-        startForeground(NOTIFICATION_ID_INFO, infoNotification);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // battery info notification
+        boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        if (infoNotificationEnabled) {
+            String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
+            infoNotificationContent = buildInfoNotificationContent(data);
+            String message = buildInfoNotificationMessage(data);
+            Notification infoNotification = buildInfoNotification(infoNotificationContent, message);
+            startForeground(NOTIFICATION_ID_INFO, infoNotification);
+        }
         return START_STICKY;
     }
 
@@ -277,7 +285,7 @@ public class BackgroundService extends Service {
     private long getSmartChargingResumeTime() {
         long alarmTime; // the target time the device should be charged to the defined maximum
         boolean smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
-        long smartChargingMinutes = sharedPreferences.getLong(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
+        int smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
         if (SDK_INT >= LOLLIPOP && smartChargingUseClock) { // use alarm clock
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
             AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
@@ -419,8 +427,8 @@ public class BackgroundService extends Service {
         }
 
         private void refreshInfoNotification(Intent intent) {
+            batteryData.update(intent, BackgroundService.this);
             if (infoNotificationBuilder != null) {
-                batteryData.update(intent, BackgroundService.this);
                 String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
                 infoNotificationContent = buildInfoNotificationContent(data);
                 infoNotificationMessage = buildInfoNotificationMessage(data);
