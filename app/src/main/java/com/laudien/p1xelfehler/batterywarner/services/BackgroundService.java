@@ -17,7 +17,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -238,7 +237,7 @@ public class BackgroundService extends Service {
         return builder.build();
     }
 
-    private Notification buildWarningLowNotification(int warningLow) {
+    private Notification buildWarningLowNotification(int warningLow, boolean showPowerSaving) {
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_low), warningLow);
         Notification.Builder builder = new Notification.Builder(BackgroundService.this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -254,10 +253,10 @@ public class BackgroundService extends Service {
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
-        if (SDK_INT >= LOLLIPOP && RootHelper.isRootAvailable()) {
-            Intent exitPowerSaveIntent = new Intent(BackgroundService.this, TogglePowerSavingService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(BackgroundService.this, 0, exitPowerSaveIntent, 0);
-            builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, BackgroundService.this.getString(R.string.notification_button_toggle_power_saving), pendingIntent);
+        if (showPowerSaving) {
+            Intent exitPowerSaveIntent = new Intent(this, TogglePowerSavingService.class);
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, exitPowerSaveIntent, 0);
+            builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_toggle_power_saving), pendingIntent);
         }
         return builder.build();
     }
@@ -271,20 +270,6 @@ public class BackgroundService extends Service {
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
                     NotificationHelper.showNotification(BackgroundService.this, NotificationHelper.ID_NOT_ROOTED);
-                }
-            }
-        });
-    }
-
-    private void enablePowerSavingMode() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RootHelper.togglePowerSavingMode(true);
-                } catch (RootHelper.NotRootedException e) {
-                    e.printStackTrace();
-                    NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
                 }
             }
         });
@@ -336,9 +321,9 @@ public class BackgroundService extends Service {
                     handleDischarging(intent);
                 }
                 refreshInfoNotification(intent);
-            } else {
-                alreadyNotified = false;
+            } else { // started or stopped charging
                 lastBatteryLevel = -1;
+                alreadyNotified = false;
                 if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
                     onStartCharging();
                 } else {
@@ -373,20 +358,20 @@ public class BackgroundService extends Service {
             // battery level changed
             if (batteryLevel != lastBatteryLevel) {
                 lastBatteryLevel = batteryLevel;
+                // add a value to the database
+                if (graphEnabled) {
+                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                }
                 int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
                 if (batteryLevel >= warningHigh) {
                     lastBatteryLevel = batteryLevel;
-                    // add a value to the database
-                    if (graphEnabled) {
-                        graphDbHelper.addValue(timeNow, batteryLevel, temperature);
-                    }
                     if (!chargingResumedBySmartCharging) {
-                        boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
                         boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
                         // show warning high notification
-                        if (warningHighEnabled) {
-                            if (!alreadyNotified) {
-                                alreadyNotified = true;
+                        if (!alreadyNotified) {
+                            alreadyNotified = true;
+                            boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+                            if (warningHighEnabled) {
                                 showWarningHighNotification();
                             }
                         }
@@ -426,12 +411,12 @@ public class BackgroundService extends Service {
         private void handleDischarging(Intent intent) {
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             if (batteryLevel != lastBatteryLevel) {
+                lastBatteryLevel = batteryLevel;
                 // show warning low notification
                 if (!alreadyNotified) {
-                    alreadyNotified = true;
-                    lastBatteryLevel = batteryLevel;
                     int warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
                     if (batteryLevel <= warningLow) {
+                        alreadyNotified = true;
                         showWarningLowNotification(warningLow);
                     }
                 }
@@ -444,7 +429,7 @@ public class BackgroundService extends Service {
                 String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
                 infoNotificationContent = buildInfoNotificationContent(data);
                 infoNotificationMessage = buildInfoNotificationMessage(data);
-                Log.d(getClass().getSimpleName(), "Message: " + infoNotificationMessage);
+                //Log.d(getClass().getSimpleName(), "Message: " + infoNotificationMessage);
                 Notification notification;
                 if (infoNotificationBuilder instanceof Notification.Builder) {
                     Notification.Builder builder = ((Notification.Builder) infoNotificationBuilder)
@@ -515,22 +500,24 @@ public class BackgroundService extends Service {
         }
 
         private void showWarningLowNotification(final int warningLow) {
-            if (SDK_INT >= LOLLIPOP) {
-                boolean enablePowerSavingMode = sharedPreferences.getBoolean(getString(R.string.pref_power_saving_mode), getResources().getBoolean(R.bool.pref_power_saving_mode_default));
-                if (enablePowerSavingMode) {
-                    enablePowerSavingMode();
-                }
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Notification notification = buildWarningLowNotification(warningLow);
-                        notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    boolean showPowerSaving = SDK_INT >= LOLLIPOP && RootHelper.isRootAvailable();
+                    Notification notification = buildWarningLowNotification(warningLow, showPowerSaving);
+                    notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
+                    // enable power saving mode
+                    if (showPowerSaving) {
+                        boolean enablePowerSaving = sharedPreferences.getBoolean(getString(R.string.pref_power_saving_mode), getResources().getBoolean(R.bool.pref_power_saving_mode_default));
+                        if (enablePowerSaving) {
+                            try {
+                                RootHelper.togglePowerSavingMode(true);
+                            } catch (RootHelper.NotRootedException ignored) {
+                            } // cannot happen!
+                        }
                     }
-                });
-            } else {
-                Notification notification = buildWarningLowNotification(warningLow);
-                notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
-            }
+                }
+            });
         }
     }
 }
