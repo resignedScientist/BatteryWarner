@@ -388,13 +388,13 @@ public class BackgroundService extends Service {
                             if (warningHighEnabled) {
                                 showWarningHighNotification();
                             }
-                        }
-                        // stop charging and smart charging
-                        if (stopChargingEnabled) {
-                            if (smartChargingEnabled) {
-                                chargingPausedBySmartCharging = true;
+                            // stop charging
+                            if (stopChargingEnabled) {
+                                if (smartChargingEnabled) {
+                                    chargingPausedBySmartCharging = true;
+                                }
+                                stopCharging(true);
                             }
-                            stopCharging(true);
                         }
                     }
                 }
