@@ -221,7 +221,7 @@ public class BackgroundService extends Service {
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_high), warningHigh);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Battery Warning") // TODO: replace with string resource
+                .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(this))
@@ -233,7 +233,6 @@ public class BackgroundService extends Service {
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
-        // return notification
         return builder.build();
     }
 
