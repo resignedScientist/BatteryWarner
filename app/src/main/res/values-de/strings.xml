@@ -178,6 +178,7 @@
     <string name="uninstall_go">Deinstallieren!</string>
     <string name="uninstall_text">Sowohl die Pro als auch die kostenlose Version der App sind installiert. Bitte deinstalliere die kostenlose App!</string>
     <string name="uninstall_title">Kostenlose Version deinstallieren!</string>
+    <string name="notification_button_enable_usb_charging">USB-Laden aktivieren</string>
 
     <!-- new strings -->
 </resources>

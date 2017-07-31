@@ -179,4 +179,5 @@
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="title_info_text_size">Text size of the info notification:</string>
+    <string name="notification_button_enable_usb_charging">Enable usb charging</string>
 </resources>

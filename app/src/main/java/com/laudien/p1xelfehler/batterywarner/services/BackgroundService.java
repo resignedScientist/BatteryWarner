@@ -221,7 +221,7 @@ public class BackgroundService extends Service {
         }
     }
 
-    private Notification buildStopChargingNotification(boolean enableSound) {
+    private Notification buildStopChargingNotification(boolean enableSound, boolean showUsbButton) {
         PendingIntent pendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING,
                 new Intent(this, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
         String messageText = getString(R.string.notification_charging_disabled);
@@ -240,6 +240,13 @@ public class BackgroundService extends Service {
             if (enableSound) {
                 builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
             }
+        }
+        if (showUsbButton) {
+            Intent usbIntent = new Intent(this, EnableChargingService.class);
+            usbIntent.setAction(EnableChargingService.ACTION_ENABLE_USB_CHARGING);
+            PendingIntent usbPendingIntent = PendingIntent.getService(this,
+                    NOTIFICATION_ID_WARNING, usbIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_usb_charging), usbPendingIntent);
         }
         return builder.build();
     }
@@ -377,7 +384,7 @@ public class BackgroundService extends Service {
                         // handle charging
                         handleCharging(intent);
                     } else { // charging not allowed
-                        stopCharging(false);
+                        stopCharging(false, true);
                     }
                 } else { // discharging
                     handleDischarging(intent);
@@ -438,7 +445,7 @@ public class BackgroundService extends Service {
                                 if (smartChargingEnabled) {
                                     chargingPausedBySmartCharging = true;
                                 }
-                                stopCharging(warningEnabled);
+                                stopCharging(warningEnabled, false);
                                 // show warning high notification
                             } else if (warningEnabled) {
                                 showWarningHighNotification();
@@ -464,7 +471,7 @@ public class BackgroundService extends Service {
                 } else { // charging already resumed
                     int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
                     if (batteryLevel >= smartChargingLimit) {
-                        stopCharging(true);
+                        stopCharging(true, false);
                         chargingPausedBySmartCharging = false;
                         chargingResumedBySmartCharging = false;
                     }
@@ -508,13 +515,13 @@ public class BackgroundService extends Service {
             }
         }
 
-        private void stopCharging(final boolean enableSound) {
+        private void stopCharging(final boolean enableSound, final boolean showEnableUsbButton) {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         RootHelper.disableCharging();
-                        Notification stopChargingNotification = buildStopChargingNotification(enableSound);
+                        Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
                         notificationManager.notify(NOTIFICATION_ID_WARNING, stopChargingNotification);
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
