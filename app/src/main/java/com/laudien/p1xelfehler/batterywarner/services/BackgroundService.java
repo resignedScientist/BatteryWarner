@@ -458,7 +458,7 @@ public class BackgroundService extends Service {
                 } else { // charging already resumed
                     int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
                     if (batteryLevel >= smartChargingLimit) {
-                        stopCharging(false);
+                        stopCharging(true);
                         chargingPausedBySmartCharging = false;
                         chargingResumedBySmartCharging = false;
                     }
