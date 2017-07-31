@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -199,6 +200,11 @@ public class BackgroundService extends Service {
                 infoNotificationContent.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
             }
         }
+        // set text sizes
+        int textSize = sharedPreferences.getInt(getString(R.string.pref_info_text_size), getResources().getInteger(R.integer.pref_info_text_size_default));
+        infoNotificationContent.setTextViewTextSize(R.id.textView_message_left, TypedValue.COMPLEX_UNIT_SP, textSize);
+        infoNotificationContent.setTextViewTextSize(R.id.textView_message_right, TypedValue.COMPLEX_UNIT_SP, textSize);
+        // generate info text
         if (data != null && data.length > 0) {
             if (data.length <= 3) {
                 infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
