@@ -327,6 +327,25 @@ public class BackgroundService extends Service {
         return resumeTime;
     }
 
+    private boolean isWarningSoundEnabled(Intent batteryIntent) {
+        boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        if (!warningHighEnabled) {
+            return false;
+        } else {
+            int chargingType = batteryIntent.getIntExtra(EXTRA_PLUGGED, -1);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
+                case BatteryManager.BATTERY_PLUGGED_USB:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+                default: // discharging or unknown charging type
+                    return false;
+            }
+        }
+    }
+
     private class BatteryChangedReceiver extends BroadcastReceiver {
 
         @Override
@@ -344,15 +363,19 @@ public class BackgroundService extends Service {
                 alreadyNotified = false;
                 if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
                     notificationManager.cancel(NOTIFICATION_ID_WARNING);
-                    onStartCharging();
+                    if (!chargingResumedBySmartCharging) {
+                        resetGraphAndSmartCharging();
+                    }
                 } else if (!chargingPausedBySmartCharging) {
                     notificationManager.cancel(NOTIFICATION_ID_WARNING);
+                    if (chargingResumedBySmartCharging) {
+                        resetGraphAndSmartCharging();
+                    }
                 }
             }
         }
 
-        // device started charging (for whatever reason)
-        private void onStartCharging() {
+        private void resetGraphAndSmartCharging() {
             // reset graph
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
@@ -378,22 +401,25 @@ public class BackgroundService extends Service {
                 }
                 int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
                 if (batteryLevel >= warningHigh) {
-                    lastBatteryLevel = batteryLevel;
                     if (!chargingResumedBySmartCharging) {
                         boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
-                        // show warning high notification
                         if (!alreadyNotified) {
                             alreadyNotified = true;
-                            boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-                            if (warningHighEnabled) {
-                                showWarningHighNotification();
+                            boolean warningEnabled = isWarningSoundEnabled(intent);
+                            boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
+                            // reset android battery stats
+                            if (shouldResetBatteryStats) {
+                                resetBatteryStats();
                             }
                             // stop charging
                             if (stopChargingEnabled) {
                                 if (smartChargingEnabled) {
                                     chargingPausedBySmartCharging = true;
                                 }
-                                stopCharging(true);
+                                stopCharging(warningEnabled);
+                                // show warning high notification
+                            } else if (warningEnabled) {
+                                showWarningHighNotification();
                             }
                         }
                     }
@@ -402,7 +428,6 @@ public class BackgroundService extends Service {
             // check smart charging resume time
             if (chargingPausedBySmartCharging) {
                 if (!chargingResumedBySmartCharging) {
-                    chargingResumedBySmartCharging = true;
                     if (smartChargingResumeTime == 0) {
                         smartChargingResumeTime = getSmartChargingResumeTime();
                     }
@@ -411,6 +436,7 @@ public class BackgroundService extends Service {
                         if (graphEnabled) {
                             graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                         }
+                        chargingResumedBySmartCharging = true;
                         resumeCharging();
                     }
                 } else { // charging already resumed
@@ -502,17 +528,8 @@ public class BackgroundService extends Service {
         }
 
         private void showWarningHighNotification() {
-            boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
-            boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
-            // show notification
-            if (!stopChargingEnabled) {
-                Notification notification = buildWarningHighNotification();
-                notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
-            }
-            // reset battery stats
-            if (shouldResetBatteryStats) {
-                resetBatteryStats();
-            }
+            Notification notification = buildWarningHighNotification();
+            notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
         }
 
         private void showWarningLowNotification(final int warningLow) {
