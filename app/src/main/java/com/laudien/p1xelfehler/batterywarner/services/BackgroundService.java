@@ -57,6 +57,8 @@ public class BackgroundService extends Service {
     private GraphDbHelper graphDbHelper;
     private boolean alreadyNotified = false;
     private long smartChargingResumeTime;
+    private boolean screenOn = true;
+    private ScreenOnOffReceiver screenOnOffReceiver;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
@@ -95,6 +97,7 @@ public class BackgroundService extends Service {
             }
         });
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -102,6 +105,11 @@ public class BackgroundService extends Service {
         intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, intentFilter);
         batteryData = BatteryHelper.getBatteryData(batteryChangedIntent, this);
+        // screen on/off receiver
+        screenOnOffReceiver = new ScreenOnOffReceiver();
+        IntentFilter onOffFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        onOffFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(screenOnOffReceiver, onOffFilter);
     }
 
     @Override
@@ -122,6 +130,7 @@ public class BackgroundService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
+        unregisterReceiver(screenOnOffReceiver);
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {
@@ -357,7 +366,9 @@ public class BackgroundService extends Service {
                 } else { // discharging
                     handleDischarging(intent);
                 }
-                refreshInfoNotification(intent);
+                if (screenOn) {
+                    refreshInfoNotification(intent);
+                }
             } else { // started or stopped charging
                 lastBatteryLevel = -1;
                 alreadyNotified = false;
@@ -554,6 +565,25 @@ public class BackgroundService extends Service {
                     }
                 }
             });
+        }
+    }
+
+    private class ScreenOnOffReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                onScreenTurnedOn();
+            } else { // screen turned off
+                onScreenTurnedOff();
+            }
+        }
+
+        private void onScreenTurnedOn() {
+            screenOn = true;
+        }
+
+        private void onScreenTurnedOff() {
+            screenOn = false;
         }
     }
 }
