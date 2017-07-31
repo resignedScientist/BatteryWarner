@@ -17,7 +17,6 @@
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
-    <string name="pref_notifications_off_warning" translatable="false">notificationsOffWarning</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
     <string name="pref_measure_battery_drain" translatable="false">measureBatteryDrain</string>
