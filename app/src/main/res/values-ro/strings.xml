@@ -95,9 +95,6 @@
     <string name="summary_warning_high_enabled">Afișați un avertisment privind bateria ridicată când se atinge procentajul setat.</string>
     <string name="summary_warning_low_enabled">Afișați un avertisment privind bateria scăzută când se atinge procentajul setat.</string>
 
-    <string name="tile_charge_to_100">Încarcă la 100%</string>
-    <string name="tile_on_off">Avertismente baterie</string>
-
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
@@ -172,4 +169,5 @@
     <!-- new strings -->
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
+    <string name="tile_stop_charging">Stop Charging</string>
 </resources>

@@ -66,6 +66,7 @@
     <string name="menu_save_to_history">Graph speichern</string>
 
     <string name="notification_button_enable_charging">Laden aktivieren</string>
+    <string name="notification_button_enable_usb_charging">USB-Laden aktivieren</string>
     <string name="notification_button_grant_root">Root erlauben</string>
     <string name="notification_button_toggle_power_saving">Energiesparmodus umschalten</string>
     <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
@@ -95,8 +96,7 @@
     <string name="summary_warning_high_enabled">Zeige eine Batterie-hoch-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
 
-    <string name="tile_charge_to_100">Lade auf 100%</string>
-    <string name="tile_on_off">Batterie Warnungen</string>
+    <string name="tile_stop_charging">Laden abbrechen</string>
 
     <string name="time_format_hours_comma_minutes">1 h 30,5 min</string>
     <string name="time_format_hours_minutes">1 h 30 min</string>
@@ -169,7 +169,4 @@
     <string name="uninstall_go">Deinstallieren!</string>
     <string name="uninstall_text">Sowohl die Pro als auch die kostenlose Version der App sind installiert. Bitte deinstalliere die kostenlose App!</string>
     <string name="uninstall_title">Kostenlose Version deinstallieren!</string>
-    <string name="notification_button_enable_usb_charging">USB-Laden aktivieren</string>
-
-    <!-- new strings -->
 </resources>

@@ -76,9 +76,6 @@
     <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে। আপাতত সব মোবাইলে এটা কাজ করবে না! আপাতত সব মোবাইলে এটা কাজ করবে না!</string>
     <string name="summary_usb_charging_disabled">পিসিতে ইউএসবি সংযোগ করলেও চার্জ হবে না, চার্জিং বন্ধ করবে।</string>
 
-    <string name="tile_charge_to_100">১০০% পর্যন্ত চার্জ</string>
-    <string name="tile_on_off">ব্যাটারি সংকেতসমূহ</string>
-
     <string name="time_format_hours_comma_minutes">১ ঘ. ৩০.৫ মি.</string>
     <string name="time_format_hours_minutes">১ ঘ. ৩০ মি.</string>
     <string name="time_format_hours_minutes_seconds">১ ঘ. ৩০ মি. ৩০ সে.</string>
@@ -171,4 +168,7 @@
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
+
+    <!-- new strings -->
+    <string name="tile_stop_charging">Stop Charging</string>
 </resources>
