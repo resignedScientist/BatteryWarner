@@ -105,13 +105,29 @@ public class BackgroundService extends Service {
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         intentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
         intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-        Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, intentFilter);
+        final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, intentFilter);
         batteryData = BatteryHelper.getBatteryData(batteryChangedIntent, this);
         // screen on/off receiver
         screenOnOffReceiver = new ScreenOnOffReceiver();
         IntentFilter onOffFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         onOffFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOnOffReceiver, onOffFilter);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    chargingDisabledInFile = !RootHelper.isChargingEnabled();
+                    if (chargingDisabledInFile) {
+                        boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                        boolean isUsbCharging = batteryChangedIntent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
+                        boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
+                        Notification notification = buildStopChargingNotification(false, !chargingAllowed);
+                        notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        });
     }
 
     @Override
@@ -529,6 +545,7 @@ public class BackgroundService extends Service {
                         try {
                             RootHelper.disableCharging();
                             chargingDisabledInFile = true;
+                            notificationManager.cancel(NOTIFICATION_ID_WARNING);
                             Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
                             notificationManager.notify(NOTIFICATION_ID_WARNING, stopChargingNotification);
                         } catch (RootHelper.NotRootedException e) {

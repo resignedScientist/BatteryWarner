@@ -79,9 +79,21 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 NotificationHelper.createNotificationChannels(context);
             }
             // show notification if not rooted anymore
-            NotificationHelper.showNotification(context, ID_GRANT_ROOT);
-            // start the services
-            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
+            // check if one of the root preferences is enabled
+            String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
+            boolean oneRootPermissionIsEnabled = false;
+            for (String prefKey : rootPreferences) {
+                boolean enabled = sharedPreferences.getBoolean(prefKey, false);
+                if (enabled) {
+                    oneRootPermissionIsEnabled = true;
+                    break;
+                }
+            }
+            if (oneRootPermissionIsEnabled) { // this notification starts the service on click
+                NotificationHelper.showNotification(context, ID_GRANT_ROOT);
+            } else { // start the service directly
+                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
+            }
             // show a notification on special events
             /*if (!IS_PRO && SDK_INT >= M) {
                 Intent emailIntent = new Intent(context.getApplicationContext(), EventService.class);
