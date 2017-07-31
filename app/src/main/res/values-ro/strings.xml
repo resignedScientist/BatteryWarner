@@ -38,8 +38,6 @@
     <string name="info_health">Sănătate</string>
     <string name="info_max_temp">Cea mai mare temperatură</string>
     <string name="info_min_temp">Cea mai mică temperatură</string>
-    <string name="info_screen_off">Ecran oprit</string>
-    <string name="info_screen_on">Ecran pornit</string>
     <string name="info_startTime">Start</string>
     <string name="info_technology">Technologie</string>
     <string name="info_temperature">Temperatură</string>
@@ -65,7 +63,6 @@
     <string name="menu_open_history">Deschide istoric</string>
     <string name="menu_rename">Redenumeşte</string>
     <string name="menu_rename_graph">Redenumeşte grafic</string>
-    <string name="menu_reset">Resetează</string>
     <string name="menu_save_to_history">Salvează la istoric</string>
 
     <string name="notification_button_enable_charging">Activează încărcarea</string>
@@ -90,9 +87,7 @@
     <string name="summary_graph_autosave">Salvează graficul înregistrat automat către istoric când dispozitivul este complet încărcat sau deconectaţi încărcătorul.</string>
     <string name="summary_graph_enabled">Înregistrează un grafic în timpul încărcării.</string>
     <string name="summary_info_dark_theme">Foloseşte tema neagră pentru notificarea cu informaţiile bateriei.</string>
-    <string name="summary_measure_battery_drain">Măsoară consumul bateriei pentru ecranul pornit sau oprit în procente pe oră.</string>
     <string name="summary_notification_sound">De la Android O trebuie să setezi sunetul în setările de notificare ale Android. Apasă aici ca să îl deschizi!</string>
-    <string name="summary_notifications_off_warning">Arată un avertisment când conectezi încărcătorul cu sunetul notificărilor dezactivate.</string>
     <string name="summary_power_saving_mode">Activează modul salvare energie când a fost declanșată avertizarea privind descărcarea bateriei.</string>
     <string name="summary_reset_battery_stats">Resetează statusul bateriei dupa ce a fost declanșată avertizarea privind încărcarea bateriei.</string>
     <string name="summary_stop_charging">Opreşte încărcarea după ce procentajul maxim a fost atins. Nu funcţionează cu toate dispozitivele!</string>
@@ -126,7 +121,6 @@
     <string name="title_info_notification_enabled">Activează notificările cu informaţii</string>
     <string name="title_info_notification_items">Arată în notificările cu informaţii</string>
     <string name="title_main_page">Pagina principală</string>
-    <string name="title_measure_battery_drain">Măsoară golirea bateriei</string>
     <string name="title_minutes_before">Minute înainte:</string>
     <string name="title_notifications_off_warning">Avertizează dacă sunetul este dezactivat</string>
     <string name="title_power_saving_mode">Activează modul de salvare energie</string>
@@ -163,15 +157,12 @@
     <string name="toast_not_rooted">Trebuie să fii root-at pentru acest lucru!</string>
     <string name="toast_nothing_to_delete">Nu există nimic de şters!</string>
     <string name="toast_nothing_to_save">Nu există nimic de salvat!</string>
-    <string name="toast_reset_data_success">Datele au fost resetate!</string>
     <string name="toast_root_denied">Accesul root a fost respins! Toate funcţiile care le utilizai au fost dezactivate.</string>
     <string name="toast_stop_charging_not_enabled">Oprirea încărcării nu a fost activată!</string>
     <string name="toast_success_delete_all_graphs">Toate graficele au fost şterse!</string>
     <string name="toast_success_delete_graph">Grafic şters!</string>
     <string name="toast_success_renaming">Fişier redenumit!</string>
     <string name="toast_success_saving">Graficul a fost salvat la istoric!</string>
-    <string name="toast_successfully_disabled">Dezactivat cu succes!</string>
-    <string name="toast_successfully_enabled">Activat cu succes!</string>
     <string name="toast_theme_changed">Tema va fi activată când vei ieşi din setări!</string>
 
     <string name="uninstall_go">Dezinstaleaz-o!</string>

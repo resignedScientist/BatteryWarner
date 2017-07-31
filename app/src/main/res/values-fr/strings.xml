@@ -38,8 +38,6 @@
     <string name="info_health">État </string>
     <string name="info_max_temp">Température la plus élevée </string>
     <string name="info_min_temp">Température la plus basse </string>
-    <string name="info_screen_off">Conso en veille </string>
-    <string name="info_screen_on">Conso en activité </string>
     <string name="info_startTime">Début</string>
     <string name="info_technology">Technologie </string>
     <string name="info_temperature">Température </string>
@@ -65,7 +63,6 @@
     <string name="menu_open_history">Ouvrir l\'historique</string>
     <string name="menu_rename">Renommer</string>
     <string name="menu_rename_graph">Renommer le graphique</string>
-    <string name="menu_reset">Réinitialiser</string>
     <string name="menu_save_to_history">Enregistrer dans l\'historique</string>
 
     <string name="notification_button_enable_charging">Activer la charge</string>
@@ -90,9 +87,7 @@
     <string name="summary_graph_autosave">Sauvegarder le graphique enregistré automatiquement dans l\'historique lorsque l\'appareil est complètement chargé ou vous débranchez le chargeur.</string>
     <string name="summary_graph_enabled">Enregistrer un graphique pendant la charge.</string>
     <string name="summary_info_dark_theme">Utilise le thème sombre également pour la notification d\'infos batterie.</string>
-    <string name="summary_measure_battery_drain">Mesure de la décharge de la batterie écran éteint (conso en veille) et allumé (conso en activité) en pourcentage par heure.</string>
     <string name="summary_notification_sound">Depuis Android O, vous devez régler le son dans les paramètres de notification d\'Android. Cliquez ici pour y accéder.</string>
-    <string name="summary_notifications_off_warning">Afficher une alerte, lorsque vous branchez votre chargeur avec un son de notification désactivé.</string>
     <string name="summary_power_saving_mode">Active l\'économiseur de batterie quand l\'alerte de batterie faible est déclenchée</string>
     <string name="summary_reset_battery_stats">Réinitialise les statistiques de la batterie après activation de l\'alerte de batterie élevée.</string>
     <string name="summary_stop_charging">Arrête la charge lorsque le pourcentage d\'alerte de batterie élevée est atteint (ne fonctionne pas pour tous les appareils).</string>
@@ -126,7 +121,6 @@
     <string name="title_info_notification_enabled">Activer la notification d\'infos</string>
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
     <string name="title_main_page">Accueil</string>
-    <string name="title_measure_battery_drain">Mesure de la décharge de la batterie</string>
     <string name="title_minutes_before">Minutes avant :</string>
     <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
     <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
@@ -163,15 +157,12 @@
     <string name="toast_not_rooted">Votre appareil doit être rooté !</string>
     <string name="toast_nothing_to_delete">Il n\'y a rien à supprimer !</string>
     <string name="toast_nothing_to_save">Il n\'y a rien à enregistrer !</string>
-    <string name="toast_reset_data_success">Les données ont été réinitialisées !</string>
     <string name="toast_root_denied">L\'accès root a été refusé ! Toutes les fonctions qui l\'utilisaient sont désactivées</string>
     <string name="toast_stop_charging_not_enabled">L\'arrêt automatique de charge doit être activé pour cela !</string>
     <string name="toast_success_delete_all_graphs">Tous les graphiques ont été supprimés !</string>
     <string name="toast_success_delete_graph">Graphique supprimé !</string>
     <string name="toast_success_renaming">Fichier renommé !</string>
     <string name="toast_success_saving">Le graphique a été enregistré dans l\'historique !</string>
-    <string name="toast_successfully_disabled">Désactivation réussie !</string>
-    <string name="toast_successfully_enabled">Activation réussie !</string>
     <string name="toast_theme_changed">Le thème sera activé à la fermeture des paramètres !</string>
 
     <string name="uninstall_go">Désinstallez-la !</string>

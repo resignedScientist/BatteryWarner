@@ -30,8 +30,6 @@
     <string name="info_health">স্বাস্থ্য</string>
     <string name="info_max_temp">সর্বোচ্চ তাপমাত্রা</string>
     <string name="info_min_temp">সর্বনিম্ন তাপমাত্রা</string>
-    <string name="info_screen_off">স্ক্রিন বন্ধ</string>
-    <string name="info_screen_on">স্ক্রিন চালু</string>
     <string name="info_technology">প্রযুক্তি</string>
     <string name="info_temperature">তাপমাত্রা</string>
     <string name="info_voltage">ভোল্টেজ</string>
@@ -56,7 +54,6 @@
     <string name="menu_open_history">বিবরণ খুলুন</string>
     <string name="menu_rename">পুনরায় নামকরণ</string>
     <string name="menu_rename_graph">লেখ-চিত্রের পুনরায় নামকরণ</string>
-    <string name="menu_reset">নবায়ন</string>
     <string name="menu_save_to_history">পূর্বের বিবরণীতে সংরক্ষণ</string>
 
     <string name="notification_button_enable_charging">চার্জিং সচল</string>
@@ -134,15 +131,12 @@
     <string name="toast_not_rooted">এর জন্য মোবাইল রুটেড হতে হবে!</string>
     <string name="toast_nothing_to_delete">বাতিল করার মত কিছুই নেই!</string>
     <string name="toast_nothing_to_save">সংরক্ষণ করার মত কিছুই নেই!</string>
-    <string name="toast_reset_data_success">উপাত্ত নবায়িত করা হয়েছে!</string>
     <string name="toast_root_denied">রুট সুবিধা বাতিল করা হয়েছে। সব রুট সম্পর্কিত সুবিধাসমূহ বন্ধ হয়ে যাবে।</string>
     <string name="toast_stop_charging_not_enabled">চার্জ বন্ধ করার সুবিধা চালু থাকতে হবে!</string>
     <string name="toast_success_delete_all_graphs">সকল লেখ-চিত্র মুছে ফেলা হয়েছে!</string>
     <string name="toast_success_delete_graph">লেখ-চিত্র বাতিল করা হয়েছে!</string>
     <string name="toast_success_renaming">ফাইলটির পুনরায় নামকরণ করা হয়েছে!</string>
     <string name="toast_success_saving">লেখ-চিত্র বিবরণীতে সংরক্ষিত হয়েছে!</string>
-    <string name="toast_successfully_disabled">বন্ধ করতে সক্ষম হয়েছে!</string>
-    <string name="toast_successfully_enabled">সফলভাবে চালু হয়েছে!</string>
     <string name="toast_theme_changed">সেটিংস বন্ধ করলেই থিম চালু হবে!</string>
 
     <string name="uninstall_go">আনইন্সটল করুন!</string>
@@ -157,8 +151,6 @@
     <string name="info_startTime">Start</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
-    <string name="title_measure_battery_drain">Measure battery drain</string>
-    <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off in percent per hour.</string>
     <string name="notification_charging_service">Charging Service is running…</string>
     <string name="notification_title_charging_service">Charging Service</string>
     <string name="title_discharging_notification">Enable discharging notification</string>
@@ -175,7 +167,6 @@
     <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
-    <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="title_info_text_size">Text size of the info notification:</string>

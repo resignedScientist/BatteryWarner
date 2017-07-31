@@ -200,7 +200,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             return true;
         }
         switch (id) {
-            case R.id.menu_reset:
+            case R.id.menu_delete:
                 if (graphEnabled) {
                     if (series != null) {
                         showResetDialog();

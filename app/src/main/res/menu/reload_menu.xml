@@ -7,9 +7,9 @@
         android:title="@string/dialog_title_graph_info"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_reset"
+        android:id="@+id/menu_delete"
         android:icon="@drawable/ic_delete_white_32dp"
-        android:title="@string/menu_reset"
+        android:title="@string/menu_delete"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_save_to_history"

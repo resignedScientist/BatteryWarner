@@ -38,8 +38,6 @@
     <string name="info_health">Kesehatan</string>
     <string name="info_max_temp">Suhu tertinggi</string>
     <string name="info_min_temp">Suhu terendah</string>
-    <string name="info_screen_off">Layar mati</string>
-    <string name="info_screen_on">Layar hidup</string>
     <string name="info_startTime">Mulai</string>
     <string name="info_technology">Teknologi</string>
     <string name="info_temperature">Suhu</string>
@@ -65,7 +63,6 @@
     <string name="menu_open_history">Buka riwayat</string>
     <string name="menu_rename">Ganti nama</string>
     <string name="menu_rename_graph">Ganti nama grafik</string>
-    <string name="menu_reset">Atur ulang</string>
     <string name="menu_save_to_history">Simpan ke riwayat</string>
 
     <string name="notification_button_enable_charging">Aktifkan pengisian</string>
@@ -90,9 +87,7 @@
     <string name="summary_graph_autosave">Simpan grafik yang telah direkam seraca otomatis kedalam riwayat ketika perangkat terisi penuh atau daya dicabut.</string>
     <string name="summary_graph_enabled">Rekam grafik ketika mengisi.</string>
     <string name="summary_info_dark_theme">Gunakan tema gelap untuk pemberitahuan info baterai.</string>
-    <string name="summary_measure_battery_drain">Ukur pengurasan baterai untuk layar hidup dan mati dalam persen per jam.</string>
     <string name="summary_notification_sound">Sejak android O anda harus mengatur suara dalam pengaturan pemberitahuan android. Klik disini untuk membuka!</string>
-    <string name="summary_notifications_off_warning">Tampilkan peringatan ketika anda menghubungkan sumber daya dengan suara pemberitahuan yang sedang dimatikan.</string>
     <string name="summary_power_saving_mode">Aktifkan mode hemat daya ketika peringatan daya rendah terpicu.</string>
     <string name="summary_reset_battery_stats">Atur ulang statistik baterai setelah peringatan daya tinggi.</string>
     <string name="summary_stop_charging">Hentikan pengisian jika persentase tinggi telah tercapai. Tidak bekerja pada semua perangkat!</string>
@@ -126,7 +121,6 @@
     <string name="title_info_notification_enabled">Aktifkan pemberitahuan info</string>
     <string name="title_info_notification_items">Terlihat pada pemberitahuan info</string>
     <string name="title_main_page">Halaman utama</string>
-    <string name="title_measure_battery_drain">Ukur pengurasan baterai</string>
     <string name="title_minutes_before">Waktu sebelum:</string>
     <string name="title_notifications_off_warning">Peringatkan jika suara dinonaktifkan</string>
     <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
@@ -163,15 +157,12 @@
     <string name="toast_not_rooted">Harus di root untuk menjalankan perintah ini!</string>
     <string name="toast_nothing_to_delete">Tidak ada apapun yang dihapus!</string>
     <string name="toast_nothing_to_save">Tidak ada apapun yang disimpan!</string>
-    <string name="toast_reset_data_success">Data telah diatur ulang!</string>
     <string name="toast_root_denied">Akses root ditolak! Semua fungsi yang menggunakannya dinonaktifkan.</string>
     <string name="toast_stop_charging_not_enabled">Hentikan Pengisian Otomatis harus diaktifkan untuk itu!</string>
     <string name="toast_success_delete_all_graphs">Semua grafik disingkirkan!</string>
     <string name="toast_success_delete_graph">Grafik disingkirkan!</string>
     <string name="toast_success_renaming">Nama file telah diganti!</string>
     <string name="toast_success_saving">Grafik telah tersimpan pada riwayat!</string>
-    <string name="toast_successfully_disabled">Berhasil dinonaktifkan!</string>
-    <string name="toast_successfully_enabled">Berhasil diaktifkan!</string>
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
 
     <string name="uninstall_go">Hapus instalasi!</string>
