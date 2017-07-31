@@ -119,6 +119,7 @@ public class BackgroundService extends Service {
                 try {
                     chargingDisabledInFile = !RootHelper.isChargingEnabled();
                     if (chargingDisabledInFile) {
+                        notificationManager.cancel(NOTIFICATION_ID_WARNING);
                         boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
                         boolean isUsbCharging = batteryChangedIntent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
                         boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
