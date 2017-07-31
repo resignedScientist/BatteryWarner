@@ -360,30 +360,36 @@ public class BackgroundService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-                boolean isCharging = intent.getIntExtra(EXTRA_PLUGGED, 0) != 0;
+                int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
+                boolean isCharging = chargingType != 0;
                 if (isCharging || chargingPausedBySmartCharging) {
-                    handleCharging(intent);
+                    boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                    boolean isUsbCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
+                    boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
+                    if (chargingAllowed) {
+                        // reset the graph
+                        if (lastBatteryLevel == -1) {
+                            notificationManager.cancel(NOTIFICATION_ID_WARNING);
+                            if (!chargingResumedBySmartCharging) {
+                                resetGraph();
+                            }
+                        }
+                        // handle charging
+                        handleCharging(intent);
+                    } else { // charging not allowed
+                        stopCharging(false);
+                    }
                 } else { // discharging
                     handleDischarging(intent);
                 }
+                // refresh batteryData and info notification
                 if (screenOn) {
                     refreshInfoNotification(intent);
                 }
             } else { // started or stopped charging
                 lastBatteryLevel = -1;
                 alreadyNotified = false;
-                if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
-                    boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                    boolean isUsbCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
-                    if (isUsbCharging && usbChargingDisabled) { // check if usb charging and it is disabled in settings
-                        stopCharging(false);
-                    } else { // charging is allowed
-                        notificationManager.cancel(NOTIFICATION_ID_WARNING);
-                        if (!chargingResumedBySmartCharging) {
-                            resetGraph();
-                        }
-                    }
-                } else if (!chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
+                if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED) && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
                     notificationManager.cancel(NOTIFICATION_ID_WARNING);
                     resetSmartCharging();
                 }
