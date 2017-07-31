@@ -47,7 +47,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private TwoStatePreference pref_autoSave, pref_warningHighEnabled, pref_usb, pref_ac,
             pref_wireless, pref_graphEnabled, switch_darkTheme, pref_infoNotificationEnabled,
             pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
-            pref_reset_battery_stats, pref_chargingService, pref_darkInfoNotification;
+            pref_reset_battery_stats, pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items, pref_infoTextSize;
     private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
@@ -85,7 +85,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
         pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
-        pref_chargingService = (TwoStatePreference) findPreference(getString(R.string.pref_charging_service_enabled));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
         pref_info_notification_items = findPreference(getString(R.string.pref_info_notification_items));
@@ -214,14 +213,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             } else if (preference == pref_usb_disabled) {
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
-            }
-        } else if (preference == pref_chargingService) {
-            Context context = getContext();
-            if (context != null) {
-                if (pref_chargingService.isChecked()) {
-                    ServiceHelper.startService(context, sharedPreferences);
-                }
-                setInfoNotificationSubtitle(sharedPreferences);
             }
         } else if ((preference == pref_ac && pref_ac.isChecked())
                 || (preference == pref_usb && pref_usb.isChecked())

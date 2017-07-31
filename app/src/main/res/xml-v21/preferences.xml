@@ -3,12 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/title_charging_service">
         <SwitchPreference
-            android:defaultValue="@bool/pref_charging_service_enabled_default"
-            android:key="@string/pref_charging_service_enabled"
-            android:title="@string/title_enabled" />
-        <SwitchPreference
             android:defaultValue="@bool/pref_warning_high_enabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
             android:key="@string/pref_warning_high_enabled"
             android:summary="@string/summary_warning_high_enabled"
             android:title="@string/title_charging_notification" />
@@ -39,16 +34,15 @@
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.SmartChargingActivity" />
         </Preference>
         <SwitchPreference
-            android:defaultValue="@bool/pref_usb_charging_disabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
-            android:key="@string/pref_usb_charging_disabled"
-            android:summary="@string/summary_usb_charging_disabled"
-            android:title="@string/title_usb_charging_disabled" />
-        <SwitchPreference
-            android:dependency="@string/pref_charging_service_enabled"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_reset_battery_stats"
             android:summary="@string/summary_reset_battery_stats"
             android:title="@string/title_reset_battery_stats" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_usb_charging_disabled_default"
+            android:key="@string/pref_usb_charging_disabled"
+            android:summary="@string/summary_usb_charging_disabled"
+            android:title="@string/title_usb_charging_disabled" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_discharging_service">
         <SwitchPreference
@@ -72,6 +66,12 @@
             app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
         <SwitchPreference
+            android:defaultValue="@bool/pref_power_saving_mode_default"
+            android:dependency="@string/pref_warning_low_enabled"
+            android:key="@string/pref_power_saving_mode"
+            android:summary="@string/summary_power_saving_mode"
+            android:title="@string/title_power_saving_mode" />
+        <SwitchPreference
             android:defaultValue="@bool/pref_info_notification_enabled_default"
             android:key="@string/pref_info_notification_enabled"
             android:title="@string/title_info_notification_enabled" />
@@ -81,15 +81,15 @@
             android:title="@string/title_info_notification_items">
             <intent android:action="com.laudien.p1xelfehler.batterywarner.Activities.InfoNotificationActivity" />
         </Preference>
-        <SwitchPreference
-            android:defaultValue="@bool/pref_power_saving_mode_default"
-            android:dependency="@string/pref_warning_low_enabled"
-            android:key="@string/pref_power_saving_mode"
-            android:summary="@string/summary_power_saving_mode"
-            android:title="@string/title_power_saving_mode" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_info_text_size_default"
+            android:dependency="@string/pref_info_notification_enabled"
+            android:key="@string/pref_info_text_size"
+            android:title="@string/title_info_text_size"
+            app:slider_max="@integer/pref_info_text_size_max"
+            app:slider_min="@integer/pref_info_text_size_min" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:dependency="@string/pref_charging_service_enabled"
         android:key="@string/pref_stats"
         android:title="@string/title_stats">
         <SwitchPreference
@@ -126,32 +126,24 @@
     <PreferenceCategory android:title="@string/title_advanced_features">
         <SwitchPreference
             android:defaultValue="@bool/pref_ac_enabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_ac_enabled"
             android:title="@string/title_ac_enabled" />
         <SwitchPreference
             android:defaultValue="@bool/pref_usb_enabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_usb_enabled"
             android:title="@string/title_usb_enabled" />
         <SwitchPreference
             android:defaultValue="@bool/pref_wireless_enabled_default"
-            android:dependency="@string/pref_charging_service_enabled"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_wireless_enabled"
             android:title="@string/title_wireless_enabled" />
         <SwitchPreference
             android:defaultValue="@bool/pref_notifications_off_warning_default"
-            android:dependency="@string/pref_charging_service_enabled"
+            android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_notifications_off_warning"
             android:summary="@string/summary_notifications_off_warning"
             android:title="@string/title_notifications_off_warning" />
-        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
-            android:defaultValue="@integer/pref_info_text_size_default"
-            android:key="@string/pref_info_text_size"
-            android:dependency="@string/pref_info_notification_enabled"
-            android:title="@string/title_info_text_size"
-            app:slider_max="@integer/pref_info_text_size_max"
-            app:slider_min="@integer/pref_info_text_size_min"
-            app:unit="sp" />
     </PreferenceCategory>
 </PreferenceScreen>
