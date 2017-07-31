@@ -191,7 +191,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (highChecked) {
                 Context context = getContext();
                 if (context != null) {
-                    ServiceHelper.startService(context, sharedPreferences);
+                    ServiceHelper.startService(context);
                 }
             }
         } else if (preference == pref_graphEnabled) {
@@ -199,7 +199,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_autoSave.setEnabled(checked);
             Context context = getContext();
             if (context != null && checked) {
-                ServiceHelper.startService(context, sharedPreferences);
+                ServiceHelper.startService(context);
             }
         } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode || preference == pref_reset_battery_stats) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
@@ -219,17 +219,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 || (preference == pref_wireless && pref_wireless.isChecked())) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.startService(context, sharedPreferences);
+                ServiceHelper.startService(context);
             }
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.restartDischargingService(getContext(), sharedPreferences);
+                ServiceHelper.restartDischargingService(getContext());
             }
         } else if (preference == pref_infoTextSize) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.startService(context, sharedPreferences);
+                ServiceHelper.startService(context);
             }
         }
     }

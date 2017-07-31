@@ -94,36 +94,33 @@ public final class NotificationHelper {
      */
     public static void showNotification(final Context context, final int notificationID) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean isEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_is_enabled), context.getResources().getBoolean(R.bool.pref_is_enabled_default));
-        if (isEnabled) {
-            switch (notificationID) {
-                case ID_WARNING_HIGH:
-                    showWarningHighNotification(context, sharedPreferences);
-                    break;
-                case ID_WARNING_LOW:
-                    showWarningLowNotification(context, sharedPreferences);
-                    break;
-                case ID_SILENT_MODE:
-                    showSilentModeNotification(context);
-                    break;
-                case ID_STOP_CHARGING:
-                    showStopChargingNotification(context, sharedPreferences);
-                    break;
-                case ID_STOP_CHARGING_NOT_WORKING:
-                    showStopChargingNotWorkingNotification(context, sharedPreferences);
-                    break;
-                case ID_GRANT_ROOT:
-                    showGrantRootNotification(context, sharedPreferences);
-                    break;
-                case ID_NOT_ROOTED:
-                    showNotRootedNotification(context);
-                    break;
-                case ID_NO_ALARM_TIME_FOUND:
-                    showNoAlarmTimeFoundNotification(context);
-                    break;
-                default:
-                    throw new IdNotFoundException();
-            }
+        switch (notificationID) {
+            case ID_WARNING_HIGH:
+                showWarningHighNotification(context, sharedPreferences);
+                break;
+            case ID_WARNING_LOW:
+                showWarningLowNotification(context, sharedPreferences);
+                break;
+            case ID_SILENT_MODE:
+                showSilentModeNotification(context);
+                break;
+            case ID_STOP_CHARGING:
+                showStopChargingNotification(context, sharedPreferences);
+                break;
+            case ID_STOP_CHARGING_NOT_WORKING:
+                showStopChargingNotWorkingNotification(context, sharedPreferences);
+                break;
+            case ID_GRANT_ROOT:
+                showGrantRootNotification(context, sharedPreferences);
+                break;
+            case ID_NOT_ROOTED:
+                showNotRootedNotification(context);
+                break;
+            case ID_NO_ALARM_TIME_FOUND:
+                showNoAlarmTimeFoundNotification(context);
+                break;
+            default:
+                throw new IdNotFoundException();
         }
     }
 

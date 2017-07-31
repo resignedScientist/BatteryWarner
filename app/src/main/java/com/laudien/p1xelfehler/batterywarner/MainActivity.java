@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity {
                 });
             }
             // start services just in case
-            ServiceHelper.startService(this, sharedPreferences);
+            ServiceHelper.startService(this);
         }
     }
 

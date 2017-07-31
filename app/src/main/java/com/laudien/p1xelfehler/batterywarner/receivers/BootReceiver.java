@@ -21,7 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
                 // start services/receivers
-                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
+                ServiceHelper.startService(context.getApplicationContext());
             }
         }
     }

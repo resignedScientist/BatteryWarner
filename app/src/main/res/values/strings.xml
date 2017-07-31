@@ -19,13 +19,10 @@
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
-    <string name="pref_measure_battery_drain" translatable="false">measureBatteryDrain</string>
     <string name="pref_info_text_size" translatable="false">infoTextSize</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
-    <!-- Main Switch -->
-    <string name="pref_is_enabled" translatable="false">isEnabled</string>
     <!-- Smart Charging -->
     <string name="pref_smart_charging_enabled" translatable="false">smartChargingEnabled</string>
     <string name="pref_smart_charging_limit" translatable="false">smartChargingPercentMax</string>
@@ -48,13 +45,7 @@
     <string name="prefs_temporary" translatable="false">TemporaryPrefs</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_intent_time" translatable="false">intentTime</string>
-    <string name="pref_last_chargingType" translatable="false">lastChargingType</string>
     <string name="pref_stats" translatable="false">stats</string>
-    <!-- Measured values -->
-    <string name="value_time_screen_on" translatable="false">timeScreenOn</string>
-    <string name="value_time_screen_off" translatable="false">timeScreenOff</string>
-    <string name="value_drain_screen_on" translatable="false">screenOnDrain</string>
-    <string name="value_drain_screen_off" translatable="false">screenOffDrain</string>
     <!-- Notification channels -->
     <string name="channel_battery_warnings" translatable="false">batteryWarnings</string>
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
@@ -93,7 +84,6 @@
     <string name="title_smart_charging_enabled">Smart Charging enabled</string>
     <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
-    <string name="title_measure_battery_drain">Measure battery drain</string>
     <string name="title_charging_notification">Enable charging notification</string>
     <string name="title_discharging_notification">Enable discharging notification</string>
     <string name="title_charging_service">Charging Service</string>
@@ -113,11 +103,9 @@
     <string name="summary_disabled">Disabled</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
-    <string name="summary_measure_battery_drain">Measure the battery drain for screen on and off in percent per hour.</string>
     <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
-    <string name="summary_notifications_off_warning">Show a warning, when you plug in your charger with disabled notification sound.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <!-- time format preference -->
@@ -139,10 +127,7 @@
     <!-- toasts -->
     <string name="toast_not_rooted">You must be rooted for this!</string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
-    <string name="toast_reset_data_success">The Data has been reset!</string>
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
-    <string name="toast_successfully_enabled">Successfully enabled!</string>
-    <string name="toast_successfully_disabled">Successfully disabled!</string>
     <string name="toast_click_to_exit">Click again to exit app!</string>
     <string name="toast_disabled_in_settings">Disabled in settings!</string>
     <string name="toast_not_enough_data">Not enough data yet!</string>
@@ -207,7 +192,6 @@
     <string name="menu_rename_graph">Rename graph</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_all">Delete all</string>
-    <string name="menu_reset">Reset</string>
     <!-- battery information -->
     <string name="info_technology">Technology</string>
     <string name="info_temperature">Temperature</string>
@@ -215,8 +199,6 @@
     <string name="info_battery_level">Battery level</string>
     <string name="info_voltage">Voltage</string>
     <string name="info_current">Current</string>
-    <string name="info_screen_on">Screen on</string>
-    <string name="info_screen_off">Screen off</string>
     <!-- graph information -->
     <string name="info_startTime">Start</string>
     <string name="info_endTime">Finished</string>

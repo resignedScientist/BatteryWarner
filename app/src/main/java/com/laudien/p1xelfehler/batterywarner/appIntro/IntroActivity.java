@@ -77,7 +77,7 @@ public class IntroActivity extends MaterialIntroActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
         // start services
-        ServiceHelper.startService(this, sharedPreferences);
+        ServiceHelper.startService(this);
         // send toast
         ToastHelper.sendToast(getApplicationContext(), R.string.intro_finish_toast, LENGTH_SHORT);
         // start MainActivity

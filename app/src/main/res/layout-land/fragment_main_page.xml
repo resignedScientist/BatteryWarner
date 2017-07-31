@@ -22,17 +22,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/toggleButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/img_battery"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <fragment
-        android:id="@+id/toggleButton"
-        android:name="com.laudien.p1xelfehler.batterywarner.fragments.OnOffButtonFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_battery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_battery" />
 </android.support.constraint.ConstraintLayout>

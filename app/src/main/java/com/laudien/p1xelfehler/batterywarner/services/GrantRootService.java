@@ -3,7 +3,6 @@ package com.laudien.p1xelfehler.batterywarner.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
@@ -53,7 +52,7 @@ public class GrantRootService extends IntentService {
                     }
                 }
             }
-            ServiceHelper.startService(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+            ServiceHelper.startService(getApplicationContext());
         } else { // user is stupid and keeps root disabled -> disable all root features
             startService(new Intent(GrantRootService.this, DisableRootFeaturesService.class));
         }

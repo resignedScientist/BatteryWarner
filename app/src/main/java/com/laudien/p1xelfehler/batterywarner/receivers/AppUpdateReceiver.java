@@ -43,36 +43,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
                 sharedPreferences.edit().remove(key).apply();
             }
-            // last chargingType
-            key = context.getString(R.string.pref_last_chargingType);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, -1)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // screen on time
-            key = context.getString(R.string.value_time_screen_on);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // screen off time
-            key = context.getString(R.string.value_time_screen_off);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, 0)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // screen on drain
-            key = context.getString(R.string.value_drain_screen_on);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, 0)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // screen off drain
-            key = context.getString(R.string.value_drain_screen_off);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putInt(key, sharedPreferences.getInt(key, 0)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
             // <= patch old shared preferences
             // create notification channels
             if (SDK_INT >= Build.VERSION_CODES.O) {
@@ -92,7 +62,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             if (oneRootPermissionIsEnabled) { // this notification starts the service on click
                 NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             } else { // start the service directly
-                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
+                ServiceHelper.startService(context.getApplicationContext());
             }
             // show a notification on special events
             /*if (!IS_PRO && SDK_INT >= M) {
