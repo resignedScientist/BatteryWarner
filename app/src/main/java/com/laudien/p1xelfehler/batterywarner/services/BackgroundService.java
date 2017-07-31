@@ -496,13 +496,11 @@ public class BackgroundService extends Service {
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
                         NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
-                        Notification warningHighNotification = buildWarningHighNotification();
-                        notificationManager.notify(NOTIFICATION_ID_WARNING, warningHighNotification);
+                        showWarningHighNotification();
                     } catch (RootHelper.NoBatteryFileFoundException e) {
                         e.printStackTrace();
                         NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        Notification warningHighNotification = buildWarningHighNotification();
-                        notificationManager.notify(NOTIFICATION_ID_WARNING, warningHighNotification);
+                        showWarningHighNotification();
                     }
                 }
             });
