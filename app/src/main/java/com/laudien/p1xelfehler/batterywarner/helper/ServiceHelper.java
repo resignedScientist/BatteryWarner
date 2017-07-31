@@ -21,7 +21,7 @@ public class ServiceHelper {
         }
     }
 
-    private static void startService(Context context, Intent intent) {
+    public static void startService(Context context, Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         } else {

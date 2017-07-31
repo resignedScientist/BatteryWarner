@@ -42,6 +42,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 public class BackgroundService extends Service {
+    public static final String ACTION_CHARGING_ENABLED = "chargingEnabled";
     public static final int NOTIFICATION_ID_WARNING = 2001;
     private static final int NOTIFICATION_ID_INFO = 2002;
     private boolean chargingPausedBySmartCharging = false;
@@ -59,6 +60,7 @@ public class BackgroundService extends Service {
     private long smartChargingResumeTime;
     private boolean screenOn = true;
     private ScreenOnOffReceiver screenOnOffReceiver;
+    private boolean chargingDisabledInFile = false;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
@@ -114,6 +116,10 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
+            chargingDisabledInFile = false;
+            NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING);
+        }
         // battery info notification
         boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (infoNotificationEnabled) {
@@ -383,7 +389,7 @@ public class BackgroundService extends Service {
                         }
                         // handle charging
                         handleCharging(intent);
-                    } else { // charging not allowed
+                    } else if (!chargingPausedBySmartCharging) { // charging not allowed
                         stopCharging(false, true);
                     }
                 } else { // discharging
@@ -516,24 +522,27 @@ public class BackgroundService extends Service {
         }
 
         private void stopCharging(final boolean enableSound, final boolean showEnableUsbButton) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        RootHelper.disableCharging();
-                        Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
-                        notificationManager.notify(NOTIFICATION_ID_WARNING, stopChargingNotification);
-                    } catch (RootHelper.NotRootedException e) {
-                        e.printStackTrace();
-                        NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
-                        showWarningHighNotification();
-                    } catch (RootHelper.NoBatteryFileFoundException e) {
-                        e.printStackTrace();
-                        NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        showWarningHighNotification();
+            if (!chargingDisabledInFile) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RootHelper.disableCharging();
+                            chargingDisabledInFile = true;
+                            Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
+                            notificationManager.notify(NOTIFICATION_ID_WARNING, stopChargingNotification);
+                        } catch (RootHelper.NotRootedException e) {
+                            e.printStackTrace();
+                            NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
+                            showWarningHighNotification();
+                        } catch (RootHelper.NoBatteryFileFoundException e) {
+                            e.printStackTrace();
+                            NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
+                            showWarningHighNotification();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         private void resumeCharging() {
@@ -542,6 +551,7 @@ public class BackgroundService extends Service {
                 public void run() {
                     try {
                         RootHelper.enableCharging();
+                        chargingDisabledInFile = false;
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
                         NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
