@@ -28,7 +28,7 @@ import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
-import com.laudien.p1xelfehler.batterywarner.services.ChargingService;
+import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -292,7 +292,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         int chargingType = batteryStatus.getIntExtra(EXTRA_PLUGGED, -1);
         boolean isCharging = chargingType != 0;
         if (isCharging) { // charging
-            boolean isChargingTypeEnabled = ChargingService.isChargingTypeEnabled(getContext(), chargingType, sharedPreferences);
+            boolean isChargingTypeEnabled = BackgroundService.isChargingTypeEnabled(getContext(), chargingType, sharedPreferences);
             if (isChargingTypeEnabled) { // charging type enabled
                 if (isFull) { // fully charged
                     showDischargingText();

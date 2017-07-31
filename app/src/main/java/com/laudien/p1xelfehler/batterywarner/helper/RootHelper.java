@@ -108,7 +108,7 @@ public final class RootHelper {
      * Resets the android internal battery stats
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    static void resetBatteryStats() throws NotRootedException {
+    public static void resetBatteryStats() throws NotRootedException {
         if (isRootAvailable()){
             Log.d(TAG, "Resetting android battery stats...");
             Shell.SU.run("dumpsys batterystats --reset");

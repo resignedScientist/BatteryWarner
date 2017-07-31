@@ -11,12 +11,9 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
-import com.laudien.p1xelfehler.batterywarner.services.EventService;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.M;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
 /**
@@ -84,8 +81,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             // show notification if not rooted anymore
             NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             // start the services
-            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_CHARGING);
-            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ServiceHelper.ID_DISCHARGING);
+            ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
             // show a notification on special events
             /*if (!IS_PRO && SDK_INT >= M) {
                 Intent emailIntent = new Intent(context.getApplicationContext(), EventService.class);

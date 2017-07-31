@@ -9,9 +9,6 @@ import android.preference.PreferenceManager;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
-import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_CHARGING;
-import static com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper.ID_DISCHARGING;
-
 /**
  * A BroadcastReceiver called by the System if the device finished booting.
  * It starts some services if necessary. Does only work after the intro was finished.
@@ -24,8 +21,7 @@ public class BootReceiver extends BroadcastReceiver {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
                 // start services/receivers
-                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ID_CHARGING);
-                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences, ID_DISCHARGING);
+                ServiceHelper.startService(context.getApplicationContext(), sharedPreferences);
             }
         }
     }

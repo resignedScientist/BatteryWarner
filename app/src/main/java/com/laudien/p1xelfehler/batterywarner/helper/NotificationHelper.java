@@ -79,7 +79,7 @@ public final class NotificationHelper {
      */
     public static final int ID_EVENT = 1009;
 
-    private static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
+    public static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
     private static final int SMALL_ICON_RESOURCE = R.mipmap.ic_launcher;
 
@@ -428,7 +428,7 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    private static Uri getWarningSound(Context context, SharedPreferences sharedPreferences, boolean warningHigh) {
+    public static Uri getWarningSound(Context context, SharedPreferences sharedPreferences, boolean warningHigh) {
         int pref_id = warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low;
         String uri = sharedPreferences.getString(context.getString(pref_id), "");
         if (uri.equals("")) {
@@ -442,13 +442,13 @@ public final class NotificationHelper {
         return RingtoneManager.getDefaultUri(TYPE_NOTIFICATION);
     }
 
-    private static Notification.BigTextStyle getBigTextStyle(String messageText) {
+    public static Notification.BigTextStyle getBigTextStyle(String messageText) {
         Notification.BigTextStyle bigTextStyle = new Notification.BigTextStyle();
         bigTextStyle.bigText(messageText);
         return bigTextStyle;
     }
 
-    private static PendingIntent getDefaultClickIntent(Context context) {
+    public static PendingIntent getDefaultClickIntent(Context context) {
         return PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), FLAG_UPDATE_CURRENT);
     }
 
