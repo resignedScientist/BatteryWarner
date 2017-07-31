@@ -42,7 +42,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 public class BackgroundService extends Service {
-    private static final int NOTIFICATION_ID_WARNING = 2001;
+    public static final int NOTIFICATION_ID_WARNING = 2001;
     private static final int NOTIFICATION_ID_INFO = 2002;
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
