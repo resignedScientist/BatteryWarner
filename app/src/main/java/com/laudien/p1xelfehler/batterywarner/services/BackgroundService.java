@@ -364,24 +364,23 @@ public class BackgroundService extends Service {
                 if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
                     notificationManager.cancel(NOTIFICATION_ID_WARNING);
                     if (!chargingResumedBySmartCharging) {
-                        resetGraphAndSmartCharging();
+                        resetGraph();
                     }
-                } else if (!chargingPausedBySmartCharging) {
+                } else if (!chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
                     notificationManager.cancel(NOTIFICATION_ID_WARNING);
-                    if (chargingResumedBySmartCharging) {
-                        resetGraphAndSmartCharging();
-                    }
+                    resetSmartCharging();
                 }
             }
         }
 
-        private void resetGraphAndSmartCharging() {
-            // reset graph
+        private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
                 graphDbHelper.resetTable();
             }
-            // reset smart charging
+        }
+
+        private void resetSmartCharging() {
             chargingPausedBySmartCharging = false;
             chargingResumedBySmartCharging = false;
         }
