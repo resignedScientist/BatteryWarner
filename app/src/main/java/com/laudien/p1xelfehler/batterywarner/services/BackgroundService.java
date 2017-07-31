@@ -210,8 +210,10 @@ public class BackgroundService extends Service {
                 infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
                 infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
                 String message = data[0];
-                for (byte i = 1; i < data.length; i++) {
-                    message = message.concat("\n").concat(data[i]);
+                if (data.length > 1) {
+                    for (byte i = 1; i < data.length; i++) {
+                        message = message.concat("\n").concat(data[i]);
+                    }
                 }
                 infoNotificationContent.setTextViewText(R.id.textView_message_left, message);
             } else { // more then 3 items
@@ -238,11 +240,13 @@ public class BackgroundService extends Service {
     private String buildInfoNotificationMessage(String[] data) {
         if (data != null && data.length > 0) {
             infoNotificationMessage = data[0];
-            int i = 1;
-            do {
-                infoNotificationMessage = infoNotificationMessage.concat(", ").concat(data[i]);
-                i++;
-            } while (i < data.length);
+            if (data.length > 1) {
+                int i = 1;
+                do {
+                    infoNotificationMessage = infoNotificationMessage.concat(", ").concat(data[i]);
+                    i++;
+                } while (i < data.length);
+            }
             return infoNotificationMessage;
         } else {
             return getString(R.string.notification_no_items_enabled);
