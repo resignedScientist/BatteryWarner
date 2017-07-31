@@ -545,12 +545,12 @@ public class BackgroundService extends Service {
 
         private void stopCharging(final boolean enableSound, final boolean showEnableUsbButton) {
             if (!chargingDisabledInFile) {
+                chargingDisabledInFile = true;
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             RootHelper.disableCharging();
-                            chargingDisabledInFile = true;
                             notificationManager.cancel(NOTIFICATION_ID_WARNING);
                             Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
                             notificationManager.notify(NOTIFICATION_ID_WARNING, stopChargingNotification);
