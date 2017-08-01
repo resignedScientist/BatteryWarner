@@ -43,7 +43,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
+import static com.laudien.p1xelfehler.batterywarner.HistoryActivity.DATABASE_HISTORY_PATH;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.DATABASE_NAME;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;

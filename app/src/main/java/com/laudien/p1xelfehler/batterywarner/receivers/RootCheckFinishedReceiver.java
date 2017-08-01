@@ -9,12 +9,11 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.PACKAGE_NAME_FREE;
 
 public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
-    public static final String ACTION_ROOT_CHECK_FINISHED = PACKAGE_NAME_FREE + ".ROOT_CHECK_FINISHED";
-    public static final String EXTRA_ROOT_ALLOWED = PACKAGE_NAME_FREE + ".ROOT_ALLOWED";
-    public static final String EXTRA_PREFERENCE = PACKAGE_NAME_FREE + ".PREFERENCE";
+    public static final String ACTION_ROOT_CHECK_FINISHED = "com.laudien.p1xelfehler.batterywarner.ROOT_CHECK_FINISHED";
+    public static final String EXTRA_ROOT_ALLOWED = "com.laudien.p1xelfehler.batterywarner.ROOT_ALLOWED";
+    public static final String EXTRA_PREFERENCE = "com.laudien.p1xelfehler.batterywarner.PREFERENCE";
 
     @Override
     public void onReceive(Context context, Intent intent) {

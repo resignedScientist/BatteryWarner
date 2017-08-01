@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -41,7 +42,6 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.DATABASE_HISTORY_PATH;
 import static com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment.EXTRA_FILE_PATH;
 
 /**
@@ -51,6 +51,7 @@ import static com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragmen
  * user allows it.
  */
 public class HistoryActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
+    public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static final int PERMISSION_REQUEST_CODE = 60;
     private ImageButton btn_next, btn_prev;
     private ViewPager viewPager;
@@ -62,13 +63,13 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         setToolbarTitle(getString(R.string.title_history));
-        textView_nothingSaved = (TextView) findViewById(R.id.textView_nothingSaved);
-        textView_fileName = (TextView) findViewById(R.id.textView_fileName);
-        btn_next = (ImageButton) findViewById(R.id.btn_next);
+        textView_nothingSaved = findViewById(R.id.textView_nothingSaved);
+        textView_fileName = findViewById(R.id.textView_fileName);
+        btn_next = findViewById(R.id.btn_next);
         btn_next.setOnClickListener(this);
-        btn_prev = (ImageButton) findViewById(R.id.btn_prev);
+        btn_prev = findViewById(R.id.btn_prev);
         btn_prev.setOnClickListener(this);
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager = findViewById(R.id.viewPager);
         // check for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
