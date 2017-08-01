@@ -12,7 +12,7 @@ import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
 import agency.tango.materialintroscreen.SlideFragment;
 
 /**
- * A custom slide for the app intro that shows the SettingsFragment.
+ * A custom slide for the app intro that shows the {@link com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment}.
  */
 public class PreferencesSlide extends SlideFragment {
 

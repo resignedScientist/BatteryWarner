@@ -20,10 +20,9 @@ import agency.tango.materialintroscreen.SlideFragmentBuilder;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * An Activity that shows the app intro. It shows a different intro for the pro and the free
- * version of the app.
- * After it finished, it starts either the ChargingService, DischargingService or triggers a
- * DischargingAlarm depending on the user settings and starts the MainActivity.
+ * An Activity that shows the app intro.
+ * After it finished, it starts the {@link com.laudien.p1xelfehler.batterywarner.services.BackgroundService}
+ * and the {@link com.laudien.p1xelfehler.batterywarner.MainActivity}.
  */
 public class IntroActivity extends MaterialIntroActivity {
 

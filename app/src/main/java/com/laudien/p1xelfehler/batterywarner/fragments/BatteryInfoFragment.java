@@ -27,6 +27,9 @@ import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.Battery
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData.INDEX_VOLTAGE;
 
+/**
+ * Fragment that shows some battery information in TextViews.
+ */
 public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatteryValueChangedListener {
 
     public static final byte COLOR_LOW = 1;
