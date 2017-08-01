@@ -41,19 +41,19 @@ android {
         free {
             applicationId "com.laudien.p1xelfehler.batterywarner"
             versionNameSuffix "-free"
-            resValue 'string', 'app_name', 'Battery Warner Free'
+            resValue 'string', 'app_name', 'Battery Warner'
             dimension "default"
         }
         beta {
             applicationId "com.laudien.p1xelfehler.batterywarner_pro"
             versionNameSuffix "-beta"
-            resValue 'string', 'app_name', 'Battery Warner Beta'
+            resValue 'string', 'app_name', 'Battery Warner Pro (Beta)'
             dimension "default"
         }
         freeBeta {
             applicationId "com.laudien.p1xelfehler.batterywarner"
             versionNameSuffix "-freeBeta"
-            resValue 'string', 'app_name', 'Battery Warner Free (Beta)'
+            resValue 'string', 'app_name', 'Battery Warner Beta'
             dimension "default"
         }
     }
