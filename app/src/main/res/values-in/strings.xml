@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="channel_description_battery_info">Pemberitahuan permanen dengan segala info tentang baterai dan pemberitahuan 'Layanan Pengisian' .</string>
+    <string name="channel_description_battery_info">Pemberitahuan permanen dengan segala info tentang baterai dan pemberitahuan \'Layanan Pengisian\' .</string>
     <string name="channel_description_battery_warnings">Segala jenis peringatan baterai.</string>
     <string name="channel_description_other_warnings">Beberapa peringatan penting lain, misalnya jika aplikasi ini tidak lagi memiliki akses root.</string>
     <string name="channel_title_battery_info">Informasi Baterai</string>
@@ -61,11 +61,11 @@
     <string name="menu_save_to_history">Simpan ke riwayat</string>
 
     <string name="notification_button_enable_charging">Aktifkan pengisian</string>
+    <string name="notification_button_enable_usb_charging">Aktifkan pengisian daya lewat usb</string>
     <string name="notification_button_grant_root">Izinkan root</string>
     <string name="notification_button_toggle_power_saving">Hidup/matikan mode hemat daya</string>
     <string name="notification_charging_disabled">Pengisian telah dinonaktifkan oleh aplikasi ini. Klik disini untuk mengaktifkan kembali.</string>
     <string name="notification_grant_root">Aplikasi ini telah diperbarui. Klik disini untuk memulihkan akses root!</string>
-    <string name="toast_no_alarm_time_found">Tidak ada alarm ditemukan dalam aplikasi alarm! Atur sebuah alarm dalam aplikasi alarm anda atau atur waktu secara manual di dalam aplikasi ini jika ingin menggunakan Pengisian Pintar!</string>
     <string name="notification_no_items_enabled">Tidak ada item yang dihidupkan!</string>
     <string name="notification_not_rooted">Aplikasi ini tidak lagi memiliki akses root! Klik disini untuk memulihkan akses root!</string>
     <string name="notification_sound_disabled">Peringatan! Suara dimatikan!</string>
@@ -86,6 +86,10 @@
     <string name="summary_usb_charging_disabled">Mencegah pengisian daya jika dihubungkan dengan usb. Tidak bekerja pada semua perangkat!</string>
     <string name="summary_warning_high_enabled">Tampilkan peringatan daya baterai tinggi jika persentase yang diatur telah tercapai.</string>
     <string name="summary_warning_low_enabled">Tampilkan peringatan daya baterai rendah jika persentase yang diatur telah tercapai.</string>
+
+    <string name="tile_stop_charging">Berhenti mengisi</string>
+    <string name="tile_warning_high">Peringatan baterai penuh</string>
+    <string name="tile_warning_low">Peringatan baterai lemah</string>
 
     <string name="time_format_hours_comma_minutes">1 jam 30.5 menit</string>
     <string name="time_format_hours_minutes">1 jam 30 menit</string>
@@ -108,6 +112,7 @@
     <string name="title_info_notification">Pemberitahuan info</string>
     <string name="title_info_notification_enabled">Aktifkan pemberitahuan info</string>
     <string name="title_info_notification_items">Terlihat pada pemberitahuan info</string>
+    <string name="title_info_text_size">Ukuran teks dari info pemberitahuan:</string>
     <string name="title_main_page">Halaman utama</string>
     <string name="title_minutes_before">Waktu sebelum:</string>
     <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
@@ -135,6 +140,7 @@
     <string name="toast_error_renaming_wrong_characters">menggunakan karakter yang dilarang! Gagal mengganti nama!</string>
     <string name="toast_error_saving">Gagal menyimpan!</string>
     <string name="toast_graph_name_already_exists">Sudah ada grafik dengan nama yang sama</string>
+    <string name="toast_no_alarm_time_found">Tidak ada alarm ditemukan dalam aplikasi alarm! Atur sebuah alarm dalam aplikasi alarm anda atau atur waktu secara manual di dalam aplikasi ini jika ingin menggunakan Pengisian Pintar!</string>
     <string name="toast_no_data">Belum ada ata!</string>
     <string name="toast_no_graphs_saved">Tidak ada grafik tersimpan!</string>
     <string name="toast_not_enough_data">Belum cukup data!</string>
@@ -150,9 +156,4 @@
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
 
     <!-- new strings -->
-    <string name="title_info_text_size">Text size of the info notification:</string>
-    <string name="notification_button_enable_usb_charging">Enable usb charging</string>
-    <string name="tile_stop_charging">Stop Charging</string>
-    <string name="tile_warning_low">Low battery warning</string>
-    <string name="tile_warning_high">High battery warning</string>
 </resources>
