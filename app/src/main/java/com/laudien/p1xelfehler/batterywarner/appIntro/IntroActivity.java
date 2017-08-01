@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.appIntro;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
@@ -20,7 +18,6 @@ import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragmentBuilder;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 
 /**
  * An Activity that shows the app intro. It shows a different intro for the pro and the free
@@ -39,34 +36,24 @@ public class IntroActivity extends MaterialIntroActivity {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         addSlide(new BatterySlide()); // first slide
-        if (!IS_PRO) { // free version
-            // second slide
-            addSlide(new SlideFragmentBuilder()
-                    .backgroundColor(R.color.colorIntro2)
-                    .buttonsColor(R.color.colorButtons)
-                    .image(R.drawable.ic_batteries_400dp)
-                    .title(getString(R.string.intro_slide_2_title))
-                    .description(getString(R.string.intro_slide_2_description))
-                    .build()
-            );
-            // third slide
-            addSlide(new SlideFragmentBuilder()
-                    .backgroundColor(R.color.colorIntro3)
-                    .buttonsColor(R.color.colorButtons)
-                    .image(R.drawable.ic_done_white_320dp)
-                    .title(getString(R.string.intro_slide_3_title))
-                    .description(getString(R.string.intro_slide_3_description))
-                    .build()
-            );
-        } else {
-            // uninstall the free app if it is installed
-            PackageManager packageManager = getPackageManager();
-            try {
-                packageManager.getPackageInfo(AppInfoHelper.PACKAGE_NAME_FREE, PackageManager.GET_ACTIVITIES);
-                addSlide(new UninstallSlide());
-            } catch (PackageManager.NameNotFoundException e) { // one of the apps is not installed
-            }
-        }
+        // second slide
+        addSlide(new SlideFragmentBuilder()
+                .backgroundColor(R.color.colorIntro2)
+                .buttonsColor(R.color.colorButtons)
+                .image(R.drawable.ic_batteries_400dp)
+                .title(getString(R.string.intro_slide_2_title))
+                .description(getString(R.string.intro_slide_2_description))
+                .build()
+        );
+        // third slide
+        addSlide(new SlideFragmentBuilder()
+                .backgroundColor(R.color.colorIntro3)
+                .buttonsColor(R.color.colorButtons)
+                .image(R.drawable.ic_done_white_320dp)
+                .title(getString(R.string.intro_slide_3_title))
+                .description(getString(R.string.intro_slide_3_description))
+                .build()
+        );
         // preference slide
         addSlide(new PreferencesSlide());
     }
