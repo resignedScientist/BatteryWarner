@@ -52,11 +52,6 @@
     <string name="intro_slide_3_title">Für die höchste Haltbarkeit, muss man \"flach\" laden!</string>
     <string name="intro_slide_prefs_description">Stelle hier direkt alles ein!</string>
     <string name="intro_slide_prefs_title">Und los geht\'s!</string>
-    <string name="intro_slide_thank_you_description">Du wirst es nicht bereuen! :)</string>
-    <string name="intro_slide_thank_you_title">Vielen Dank für den Kauf der Pro-Version!</string>
-
-    <string name="main_switch_off">Hauptschalter: aus</string>
-    <string name="main_switch_on">Hauptschalter: an</string>
 
     <string name="menu_delete">Löschen</string>
     <string name="menu_delete_all">Alle löschen</string>
@@ -70,20 +65,17 @@
     <string name="notification_button_grant_root">Root erlauben</string>
     <string name="notification_button_toggle_power_saving">Energiesparmodus umschalten</string>
     <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
-    <string name="notification_charging_service">Lade-Service läuft…</string>
     <string name="notification_grant_root">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
     <string name="toast_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
     <string name="notification_no_items_enabled">Alle Infos deaktiviert!</string>
     <string name="notification_not_rooted">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
     <string name="notification_sound_disabled">Achtung! Der Ton abgeschaltet!</string>
     <string name="notification_stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
-    <string name="notification_title_charging_service">Lade-Service</string>
     <string name="notification_warning_high">Der Akkustand ist höher als</string>
     <string name="notification_warning_low">Der Akkustand ist niedriger als</string>
 
     <string name="smart_charging_explanation">Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt.</string>
 
-    <string name="summary_dependency">muss dafür aktiviert sein!</string>
     <string name="summary_disabled">Deaktiviert</string>
     <string name="summary_graph_autosave">Den Graphen automatisch speichern, sobald das Gerät vollständig geladen oder das Ladekabel entfernt wurde.</string>
     <string name="summary_graph_enabled">Beim Laden eine Ladekurve aufzeichnen.</string>
@@ -114,7 +106,6 @@
     <string name="title_discharging_notification">Aktiviere Entlade-Benachrichtigung</string>
     <string name="title_discharging_service">Entlade-Service</string>
     <string name="title_enabled">Aktiviert</string>
-    <string name="title_get_pro">Hier gelangst du zur Pro-Version!</string>
     <string name="title_graph_autosave">Automatisch speichern</string>
     <string name="title_graph_enabled">Aufzeichnung einer Ladekurve</string>
     <string name="title_history">Gespeicherte Graphen</string>
@@ -125,7 +116,6 @@
     <string name="title_info_text_size">Textgröße der Info-Benachrichtigung:</string>
     <string name="title_main_page">Hauptseite</string>
     <string name="title_minutes_before">Minuten vorher:</string>
-    <string name="title_notifications_off_warning">Warne, wenn der Ton aus ist</string>
     <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
     <string name="title_preferences">Einstellungen</string>
     <string name="title_reset_battery_stats">Akkustatistik zurücksetzen</string>
@@ -150,13 +140,10 @@
     <string name="toast_error_renaming">Umbenennen fehlgeschlagen!</string>
     <string name="toast_error_renaming_wrong_characters">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
     <string name="toast_error_saving">Speichern fehlgeschlagen!</string>
-    <string name="toast_finish_intro_first">Bitte erst das Intro abschließen!</string>
     <string name="toast_graph_name_already_exists">Es gibt bereits einen Graphen mit dem Namen</string>
     <string name="toast_no_data">Noch keine Daten!</string>
     <string name="toast_no_graphs_saved">Keine Graphen gefunden!</string>
     <string name="toast_not_enough_data">Noch nicht genügend Daten!</string>
-    <string name="toast_not_pro">Du benötigst die Pro-Version der App für dieses Feature!</string>
-    <string name="toast_not_pro_short">Nur Pro!</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
     <string name="toast_nothing_to_delete">Kein Graph zum Löschen vorhanden!</string>
     <string name="toast_nothing_to_save">Hier gibt es nichts zum Speichern!</string>
@@ -167,8 +154,4 @@
     <string name="toast_success_renaming">Datei umbenannt!</string>
     <string name="toast_success_saving">Der Graph wurde gespeichert!</string>
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
-
-    <string name="uninstall_go">Deinstallieren!</string>
-    <string name="uninstall_text">Sowohl die Pro als auch die kostenlose Version der App sind installiert. Bitte deinstalliere die kostenlose App!</string>
-    <string name="uninstall_title">Kostenlose Version deinstallieren!</string>
 </resources>

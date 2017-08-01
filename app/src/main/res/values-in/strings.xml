@@ -52,11 +52,6 @@
     <string name="intro_slide_3_title">Untuk umur yang paling panjang, anda harus mengisi secara \"datar\"!</string>
     <string name="intro_slide_prefs_description">Pilih pengsturan anda disini!</string>
     <string name="intro_slide_prefs_title"> Mari mulai!</string>
-    <string name="intro_slide_thank_you_description">Anda tak akan menyesalinya! :)</string>
-    <string name="intro_slide_thank_you_title">Terimakasih telah membeli versi pro!</string>
-
-    <string name="main_switch_off">Tombol utama: mati</string>
-    <string name="main_switch_on">Tombol utama: hidup</string>
 
     <string name="menu_delete">Hapus</string>
     <string name="menu_delete_all">Hapus semua</string>
@@ -69,20 +64,17 @@
     <string name="notification_button_grant_root">Izinkan root</string>
     <string name="notification_button_toggle_power_saving">Hidup/matikan mode hemat daya</string>
     <string name="notification_charging_disabled">Pengisian telah dinonaktifkan oleh aplikasi ini. Klik disini untuk mengaktifkan kembali.</string>
-    <string name="notification_charging_service">Layanan pengisian sedang berjalan…</string>
     <string name="notification_grant_root">Aplikasi ini telah diperbarui. Klik disini untuk memulihkan akses root!</string>
     <string name="toast_no_alarm_time_found">Tidak ada alarm ditemukan dalam aplikasi alarm! Atur sebuah alarm dalam aplikasi alarm anda atau atur waktu secara manual di dalam aplikasi ini jika ingin menggunakan Pengisian Pintar!</string>
     <string name="notification_no_items_enabled">Tidak ada item yang dihidupkan!</string>
     <string name="notification_not_rooted">Aplikasi ini tidak lagi memiliki akses root! Klik disini untuk memulihkan akses root!</string>
     <string name="notification_sound_disabled">Peringatan! Suara dimatikan!</string>
     <string name="notification_stop_charging_not_working">"Stop Charging" sepertinya tidak dapat bekerja pada perangkat anda! anda dapat menonaktifkan fitur tersebut!</string>
-    <string name="notification_title_charging_service">Layanan Pengisian</string>
     <string name="notification_warning_high">Daya baterai di atas</string>
     <string name="notification_warning_low">Daya baterai di bawah</string>
 
     <string name="smart_charging_explanation">Untuk orang-orang yang ingin mengisi penuh sepanjang malam tanpa merusak baterai dengan membiarkannya terisi 100% terlalu lama. Baterai akan terisi hingga batasan yang telah diatur di menu lain. Lalu pengisian akan dijeda dan X menit sebelum waktu yang telah anda atur disini pengisian akan dilanjutkan. Setelah mencapai batasan pada menu ini, pengisian akan dihentikan lagi.</string>
 
-    <string name="summary_dependency">harus diaktifkan untuk itu!</string>
     <string name="summary_disabled">Dinonaktifkan</string>
     <string name="summary_graph_autosave">Simpan grafik yang telah direkam seraca otomatis kedalam riwayat ketika perangkat terisi penuh atau daya dicabut.</string>
     <string name="summary_graph_enabled">Rekam grafik ketika mengisi.</string>
@@ -109,7 +101,6 @@
     <string name="title_discharging_notification">Aktifkan pemberitahuan pemakaian</string>
     <string name="title_discharging_service">Layanan Pemakaian</string>
     <string name="title_enabled">Aktif</string>
-    <string name="title_get_pro">Klik disini untuk mendapatkan versi pro!</string>
     <string name="title_graph_autosave">Simpan secara otomatis</string>
     <string name="title_graph_enabled">Aktifkan kurva pengisian</string>
     <string name="title_history">Riwayat</string>
@@ -119,7 +110,6 @@
     <string name="title_info_notification_items">Terlihat pada pemberitahuan info</string>
     <string name="title_main_page">Halaman utama</string>
     <string name="title_minutes_before">Waktu sebelum:</string>
-    <string name="title_notifications_off_warning">Peringatkan jika suara dinonaktifkan</string>
     <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
     <string name="title_preferences">Pengaturan</string>
     <string name="title_reset_battery_stats">Atur ulang statistik baterai</string>
@@ -144,13 +134,10 @@
     <string name="toast_error_renaming">Gagal mengganti nama!</string>
     <string name="toast_error_renaming_wrong_characters">menggunakan karakter yang dilarang! Gagal mengganti nama!</string>
     <string name="toast_error_saving">Gagal menyimpan!</string>
-    <string name="toast_finish_intro_first">Tolong selesaikan intro terlebih dahulu!</string>
     <string name="toast_graph_name_already_exists">Sudah ada grafik dengan nama yang sama</string>
     <string name="toast_no_data">Belum ada ata!</string>
     <string name="toast_no_graphs_saved">Tidak ada grafik tersimpan!</string>
     <string name="toast_not_enough_data">Belum cukup data!</string>
-    <string name="toast_not_pro">Aplikasi versi pro dibutuhkan untuk fitur tersebut!</string>
-    <string name="toast_not_pro_short">Hanya pro!</string>
     <string name="toast_not_rooted">Harus di root untuk menjalankan perintah ini!</string>
     <string name="toast_nothing_to_delete">Tidak ada apapun yang dihapus!</string>
     <string name="toast_nothing_to_save">Tidak ada apapun yang disimpan!</string>
@@ -161,10 +148,6 @@
     <string name="toast_success_renaming">Nama file telah diganti!</string>
     <string name="toast_success_saving">Grafik telah tersimpan pada riwayat!</string>
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
-
-    <string name="uninstall_go">Hapus instalasi!</string>
-    <string name="uninstall_text">Kedua versi gratis dan pro terpasang! Silahkan hapus instalasi versi gratis terlebih dahulu!</string>
-    <string name="uninstall_title">Hapus instalasi versi gratis terlebih dahulu!</string>
 
     <!-- new strings -->
     <string name="title_info_text_size">Text size of the info notification:</string>
