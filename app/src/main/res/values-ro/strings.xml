@@ -71,7 +71,7 @@
     <string name="notification_charging_disabled">Încărcarea a fost dezactivată de către aplicaţie. Apasă aici ca să o activezi din nou.</string>
     <string name="notification_charging_service">Serviciul de încărcare rulează…</string>
     <string name="notification_grant_root">Aplicaţia a fost actualizată. Apasă aici ca să acorzi din nou accesul root!</string>
-    <string name="notification_no_alarm_time_found">Nu a fost găsită nici o alarmă activă în aplicaţia de alarme! Setează o alarmă sau manual un timp în aplicaţie ca să poţi folosi Încărcarea Inteligentă!</string>
+    <string name="toast_no_alarm_time_found">Nu a fost găsită nici o alarmă activă în aplicaţia de alarme! Setează o alarmă sau manual un timp în aplicaţie ca să poţi folosi Încărcarea Inteligentă!</string>
     <string name="notification_no_items_enabled">Nici un element activat!</string>
     <string name="notification_not_rooted">Aplicaţia nu mai deţine acces root! Apasă aici ca să acorzi din nou accesul root!</string>
     <string name="notification_sound_disabled">Atenţie! Sunetul este dezactivat!</string>
@@ -170,4 +170,6 @@
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
     <string name="tile_stop_charging">Stop Charging</string>
+    <string name="tile_warning_low">Low battery warning</string>
+    <string name="tile_warning_high">High battery warning</string>
 </resources>

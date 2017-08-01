@@ -71,7 +71,7 @@
     <string name="notification_charging_disabled">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
     <string name="notification_charging_service">Le service pour la charge est en cours d\'exécution…</string>
     <string name="notification_grant_root">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
-    <string name="notification_no_alarm_time_found">Aucune alarme trouvée dans l\'application d\'alarme. Définissez une alarme dans votre application dédiée ou une heure manuellement dans Battery Warner afin d\'utiliser Smart Charging !</string>
+    <string name="toast_no_alarm_time_found">Aucune alarme trouvée dans l\'application d\'alarme. Définissez une alarme dans votre application dédiée ou une heure manuellement dans Battery Warner afin d\'utiliser Smart Charging !</string>
     <string name="notification_no_items_enabled">Aucun élément activé !</string>
     <string name="notification_not_rooted">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="notification_sound_disabled">Attention ! Le son est désactivé !</string>
@@ -170,4 +170,6 @@
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
     <string name="tile_stop_charging">Stop Charging</string>
+    <string name="tile_warning_low">Low battery warning</string>
+    <string name="tile_warning_high">High battery warning</string>
 </resources>

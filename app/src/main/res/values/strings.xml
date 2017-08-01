@@ -157,7 +157,7 @@
     <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
-    <string name="notification_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
+    <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="notification_button_grant_root">Grant root</string>
     <string name="notification_button_enable_charging">Enable charging</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>

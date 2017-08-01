@@ -404,7 +404,7 @@ public final class NotificationHelper {
     }
 
     private static void showNoAlarmTimeFoundNotification(Context context) {
-        String messageText = context.getString(R.string.notification_no_alarm_time_found);
+        String messageText = context.getString(R.string.toast_no_alarm_time_found);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, new Intent(context, SmartChargingActivity.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(SMALL_ICON_RESOURCE)

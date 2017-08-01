@@ -72,7 +72,7 @@
     <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
     <string name="notification_charging_service">Lade-Service läuft…</string>
     <string name="notification_grant_root">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
-    <string name="notification_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
+    <string name="toast_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
     <string name="notification_no_items_enabled">Alle Infos deaktiviert!</string>
     <string name="notification_not_rooted">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
     <string name="notification_sound_disabled">Achtung! Der Ton abgeschaltet!</string>
@@ -97,6 +97,8 @@
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
 
     <string name="tile_stop_charging">Laden abbrechen</string>
+    <string name="tile_warning_high">Akkustand-hoch Warnung</string>
+    <string name="tile_warning_low">Akkustand-niedrig Warnung</string>
 
     <string name="time_format_hours_comma_minutes">1 h 30,5 min</string>
     <string name="time_format_hours_minutes">1 h 30 min</string>

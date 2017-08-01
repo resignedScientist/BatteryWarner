@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
@@ -21,6 +23,7 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference;
 import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
 
+import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -105,14 +108,27 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
                         public void run() {
                             preference.setChecked(false);
                         }
-                    }, getResources().getInteger(R.integer.root_check_switch_back_delay));
+                    }, getResources().getInteger(R.integer.pref_switch_back_delay));
                 } else {
                     RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
                 }
             }
-        } else if (key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
+        } else if (SDK_INT >= LOLLIPOP && key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             if (alarmTimeSwitch.isChecked()) { // remove preference key if checked to force the preference to always load the default alarm time
-                sharedPreferences.edit().remove(timePickerPreference.getKey()).apply();
+                Context context = getActivity().getApplicationContext();
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+                if (alarmClockInfo != null) {
+                    sharedPreferences.edit().remove(timePickerPreference.getKey()).apply();
+                } else {
+                    ToastHelper.sendToast(context, R.string.toast_no_alarm_time_found, Toast.LENGTH_LONG);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            alarmTimeSwitch.setChecked(false);
+                        }
+                    }, getResources().getInteger(R.integer.pref_switch_back_delay));
+                }
             } else { // if unchecked, save the time string to shared preferences
                 sharedPreferences.edit().putLong(timePickerPreference.getKey(), timePickerPreference.getTime()).apply();
             }
