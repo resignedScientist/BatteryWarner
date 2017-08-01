@@ -35,7 +35,15 @@ public class IntroActivity extends MaterialIntroActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        addSlide(new BatterySlide()); // first slide
+        // first slide
+        addSlide(new SlideFragmentBuilder()
+                .backgroundColor(R.color.colorIntro1)
+                .buttonsColor(R.color.colorButtons)
+                .image(R.drawable.battery_status_full_green_256dp)
+                .title(getString(R.string.intro_slide_1_title))
+                .description(getString(R.string.intro_slide_1_description))
+                .build()
+        );
         // second slide
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.colorIntro2)
