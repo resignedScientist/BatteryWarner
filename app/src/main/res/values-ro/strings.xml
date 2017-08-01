@@ -150,9 +150,9 @@
     <string name="toast_theme_changed">Tema va fi activată când vei ieşi din setări!</string>
 
     <!-- new strings -->
-    <string name="title_info_text_size">Text size of the info notification:</string>
-    <string name="notification_button_enable_usb_charging">Enable usb charging</string>
-    <string name="tile_stop_charging">Stop Charging</string>
-    <string name="tile_warning_low">Low battery warning</string>
-    <string name="tile_warning_high">High battery warning</string>
+    <string name="title_info_text_size">Dimensiunea textului din notificare:</string>
+    <string name="notification_button_enable_usb_charging">Activează încărcarea prin USB</string>
+    <string name="tile_stop_charging">Opreste Încărcarea</string>
+    <string name="tile_warning_low">Avertizare baterie slaba</string>
+    <string name="tile_warning_high">Avertizare baterie ridicata</string>
 </resources>
