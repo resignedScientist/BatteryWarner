@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.preferences;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.Ringtone;
@@ -10,7 +9,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
@@ -18,7 +16,6 @@ import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 
-import com.laudien.p1xelfehler.batterywarner.AppInfoHelper;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
@@ -27,7 +24,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -35,7 +31,6 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.AppInfoHelper.IS_PRO;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 /**
@@ -103,30 +98,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
         }
-
-        if (!IS_PRO) {
-            pref_graphEnabled.setEnabled(false);
-            Preference pref_timeFormat = findPreference(getString(R.string.pref_time_format));
-            pref_timeFormat.setEnabled(false);
-            pref_autoSave.setEnabled(false);
-            PreferenceCategory category_graph = (PreferenceCategory) findPreference("stats");
-            category_graph.setTitle(String.format(Locale.getDefault(),
-                    "%s (%s)", getString(R.string.title_stats), getString(R.string.toast_not_pro_short)));
-            Preference pref_pro = new Preference(context);
-            pref_pro.setTitle(getString(R.string.title_get_pro));
-            pref_pro.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppInfoHelper.PACKAGE_NAME_PRO)));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + AppInfoHelper.PACKAGE_NAME_PRO)));
-                    }
-                    return true;
-                }
-            });
-            category_graph.addPreference(pref_pro);
-        }
     }
 
     @Override
@@ -134,9 +105,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onResume();
         pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
         pref_usb.setEnabled(!pref_usb_disabled.isChecked());
-        if (IS_PRO) {
-            pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
-        }
+        pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         Context context = getContext();
         if (context != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);

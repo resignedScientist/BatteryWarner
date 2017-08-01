@@ -30,39 +30,38 @@ import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TE
  * Super class of all Fragments that are using the charging curve.
  */
 public abstract class BasicGraphFragment extends Fragment {
-
     /**
-     * The Tag for logging purposes
+     * An instance of the {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject} holding information about the charging curve.
      */
-    final String TAG = getClass().getSimpleName();
-    /**
-     * An instance of the InfoObject holding information about the charging curve.
-     */
-    InfoObject infoObject;
+    protected InfoObject infoObject;
     /**
      * The GraphView where the graphs are shown
      */
-    GraphView graphView;
+    protected GraphView graphView;
     /**
-     * Checkbox which turns the percentage graph on and off.
+     * Switch which turns the percentage graph on and off.
      */
-    Switch switch_percentage;
+    protected Switch switch_percentage;
     /**
-     * Checkbox which turns the temperature graph on and off.
+     * Switch which turns the temperature graph on and off.
      */
-    Switch switch_temp;
+    protected Switch switch_temp;
     /**
      * TextView that contains the title over the GraphView.
      */
-    TextView textView_title;
+    protected TextView textView_title;
     /**
      * TextView that contains the charging time.
      */
-    TextView textView_chargingTime;
+    protected TextView textView_chargingTime;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
     LineGraphSeries<DataPoint>[] series;
+
+    /**
+     * An {@link android.widget.CompoundButton.OnCheckedChangeListener} managing all switches.
+     */
     private final CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -85,6 +84,9 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         }
     };
+    /**
+     * A byte containing the number of graph labels.
+     */
     private byte labelCounter;
 
     @Nullable
@@ -122,7 +124,7 @@ public abstract class BasicGraphFragment extends Fragment {
 
     /**
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
-     * You can override it to only do it under some conditions (for example only allow it for the pro version).
+     * You can override it to only do it under some conditions.
      */
     void loadSeries() {
         series = getSeries();
@@ -147,8 +149,8 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
-     * Creates a new or updates the existing instance of the InfoObject that is used to store
-     * information about the graphs.
+     * Creates a new or updates the existing instance of the
+     * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
      */
     private void createOrUpdateInfoObject() {
         if (infoObject == null) {
@@ -173,7 +175,9 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
-     * Sets the text of the textView_chargingTime TextView to the charging time.
+     * Sets the text of
+     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#textView_chargingTime}
+     * to the charging time.
      */
     void setTimeText() {
         if (infoObject != null) {
@@ -237,8 +241,9 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
-     * Shows the info dialog defined in the InfoObject. Shows a toast if there are no graphs or
-     * if there is no InfoObject.
+     * Shows the info dialog defined in the {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#infoObject}.
+     * Shows a toast if there are no graphs or if the
+     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#infoObject} is null.
      */
     public void showInfo() {
         if (series != null && infoObject != null) {

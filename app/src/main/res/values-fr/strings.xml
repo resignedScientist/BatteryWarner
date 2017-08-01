@@ -52,11 +52,6 @@
     <string name="intro_slide_3_title">Pour augmenter la durée de vie de la batterie, vous devez donc changer vos comportements habituels !</string>
     <string name="intro_slide_prefs_description">Modifiez les paramètres ici…</string>
     <string name="intro_slide_prefs_title">C\'est parti !</string>
-    <string name="intro_slide_thank_you_description">Vous ne le regretterez pas ! :)</string>
-    <string name="intro_slide_thank_you_title">Merci d\'avoir acheté la version Pro !</string>
-
-    <string name="main_switch_off">Interrupteur principal : OFF</string>
-    <string name="main_switch_on">Interrupteur principal : ON</string>
 
     <string name="menu_delete">Effacer</string>
     <string name="menu_delete_all">Tout effacer</string>
@@ -69,20 +64,17 @@
     <string name="notification_button_grant_root">Accorder l\'accès Root</string>
     <string name="notification_button_toggle_power_saving">Basculer en mode d\'économiseur de batterie</string>
     <string name="notification_charging_disabled">La charge a été désactivée par l\'application. Cliquez ici pour l\'activer à nouveau.</string>
-    <string name="notification_charging_service">Le service pour la charge est en cours d\'exécution…</string>
     <string name="notification_grant_root">L\'application a été mise à jour. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="toast_no_alarm_time_found">Aucune alarme trouvée dans l\'application d\'alarme. Définissez une alarme dans votre application dédiée ou une heure manuellement dans Battery Warner afin d\'utiliser Smart Charging !</string>
     <string name="notification_no_items_enabled">Aucun élément activé !</string>
     <string name="notification_not_rooted">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
     <string name="notification_sound_disabled">Attention ! Le son est désactivé !</string>
     <string name="notification_stop_charging_not_working">L\'arrêt auto de charge ne semble pas fonctionner avec votre appareil ! Vous pouvez désactiver cette fonctionnalité !</string>
-    <string name="notification_title_charging_service">Service pour la charge</string>
     <string name="notification_warning_high">Niveau de batterie au-dessus de</string>
     <string name="notification_warning_low">Niveau de batterie au-dessous de</string>
 
     <string name="smart_charging_explanation">Fonction pour les personnes souhaitant charger complètement leur appareil pendant la nuit sans endommager la batterie en la gardant à 100% trop longtemps. La batterie  est chargée jusqu\'à la limite de charge choisie dans la page principale des paramètres. Ensuite, la charge sera mise en veille et reprendra X minutes avant l\'heure que vous aurez définie ici. Après avoir atteint la limite de charge également définie ici, la charge sera de nouveau arrêtée.</string>
 
-    <string name="summary_dependency">Doit être activé pour cela !</string>
     <string name="summary_disabled">Désactivé</string>
     <string name="summary_graph_autosave">Sauvegarder le graphique enregistré automatiquement dans l\'historique lorsque l\'appareil est complètement chargé ou vous débranchez le chargeur.</string>
     <string name="summary_graph_enabled">Enregistrer un graphique pendant la charge.</string>
@@ -109,7 +101,6 @@
     <string name="title_discharging_notification">Activer la notification de décharge</string>
     <string name="title_discharging_service">Service pour la décharge</string>
     <string name="title_enabled">Activé</string>
-    <string name="title_get_pro">Cliquez ici pour obtenir la version pro !</string>
     <string name="title_graph_autosave">Enregistrer automatiquement</string>
     <string name="title_graph_enabled">Activer la courbe de charge</string>
     <string name="title_history">Historique</string>
@@ -119,7 +110,6 @@
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
     <string name="title_main_page">Accueil</string>
     <string name="title_minutes_before">Minutes avant :</string>
-    <string name="title_notifications_off_warning">Avertir si le son est désactivé</string>
     <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
     <string name="title_preferences">Paramètres</string>
     <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie</string>
@@ -144,13 +134,10 @@
     <string name="toast_error_renaming">Échec du renommage !</string>
     <string name="toast_error_renaming_wrong_characters">Caractère(s) non autorisé(s) utilisé(s) ! Échec du renommage !</string>
     <string name="toast_error_saving">Echec de l\'enregistrement !</string>
-    <string name="toast_finish_intro_first">Veuillez terminer d\'abord l\'intro !</string>
     <string name="toast_graph_name_already_exists">Il existe déjà un graphique nommé</string>
     <string name="toast_no_data">Pas encore de données !</string>
     <string name="toast_no_graphs_saved">Aucun graphique enregistré !</string>
     <string name="toast_not_enough_data">Pas encore assez de données !</string>
-    <string name="toast_not_pro">La version Pro de l\'application est nécessaire pour cette fonctionnalité !</string>
-    <string name="toast_not_pro_short">Pro uniquement !</string>
     <string name="toast_not_rooted">Votre appareil doit être rooté !</string>
     <string name="toast_nothing_to_delete">Il n\'y a rien à supprimer !</string>
     <string name="toast_nothing_to_save">Il n\'y a rien à enregistrer !</string>
@@ -161,10 +148,6 @@
     <string name="toast_success_renaming">Fichier renommé !</string>
     <string name="toast_success_saving">Le graphique a été enregistré dans l\'historique !</string>
     <string name="toast_theme_changed">Le thème sera activé à la fermeture des paramètres !</string>
-
-    <string name="uninstall_go">Désinstallez-la !</string>
-    <string name="uninstall_text">Les versions (gratuite et pro) sont installées en même temps ! Veuillez désinstaller l\'application gratuite !</string>
-    <string name="uninstall_title">Désinstaller en premier l\'application gratuite !</string>
 
     <!-- new strings -->
     <string name="title_info_text_size">Text size of the info notification:</string>

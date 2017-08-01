@@ -12,11 +12,8 @@
     <bool name="pref_first_start_default">true</bool>
     <bool name="pref_checkBox_percent_default">true</bool>
     <bool name="pref_checkBox_temperature_default">true</bool>
-    <bool name="pref_is_enabled_default">true</bool>
-    <bool name="pref_charging_service_enabled_default">true</bool>
     <bool name="pref_usb_charging_disabled_default">false</bool>
     <bool name="pref_smart_charging_enabled_default">false</bool>
-    <bool name="pref_notifications_off_warning_default">false</bool>
     <bool name="pref_info_notification_enabled_default">false</bool>
     <bool name="pref_info_technology_default">false</bool>
     <bool name="pref_info_temperature_default">true</bool>
@@ -24,10 +21,7 @@
     <bool name="pref_info_battery_level_default">false</bool>
     <bool name="pref_info_voltage_default">true</bool>
     <bool name="pref_info_current_default">false</bool>
-    <bool name="pref_info_screen_on_default">false</bool>
-    <bool name="pref_info_screen_off_default">false</bool>
     <bool name="pref_dark_info_notification_default">false</bool>
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_reset_battery_stats_default">false</bool>
-    <bool name="pref_measure_battery_drain_default">false</bool>
 </resources>
