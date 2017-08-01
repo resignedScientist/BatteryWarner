@@ -86,6 +86,12 @@ public class BatteryInfoFragment extends Fragment implements BatteryData.OnBatte
         batteryData.unregisterOnBatteryValueChangedListener(this);
     }
 
+    /**
+     * Method that updates the view when the {@link com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper.BatteryData}
+     * has changed.
+     *
+     * @param index The index of the data that has changed.
+     */
     @Override
     public void onBatteryValueChanged(int index) {
         switch (index) {
