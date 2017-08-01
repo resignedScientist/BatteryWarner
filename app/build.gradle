@@ -69,4 +69,6 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile project(path: ':material-intro-screen')
+    compile 'com.android.support:appcompat-v7:26.0.0'
+    compile 'com.android.support:design:26.0.0'
 }
