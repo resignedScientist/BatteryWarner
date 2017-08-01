@@ -170,4 +170,6 @@
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
     <string name="tile_stop_charging">Stop Charging</string>
+    <string name="tile_warning_low">Low battery warning</string>
+    <string name="tile_warning_high">High battery warning</string>
 </resources>

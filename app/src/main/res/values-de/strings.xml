@@ -97,6 +97,8 @@
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
 
     <string name="tile_stop_charging">Laden abbrechen</string>
+    <string name="tile_warning_high">Akkustand-hoch Warnung</string>
+    <string name="tile_warning_low">Akkustand-niedrig Warnung</string>
 
     <string name="time_format_hours_comma_minutes">1 h 30,5 min</string>
     <string name="time_format_hours_minutes">1 h 30 min</string>
