@@ -1,4 +1,4 @@
-package com.laudien.p1xelfehler.batterywarner.services;
+package com.laudien.p1xelfehler.batterywarner.tiles;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
