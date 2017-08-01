@@ -208,6 +208,8 @@
     <string name="info_charging_speed">Charging speed</string>
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
+    <string name="tile_warning_low">Low battery warning</string>
+    <string name="tile_warning_high">High battery warning</string>
     <!-- dialogs -->
     <string name="dialog_title_graph_info">Graph information</string>
     <string name="dialog_title_are_you_sure">Are you sure?</string>

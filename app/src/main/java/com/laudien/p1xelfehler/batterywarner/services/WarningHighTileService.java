@@ -1,25 +1,20 @@
 package com.laudien.p1xelfehler.batterywarner.services;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import com.laudien.p1xelfehler.batterywarner.R;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
-public class StopChargingTileService extends PreferenceTileService {
-
+public class WarningHighTileService extends PreferenceTileService {
     @Override
     protected int getPreferenceKeyStringResource() {
-        return R.string.pref_stop_charging;
+        return R.string.pref_warning_high_enabled;
     }
 
     @Override
     protected int getPreferenceDefaultBoolResource() {
-        return R.bool.pref_stop_charging_default;
+        return R.bool.pref_warning_high_enabled_default;
     }
 
     @Override
     protected boolean requiresRoot() {
-        return true;
+        return false;
     }
 }

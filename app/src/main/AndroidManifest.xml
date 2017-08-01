@@ -67,8 +67,26 @@
 
         <service
             android:name=".services.StopChargingTileService"
-            android:icon="@drawable/ic_battery_charging_full_white_24dp"
+            android:icon="@drawable/ic_battery_charging_80_white_24dp"
             android:label="@string/tile_stop_charging"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.WarningLowTileService"
+            android:icon="@drawable/ic_battery_20_white_24dp"
+            android:label="@string/tile_warning_low"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.WarningHighTileService"
+            android:icon="@drawable/ic_battery_80_white_24dp"
+            android:label="@string/tile_warning_high"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />

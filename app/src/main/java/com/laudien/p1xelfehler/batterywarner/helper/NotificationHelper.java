@@ -239,7 +239,7 @@ public final class NotificationHelper {
                 });
                 Intent exitPowerSaveIntent = new Intent(context, TogglePowerSavingService.class);
                 PendingIntent pendingIntent = PendingIntent.getService(context, 0, exitPowerSaveIntent, 0);
-                builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, context.getString(R.string.notification_button_toggle_power_saving), pendingIntent);
+                builder.addAction(R.drawable.ic_battery_20_white_24dp, context.getString(R.string.notification_button_toggle_power_saving), pendingIntent);
             }
             // build and show notification
             NotificationManager notificationManager = (NotificationManager)
