@@ -61,7 +61,7 @@
     <string name="notification_charging_disabled">অ্যাপ চার্জিং বন্ধ রেখেছে! পুনরায় চালু করতে এখানে ট্যাপ করুন!</string>
     <string name="notification_grant_root">The app was updatedঅ্যাপটি সর্বশেষ সংস্করণে উন্নিত হয়েছে। দয়া করে পুনরায় রুটের অনুমিত প্রদান করুন!</string>
     <string name="notification_no_items_enabled">কিছুই চালু হয়নি!</string>
-    <string name="notification_no_alarm_time_found">কোন  অ্যালার্মের নির্ধারিত সময় পাওয়া যায়নি! স্মার্ট চার্জিং ব্যবহারের জন্য অ্যালার্ম নির্ধারণ করতে হবে অথবা অ্যাপ থেকে চার্জের সময় নির্ধারণ করে দিতে হবে।</string>
+    <string name="toast_no_alarm_time_found">কোন  অ্যালার্মের নির্ধারিত সময় পাওয়া যায়নি! স্মার্ট চার্জিং ব্যবহারের জন্য অ্যালার্ম নির্ধারণ করতে হবে অথবা অ্যাপ থেকে চার্জের সময় নির্ধারণ করে দিতে হবে।</string>
     <string name="notification_not_rooted">অ্যাপটির রুট অনুমোদন আর নেই। পুনরায় অনুমতি দেয়ার জন্য এখানে ট্যাপ করুন!</string>
     <string name="notification_sound_disabled">সতর্ক! শব্দ সংকেত বন্ধ করা আছে!</string>
     <string name="notification_stop_charging_not_working">এ অ্যাপের দ্বারা আপনার মোবাইলে চার্জিং বন্ধ করা যাচ্ছে না!</string>

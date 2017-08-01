@@ -71,7 +71,7 @@
     <string name="notification_charging_disabled">Pengisian telah dinonaktifkan oleh aplikasi ini. Klik disini untuk mengaktifkan kembali.</string>
     <string name="notification_charging_service">Layanan pengisian sedang berjalan…</string>
     <string name="notification_grant_root">Aplikasi ini telah diperbarui. Klik disini untuk memulihkan akses root!</string>
-    <string name="notification_no_alarm_time_found">Tidak ada alarm ditemukan dalam aplikasi alarm! Atur sebuah alarm dalam aplikasi alarm anda atau atur waktu secara manual di dalam aplikasi ini jika ingin menggunakan Pengisian Pintar!</string>
+    <string name="toast_no_alarm_time_found">Tidak ada alarm ditemukan dalam aplikasi alarm! Atur sebuah alarm dalam aplikasi alarm anda atau atur waktu secara manual di dalam aplikasi ini jika ingin menggunakan Pengisian Pintar!</string>
     <string name="notification_no_items_enabled">Tidak ada item yang dihidupkan!</string>
     <string name="notification_not_rooted">Aplikasi ini tidak lagi memiliki akses root! Klik disini untuk memulihkan akses root!</string>
     <string name="notification_sound_disabled">Peringatan! Suara dimatikan!</string>

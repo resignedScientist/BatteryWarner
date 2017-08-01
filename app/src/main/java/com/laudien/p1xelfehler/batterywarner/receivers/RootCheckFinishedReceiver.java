@@ -29,7 +29,7 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
                         public void run() {
                             disablePreferences(preferenceKey);
                         }
-                    }, context.getResources().getInteger(R.integer.root_check_switch_back_delay));
+                    }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
                 }
             } else {
                 throw new RuntimeException("The Intent does not contain all extras!");

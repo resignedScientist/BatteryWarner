@@ -16,5 +16,6 @@
     <integer name="pref_info_text_size_max">15</integer>
     <integer name="text_size_charging_text_normal">14</integer>
     <integer name="text_size_charging_text_big">16</integer>
-    <integer name="root_check_switch_back_delay">500</integer> <!-- The delay before the switch goes back off if device is not rooted -->
+    <integer name="pref_switch_back_delay">500
+    </integer> <!-- The delay before the switch goes back off if device is not rooted -->
 </resources>

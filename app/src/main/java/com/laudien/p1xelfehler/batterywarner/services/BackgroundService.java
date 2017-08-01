@@ -353,7 +353,6 @@ public class BackgroundService extends Service {
                 alarmTime = alarmClockInfo.getTriggerTime();
             } else { // no alarm time is set in the alarm app
                 NotificationHelper.showNotification(this, NotificationHelper.ID_NO_ALARM_TIME_FOUND);
-                sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), false).apply();
                 return 0;
             }
         } else { // use time in shared preferences (smartChargingTime)
