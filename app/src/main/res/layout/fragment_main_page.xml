@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:padding="16dp">
-
 
     <com.laudien.p1xelfehler.batterywarner.views.BatteryView
         android:id="@+id/img_battery"
@@ -18,9 +17,8 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_battery_status_full_white_128dp" />
 
-    <fragment
-        android:id="@+id/fragment_battery_info"
-        android:name="com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment"
+    <include
+        layout="@layout/fragment_battery_infos"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"

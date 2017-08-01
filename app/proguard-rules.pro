@@ -17,7 +17,7 @@
 #}
 
 # Battery Warner itself
--keep class com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment
+-keep class com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment
 -keep class com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment
 
 # Material Intro Screen

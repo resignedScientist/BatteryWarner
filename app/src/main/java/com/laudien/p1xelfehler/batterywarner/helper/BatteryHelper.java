@@ -97,7 +97,7 @@ public class BatteryHelper {
     }
 
     /**
-     * This class holds all the data that can be shown in the BatteryInfoFragment or the info
+     * This class holds all the data that can be shown in the MainPageFragment or the info
      * notification (or else where if needed). You can set an OnBatteryValueChangedListener
      * that notifies you when the data was changed with one of the setters. It will only be called
      * if the new data is actually different from the old data. The data can be updated with the

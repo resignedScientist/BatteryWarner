@@ -16,18 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
-import com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
-import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_HIGH;
-import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_LOW;
-import static com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment.COLOR_OK;
 
 /**
  * The main activity that is shown to the user after opening the app if the intro is already finished.
@@ -50,33 +45,14 @@ public class MainActivity extends BaseActivity {
             finish();
         } else {
             setContentView(R.layout.activity_main);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
-            ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+            ViewPager viewPager = findViewById(R.id.viewPager);
             if (viewPager != null) { // phones only
                 ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
                 viewPager.setAdapter(viewPagerAdapter);
-                TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+                TabLayout tabLayout = findViewById(R.id.tab_layout);
                 tabLayout.setupWithViewPager(viewPager);
-            } else { // tablets only
-                final BatteryView batteryView = (BatteryView) findViewById(R.id.img_battery);
-                BatteryInfoFragment batteryInfoFragment = (BatteryInfoFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_battery_info);
-                batteryInfoFragment.setOnBatteryColorChangedListener(new BatteryInfoFragment.OnBatteryColorChangedListener() {
-                    @Override
-                    public void onColorChanged(byte colorID) {
-                        switch (colorID) {
-                            case COLOR_LOW:
-                                batteryView.setColor(getResources().getColor(R.color.colorBatteryLow));
-                                break;
-                            case COLOR_OK:
-                                batteryView.setColor(getResources().getColor(R.color.colorBatteryOk));
-                                break;
-                            case COLOR_HIGH:
-                                batteryView.setColor(getResources().getColor(R.color.colorBatteryHigh));
-                                break;
-                        }
-                    }
-                });
             }
             // start services just in case
             ServiceHelper.startService(this);

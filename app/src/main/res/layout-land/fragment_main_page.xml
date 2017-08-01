@@ -14,10 +14,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_battery_status_full_white_128dp" />
 
-    <fragment
-        android:id="@+id/fragment_battery_info"
-        android:name="com.laudien.p1xelfehler.batterywarner.fragments.BatteryInfoFragment"
-        android:layout_width="0dp"
+    <include
+        layout="@layout/fragment_battery_infos"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
