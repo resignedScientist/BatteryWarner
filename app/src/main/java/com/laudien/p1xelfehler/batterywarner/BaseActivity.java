@@ -31,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param title Title to apply to the toolbar.
      */
     protected void setToolbarTitle(String title) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
     }

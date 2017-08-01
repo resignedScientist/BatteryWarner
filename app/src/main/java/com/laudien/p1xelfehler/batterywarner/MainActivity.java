@@ -25,9 +25,9 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * The main activity that is shown to the user after opening the app if the intro is already finished.
- * It also checks if both apps are installed and sends a broadcast or disables app functionality
- * depending on if this is the pro version or not. It tells the user to uninstall the free version.
+ * The main activity that is shown to the user after opening the app.
+ * It will show the {@link com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity}
+ * if it was not already finished.
  */
 public class MainActivity extends BaseActivity {
     private boolean backPressed = false;

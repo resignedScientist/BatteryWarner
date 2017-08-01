@@ -18,7 +18,8 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 
 /**
  * A BroadcastReceiver that is called by the system if the app has been updated.
- * It starts some services if necessary and asks for root permission if some root settings are used.
+ * It starts the {@link com.laudien.p1xelfehler.batterywarner.services.BackgroundService}
+ * and asks for root permission if some root settings are used.
  * Does only work after the intro was finished.
  */
 public class AppUpdateReceiver extends BroadcastReceiver {

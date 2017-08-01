@@ -10,7 +10,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 /**
- * A BroadcastReceiver called by the System if the device finished booting.
+ * A BroadcastReceiver called by the System when the device finished booting.
  * It starts some services if necessary. Does only work after the intro was finished.
  */
 public class BootReceiver extends BroadcastReceiver {

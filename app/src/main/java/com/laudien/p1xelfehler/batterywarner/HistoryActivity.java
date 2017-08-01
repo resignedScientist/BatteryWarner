@@ -46,9 +46,6 @@ import static com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragmen
 
 /**
  * Activity that shows all the charging curves that were saved.
- * It is the frame for the HistoryFragment and only loads the fragment if the external storage
- * permission is given. If not, it asks for the permission and loads the fragment if the
- * user allows it.
  */
 public class HistoryActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
