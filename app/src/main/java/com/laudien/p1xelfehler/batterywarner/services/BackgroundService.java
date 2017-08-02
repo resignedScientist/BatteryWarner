@@ -48,20 +48,19 @@ public class BackgroundService extends Service {
     private static final int NOTIFICATION_ID_INFO = 2002;
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
-    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver, startedOrStoppedChargingReceiver;
-    private SharedPreferences sharedPreferences;
-    private RemoteViews infoNotificationContent;
-    private String infoNotificationMessage;
-    private Object infoNotificationBuilder;
-    private NotificationManager notificationManager;
-    private BatteryHelper.BatteryData batteryData;
-    private int lastBatteryLevel = -1;
-    private GraphDbHelper graphDbHelper;
     private boolean alreadyNotified = false;
-    private long smartChargingResumeTime;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
-    private boolean isCharging;
+    private int lastBatteryLevel = -1;
+    private long smartChargingResumeTime;
+    private String infoNotificationMessage;
+    private Object infoNotificationBuilder;
+    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver, startedOrStoppedChargingReceiver;
+    private NotificationManager notificationManager;
+    private SharedPreferences sharedPreferences;
+    private RemoteViews infoNotificationContent;
+    private BatteryHelper.BatteryData batteryData;
+    private GraphDbHelper graphDbHelper;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
