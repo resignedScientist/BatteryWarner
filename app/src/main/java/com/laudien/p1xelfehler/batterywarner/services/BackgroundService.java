@@ -379,7 +379,7 @@ public class BackgroundService extends Service {
                     boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
                     if (chargingAllowed) {
                         // reset the graph
-                        if (isCharging && !chargingResumedBySmartCharging) {
+                        if (isCharging && !chargingResumedBySmartCharging && lastBatteryLevel == -1) {
                             resetGraph();
                         }
                         // handle charging
@@ -394,13 +394,6 @@ public class BackgroundService extends Service {
                 if (screenOn) {
                     refreshInfoNotification(intent);
                 }
-            }
-        }
-
-        private void resetGraph() {
-            boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-            if (graphEnabled) {
-                graphDbHelper.resetTable();
             }
         }
 
@@ -553,6 +546,13 @@ public class BackgroundService extends Service {
             });
         }
 
+        private void resetGraph() {
+            boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            if (graphEnabled) {
+                graphDbHelper.resetTable();
+            }
+        }
+
         private void showWarningHighNotification() {
             Notification notification = buildWarningHighNotification();
             notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
@@ -600,7 +600,7 @@ public class BackgroundService extends Service {
          * Charging was resumed by the app or the user connects the charger.
          */
         private void onPowerConnected() {
-
+            notificationManager.cancel(NOTIFICATION_ID_WARNING);
         }
 
         /**
