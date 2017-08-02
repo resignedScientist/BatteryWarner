@@ -611,15 +611,16 @@ public class BackgroundService extends Service {
             if (!chargingDisabledInFile) {
                 notificationManager.cancel(NOTIFICATION_ID_WARNING);
                 resetSmartCharging();
+                final boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
                 final boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (autoSaveGraphEnabled) {
+                if (graphEnabled && autoSaveGraphEnabled) {
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
                             GraphFragment.saveGraph(BackgroundService.this);
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
