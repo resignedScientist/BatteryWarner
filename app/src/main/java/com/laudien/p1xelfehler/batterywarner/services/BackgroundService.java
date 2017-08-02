@@ -48,7 +48,7 @@ public class BackgroundService extends Service {
     private static final int NOTIFICATION_ID_INFO = 2002;
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
-    private BatteryChangedReceiver batteryChangedReceiver;
+    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver, startedOrStoppedChargingReceiver;
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
     private String infoNotificationMessage;
@@ -60,8 +60,8 @@ public class BackgroundService extends Service {
     private boolean alreadyNotified = false;
     private long smartChargingResumeTime;
     private boolean screenOn = true;
-    private ScreenOnOffReceiver screenOnOffReceiver;
     private boolean chargingDisabledInFile = false;
+    private boolean isCharging;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
@@ -100,19 +100,21 @@ public class BackgroundService extends Service {
             }
         });
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // started or stopped charging receiver
+        startedOrStoppedChargingReceiver = new StartedOrStoppedChargingReceiver();
+        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
+        intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        intentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
-        intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-        final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, intentFilter);
+        final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         batteryData = BatteryHelper.getBatteryData(batteryChangedIntent, this);
         // screen on/off receiver
         screenOnOffReceiver = new ScreenOnOffReceiver();
         IntentFilter onOffFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         onOffFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(screenOnOffReceiver, onOffFilter);
+        // check if charging was disabled in file and show the notification for enabling it again
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -155,6 +157,7 @@ public class BackgroundService extends Service {
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
+        unregisterReceiver(startedOrStoppedChargingReceiver);
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {
@@ -407,11 +410,8 @@ public class BackgroundService extends Service {
                     boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
                     if (chargingAllowed) {
                         // reset the graph
-                        if (lastBatteryLevel == -1) {
-                            notificationManager.cancel(NOTIFICATION_ID_WARNING);
-                            if (!chargingResumedBySmartCharging) {
-                                resetGraph();
-                            }
+                        if (isCharging && !chargingResumedBySmartCharging) {
+                            resetGraph();
                         }
                         // handle charging
                         handleCharging(intent);
@@ -425,13 +425,6 @@ public class BackgroundService extends Service {
                 if (screenOn) {
                     refreshInfoNotification(intent);
                 }
-            } else { // started or stopped charging
-                lastBatteryLevel = -1;
-                alreadyNotified = false;
-                if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED) && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
-                    notificationManager.cancel(NOTIFICATION_ID_WARNING);
-                    resetSmartCharging();
-                }
             }
         }
 
@@ -440,11 +433,6 @@ public class BackgroundService extends Service {
             if (graphEnabled) {
                 graphDbHelper.resetTable();
             }
-        }
-
-        private void resetSmartCharging() {
-            chargingPausedBySmartCharging = false;
-            chargingResumedBySmartCharging = false;
         }
 
         private void handleCharging(Intent intent) {
@@ -615,6 +603,54 @@ public class BackgroundService extends Service {
                     }
                 }
             });
+        }
+    }
+
+    private class StartedOrStoppedChargingReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean charging = intent.getAction().equals(Intent.ACTION_POWER_CONNECTED);
+            // double check if it is a valid intent action
+            if (charging || intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
+                onChargingStateChanged();
+                if (charging) { // charging
+                    onPowerConnected();
+                } else { // discharging
+                    onPowerDisconnected();
+                }
+            }
+        }
+
+        /**
+         * Charging was resumed by the app or the user connects the charger.
+         */
+        private void onPowerConnected() {
+
+        }
+
+        /**
+         * Charging was stopped by the app or the user disconnects the charger.
+         */
+        private void onPowerDisconnected() {
+            if (!chargingDisabledInFile) {
+                notificationManager.cancel(NOTIFICATION_ID_WARNING);
+                resetSmartCharging();
+            }
+        }
+
+        /**
+         * Method to prevent duplicate code for things that would be written in
+         * onPowerConnected() AND onPowerDisconnected() otherwise.
+         */
+        private void onChargingStateChanged() {
+            lastBatteryLevel = -1;
+            alreadyNotified = false;
+        }
+
+        private void resetSmartCharging() {
+            chargingPausedBySmartCharging = false;
+            chargingResumedBySmartCharging = false;
         }
     }
 
