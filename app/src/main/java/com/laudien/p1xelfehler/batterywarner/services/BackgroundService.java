@@ -21,6 +21,7 @@ import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
@@ -122,7 +123,7 @@ public class BackgroundService extends Service {
                     if (chargingDisabledInFile) {
                         notificationManager.cancel(NOTIFICATION_ID_WARNING);
                         boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                        boolean isUsbCharging = batteryChangedIntent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
+                        boolean isUsbCharging = batteryChangedIntent != null && batteryChangedIntent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
                         boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
                         Notification notification = buildStopChargingNotification(false, !chargingAllowed);
                         notificationManager.notify(NOTIFICATION_ID_WARNING, notification);
@@ -610,6 +611,15 @@ public class BackgroundService extends Service {
             if (!chargingDisabledInFile) {
                 notificationManager.cancel(NOTIFICATION_ID_WARNING);
                 resetSmartCharging();
+                final boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (autoSaveGraphEnabled) {
+                            GraphFragment.saveGraph(BackgroundService.this);
+                        }
+                    }
+                });
             }
         }
 
