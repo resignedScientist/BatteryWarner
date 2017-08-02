@@ -11,7 +11,6 @@ import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
-import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING;
 
 /**
  * An IntentService called by the app.
@@ -39,13 +38,10 @@ public class GrantRootService extends IntentService {
                 boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) != 0;
                 if (!isCharging) { // if not charging make sure that it is not disabled by the app
                     try {
-                        boolean chargingEnabled = RootHelper.isChargingEnabled();
-                        if (!chargingEnabled) { // if disabled by app, show notification!
-                            NotificationHelper.showNotification(GrantRootService.this, ID_STOP_CHARGING);
-                        }
+                        RootHelper.isChargingEnabled();
                     } catch (RootHelper.NotRootedException e) { // user disabled root again after allowing it
                         e.printStackTrace();
-                        NotificationHelper.showNotification(GrantRootService.this, ID_NOT_ROOTED);
+                        NotificationHelper.showNotification(getApplicationContext(), ID_NOT_ROOTED);
                     } catch (RootHelper.NoBatteryFileFoundException e) {
                         // Should not happen! Is checked before the user can enable the feature!
                         e.printStackTrace();

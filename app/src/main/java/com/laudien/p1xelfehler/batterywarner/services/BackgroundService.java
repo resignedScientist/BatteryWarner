@@ -36,7 +36,6 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
-import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O;
 import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
@@ -54,7 +53,7 @@ public class BackgroundService extends Service {
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
     private String infoNotificationMessage;
-    private Object infoNotificationBuilder;
+    private NotificationCompat.Builder infoNotificationBuilder;
     private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver, startedOrStoppedChargingReceiver;
     private NotificationManager notificationManager;
     private SharedPreferences sharedPreferences;
@@ -103,6 +102,7 @@ public class BackgroundService extends Service {
         startedOrStoppedChargingReceiver = new StartedOrStoppedChargingReceiver();
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
         intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        registerReceiver(startedOrStoppedChargingReceiver, intentFilter);
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
@@ -162,33 +162,17 @@ public class BackgroundService extends Service {
     private Notification buildInfoNotification(RemoteViews content, String message) {
         Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
         PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
-        if (SDK_INT >= N) {
-            Notification.Builder builder = new Notification.Builder(this)
-                    .setOngoing(true)
-                    .setContentIntent(clickPendingIntent)
-                    .setContentTitle(getString(R.string.title_info_notification))
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setCustomBigContentView(content)
-                    .setContentText(message);
-            if (SDK_INT >= O) {
-                builder.setChannelId(getString(R.string.channel_battery_info));
-            } else { // Android N (API 24/25)
-                builder.setPriority(Notification.PRIORITY_LOW);
-            }
-            infoNotificationBuilder = builder;
-            return builder.build();
-        } else { // API lower than N
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                    .setOngoing(true)
-                    .setPriority(Notification.PRIORITY_LOW)
-                    .setContentIntent(clickPendingIntent)
-                    .setContentTitle(getString(R.string.title_info_notification))
-                    .setCustomBigContentView(content)
-                    .setContentText(message)
-                    .setSmallIcon(R.mipmap.ic_launcher);
-            infoNotificationBuilder = builder;
-            return builder.build();
+        infoNotificationBuilder = new NotificationCompat.Builder(this, getString(R.string.channel_battery_info))
+                .setOngoing(true)
+                .setContentIntent(clickPendingIntent)
+                .setContentTitle(getString(R.string.title_info_notification))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setCustomBigContentView(content)
+                .setContentText(message);
+        if (SDK_INT < O) {
+            infoNotificationBuilder.setPriority(Notification.PRIORITY_LOW);
         }
+        return infoNotificationBuilder.build();
     }
 
     private RemoteViews buildInfoNotificationContent(String[] data) {
@@ -328,20 +312,6 @@ public class BackgroundService extends Service {
             builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_toggle_power_saving), pendingIntent);
         }
         return builder.build();
-    }
-
-    private void resetBatteryStats() {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RootHelper.resetBatteryStats();
-                } catch (RootHelper.NotRootedException e) {
-                    e.printStackTrace();
-                    NotificationHelper.showNotification(BackgroundService.this, NotificationHelper.ID_NOT_ROOTED);
-                }
-            }
-        });
     }
 
     private long getSmartChargingResumeTime() {
@@ -520,17 +490,8 @@ public class BackgroundService extends Service {
                 infoNotificationContent = buildInfoNotificationContent(data);
                 infoNotificationMessage = buildInfoNotificationMessage(data);
                 //Log.d(getClass().getSimpleName(), "Message: " + infoNotificationMessage);
-                Notification notification;
-                if (infoNotificationBuilder instanceof Notification.Builder) {
-                    Notification.Builder builder = ((Notification.Builder) infoNotificationBuilder)
-                            .setContentText(infoNotificationMessage);
-                    notification = builder.build();
-                } else {
-                    NotificationCompat.Builder builder = ((NotificationCompat.Builder) infoNotificationBuilder)
-                            .setContentText(infoNotificationMessage);
-                    notification = builder.build();
-                }
-                notificationManager.notify(NOTIFICATION_ID_INFO, notification);
+                infoNotificationBuilder.setContentText(infoNotificationMessage);
+                notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
             }
         }
 
@@ -573,6 +534,20 @@ public class BackgroundService extends Service {
                     } catch (RootHelper.NoBatteryFileFoundException e) {
                         e.printStackTrace();
                         NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
+                    }
+                }
+            });
+        }
+
+        private void resetBatteryStats() {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        RootHelper.resetBatteryStats();
+                    } catch (RootHelper.NotRootedException e) {
+                        e.printStackTrace();
+                        NotificationHelper.showNotification(BackgroundService.this, NotificationHelper.ID_NOT_ROOTED);
                     }
                 }
             });
