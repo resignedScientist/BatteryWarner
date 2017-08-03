@@ -142,7 +142,7 @@ public class BackgroundService extends Service {
             NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING);
         }
         // battery info notification
-        boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
+        boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (infoNotificationEnabled) {
             String[] data = batteryData.getEnabledOnly(this, sharedPreferences);
             infoNotificationContent = buildInfoNotificationContent(data);
