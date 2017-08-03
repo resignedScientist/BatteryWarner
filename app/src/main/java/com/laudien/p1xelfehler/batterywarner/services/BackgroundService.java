@@ -137,6 +137,7 @@ public class BackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null && intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
+            resetSmartCharging();
             chargingDisabledInFile = false;
             NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING);
         }
@@ -365,6 +366,11 @@ public class BackgroundService extends Service {
                     return false;
             }
         }
+    }
+
+    private void resetSmartCharging() {
+        chargingPausedBySmartCharging = false;
+        chargingResumedBySmartCharging = false;
     }
 
     private class BatteryChangedReceiver extends BroadcastReceiver {
@@ -631,11 +637,6 @@ public class BackgroundService extends Service {
         private void onChargingStateChanged() {
             lastBatteryLevel = -1;
             alreadyNotified = false;
-        }
-
-        private void resetSmartCharging() {
-            chargingPausedBySmartCharging = false;
-            chargingResumedBySmartCharging = false;
         }
     }
 
