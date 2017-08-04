@@ -380,12 +380,15 @@ public class BackgroundService extends Service {
             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
                 int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
                 boolean isCharging = chargingType != 0;
-                if (isCharging || chargingPausedBySmartCharging) {
+                if (isCharging || chargingDisabledInFile && chargingPausedBySmartCharging) {
                     boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
                     boolean isUsbCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
                     boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
                     if (chargingAllowed) {
-                        // reset the graph
+                        /*
+                        lastBatteryLevel == -1 means that the device just started or stopped charging.
+                        Since it is charging, it will reset the graph if it was not resumed by Smart Charging.
+                         */
                         if (isCharging && !chargingResumedBySmartCharging && lastBatteryLevel == -1) {
                             resetGraph();
                         }
@@ -510,10 +513,12 @@ public class BackgroundService extends Service {
                             e.printStackTrace();
                             NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
                             showWarningHighNotification();
+                            chargingDisabledInFile = false;
                         } catch (RootHelper.NoBatteryFileFoundException e) {
                             e.printStackTrace();
                             NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
                             showWarningHighNotification();
+                            chargingDisabledInFile = false;
                         }
                     }
                 });
