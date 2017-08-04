@@ -318,7 +318,7 @@ public class BackgroundService extends Service {
 
     private long getSmartChargingResumeTime() {
         long alarmTime; // the target time the device should be charged to the defined maximum
-        boolean smartChargingUseClock = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        boolean smartChargingUseClock = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
         int smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
         if (SDK_INT >= LOLLIPOP && smartChargingUseClock) { // use alarm clock
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
