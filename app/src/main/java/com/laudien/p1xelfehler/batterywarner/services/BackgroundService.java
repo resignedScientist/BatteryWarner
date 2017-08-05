@@ -443,8 +443,10 @@ public class BackgroundService extends Service {
          * onPowerConnected() AND onPowerDisconnected() otherwise.
          */
         private void onChargingStateChanged() {
-            lastBatteryLevel = -1;
-            alreadyNotified = false;
+            if (!chargingDisabledInFile) {
+                lastBatteryLevel = -1;
+                alreadyNotified = false;
+            }
         }
 
         private void handleCharging(Intent intent) {
