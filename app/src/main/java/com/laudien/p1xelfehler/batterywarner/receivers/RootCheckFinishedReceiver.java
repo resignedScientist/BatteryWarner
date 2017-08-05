@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -29,6 +30,8 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
                             disablePreferences(preferenceKey);
                         }
                     }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
+                } else {
+                    ServiceHelper.restartService(context.getApplicationContext());
                 }
             } else {
                 throw new RuntimeException("The Intent does not contain all extras!");

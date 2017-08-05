@@ -52,11 +52,12 @@ public class BackgroundService extends Service {
     private boolean alreadyNotified = false;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
+    private boolean charging = false;
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
     private String infoNotificationMessage;
     private NotificationCompat.Builder infoNotificationBuilder;
-    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver, startedOrStoppedChargingReceiver;
+    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver;
     private NotificationManager notificationManager;
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
@@ -100,11 +101,6 @@ public class BackgroundService extends Service {
             }
         });
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // started or stopped charging receiver
-        startedOrStoppedChargingReceiver = new StartedOrStoppedChargingReceiver();
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_POWER_CONNECTED);
-        intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
-        registerReceiver(startedOrStoppedChargingReceiver, intentFilter);
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         graphDbHelper = GraphDbHelper.getInstance(this);
@@ -160,7 +156,6 @@ public class BackgroundService extends Service {
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
-        unregisterReceiver(startedOrStoppedChargingReceiver);
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {
@@ -380,24 +375,22 @@ public class BackgroundService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+                // check if charging changed
                 int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
                 boolean isCharging = chargingType != 0;
+                boolean chargingAllowed = true;
+                if (charging != isCharging) {
+                    charging = isCharging;
+                    onChargingStateChanged();
+                    if (charging) { // started charging
+                        chargingAllowed = onPowerConnected(chargingType);
+                    } else { // started discharging
+                        onPowerDisconnected();
+                    }
+                }
                 if (isCharging || chargingDisabledInFile && chargingPausedBySmartCharging) {
-                    boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                    boolean isUsbCharging = intent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
-                    boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
                     if (chargingAllowed) {
-                        /*
-                        lastBatteryLevel == -1 means that the device just started or stopped charging.
-                        Since it is charging, it will reset the graph if it was not resumed by Smart Charging.
-                         */
-                        if (isCharging && !chargingResumedBySmartCharging && lastBatteryLevel == -1) {
-                            resetGraph();
-                        }
-                        // handle charging
                         handleCharging(intent);
-                    } else if (!chargingDisabledInFile) { // charging not allowed
-                        stopCharging(false, true);
                     }
                 } else { // discharging
                     handleDischarging(intent);
@@ -407,6 +400,51 @@ public class BackgroundService extends Service {
                     refreshInfoNotification(intent);
                 }
             }
+        }
+
+        /**
+         * Charging was resumed by the app or the user connects the charger.
+         */
+        private boolean onPowerConnected(int chargingType) {
+            notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
+            boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+            boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
+            boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
+            if (!chargingAllowed) {
+                stopCharging(false, true);
+            } else if (!chargingResumedBySmartCharging) { // charging is allowed
+                resetGraph();
+            }
+            return chargingAllowed;
+        }
+
+        /**
+         * Charging was stopped by the app or the user disconnects the charger.
+         */
+        private void onPowerDisconnected() {
+            if (!chargingDisabledInFile) {
+                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
+                resetSmartCharging();
+                final boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+                final boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
+                if (graphEnabled && autoSaveGraphEnabled) {
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            GraphFragment.saveGraph(BackgroundService.this);
+                        }
+                    });
+                }
+            }
+        }
+
+        /**
+         * Method to prevent duplicate code for things that would be written in
+         * onPowerConnected() AND onPowerDisconnected() otherwise.
+         */
+        private void onChargingStateChanged() {
+            lastBatteryLevel = -1;
+            alreadyNotified = false;
         }
 
         private void handleCharging(Intent intent) {
@@ -589,59 +627,6 @@ public class BackgroundService extends Service {
                     }
                 }
             });
-        }
-    }
-
-    private class StartedOrStoppedChargingReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean charging = intent.getAction().equals(Intent.ACTION_POWER_CONNECTED);
-            // double check if it is a valid intent action
-            if (charging || intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
-                onChargingStateChanged();
-                if (charging) { // charging
-                    onPowerConnected();
-                } else { // discharging
-                    onPowerDisconnected();
-                }
-            }
-        }
-
-        /**
-         * Charging was resumed by the app or the user connects the charger.
-         */
-        private void onPowerConnected() {
-            notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
-        }
-
-        /**
-         * Charging was stopped by the app or the user disconnects the charger.
-         */
-        private void onPowerDisconnected() {
-            if (!chargingDisabledInFile) {
-                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                resetSmartCharging();
-                final boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-                final boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
-                if (graphEnabled && autoSaveGraphEnabled) {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            GraphFragment.saveGraph(BackgroundService.this);
-                        }
-                    });
-                }
-            }
-        }
-
-        /**
-         * Method to prevent duplicate code for things that would be written in
-         * onPowerConnected() AND onPowerDisconnected() otherwise.
-         */
-        private void onChargingStateChanged() {
-            lastBatteryLevel = -1;
-            alreadyNotified = false;
         }
     }
 

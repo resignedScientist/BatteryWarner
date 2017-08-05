@@ -23,7 +23,7 @@ public class ServiceHelper {
         context.stopService(new Intent(context, BackgroundService.class));
     }
 
-    public static void restartDischargingService(Context context) {
+    public static void restartService(Context context) {
         stopService(context);
         startService(context);
     }

@@ -170,7 +170,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null && checked) {
                 ServiceHelper.startService(context);
             }
-        } else if (preference == pref_stopCharging || preference == pref_usb_disabled || preference == pref_power_saving_mode || preference == pref_reset_battery_stats) { // root features
+        } else if (preference == pref_stopCharging
+                || preference == pref_usb_disabled
+                || preference == pref_power_saving_mode
+                || preference == pref_reset_battery_stats) { // root features
             TwoStatePreference twoStatePreference = (TwoStatePreference) preference;
             if (twoStatePreference != null && twoStatePreference.isChecked()) {
                 RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
@@ -183,17 +186,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 boolean checked = pref_usb_disabled.isChecked();
                 pref_usb.setEnabled(!checked);
             }
-        } else if ((preference == pref_ac && pref_ac.isChecked())
-                || (preference == pref_usb && pref_usb.isChecked())
-                || (preference == pref_wireless && pref_wireless.isChecked())) {
-            Context context = getContext();
-            if (context != null) {
-                ServiceHelper.startService(context);
-            }
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.restartDischargingService(getContext());
+                ServiceHelper.restartService(getContext());
             }
         } else if (preference == pref_infoTextSize) {
             Context context = getContext();
