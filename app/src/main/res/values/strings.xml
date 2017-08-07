@@ -29,6 +29,8 @@
     <string name="pref_smart_charging_time" translatable="false">smartChargingTime</string>
     <string name="pref_smart_charging_time_before" translatable="false">smartChargingTimeBefore</string>
     <string name="pref_smart_charging_use_alarm_clock_time" translatable="false">smartChargingUseAlarmClockTime</string>
+    <string name="pref_smart_charging_auto_resume" translatable="false">autoResume</string>
+    <string name="pref_smart_charging_auto_resume_percentage" translatable="false">autoResumePercentage</string>
     <!-- Battery info notification -->
     <string name="pref_info_notification_items" translatable="false">infoNotificationItems</string>
     <string name="pref_info_notification_enabled" translatable="false">infoNotificationEnabled</string>
@@ -82,6 +84,8 @@
     <string name="title_discharging_service">Discharging Service</string>
     <string name="title_warning_percentage">Warning percentage:</string>
     <string name="title_info_text_size">Text size of the info notification:</string>
+    <string name="title_smart_charging_auto_resume">Auto Resume</string>
+    <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
     <!-- other titles -->
     <string name="title_preferences">Settings</string>
     <string name="title_main_page">Main page</string>
@@ -99,6 +103,7 @@
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
+    <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>

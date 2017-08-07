@@ -25,5 +25,18 @@
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_time"
         android:title="@string/title_smart_charging_time" />
-
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_smart_charging_auto_resume_default"
+        android:dependency="@string/pref_smart_charging_enabled"
+        android:key="@string/pref_smart_charging_auto_resume"
+        android:summary="@string/summary_smart_charging_auto_resume"
+        android:title="@string/title_smart_charging_auto_resume" />
+    <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+        android:defaultValue="@integer/pref_smart_charging_auto_resume_percentage_default"
+        android:dependency="@string/pref_smart_charging_auto_resume"
+        android:key="@string/pref_smart_charging_auto_resume_percentage"
+        android:title="@string/title_smart_charging_auto_resume_percentage"
+        app:slider_max="@integer/pref_smart_charging_auto_resume_percentage_max"
+        app:slider_min="@integer/pref_smart_charging_auto_resume_percentage_min"
+        app:unit="%" />
 </PreferenceScreen>

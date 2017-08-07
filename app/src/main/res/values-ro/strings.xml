@@ -155,4 +155,7 @@
     <string name="tile_stop_charging">Opreste Încărcarea</string>
     <string name="tile_warning_low">Avertizare baterie slaba</string>
     <string name="tile_warning_high">Avertizare baterie ridicata</string>
+    <string name="title_smart_charging_auto_resume">Auto Resume</string>
+    <string name="summary_smart_charging_auto_resume">Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again.</string>
+    <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
 </resources>
