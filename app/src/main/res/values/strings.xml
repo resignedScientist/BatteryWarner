@@ -181,6 +181,7 @@
     <string name="menu_rename_graph">Rename graph</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_all">Delete all</string>
+    <string name="menu_donate">Donate</string>
     <!-- battery information -->
     <string name="info_technology">Technology</string>
     <string name="info_temperature">Temperature</string>
