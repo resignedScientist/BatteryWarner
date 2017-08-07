@@ -1,13 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
 
@@ -23,7 +26,7 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.preference_base_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.title_preferences));
         try { // put version code in subtitle of the toolbar
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -43,7 +46,25 @@ public class SettingsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_donate) {
+            donate();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void donate() {
+        Uri webpage = Uri.parse(getString(R.string.donation_link));
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     @Override
