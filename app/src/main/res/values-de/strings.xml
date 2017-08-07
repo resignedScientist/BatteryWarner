@@ -158,4 +158,5 @@
     <string name="summary_smart_charging_auto_resume">"Laden fortsetzen, sobald der Akkustand um X% gesunken ist. Es wird dann bis zum ersten Limit weiter geladen."</string>
     <string name="title_smart_charging_auto_resume_percentage">Laden fortsetzen, wenn Akkustand gefallen um:</string>
     <string name="menu_donate">Spenden</string>
+    <string name="menu_contact_developer">Entwickler kontaktieren</string>
 </resources>
