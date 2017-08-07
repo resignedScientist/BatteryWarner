@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.SettingsFragment;
 
 /**
@@ -52,11 +53,33 @@ public class SettingsActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_donate) {
-            donate();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.menu_donate:
+                donate();
+                return true;
+            case R.id.menu_contact_developer:
+                contactDeveloper();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        onNavigateUp();
+    }
+
+    private void contactDeveloper() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.developer_mail)});
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            ToastHelper.sendToast(this, "No email app found!");
+        }
     }
 
     private void donate() {
@@ -65,10 +88,5 @@ public class SettingsActivity extends BaseActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        onNavigateUp();
     }
 }
