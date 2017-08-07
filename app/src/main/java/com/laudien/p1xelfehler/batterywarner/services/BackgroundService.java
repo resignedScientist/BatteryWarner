@@ -49,6 +49,7 @@ public class BackgroundService extends Service {
     private static final int NOTIFICATION_ID_INFO = 2003;
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
+    private boolean chargingResumedByAutoResume = false;
     private boolean alreadyNotified = false;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
@@ -368,6 +369,7 @@ public class BackgroundService extends Service {
     private void resetSmartCharging() {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
+        chargingResumedByAutoResume = false;
     }
 
     private class BatteryChangedReceiver extends BroadcastReceiver {
@@ -414,7 +416,7 @@ public class BackgroundService extends Service {
             boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
             if (!chargingAllowed) {
                 stopCharging(false, true);
-            } else if (!chargingResumedBySmartCharging) { // charging is allowed
+            } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
                 resetGraph();
             }
             return chargingAllowed;
@@ -455,6 +457,7 @@ public class BackgroundService extends Service {
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
+            int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             // battery level changed
@@ -464,7 +467,6 @@ public class BackgroundService extends Service {
                 if (graphEnabled) {
                     graphDbHelper.addValue(timeNow, batteryLevel, temperature);
                 }
-                int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
                 if (batteryLevel >= warningHigh) {
                     if (!chargingResumedBySmartCharging) {
                         boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
@@ -481,7 +483,8 @@ public class BackgroundService extends Service {
                                 if (smartChargingEnabled) {
                                     chargingPausedBySmartCharging = true;
                                 }
-                                stopCharging(warningEnabled, false);
+                                boolean enableSound = warningEnabled && !chargingResumedByAutoResume;
+                                stopCharging(enableSound, false);
                                 // show warning high notification
                             } else if (warningEnabled) {
                                 showWarningHighNotification();
@@ -503,6 +506,15 @@ public class BackgroundService extends Service {
                         }
                         chargingResumedBySmartCharging = true;
                         resumeCharging();
+                    } else if (!chargingResumedByAutoResume) { // resume time not reached yet and not resumed
+                        boolean autoResumeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_auto_resume), getResources().getBoolean(R.bool.pref_smart_charging_auto_resume_default));
+                        int autoResumePercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_auto_resume_percentage), getResources().getInteger(R.integer.pref_smart_charging_auto_resume_percentage_default));
+                        // resume charging if the auto resume percentage limit was reached
+                        if (autoResumeEnabled && batteryLevel <= warningHigh - 10) {
+                            chargingResumedByAutoResume = true;
+                            alreadyNotified = false;
+                            resumeCharging();
+                        }
                     }
                 } else { // charging already resumed
                     int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
