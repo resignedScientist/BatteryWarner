@@ -148,13 +148,13 @@
     <string name="toast_success_renaming">Fişier redenumit!</string>
     <string name="toast_success_saving">Graficul a fost salvat la istoric!</string>
     <string name="toast_theme_changed">Tema va fi activată când vei ieşi din setări!</string>
-
-    <!-- new strings -->
     <string name="title_info_text_size">Dimensiunea textului din notificare:</string>
     <string name="notification_button_enable_usb_charging">Activează încărcarea prin USB</string>
     <string name="tile_stop_charging">Opreste Încărcarea</string>
     <string name="tile_warning_low">Avertizare baterie slaba</string>
     <string name="tile_warning_high">Avertizare baterie ridicata</string>
+
+    <!-- new strings -->
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="summary_smart_charging_auto_resume">Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again.</string>
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>

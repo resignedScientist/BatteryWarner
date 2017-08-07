@@ -154,11 +154,11 @@
     <string name="toast_success_renaming">Nama file telah diganti!</string>
     <string name="toast_success_saving">Grafik telah tersimpan pada riwayat!</string>
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
+
+    <!-- new strings -->
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="summary_smart_charging_auto_resume">Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again.</string>
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
     <string name="menu_donate">Donate</string>
     <string name="menu_contact_developer">Contact the developer</string>
-
-    <!-- new strings -->
 </resources>
