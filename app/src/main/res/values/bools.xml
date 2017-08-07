@@ -24,4 +24,5 @@
     <bool name="pref_dark_info_notification_default">false</bool>
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_reset_battery_stats_default">false</bool>
+    <bool name="pref_smart_charging_auto_resume_default">true</bool>
 </resources>
