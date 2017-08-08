@@ -512,7 +512,7 @@ public class BackgroundService extends Service {
                         boolean autoResumeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_auto_resume), getResources().getBoolean(R.bool.pref_smart_charging_auto_resume_default));
                         int autoResumePercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_auto_resume_percentage), getResources().getInteger(R.integer.pref_smart_charging_auto_resume_percentage_default));
                         // resume charging if the auto resume percentage limit was reached
-                        if (autoResumeEnabled && batteryLevel <= warningHigh - 10) {
+                        if (autoResumeEnabled && batteryLevel <= warningHigh - autoResumePercentage) {
                             chargingResumedByAutoResume = true;
                             alreadyNotified = false;
                             resumeCharging();
