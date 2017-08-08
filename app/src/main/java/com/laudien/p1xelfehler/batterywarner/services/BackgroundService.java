@@ -408,16 +408,20 @@ public class BackgroundService extends Service {
          * Charging was resumed by the app or the user connects the charger.
          */
         private boolean onPowerConnected(int chargingType) {
-            notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
-            boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-            boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
-            boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
-            if (!chargingAllowed) {
-                stopCharging(false, true);
-            } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
-                resetGraph();
+            if (!chargingDisabledInFile) {
+                notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
+                boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+                boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
+                boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
+                if (!chargingAllowed) {
+                    stopCharging(false, true);
+                } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
+                    resetGraph();
+                }
+                return chargingAllowed;
+            } else {
+                return true;
             }
-            return chargingAllowed;
         }
 
         /**
