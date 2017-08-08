@@ -409,8 +409,6 @@ public class BackgroundService extends Service {
          */
         private boolean onPowerConnected(int chargingType) {
             notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
-            NotificationHelper.cancelNotification(BackgroundService.this,
-                    NOTIFICATION_ID_WARNING_HIGH, NOTIFICATION_ID_WARNING_LOW);
             boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
             boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
             boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
