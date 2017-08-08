@@ -22,15 +22,6 @@
         app:slider_min="@integer/pref_smart_charging_limit_min"
         app:unit="%" />
     <SwitchPreference
-        android:defaultValue="@bool/pref_smart_charging_use_alarm_clock_time_default"
-        android:dependency="@string/pref_smart_charging_enabled"
-        android:key="@string/pref_smart_charging_use_alarm_clock_time"
-        android:title="@string/title_smart_charging_use_alarm_clock_time" />
-    <com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.TimePickerPreference
-        android:dependency="@string/pref_smart_charging_enabled"
-        android:key="@string/pref_smart_charging_time"
-        android:title="@string/title_smart_charging_time" />
-    <SwitchPreference
         android:defaultValue="@bool/pref_smart_charging_auto_resume_default"
         android:dependency="@string/pref_smart_charging_enabled"
         android:key="@string/pref_smart_charging_auto_resume"
@@ -44,4 +35,13 @@
         app:slider_max="@integer/pref_smart_charging_auto_resume_percentage_max"
         app:slider_min="@integer/pref_smart_charging_auto_resume_percentage_min"
         app:unit="%" />
+    <SwitchPreference
+        android:defaultValue="@bool/pref_smart_charging_use_alarm_clock_time_default"
+        android:dependency="@string/pref_smart_charging_enabled"
+        android:key="@string/pref_smart_charging_use_alarm_clock_time"
+        android:title="@string/title_smart_charging_use_alarm_clock_time" />
+    <com.laudien.p1xelfehler.batterywarner.preferences.smartChargingActivity.TimePickerPreference
+        android:dependency="@string/pref_smart_charging_enabled"
+        android:key="@string/pref_smart_charging_time"
+        android:title="@string/title_smart_charging_time" />
 </PreferenceScreen>
