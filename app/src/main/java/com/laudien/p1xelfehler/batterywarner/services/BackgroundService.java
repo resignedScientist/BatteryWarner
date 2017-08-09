@@ -428,11 +428,10 @@ public class BackgroundService extends Service {
          * Charging was stopped by the app or the user disconnects the charger.
          */
         private void onPowerDisconnected() {
-            if (!chargingDisabledInFile) {
-                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                resetSmartCharging();
-                final boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-                final boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
+            // save graph
+            if (!chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
+                boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+                boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
                 if (graphEnabled && autoSaveGraphEnabled) {
                     AsyncTask.execute(new Runnable() {
                         @Override
@@ -441,6 +440,11 @@ public class BackgroundService extends Service {
                         }
                     });
                 }
+            }
+            // cancel the notification and reset smart charging
+            if (!chargingDisabledInFile) {
+                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
+                resetSmartCharging();
             }
         }
 
