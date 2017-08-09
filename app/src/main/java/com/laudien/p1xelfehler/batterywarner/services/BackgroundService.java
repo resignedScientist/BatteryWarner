@@ -91,6 +91,7 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        onRestoreState();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -159,6 +160,15 @@ public class BackgroundService extends Service {
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
+        onSaveState();
+    }
+
+    private void onSaveState() {
+
+    }
+
+    private void onRestoreState() {
+
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {
