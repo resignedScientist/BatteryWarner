@@ -50,6 +50,7 @@ public class BackgroundService extends Service {
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
     private boolean chargingResumedByAutoResume = false;
+    private boolean chargingPausedByIllegalChargingType = false;
     private boolean alreadyNotified = false;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
@@ -370,6 +371,7 @@ public class BackgroundService extends Service {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
         chargingResumedByAutoResume = false;
+        chargingPausedByIllegalChargingType = false;
     }
 
     private class BatteryChangedReceiver extends BroadcastReceiver {
@@ -394,7 +396,7 @@ public class BackgroundService extends Service {
                     if (chargingAllowed) {
                         handleCharging(intent);
                     }
-                } else { // discharging
+                } else if (!chargingPausedByIllegalChargingType) { // discharging
                     handleDischarging(intent);
                 }
                 // refresh batteryData and info notification
@@ -414,6 +416,7 @@ public class BackgroundService extends Service {
                 boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
                 boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
                 if (!chargingAllowed) {
+                    chargingPausedByIllegalChargingType = true;
                     stopCharging(false, true);
                 } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
                     resetGraph();
@@ -429,7 +432,7 @@ public class BackgroundService extends Service {
          */
         private void onPowerDisconnected() {
             // save graph
-            if (!chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
+            if (!chargingPausedByIllegalChargingType && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
                 boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
                 boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
                 if (graphEnabled && autoSaveGraphEnabled) {
