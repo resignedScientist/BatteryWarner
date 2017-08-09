@@ -119,6 +119,7 @@ public class BackgroundService extends Service {
             public void run() {
                 try {
                     chargingDisabledInFile = !RootHelper.isChargingEnabled();
+                    notificationManager.cancel(NotificationHelper.ID_GRANT_ROOT); // prevent double root check when updated
                     if (chargingDisabledInFile) {
                         NotificationHelper.cancelNotification(BackgroundService.this,
                                 NOTIFICATION_ID_WARNING_HIGH, NOTIFICATION_ID_WARNING_LOW);
