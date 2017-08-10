@@ -44,6 +44,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 
 public class BackgroundService extends Service {
     public static final String ACTION_CHARGING_ENABLED = "chargingEnabled";
+    public static final String ACTION_RESET_ALL = "resetAll";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
@@ -91,6 +92,7 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        onRestoreState();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -137,10 +139,14 @@ public class BackgroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
-            resetSmartCharging();
-            chargingDisabledInFile = false;
-            NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING_HIGH);
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
+                resetSmartCharging();
+                chargingDisabledInFile = false;
+                NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING_HIGH);
+            } else if (intent.getAction().equals(ACTION_RESET_ALL)) {
+                resetAll();
+            }
         }
         // battery info notification
         boolean infoNotificationEnabled = sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
@@ -159,6 +165,41 @@ public class BackgroundService extends Service {
         super.onDestroy();
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
+        onSaveState();
+    }
+
+    private void onSaveState() {
+        SharedPreferences backgroundServicePrefs = getSharedPreferences(getString(R.string.prefs_background_service), MODE_PRIVATE);
+        backgroundServicePrefs.edit()
+                .putBoolean("chargingPausedBySmartCharging", chargingPausedBySmartCharging)
+                .putBoolean("chargingResumedBySmartCharging", chargingResumedBySmartCharging)
+                .putBoolean("chargingResumedByAutoResume", chargingResumedByAutoResume)
+                .putBoolean("chargingPausedByIllegalChargingType", chargingPausedByIllegalChargingType)
+                .putBoolean("alreadyNotified", alreadyNotified)
+                .putBoolean("charging", charging)
+                .putInt("lastBatteryLevel", lastBatteryLevel)
+                .apply();
+    }
+
+    private void onRestoreState() {
+        SharedPreferences backgroundServicePrefs = getSharedPreferences(getString(R.string.prefs_background_service), MODE_PRIVATE);
+        chargingPausedBySmartCharging = backgroundServicePrefs.getBoolean("chargingPausedBySmartCharging", chargingPausedBySmartCharging);
+        chargingResumedBySmartCharging = backgroundServicePrefs.getBoolean("chargingResumedBySmartCharging", chargingResumedBySmartCharging);
+        chargingResumedByAutoResume = backgroundServicePrefs.getBoolean("chargingResumedByAutoResume", chargingResumedByAutoResume);
+        chargingPausedByIllegalChargingType = backgroundServicePrefs.getBoolean("chargingPausedByIllegalChargingType", chargingPausedByIllegalChargingType);
+        alreadyNotified = backgroundServicePrefs.getBoolean("alreadyNotified", alreadyNotified);
+        charging = backgroundServicePrefs.getBoolean("charging", charging);
+        lastBatteryLevel = backgroundServicePrefs.getInt("lastBatteryLevel", lastBatteryLevel);
+    }
+
+    private void resetAll() {
+        chargingPausedBySmartCharging = false;
+        chargingResumedBySmartCharging = false;
+        chargingResumedByAutoResume = false;
+        chargingPausedByIllegalChargingType = false;
+        alreadyNotified = false;
+        charging = false;
+        lastBatteryLevel = -1;
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {

@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
+import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
 /**
  * A BroadcastReceiver called by the System when the device finished booting.
@@ -21,7 +22,9 @@ public class BootReceiver extends BroadcastReceiver {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default))) { // intro was finished
                 // start services/receivers
-                ServiceHelper.startService(context.getApplicationContext());
+                Intent backgroundServiceResetIntent = new Intent(context.getApplicationContext(), BackgroundService.class);
+                backgroundServiceResetIntent.setAction(BackgroundService.ACTION_RESET_ALL);
+                ServiceHelper.startService(context.getApplicationContext(), backgroundServiceResetIntent);
             }
         }
     }
