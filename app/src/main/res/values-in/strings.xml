@@ -53,8 +53,10 @@
     <string name="intro_slide_prefs_description">Pilih pengsturan anda disini!</string>
     <string name="intro_slide_prefs_title"> Mari mulai!</string>
 
+    <string name="menu_contact_developer">Hubungi Pengembang</string>
     <string name="menu_delete">Hapus</string>
     <string name="menu_delete_all">Hapus semua</string>
+    <string name="menu_donate">Donasi</string>
     <string name="menu_open_history">Buka riwayat</string>
     <string name="menu_rename">Ganti nama</string>
     <string name="menu_rename_graph">Ganti nama grafik</string>
@@ -82,6 +84,7 @@
     <string name="summary_notification_sound">Sejak android O anda harus mengatur suara dalam pengaturan pemberitahuan android. Klik disini untuk membuka!</string>
     <string name="summary_power_saving_mode">Aktifkan mode hemat daya ketika peringatan daya rendah terpicu.</string>
     <string name="summary_reset_battery_stats">Atur ulang statistik baterai setelah peringatan daya tinggi.</string>
+    <string name="summary_smart_charging_auto_resume">Melanjutkan pengisian daya setelah persentase turun X% di bawah batas pertama. Kemudian pengisian akan dilanjutkan kembali hingga batas pertama tercapai lagi.</string>
     <string name="summary_stop_charging">Hentikan pengisian jika persentase tinggi telah tercapai. Tidak bekerja pada semua perangkat!</string>
     <string name="summary_usb_charging_disabled">Mencegah pengisian daya jika dihubungkan dengan usb. Tidak bekerja pada semua perangkat!</string>
     <string name="summary_warning_high_enabled">Tampilkan peringatan daya baterai tinggi jika persentase yang diatur telah tercapai.</string>
@@ -119,6 +122,8 @@
     <string name="title_preferences">Pengaturan</string>
     <string name="title_reset_battery_stats">Atur ulang statistik baterai</string>
     <string name="title_smart_charging">Pengisian Pintar [Root]</string>
+    <string name="title_smart_charging_auto_resume">Lanjutkan Secara Otomatis</string>
+    <string name="title_smart_charging_auto_resume_percentage">Persentase Lanjutan Otomatis :</string>
     <string name="title_smart_charging_enabled">Pengisian Pintar diaktifkan</string>
     <string name="title_smart_charging_time">Waktu anda bangun:</string>
     <string name="title_smart_charging_use_alarm_clock_time">Gunakan waktu alarm selanjutnya</string>
@@ -156,9 +161,4 @@
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
 
     <!-- new strings -->
-    <string name="title_smart_charging_auto_resume">Lanjutkan Secara Otomatis</string>
-    <string name="summary_smart_charging_auto_resume">Melanjutkan pengisian daya setelah persentase turun X% di bawah batas pertama. Kemudian pengisian akan dilanjutkan kembali hingga batas pertama tercapai lagi.</string>
-    <string name="title_smart_charging_auto_resume_percentage">Persentase Lanjutan Otomatis :</string>
-    <string name="menu_donate">Donasi</string>
-    <string name="menu_contact_developer">Hubungi Pengembang</string>
 </resources>
