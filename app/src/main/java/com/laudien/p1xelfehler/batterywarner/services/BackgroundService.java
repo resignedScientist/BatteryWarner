@@ -51,7 +51,7 @@ public class BackgroundService extends Service {
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
     private boolean chargingResumedByAutoResume = false;
-    private boolean chargingPausedByIllegalChargingType = false;
+    private boolean chargingPausedByIllegalUsbCharging = false;
     private boolean alreadyNotified = false;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
@@ -125,10 +125,7 @@ public class BackgroundService extends Service {
                     if (chargingDisabledInFile) {
                         NotificationHelper.cancelNotification(BackgroundService.this,
                                 NOTIFICATION_ID_WARNING_HIGH, NOTIFICATION_ID_WARNING_LOW);
-                        boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                        boolean isUsbCharging = batteryChangedIntent != null && batteryChangedIntent.getIntExtra(EXTRA_PLUGGED, -1) == BatteryManager.BATTERY_PLUGGED_USB;
-                        boolean chargingAllowed = !(isUsbCharging && usbChargingDisabled);
-                        Notification notification = buildStopChargingNotification(false, !chargingAllowed);
+                        Notification notification = buildStopChargingNotification(false);
                         notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
                     }
                 } catch (Exception ignored) {
@@ -141,7 +138,7 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
-                resetSmartCharging();
+                resetAll();
                 chargingDisabledInFile = false;
                 NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING_HIGH);
             } else if (intent.getAction().equals(ACTION_RESET_ALL)) {
@@ -174,7 +171,7 @@ public class BackgroundService extends Service {
                 .putBoolean("chargingPausedBySmartCharging", chargingPausedBySmartCharging)
                 .putBoolean("chargingResumedBySmartCharging", chargingResumedBySmartCharging)
                 .putBoolean("chargingResumedByAutoResume", chargingResumedByAutoResume)
-                .putBoolean("chargingPausedByIllegalChargingType", chargingPausedByIllegalChargingType)
+                .putBoolean("chargingPausedByIllegalUsbCharging", chargingPausedByIllegalUsbCharging)
                 .putBoolean("alreadyNotified", alreadyNotified)
                 .putBoolean("charging", charging)
                 .putInt("lastBatteryLevel", lastBatteryLevel)
@@ -186,7 +183,7 @@ public class BackgroundService extends Service {
         chargingPausedBySmartCharging = backgroundServicePrefs.getBoolean("chargingPausedBySmartCharging", chargingPausedBySmartCharging);
         chargingResumedBySmartCharging = backgroundServicePrefs.getBoolean("chargingResumedBySmartCharging", chargingResumedBySmartCharging);
         chargingResumedByAutoResume = backgroundServicePrefs.getBoolean("chargingResumedByAutoResume", chargingResumedByAutoResume);
-        chargingPausedByIllegalChargingType = backgroundServicePrefs.getBoolean("chargingPausedByIllegalChargingType", chargingPausedByIllegalChargingType);
+        chargingPausedByIllegalUsbCharging = backgroundServicePrefs.getBoolean("chargingPausedByIllegalUsbCharging", chargingPausedByIllegalUsbCharging);
         alreadyNotified = backgroundServicePrefs.getBoolean("alreadyNotified", alreadyNotified);
         charging = backgroundServicePrefs.getBoolean("charging", charging);
         lastBatteryLevel = backgroundServicePrefs.getInt("lastBatteryLevel", lastBatteryLevel);
@@ -196,7 +193,7 @@ public class BackgroundService extends Service {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
         chargingResumedByAutoResume = false;
-        chargingPausedByIllegalChargingType = false;
+        chargingPausedByIllegalUsbCharging = false;
         alreadyNotified = false;
         charging = false;
         lastBatteryLevel = -1;
@@ -283,7 +280,7 @@ public class BackgroundService extends Service {
         }
     }
 
-    private Notification buildStopChargingNotification(boolean enableSound, boolean showUsbButton) {
+    private Notification buildStopChargingNotification(boolean enableSound) {
         PendingIntent pendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
                 new Intent(this, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
         String messageText = getString(R.string.notification_charging_disabled);
@@ -303,7 +300,7 @@ public class BackgroundService extends Service {
                 builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
             }
         }
-        if (showUsbButton) {
+        if (chargingPausedByIllegalUsbCharging) {
             Intent usbIntent = new Intent(this, EnableChargingService.class);
             usbIntent.setAction(EnableChargingService.ACTION_ENABLE_USB_CHARGING);
             PendingIntent usbPendingIntent = PendingIntent.getService(this,
@@ -413,7 +410,7 @@ public class BackgroundService extends Service {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
         chargingResumedByAutoResume = false;
-        chargingPausedByIllegalChargingType = false;
+        chargingPausedByIllegalUsbCharging = false;
     }
 
     private class BatteryChangedReceiver extends BroadcastReceiver {
@@ -438,7 +435,7 @@ public class BackgroundService extends Service {
                     if (chargingAllowed) {
                         handleCharging(intent);
                     }
-                } else if (!chargingPausedByIllegalChargingType) { // discharging
+                } else if (!chargingPausedByIllegalUsbCharging) { // discharging
                     handleDischarging(intent);
                 }
                 // refresh batteryData and info notification
@@ -458,8 +455,8 @@ public class BackgroundService extends Service {
                 boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
                 boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
                 if (!chargingAllowed) {
-                    chargingPausedByIllegalChargingType = true;
-                    stopCharging(false, true);
+                    chargingPausedByIllegalUsbCharging = true;
+                    stopCharging(false);
                 } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
                     resetGraph();
                 }
@@ -474,7 +471,7 @@ public class BackgroundService extends Service {
          */
         private void onPowerDisconnected() {
             // save graph
-            if (!chargingPausedByIllegalChargingType && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
+            if (!chargingPausedByIllegalUsbCharging && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
                 boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
                 boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
                 if (graphEnabled && autoSaveGraphEnabled) {
@@ -535,7 +532,7 @@ public class BackgroundService extends Service {
                                     chargingPausedBySmartCharging = true;
                                 }
                                 boolean enableSound = warningEnabled && !chargingResumedByAutoResume;
-                                stopCharging(enableSound, false);
+                                stopCharging(enableSound);
                                 // show warning high notification
                             } else if (warningEnabled) {
                                 showWarningHighNotification();
@@ -570,7 +567,7 @@ public class BackgroundService extends Service {
                 } else { // charging already resumed
                     int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
                     if (batteryLevel >= smartChargingLimit) {
-                        stopCharging(true, false);
+                        stopCharging(true);
                         chargingPausedBySmartCharging = false;
                         chargingResumedBySmartCharging = false;
                     }
@@ -605,7 +602,7 @@ public class BackgroundService extends Service {
             }
         }
 
-        private void stopCharging(final boolean enableSound, final boolean showEnableUsbButton) {
+        private void stopCharging(final boolean enableSound) {
             chargingDisabledInFile = true;
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -613,7 +610,7 @@ public class BackgroundService extends Service {
                     try {
                         RootHelper.disableCharging();
                         notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                        Notification stopChargingNotification = buildStopChargingNotification(enableSound, showEnableUsbButton);
+                        Notification stopChargingNotification = buildStopChargingNotification(enableSound);
                         notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, stopChargingNotification);
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
