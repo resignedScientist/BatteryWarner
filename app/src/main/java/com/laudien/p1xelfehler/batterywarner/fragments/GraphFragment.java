@@ -39,7 +39,6 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
 
 /**
  * A Fragment that shows the latest charging curve.
@@ -194,7 +193,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
                 if (isFull) { // fully charged
                     showDischargingText();
                 } else { // not fully charged
-                    boolean isDatabaseEmpty = series == null;
+                    boolean isDatabaseEmpty = series == null || infoObject == null;
                     String timeString;
                     if (isDatabaseEmpty) {
                         timeString = InfoObject.getZeroTimeString(getContext());
@@ -281,18 +280,28 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     @Override
     public void onValueAdded(DatabaseValue databaseValue) {
         if (series != null) {
-            series[TYPE_PERCENTAGE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getBatteryLevel()), true, 1000);
-            series[TYPE_TEMPERATURE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getTemperature()), true, 1000);
+            if (series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
+                series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getBatteryLevel()), true, 1000);
+            }
+            if (series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
+                series[DatabaseController.GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getTemperature()), true, 1000);
+            }
             Viewport viewport = graphView.getViewport();
             viewport.setMinX(0);
-            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
-            infoObject.updateValues(
-                    Calendar.getInstance().getTimeInMillis(),
-                    databaseValue.getUtcTimeInMillis(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
+            if (series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
+                viewport.setMaxX(series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX());
+            } else if (series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
+                viewport.setMaxX(series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getHighestValueX());
+            }
+            if (infoObject != null) {
+                infoObject.updateValues(
+                        Calendar.getInstance().getTimeInMillis(),
+                        databaseValue.getUtcTimeInMillis(),
+                        series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
+                        series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
+                        series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+                );
+            }
             setTimeText();
         } else {
             loadSeries();
