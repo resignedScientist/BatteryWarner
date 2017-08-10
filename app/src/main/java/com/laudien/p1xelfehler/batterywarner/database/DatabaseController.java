@@ -111,8 +111,8 @@ public class DatabaseController {
         // return if graph disabled in settings or the database has not enough data
         if (graphEnabled) {
             Cursor cursor = databaseModel.getCursor();
-            if (cursor != null) { // check if there is enough data
-                if (cursor.getCount() > 1) {
+            if (cursor != null) {
+                if (cursor.getCount() > 1) { // check if there is enough data
                     cursor.moveToLast();
                     long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
                     cursor.close();
