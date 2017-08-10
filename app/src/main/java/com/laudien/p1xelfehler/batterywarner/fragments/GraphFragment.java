@@ -212,8 +212,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void showDischargingText() {
-        boolean isDatabaseEmpty = series == null;
-        if (isDatabaseEmpty || infoObject == null) { // no data yet (database is empty)
+        boolean isDatabaseEmpty = series == null || infoObject == null;
+        if (isDatabaseEmpty) { // no data yet (database is empty or unavailable)
             setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
             boolean hasEnoughData = infoObject.getTimeInMinutes() != 0;
