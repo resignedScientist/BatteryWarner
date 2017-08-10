@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -39,16 +40,25 @@ public class DatabaseModel extends SQLiteOpenHelper {
     }
 
     public void addValue(DatabaseValue value) {
-
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMP, value.getTemperature());
+        SQLiteDatabase database = getWritableDatabase();
+        try {
+            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+        } catch (Exception e) {
+            onCreate(database);
+            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+        }
     }
 
     public void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-        close();
     }
 
     public Cursor getCursor() {
-        return null;
+        return getCursor(getReadableDatabase());
     }
 
     // ==== ANY DATABASE FROM A FILE ====
@@ -56,11 +66,27 @@ public class DatabaseModel extends SQLiteOpenHelper {
         return null;
     }
 
-    public void addValue(File databaseFile, DatabaseValue value) {
-
+    public Cursor getCursor(File databaseFile) {
+        SQLiteDatabase database = getReadableDatabase(databaseFile);
+        return getCursor(database);
     }
 
-    public Cursor getCursor(File databaseFile) {
-        return null;
+    // ==== GENERAL STUFF ====
+
+    private Cursor getCursor(SQLiteDatabase database) {
+        String[] columns = {
+                DatabaseContract.TABLE_COLUMN_TIME,
+                DatabaseContract.TABLE_COLUMN_PERCENTAGE,
+                DatabaseContract.TABLE_COLUMN_TEMP};
+        return database.query(DatabaseContract.TABLE_NAME, columns, null, null, null, null,
+                "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME);
+    }
+
+    private SQLiteDatabase getReadableDatabase(File databaseFile) {
+        return SQLiteDatabase.openDatabase(
+                databaseFile.getPath(),
+                null,
+                SQLiteDatabase.OPEN_READONLY
+        );
     }
 }
