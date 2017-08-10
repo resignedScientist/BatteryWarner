@@ -25,3 +25,7 @@ app/freeBeta/debug/
 app/freeBeta/release/
 
 batterystats\.txt
+
+app/free/debug/
+
+app/release/
