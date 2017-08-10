@@ -26,19 +26,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment;
-import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Locale;
 
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -156,50 +152,12 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
     }
 
     private void loadGraph() {
-        adapter = new HistoryPagerAdapter(getSupportFragmentManager(), readGraphs());
+        DatabaseController databaseController = DatabaseController.getInstance(this);
+        ArrayList<File> fileList = databaseController.getFileList();
+        adapter = new HistoryPagerAdapter(getSupportFragmentManager(), fileList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
         onPageSelected(viewPager.getCurrentItem());
-    }
-
-    private ArrayList<File> readGraphs() {
-        File path = new File(DATABASE_HISTORY_PATH);
-        File[] files = path.listFiles();
-        ArrayList<File> fileList = new ArrayList<>();
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(this);
-        if (files != null) { // there are files in the database folder
-            Arrays.sort(files, new Comparator<File>() {
-                @Override
-                public int compare(File o1, File o2) {
-                    if (SDK_INT >= KITKAT) {
-                        return -Long.compare(o1.lastModified(), o2.lastModified());
-                    } else { // before KitKat
-                        if (o1.lastModified() == o2.lastModified()) {
-                            return 0;
-                        }
-                        if (o1.lastModified() > o2.lastModified()) {
-                            return -1;
-                        } else { // o1.lastModified() < o2.lastModified()
-                            return 1;
-                        }
-                    }
-                }
-            });
-            for (File file : files) {
-                // check if the file is a valid database file
-                if (dbHelper.isValidDatabase(file.getPath())) {
-                    fileList.add(file); // add the file path to the fileList
-                }
-            }
-            if (fileList.isEmpty()) { // if no readable graph is in the database folder
-                textView_nothingSaved.setVisibility(VISIBLE); // show "nothing saved"
-            } else { // min 1 readable graph in the database folder
-                textView_fileName.setText(fileList.get(0).getName()); // set the name TextView
-            }
-        } else { // no files in the database folder
-            textView_nothingSaved.setVisibility(VISIBLE); // show "nothing saved"
-        }
-        return fileList;
     }
 
     private void showDeleteDialog() {

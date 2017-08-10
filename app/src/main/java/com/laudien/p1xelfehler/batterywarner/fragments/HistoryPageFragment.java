@@ -9,9 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 
 import java.io.File;
 
@@ -64,11 +63,11 @@ public class HistoryPageFragment extends BasicGraphFragment {
      * given in the arguments.
      */
     @Override
-    protected LineGraphSeries<DataPoint>[] getSeries() {
+    protected LineGraphSeries[] getSeries() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             if (file != null && file.exists()) {
-                GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-                return dbHelper.getGraphs(getContext(), dbHelper.getReadableDatabase(file.getPath()));
+                DatabaseController databaseController = DatabaseController.getInstance(getContext());
+                return databaseController.getAllGraphs(file);
             } else {
                 return null;
             }
@@ -79,13 +78,13 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     @Override
     protected long getEndTime() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getEndTime(dbHelper.getReadableDatabase(file.getPath()));
+        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+        return databaseController.getEndTime(file);
     }
 
     @Override
     protected long getStartTime() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getStartTime(dbHelper.getReadableDatabase(file.getPath()));
+        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+        return databaseController.getStartTime(file);
     }
 }

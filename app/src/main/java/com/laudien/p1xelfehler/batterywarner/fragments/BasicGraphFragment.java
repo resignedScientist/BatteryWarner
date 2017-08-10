@@ -18,6 +18,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -129,16 +130,16 @@ public abstract class BasicGraphFragment extends Fragment {
     void loadSeries() {
         series = getSeries();
         if (series != null) {
-            if (switch_percentage.isChecked()) {
-                graphView.addSeries(series[TYPE_PERCENTAGE]);
+            if (switch_percentage.isChecked() && series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
+                graphView.addSeries(series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL]);
             }
-            if (switch_temp.isChecked()) {
-                graphView.addSeries(series[TYPE_TEMPERATURE]);
+            if (switch_temp.isChecked() && series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
+                graphView.addSeries(series[DatabaseController.GRAPH_INDEX_TEMPERATURE]);
             }
             createOrUpdateInfoObject();
-            double highestValue = series[TYPE_PERCENTAGE].getHighestValueX();
-            if (highestValue > 0) {
-                graphView.getViewport().setMaxX(highestValue);
+            long endTime = getEndTime();
+            if (endTime > 0) {
+                graphView.getViewport().setMaxX(endTime);
             } else {
                 graphView.getViewport().setMaxX(1);
             }
@@ -153,24 +154,30 @@ public abstract class BasicGraphFragment extends Fragment {
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
      */
     private void createOrUpdateInfoObject() {
-        if (infoObject == null) {
-            infoObject = new InfoObject(
-                    getStartTime(),
-                    getEndTime(),
-                    series[TYPE_PERCENTAGE].getHighestValueX(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
-        } else {
-            infoObject.updateValues(
-                    getStartTime(),
-                    getEndTime(),
-                    series[TYPE_PERCENTAGE].getHighestValueX(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
+        if (series != null
+                && series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null
+                && series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
+            if (infoObject == null) {
+                infoObject = new InfoObject(
+                        getStartTime(),
+                        getEndTime(),
+                        series[TYPE_PERCENTAGE].getHighestValueX(),
+                        series[TYPE_TEMPERATURE].getHighestValueY(),
+                        series[TYPE_TEMPERATURE].getLowestValueY(),
+                        series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+                );
+            } else {
+                infoObject.updateValues(
+                        getStartTime(),
+                        getEndTime(),
+                        series[TYPE_PERCENTAGE].getHighestValueX(),
+                        series[TYPE_TEMPERATURE].getHighestValueY(),
+                        series[TYPE_TEMPERATURE].getLowestValueY(),
+                        series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+                );
+            }
+        } else { // any graph is null
+            infoObject = null;
         }
     }
 
@@ -200,6 +207,7 @@ public abstract class BasicGraphFragment extends Fragment {
 
     /**
      * Provides the format of the text of the x and y axis of the graph.
+     *
      * @return Returns a LabelFormatter that is used in the GraphView.
      */
     private LabelFormatter getLabelFormatter() {

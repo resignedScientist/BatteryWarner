@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,15 +25,11 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -43,18 +38,15 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.HistoryActivity.DATABASE_HISTORY_PATH;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.DATABASE_NAME;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
-import static java.text.DateFormat.SHORT;
 
 /**
  * A Fragment that shows the latest charging curve.
  * It loads the graphs from the database in the app directory and registers a DatabaseChangedListener
  * to refresh automatically with the latest data.
  */
-public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.DatabaseChangedListener {
+public class GraphFragment extends BasicGraphFragment implements DatabaseController.DatabaseListener {
 
     private static final int REQUEST_SAVE_GRAPH = 10;
     private SharedPreferences sharedPreferences;
@@ -64,71 +56,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             setTimeText();
         }
     };
-    private GraphDbHelper graphDbHelper;
+    private DatabaseController databaseController;
     private boolean graphEnabled;
-
-    /**
-     * Saves the graph in the app directory to the database directory in the external storage.
-     * Can only run outside of the main/ui thread!
-     *
-     * @param context An instance of the Context class.
-     * @return Returns true if the saving process was successful, false if not.
-     */
-    public static boolean saveGraph(Context context) {
-        Log.d("GraphSaver", "Saving graph...");
-        // return if permissions are not granted
-        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                    .putBoolean(context.getString(R.string.pref_graph_autosave), false)
-                    .apply();
-            return false;
-        }
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(context);
-        // return if graph disabled in settings or the database has not enough data
-        if (!graphEnabled || !dbHelper.hasEnoughData()) {
-            return false;
-        }
-        String outputFileDir = String.format(
-                Locale.getDefault(),
-                "%s/%s",
-                DATABASE_HISTORY_PATH,
-                DateFormat.getDateInstance(SHORT)
-                        .format(dbHelper.getEndTime(dbHelper.getReadableDatabase()))
-                        .replace("/", "_")
-        );
-        // rename the file if it already exists
-        File outputFile = new File(outputFileDir);
-        String baseFileDir = outputFileDir;
-        for (byte i = 1; outputFile.exists() && i < 127; i++) {
-            outputFileDir = baseFileDir + " (" + i + ")";
-            outputFile = new File(outputFileDir);
-        }
-        File inputFile = context.getDatabasePath(DATABASE_NAME);
-        try {
-            File directory = new File(DATABASE_HISTORY_PATH);
-            if (!directory.exists()) {
-                if (!directory.mkdirs()) {
-                    return false;
-                }
-            }
-            FileInputStream inputStream = new FileInputStream(inputFile);
-            FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-            byte[] buffer = new byte[1024];
-            while (inputStream.read(buffer) != -1) {
-                outputStream.write(buffer);
-            }
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        Log.d("GraphSaver", "Graph saved!");
-        return true;
-    }
 
     @Nullable
     @Override
@@ -144,7 +73,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             switch_temp.setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
             );
-            graphDbHelper = GraphDbHelper.getInstance(getContext());
+            databaseController = DatabaseController.getInstance(getContext());
         } else {
             setBigText(getString(R.string.toast_disabled_in_settings), true);
         }
@@ -157,12 +86,8 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         if (graphEnabled) {
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
-            graphDbHelper.setDatabaseChangedListener(this);
-            if (graphDbHelper.hasDbChanged()) {
-                reload();
-            } else {
-                setTimeText();
-            }
+            databaseController.registerDatabaseListener(this);
+            reload();
         }
     }
 
@@ -174,7 +99,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                     .putBoolean(getString(R.string.pref_checkBox_percent), switch_percentage.isChecked())
                     .putBoolean(getString(R.string.pref_checkBox_temperature), switch_temp.isChecked())
                     .apply();
-            graphDbHelper.setDatabaseChangedListener(null);
+            databaseController.unregisterListener(this);
             getContext().unregisterReceiver(chargingStateChangedReceiver);
         }
     }
@@ -228,9 +153,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      * @return Returns an array of the graphs in the database.
      */
     @Override
-    protected LineGraphSeries<DataPoint>[] getSeries() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getGraphs(getContext());
+    protected LineGraphSeries[] getSeries() {
+        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+        return databaseController.getAllGraphs();
     }
 
     /**
@@ -240,14 +165,14 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
      */
     @Override
     protected long getEndTime() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getEndTime(dbHelper.getReadableDatabase());
+        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+        return databaseController.getEndTime();
     }
 
     @Override
     protected long getStartTime() {
-        GraphDbHelper dbHelper = GraphDbHelper.getInstance(getContext());
-        return dbHelper.getStartTime(dbHelper.getReadableDatabase());
+        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+        return databaseController.getStartTime();
     }
 
     /**
@@ -286,50 +211,9 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
         }
     }
 
-    /**
-     * Comes from the DatabaseChangedListener. It adds the new value to the graphs in the GraphView.
-     *
-     * @param timeInMinutes The time difference between the time of the first point and this point in minutes.
-     * @param percentage    The battery level that was added.
-     * @param temperature   The battery temperature that was added.
-     */
-    @Override
-    public void onValueAdded(double timeInMinutes, int percentage, double temperature) {
-        if (series != null) {
-            series[TYPE_PERCENTAGE].appendData(new DataPoint(timeInMinutes, percentage), true, 1000);
-            series[TYPE_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), true, 1000);
-            Viewport viewport = graphView.getViewport();
-            viewport.setMinX(0);
-            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
-            infoObject.updateValues(
-                    Calendar.getInstance().getTimeInMillis(),
-                    timeInMinutes,
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
-            setTimeText();
-        } else {
-            loadSeries();
-        }
-    }
-
-    /**
-     * Comes from the DatabaseChangedListener. It removes all graphs from the GraphView if there are
-     * any graphs and sets the text under the GraphView with the setTimeText() method.
-     */
-    @Override
-    public void onDatabaseCleared() {
-        if (series != null) {
-            graphView.removeAllSeries();
-            series = null;
-        }
-        setTimeText();
-    }
-
     private void showDischargingText() {
         boolean isDatabaseEmpty = series == null;
-        if (isDatabaseEmpty) { // no data yet (database is empty)
+        if (isDatabaseEmpty || infoObject == null) { // no data yet (database is empty)
             setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
             boolean hasEnoughData = infoObject.getTimeInMinutes() != 0;
@@ -363,7 +247,7 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
-                boolean success = saveGraph(getContext());
+                boolean success = databaseController.saveGraph(getContext());
                 ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
             } else { // permission not granted -> ask for permission
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
@@ -387,10 +271,40 @@ public class GraphFragment extends BasicGraphFragment implements GraphDbHelper.D
                 .setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        GraphDbHelper graphDbHelper = GraphDbHelper.getInstance(getContext());
-                        graphDbHelper.resetTable();
+                        DatabaseController databaseController = DatabaseController.getInstance(getContext());
+                        databaseController.resetTable();
                         ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
+    }
+
+    @Override
+    public void onValueAdded(DatabaseValue databaseValue) {
+        if (series != null) {
+            series[TYPE_PERCENTAGE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getBatteryLevel()), true, 1000);
+            series[TYPE_TEMPERATURE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getTemperature()), true, 1000);
+            Viewport viewport = graphView.getViewport();
+            viewport.setMinX(0);
+            viewport.setMaxX(series[TYPE_PERCENTAGE].getHighestValueX());
+            infoObject.updateValues(
+                    Calendar.getInstance().getTimeInMillis(),
+                    databaseValue.getUtcTimeInMillis(),
+                    series[TYPE_TEMPERATURE].getHighestValueY(),
+                    series[TYPE_TEMPERATURE].getLowestValueY(),
+                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
+            );
+            setTimeText();
+        } else {
+            loadSeries();
+        }
+    }
+
+    @Override
+    public void onTableReset() {
+        if (series != null) {
+            graphView.removeAllSeries();
+            series = null;
+        }
+        setTimeText();
     }
 }
