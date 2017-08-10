@@ -1,5 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
+import android.annotation.SuppressLint;
+
 public class DatabaseValue {
     private int batteryLevel;
     private double temperature;
@@ -9,6 +11,13 @@ public class DatabaseValue {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
+    }
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public String toString() {
+        return String.format("[time=%d, batteryLevel=%d, temperature=%.1f]",
+                utcTimeInMillis, batteryLevel, temperature);
     }
 
     public int getBatteryLevel() {

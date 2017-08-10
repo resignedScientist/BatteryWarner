@@ -36,7 +36,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
     public DatabaseValue[] readData() {
-        return null;
+        return readData(getCursor());
     }
 
     public void addValue(DatabaseValue value) {
@@ -63,7 +63,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
 
     // ==== ANY DATABASE FROM A FILE ====
     public DatabaseValue[] readData(File databaseFile) {
-        return null;
+        return readData(getCursor(databaseFile));
     }
 
     public Cursor getCursor(File databaseFile) {
@@ -73,13 +73,38 @@ public class DatabaseModel extends SQLiteOpenHelper {
 
     // ==== GENERAL STUFF ====
 
+    private DatabaseValue[] readData(Cursor cursor) {
+        DatabaseValue[] databaseValues = null;
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                databaseValues = new DatabaseValue[cursor.getCount()];
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    cursor.moveToPosition(i);
+                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
+                    double temperature = cursor.getDouble(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
+                    long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    databaseValues[i] = new DatabaseValue(batteryLevel, temperature, time);
+                }
+            }
+            cursor.close();
+        }
+        return databaseValues;
+    }
+
     private Cursor getCursor(SQLiteDatabase database) {
         String[] columns = {
                 DatabaseContract.TABLE_COLUMN_TIME,
                 DatabaseContract.TABLE_COLUMN_PERCENTAGE,
                 DatabaseContract.TABLE_COLUMN_TEMP};
-        return database.query(DatabaseContract.TABLE_NAME, columns, null, null, null, null,
-                "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME);
+        return database.query(
+                DatabaseContract.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME
+        );
     }
 
     private SQLiteDatabase getReadableDatabase(File databaseFile) {

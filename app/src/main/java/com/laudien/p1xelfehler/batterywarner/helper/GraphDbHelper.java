@@ -125,10 +125,10 @@ public class GraphDbHelper extends SQLiteOpenHelper {
 
     private LineGraphSeries<DataPoint>[] setGraphColors(Context context, LineGraphSeries<DataPoint>[] output) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean readDarkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_dark_theme_enabled), context.getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
         if (color_percentage == 0 || color_percentageBackground == 0 || color_temperature == 0 ||
-                darkThemeEnabled != readDarkThemeEnabled) {
-            darkThemeEnabled = readDarkThemeEnabled;
+                this.darkThemeEnabled != darkThemeEnabled) {
+            this.darkThemeEnabled = darkThemeEnabled;
             // percentage
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = context.getTheme();
@@ -136,7 +136,7 @@ public class GraphDbHelper extends SQLiteOpenHelper {
             color_percentage = typedValue.data;
             color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
             // temperature
-            if (darkThemeEnabled) { // dark theme
+            if (this.darkThemeEnabled) { // dark theme
                 color_temperature = Color.GREEN;
             } else { // default theme
                 theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);

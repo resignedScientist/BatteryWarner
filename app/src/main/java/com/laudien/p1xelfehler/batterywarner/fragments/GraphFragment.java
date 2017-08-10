@@ -6,13 +6,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AlertDialog;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,17 +24,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -38,6 +39,9 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 
 /**
@@ -115,7 +119,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         switch (id) {
             case R.id.menu_delete:
                 if (graphEnabled) {
-                    if (series != null) {
+                    if (graphs != null) {
                         showResetDialog();
                     } else {
                         ToastHelper.sendToast(getContext(), R.string.toast_nothing_to_delete, LENGTH_SHORT);
@@ -152,9 +156,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
      * @return Returns an array of the graphs in the database.
      */
     @Override
-    protected LineGraphSeries[] getSeries() {
+    protected LineGraphSeries[] getGraphs() {
         DatabaseController databaseController = DatabaseController.getInstance(getContext());
-        return databaseController.getAllGraphs();
+        LineGraphSeries[] graphs = databaseController.getAllGraphs();
+        styleGraphs(graphs);
+        return graphs;
     }
 
     /**
@@ -193,7 +199,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
                 if (isFull) { // fully charged
                     showDischargingText();
                 } else { // not fully charged
-                    boolean isDatabaseEmpty = series == null || infoObject == null;
+                    boolean isDatabaseEmpty = graphs == null || infoObject == null;
                     String timeString;
                     if (isDatabaseEmpty) {
                         timeString = InfoObject.getZeroTimeString(getContext());
@@ -211,7 +217,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void showDischargingText() {
-        boolean isDatabaseEmpty = series == null || infoObject == null;
+        boolean isDatabaseEmpty = graphs == null || infoObject == null;
         if (isDatabaseEmpty) { // no data yet (database is empty or unavailable)
             setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
@@ -242,7 +248,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void saveGraph() {
-        if (graphView.getSeries().size() > 0 && series[TYPE_PERCENTAGE].getHighestValueX() > 0) {
+        if (graphView.getSeries().size() > 0 && graphs[TYPE_PERCENTAGE].getHighestValueX() > 0) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
@@ -278,42 +284,54 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     @Override
-    public void onValueAdded(DatabaseValue databaseValue) {
-        if (series != null) {
-            if (series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
-                series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getBatteryLevel()), true, 1000);
+    public void onValueAdded(DataPoint[] dataPoints) {
+        double maxX = 1;
+        if (graphs == null) { // first point
+            graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
+                graphView.addSeries(graphs[i]);
             }
-            if (series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
-                series[DatabaseController.GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(databaseValue.getUtcTimeInMillis(), databaseValue.getTemperature()), true, 1000);
+            styleGraphs(graphs);
+        } else { // not the first point
+            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                graphs[i].appendData(dataPoints[i], false, DatabaseController.MAX_DATA_POINTS);
             }
-            Viewport viewport = graphView.getViewport();
-            viewport.setMinX(0);
-            if (series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
-                viewport.setMaxX(series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX());
-            } else if (series[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
-                viewport.setMaxX(series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getHighestValueX());
-            }
-            if (infoObject != null) {
-                infoObject.updateValues(
-                        Calendar.getInstance().getTimeInMillis(),
-                        databaseValue.getUtcTimeInMillis(),
-                        series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
-                        series[DatabaseController.GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
-                        series[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-                );
-            }
-            setTimeText();
-        } else {
-            loadSeries();
+            maxX = dataPoints[0].getX();
         }
+        graphView.getViewport().setMaxX(maxX);
+        setTimeText();
     }
 
     @Override
     public void onTableReset() {
-        if (series != null) {
+        if (graphs != null) {
             graphView.removeAllSeries();
-            series = null;
+            graphs = null;
         }
         setTimeText();
+    }
+
+    private void styleGraphs(LineGraphSeries[] graphs) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+        // percentage
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        int color_percentage = typedValue.data;
+        int color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+        // temperature
+        int color_temperature;
+        if (darkThemeEnabled) { // dark theme
+            color_temperature = Color.GREEN;
+        } else { // default theme
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            color_temperature = typedValue.data;
+        }
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setColor(color_percentage);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setBackgroundColor(color_percentageBackground);
+        graphs[GRAPH_INDEX_TEMPERATURE].setColor(color_temperature);
     }
 }

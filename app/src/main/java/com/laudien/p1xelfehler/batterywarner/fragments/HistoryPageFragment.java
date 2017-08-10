@@ -63,7 +63,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
      * given in the arguments.
      */
     @Override
-    protected LineGraphSeries[] getSeries() {
+    protected LineGraphSeries[] getGraphs() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             if (file != null && file.exists()) {
                 DatabaseController databaseController = DatabaseController.getInstance(getContext());

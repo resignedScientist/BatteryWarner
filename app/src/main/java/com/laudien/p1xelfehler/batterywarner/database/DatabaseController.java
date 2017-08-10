@@ -34,9 +34,11 @@ import static java.text.DateFormat.SHORT;
 public class DatabaseController {
     public static final int GRAPH_INDEX_BATTERY_LEVEL = 0;
     public static final int GRAPH_INDEX_TEMPERATURE = 1;
-    private static final int NUMBER_OF_GRAPHS = 2;
+    public static final int MAX_DATA_POINTS = 1000;
+    public static final int NUMBER_OF_GRAPHS = 2;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
+    private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
     private HashSet<DatabaseListener> listeners = new HashSet<>();
 
@@ -65,21 +67,11 @@ public class DatabaseController {
         DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, utcTimeInMillis);
         databaseModel.addValue(databaseValue);
         notifyValueAdded(databaseValue);
-    }
-
-    public LineGraphSeries<DataPoint> getBatteryLevelGraph() {
-        return null;
-    }
-
-    public LineGraphSeries<DataPoint> getTemperatureGraph() {
-        return null;
+        Log.d(TAG, "Value added: " + databaseValue);
     }
 
     public LineGraphSeries[] getAllGraphs() {
-        LineGraphSeries[] lineGraphSeries = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL] = getBatteryLevelGraph();
-        lineGraphSeries[GRAPH_INDEX_TEMPERATURE] = getTemperatureGraph();
-        return lineGraphSeries;
+        return getAllGraphs(databaseModel.readData());
     }
 
     public long getEndTime() {
@@ -95,6 +87,7 @@ public class DatabaseController {
     public void resetTable() {
         databaseModel.resetTable();
         notifyTableReset();
+        Log.d(TAG, "Table cleared!");
     }
 
     public boolean saveGraph(Context context) {
@@ -158,6 +151,7 @@ public class DatabaseController {
                 cursor.close();
             }
         }
+        Log.d(TAG, "Graph Saving successful: " + result);
         return result;
     }
 
@@ -196,19 +190,8 @@ public class DatabaseController {
         return fileList;
     }
 
-    public LineGraphSeries<DataPoint> getBatteryLevelGraph(File databaseFile) {
-        return null;
-    }
-
-    public LineGraphSeries<DataPoint> getTemperatureGraph(File databaseFile) {
-        return null;
-    }
-
     public LineGraphSeries[] getAllGraphs(File databaseFile) {
-        LineGraphSeries[] lineGraphSeries = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL] = getBatteryLevelGraph(databaseFile);
-        lineGraphSeries[GRAPH_INDEX_TEMPERATURE] = getTemperatureGraph(databaseFile);
-        return lineGraphSeries;
+        return getAllGraphs(databaseModel.readData(databaseFile));
     }
 
     public long getEndTime(File databaseFile) {
@@ -237,6 +220,24 @@ public class DatabaseController {
 
     // ==== GENERAL STUFF ====
 
+    private LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues) {
+        LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
+        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+        long startTime = databaseValues[0].getUtcTimeInMillis();
+        for (DatabaseValue databaseValue : databaseValues) {
+            long time = databaseValue.getUtcTimeInMillis() - startTime;
+            double timeInMinutes = (double) time / (1000 * 60);
+            // battery level graph
+            double batteryLevel = (double) databaseValue.getBatteryLevel();
+            graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, MAX_DATA_POINTS);
+            // temperature graph
+            double temperature = databaseValue.getTemperature() / 10;
+            graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+        }
+        return graphs;
+    }
+
     private long getEndTime(Cursor cursor) {
         long endTime = 0;
         if (cursor != null) {
@@ -260,8 +261,19 @@ public class DatabaseController {
     }
 
     private void notifyValueAdded(DatabaseValue databaseValue) {
-        for (DatabaseListener listener : listeners) {
-            listener.onValueAdded(databaseValue);
+        if (!listeners.isEmpty()) {
+            DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
+            long time = databaseValue.getUtcTimeInMillis() - getStartTime();
+            double timeInMinutes = (double) time / (1000 * 60);
+            // battery level point
+            double batteryLevel = (double) databaseValue.getBatteryLevel();
+            dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
+            // temperature point
+            double temperature = databaseValue.getTemperature() / 10;
+            dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+            for (DatabaseListener listener : listeners) {
+                listener.onValueAdded(dataPoints);
+            }
         }
     }
 
@@ -272,7 +284,7 @@ public class DatabaseController {
     }
 
     public interface DatabaseListener {
-        void onValueAdded(DatabaseValue databaseValue);
+        void onValueAdded(DataPoint[] dataPoints);
 
         void onTableReset();
     }
