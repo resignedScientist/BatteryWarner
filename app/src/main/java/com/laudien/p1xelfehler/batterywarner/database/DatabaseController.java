@@ -105,59 +105,60 @@ public class DatabaseController {
                     .apply();
             return false;
         }
+        boolean result = false;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
         // return if graph disabled in settings or the database has not enough data
         if (graphEnabled) {
             Cursor cursor = databaseModel.getCursor();
-            if (cursor != null && cursor.getCount() > 1) { // check if there is enough data
-                cursor.moveToLast();
-                long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-                cursor.close();
-                String outputFileDir = String.format(
-                        Locale.getDefault(),
-                        "%s/%s",
-                        DATABASE_HISTORY_PATH,
-                        DateFormat.getDateInstance(SHORT)
-                                .format(endTime)
-                                .replace("/", "_")
-                );
-                // rename the file if it already exists
-                File outputFile = new File(outputFileDir);
-                String baseFileDir = outputFileDir;
-                for (byte i = 1; outputFile.exists() && i < 127; i++) {
-                    outputFileDir = baseFileDir + " (" + i + ")";
-                    outputFile = new File(outputFileDir);
-                }
-                File inputFile = context.getDatabasePath(DATABASE_NAME);
-                try {
-                    File directory = new File(DATABASE_HISTORY_PATH);
-                    if (!directory.exists()) {
-                        if (!directory.mkdirs()) {
-                            return false;
+            if (cursor != null) { // check if there is enough data
+                if (cursor.getCount() > 1) {
+                    cursor.moveToLast();
+                    long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    cursor.close();
+                    String outputFileDir = String.format(
+                            Locale.getDefault(),
+                            "%s/%s",
+                            DATABASE_HISTORY_PATH,
+                            DateFormat.getDateInstance(SHORT)
+                                    .format(endTime)
+                                    .replace("/", "_")
+                    );
+                    // rename the file if it already exists
+                    File outputFile = new File(outputFileDir);
+                    String baseFileDir = outputFileDir;
+                    for (byte i = 1; outputFile.exists() && i < 127; i++) {
+                        outputFileDir = baseFileDir + " (" + i + ")";
+                        outputFile = new File(outputFileDir);
+                    }
+                    File inputFile = context.getDatabasePath(DATABASE_NAME);
+                    try {
+                        File directory = new File(DATABASE_HISTORY_PATH);
+                        if (!directory.exists()) {
+                            if (!directory.mkdirs()) {
+                                return false;
+                            }
                         }
+                        FileInputStream inputStream = new FileInputStream(inputFile);
+                        FileOutputStream outputStream = new FileOutputStream(outputFile, false);
+                        byte[] buffer = new byte[1024];
+                        while (inputStream.read(buffer) != -1) {
+                            outputStream.write(buffer);
+                        }
+                        outputStream.flush();
+                        outputStream.close();
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
                     }
-                    FileInputStream inputStream = new FileInputStream(inputFile);
-                    FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-                    byte[] buffer = new byte[1024];
-                    while (inputStream.read(buffer) != -1) {
-                        outputStream.write(buffer);
-                    }
-                    outputStream.flush();
-                    outputStream.close();
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
+                    Log.d("GraphSaver", "Graph saved!");
+                    result = true;
                 }
-                Log.d("GraphSaver", "Graph saved!");
-                return true;
-            } else { // not enough data or cursor is null
-                return false;
+                cursor.close();
             }
-        } else { // graphs are disabled in settings
-            return false;
         }
+        return result;
     }
 
     // ==== ANY DATABASE FROM A FILE ====
