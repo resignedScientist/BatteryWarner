@@ -1,8 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.ColorUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +29,8 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
 
 /**
  * Super class of all Fragments that are using the charging curve.
@@ -57,7 +63,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
-    LineGraphSeries<DataPoint>[] series;
+    LineGraphSeries<DataPoint>[] graphs;
 
     /**
      * An {@link android.widget.CompoundButton.OnCheckedChangeListener} managing all switches.
@@ -67,12 +73,12 @@ public abstract class BasicGraphFragment extends Fragment {
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             Series s = null;
             if (compoundButton == switch_percentage) {
-                if (series != null) {
-                    s = series[TYPE_PERCENTAGE];
+                if (graphs != null) {
+                    s = graphs[GRAPH_INDEX_BATTERY_LEVEL];
                 }
             } else if (compoundButton == switch_temp) {
-                if (series != null) {
-                    s = series[TYPE_TEMPERATURE];
+                if (graphs != null) {
+                    s = graphs[GRAPH_INDEX_TEMPERATURE];
                 }
             }
             if (s != null) {
@@ -111,7 +117,7 @@ public abstract class BasicGraphFragment extends Fragment {
      *
      * @return Returns an array of graphs.
      */
-    protected abstract LineGraphSeries<DataPoint>[] getSeries();
+    protected abstract LineGraphSeries<DataPoint>[] getGraphs();
 
     /**
      * Method that provides the time the graph was created.
@@ -127,24 +133,23 @@ public abstract class BasicGraphFragment extends Fragment {
      * You can override it to only do it under some conditions.
      */
     void loadSeries() {
-        series = getSeries();
-        if (series != null) {
-            if (switch_percentage.isChecked()) {
-                graphView.addSeries(series[TYPE_PERCENTAGE]);
+        graphs = getGraphs();
+        double maxX = 1;
+        if (graphs != null) {
+            if (switch_percentage.isChecked() && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_BATTERY_LEVEL]);
+                maxX = graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX();
             }
-            if (switch_temp.isChecked()) {
-                graphView.addSeries(series[TYPE_TEMPERATURE]);
+            if (switch_temp.isChecked() && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_TEMPERATURE]);
+                maxX = graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueX();
+            }
+            if (maxX == 0) {
+                maxX = 1;
             }
             createOrUpdateInfoObject();
-            double highestValue = series[TYPE_PERCENTAGE].getHighestValueX();
-            if (highestValue > 0) {
-                graphView.getViewport().setMaxX(highestValue);
-            } else {
-                graphView.getViewport().setMaxX(1);
-            }
-        } else {
-            graphView.getViewport().setMaxX(1);
         }
+        graphView.getViewport().setMaxX(maxX);
         setTimeText();
     }
 
@@ -153,24 +158,30 @@ public abstract class BasicGraphFragment extends Fragment {
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
      */
     private void createOrUpdateInfoObject() {
-        if (infoObject == null) {
-            infoObject = new InfoObject(
-                    getStartTime(),
-                    getEndTime(),
-                    series[TYPE_PERCENTAGE].getHighestValueX(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
-        } else {
-            infoObject.updateValues(
-                    getStartTime(),
-                    getEndTime(),
-                    series[TYPE_PERCENTAGE].getHighestValueX(),
-                    series[TYPE_TEMPERATURE].getHighestValueY(),
-                    series[TYPE_TEMPERATURE].getLowestValueY(),
-                    series[TYPE_PERCENTAGE].getHighestValueY() - series[TYPE_PERCENTAGE].getLowestValueY()
-            );
+        if (graphs != null
+                && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null
+                && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
+            if (infoObject == null) {
+                infoObject = new InfoObject(
+                        getStartTime(),
+                        getEndTime(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
+                );
+            } else {
+                infoObject.updateValues(
+                        getStartTime(),
+                        getEndTime(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
+                );
+            }
+        } else { // any graph is null
+            infoObject = null;
         }
     }
 
@@ -200,6 +211,7 @@ public abstract class BasicGraphFragment extends Fragment {
 
     /**
      * Provides the format of the text of the x and y axis of the graph.
+     *
      * @return Returns a LabelFormatter that is used in the GraphView.
      */
     private LabelFormatter getLabelFormatter() {
@@ -246,10 +258,33 @@ public abstract class BasicGraphFragment extends Fragment {
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#infoObject} is null.
      */
     public void showInfo() {
-        if (series != null && infoObject != null) {
+        if (graphs != null && infoObject != null) {
             infoObject.showDialog(getContext());
         } else {
             ToastHelper.sendToast(getContext(), R.string.toast_no_data, LENGTH_SHORT);
         }
+    }
+
+    protected void styleGraphs(LineGraphSeries[] graphs) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+        // percentage
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        int color_percentage = typedValue.data;
+        int color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+        // temperature
+        int color_temperature;
+        if (darkThemeEnabled) { // dark theme
+            color_temperature = Color.GREEN;
+        } else { // default theme
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            color_temperature = typedValue.data;
+        }
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setColor(color_percentage);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setBackgroundColor(color_percentageBackground);
+        graphs[GRAPH_INDEX_TEMPERATURE].setColor(color_temperature);
     }
 }

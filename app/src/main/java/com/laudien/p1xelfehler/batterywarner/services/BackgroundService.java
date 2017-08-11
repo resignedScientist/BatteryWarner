@@ -21,9 +21,8 @@ import android.util.TypedValue;
 import android.widget.RemoteViews;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
-import com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
@@ -65,7 +64,7 @@ public class BackgroundService extends Service {
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
     private BatteryHelper.BatteryData batteryData;
-    private GraphDbHelper graphDbHelper;
+    private DatabaseController databaseController;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
@@ -107,7 +106,7 @@ public class BackgroundService extends Service {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
-        graphDbHelper = GraphDbHelper.getInstance(this);
+        databaseController = DatabaseController.getInstance(this);
         final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         batteryData = BatteryHelper.getBatteryData(batteryChangedIntent, this);
         // screen on/off receiver
@@ -478,7 +477,7 @@ public class BackgroundService extends Service {
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
-                            GraphFragment.saveGraph(BackgroundService.this);
+                            databaseController.saveGraph(BackgroundService.this);
                         }
                     });
                 }
@@ -513,7 +512,7 @@ public class BackgroundService extends Service {
                 lastBatteryLevel = batteryLevel;
                 // add a value to the database
                 if (graphEnabled) {
-                    graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                    databaseController.addValue(batteryLevel, temperature, timeNow);
                 }
                 if (batteryLevel >= warningHigh) {
                     if (!chargingResumedBySmartCharging) {
@@ -550,7 +549,7 @@ public class BackgroundService extends Service {
                     if (timeNow >= smartChargingResumeTime) {
                         // add a graph point for optics/correctness
                         if (graphEnabled) {
-                            graphDbHelper.addValue(timeNow, batteryLevel, temperature);
+                            databaseController.addValue(batteryLevel, temperature, timeNow);
                         }
                         chargingResumedBySmartCharging = true;
                         resumeCharging();
@@ -663,7 +662,7 @@ public class BackgroundService extends Service {
         private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
-                graphDbHelper.resetTable();
+                databaseController.resetTable();
             }
         }
 
