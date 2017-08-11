@@ -1,8 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.ColorUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +30,8 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
 
@@ -258,5 +266,28 @@ public abstract class BasicGraphFragment extends Fragment {
         } else {
             ToastHelper.sendToast(getContext(), R.string.toast_no_data, LENGTH_SHORT);
         }
+    }
+
+    protected void styleGraphs(LineGraphSeries[] graphs) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
+        // percentage
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = getContext().getTheme();
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        int color_percentage = typedValue.data;
+        int color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
+        // temperature
+        int color_temperature;
+        if (darkThemeEnabled) { // dark theme
+            color_temperature = Color.GREEN;
+        } else { // default theme
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            color_temperature = typedValue.data;
+        }
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setColor(color_percentage);
+        graphs[GRAPH_INDEX_BATTERY_LEVEL].setBackgroundColor(color_percentageBackground);
+        graphs[GRAPH_INDEX_TEMPERATURE].setColor(color_temperature);
     }
 }
