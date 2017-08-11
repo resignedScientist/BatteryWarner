@@ -8,11 +8,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.File;
 
-public class DatabaseModel extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "ChargeCurveDB";
-    public static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
+/**
+ * The Model for the charging graph databases. Only the DatabaseController should communicate to
+ * instances of this class.
+ */
+class DatabaseModel extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "ChargeCurveDB";
+    private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
 
-    public DatabaseModel(Context context) {
+    DatabaseModel(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -35,11 +39,23 @@ public class DatabaseModel extends SQLiteOpenHelper {
     }
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
-    public DatabaseValue[] readData() {
+
+    /**
+     * Reads all the data inside the app directory database.
+     *
+     * @return An array of all the data inside the app directory database.
+     */
+    DatabaseValue[] readData() {
         return readData(getCursor());
     }
 
-    public void addValue(DatabaseValue value) {
+
+    /**
+     * Add a value to the app directory database.
+     *
+     * @param value A DatabaseValue containing all the data of the new graph point.
+     */
+    void addValue(DatabaseValue value) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
         contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
@@ -53,20 +69,41 @@ public class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    public void resetTable() {
+    /**
+     * Clears the table of the app directory database.
+     */
+    void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
     }
 
-    public Cursor getCursor() {
+    /**
+     * Get a Cursor instance which points to the app directory database.
+     *
+     * @return A Cursor instance which points to the app directory database.
+     */
+    Cursor getCursor() {
         return getCursor(getReadableDatabase());
     }
 
     // ==== ANY DATABASE FROM A FILE ====
-    public DatabaseValue[] readData(File databaseFile) {
+
+    /**
+     * Get all the data of the given database file.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return An array of all the data inside given database.
+     */
+    DatabaseValue[] readData(File databaseFile) {
         return readData(getCursor(databaseFile));
     }
 
-    public Cursor getCursor(File databaseFile) {
+    /**
+     * Get a Cursor instance which points to the given database.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return A Cursor instance which points to the given database.
+     */
+    Cursor getCursor(File databaseFile) {
         SQLiteDatabase database = getReadableDatabase(databaseFile);
         return getCursor(database);
     }
