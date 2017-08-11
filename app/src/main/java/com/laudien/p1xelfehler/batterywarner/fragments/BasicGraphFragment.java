@@ -24,7 +24,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -32,8 +31,6 @@ import java.util.Locale;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_TEMPERATURE;
 
 /**
  * Super class of all Fragments that are using the charging curve.
@@ -77,11 +74,11 @@ public abstract class BasicGraphFragment extends Fragment {
             Series s = null;
             if (compoundButton == switch_percentage) {
                 if (graphs != null) {
-                    s = graphs[TYPE_PERCENTAGE];
+                    s = graphs[GRAPH_INDEX_BATTERY_LEVEL];
                 }
             } else if (compoundButton == switch_temp) {
                 if (graphs != null) {
-                    s = graphs[TYPE_TEMPERATURE];
+                    s = graphs[GRAPH_INDEX_TEMPERATURE];
                 }
             }
             if (s != null) {
@@ -139,13 +136,13 @@ public abstract class BasicGraphFragment extends Fragment {
         graphs = getGraphs();
         double maxX = 1;
         if (graphs != null) {
-            if (switch_percentage.isChecked() && graphs[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null) {
-                graphView.addSeries(graphs[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL]);
-                maxX = graphs[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX();
+            if (switch_percentage.isChecked() && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_BATTERY_LEVEL]);
+                maxX = graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX();
             }
-            if (switch_temp.isChecked() && graphs[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
-                graphView.addSeries(graphs[DatabaseController.GRAPH_INDEX_TEMPERATURE]);
-                maxX = graphs[DatabaseController.GRAPH_INDEX_TEMPERATURE].getHighestValueX();
+            if (switch_temp.isChecked() && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_TEMPERATURE]);
+                maxX = graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueX();
             }
             if (maxX == 0) {
                 maxX = 1;
@@ -162,25 +159,25 @@ public abstract class BasicGraphFragment extends Fragment {
      */
     private void createOrUpdateInfoObject() {
         if (graphs != null
-                && graphs[DatabaseController.GRAPH_INDEX_BATTERY_LEVEL] != null
-                && graphs[DatabaseController.GRAPH_INDEX_TEMPERATURE] != null) {
+                && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null
+                && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
             if (infoObject == null) {
                 infoObject = new InfoObject(
                         getStartTime(),
                         getEndTime(),
-                        graphs[TYPE_PERCENTAGE].getHighestValueX(),
-                        graphs[TYPE_TEMPERATURE].getHighestValueY(),
-                        graphs[TYPE_TEMPERATURE].getLowestValueY(),
-                        graphs[TYPE_PERCENTAGE].getHighestValueY() - graphs[TYPE_PERCENTAGE].getLowestValueY()
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
                 );
             } else {
                 infoObject.updateValues(
                         getStartTime(),
                         getEndTime(),
-                        graphs[TYPE_PERCENTAGE].getHighestValueX(),
-                        graphs[TYPE_TEMPERATURE].getHighestValueY(),
-                        graphs[TYPE_TEMPERATURE].getLowestValueY(),
-                        graphs[TYPE_PERCENTAGE].getHighestValueY() - graphs[TYPE_PERCENTAGE].getLowestValueY()
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
+                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
                 );
             }
         } else { // any graph is null

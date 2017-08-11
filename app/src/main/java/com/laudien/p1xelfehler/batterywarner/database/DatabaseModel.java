@@ -13,7 +13,10 @@ import java.io.File;
  * instances of this class.
  */
 class DatabaseModel extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "ChargeCurveDB";
+    /**
+     * The name of the database.
+     */
+    static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
 
     DatabaseModel(Context context) {

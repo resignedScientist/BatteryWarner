@@ -35,8 +35,8 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.TYPE_PERCENTAGE;
 
 /**
  * A Fragment that shows the latest charging curve.
@@ -242,7 +242,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void saveGraph() {
-        if (graphView.getSeries().size() > 0 && graphs[TYPE_PERCENTAGE].getHighestValueX() > 0) {
+        if (graphView.getSeries().size() > 0 && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast

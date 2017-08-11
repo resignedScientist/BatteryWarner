@@ -28,7 +28,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.KITKAT;
-import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.DATABASE_NAME;
 import static java.text.DateFormat.SHORT;
 
 /**
@@ -189,7 +188,7 @@ public class DatabaseController {
                         outputFileDir = baseFileDir + " (" + i + ")";
                         outputFile = new File(outputFileDir);
                     }
-                    File inputFile = context.getDatabasePath(DATABASE_NAME);
+                    File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
                     try {
                         File directory = new File(DATABASE_HISTORY_PATH);
                         if (!directory.exists()) {
