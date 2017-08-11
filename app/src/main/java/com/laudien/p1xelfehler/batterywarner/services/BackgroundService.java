@@ -627,18 +627,19 @@ public class BackgroundService extends Service {
         }
 
         private void resumeCharging() {
+            chargingDisabledInFile = false;
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         RootHelper.enableCharging();
-                        chargingDisabledInFile = false;
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
+                        chargingDisabledInFile = true;
                         NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
-                        stopSelf(); // stop service if not rooted!
                     } catch (RootHelper.NoBatteryFileFoundException e) {
                         e.printStackTrace();
+                        chargingDisabledInFile = true;
                         NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
                     }
                 }
