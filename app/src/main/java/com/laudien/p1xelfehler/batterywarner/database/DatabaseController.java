@@ -31,10 +31,26 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static com.laudien.p1xelfehler.batterywarner.helper.GraphDbHelper.DATABASE_NAME;
 import static java.text.DateFormat.SHORT;
 
+/**
+ * The Controller for the charging graph databases. You can either use it with the database saved in
+ * the app directory, or you can give the database file which should be used.
+ */
 public class DatabaseController {
+    /**
+     * Array index for the battery level graph.
+     */
     public static final int GRAPH_INDEX_BATTERY_LEVEL = 0;
+    /**
+     * Array index for the temperature graph.
+     */
     public static final int GRAPH_INDEX_TEMPERATURE = 1;
+    /**
+     * The maximum DataPoints that can be displayed in a GraphView.
+     */
     public static final int MAX_DATA_POINTS = 1000;
+    /**
+     * The number of different graphs.
+     */
     public static final int NUMBER_OF_GRAPHS = 2;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
@@ -46,6 +62,12 @@ public class DatabaseController {
         databaseModel = new DatabaseModel(context);
     }
 
+    /**
+     * Get an instance of this singleton class.
+     *
+     * @param context An instance of the Context class.
+     * @return An instance of DatabaseController.
+     */
     public static DatabaseController getInstance(Context context) {
         if (instance == null) {
             instance = new DatabaseController(context);
@@ -53,16 +75,34 @@ public class DatabaseController {
         return instance;
     }
 
+    /**
+     * Registers a DatabaseListener which will be called everytime something in the database changes.
+     * Don't forget to unregister the listener with unregisterListener() if not needed anymore!
+     *
+     * @param listener A DatabaseListener which listens for database changes.
+     */
     public void registerDatabaseListener(DatabaseListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Unregisters a DatabaseListener.
+     *
+     * @param listener A DatabaseListener which listens for database changes.
+     */
     public void unregisterListener(DatabaseListener listener) {
         listeners.remove(listener);
     }
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
 
+    /**
+     * Add a value to the database in the app directory.
+     *
+     * @param batteryLevel    The current battery level of the device.
+     * @param temperature     The current battery temperature.
+     * @param utcTimeInMillis The current UTC time in milliseconds.
+     */
     public void addValue(int batteryLevel, double temperature, long utcTimeInMillis) {
         DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, utcTimeInMillis);
         databaseModel.addValue(databaseValue);
@@ -70,26 +110,51 @@ public class DatabaseController {
         Log.d(TAG, "Value added: " + databaseValue);
     }
 
+    /**
+     * Get all the graphs inside the app directory database.
+     *
+     * @return An array of LineGraphSeries.
+     * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
+     */
     public LineGraphSeries[] getAllGraphs() {
         return getAllGraphs(databaseModel.readData());
     }
 
+    /**
+     * Get the latest time that is in the app directory database.
+     *
+     * @return The latest time (UTC time in milliseconds) inside the database.
+     */
     public long getEndTime() {
         Cursor cursor = databaseModel.getCursor();
         return getEndTime(cursor);
     }
 
+    /**
+     * Get the first time that is in the app directory database.
+     *
+     * @return The first time (UTC time in milliseconds) inside the database.
+     */
     public long getStartTime() {
         Cursor cursor = databaseModel.getCursor();
         return getStartTime(cursor);
     }
 
+    /**
+     * Clears the table of the app directory database to make room for new data.
+     */
     public void resetTable() {
         databaseModel.resetTable();
         notifyTableReset();
         Log.d(TAG, "Table cleared!");
     }
 
+    /**
+     * Saves the graphs inside the app directory database to the default history directory.
+     *
+     * @param context An instance of the Context class.
+     * @return Returns true if the saving was successful, false if not.
+     */
     public boolean saveGraph(Context context) {
         // permission check
         if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
@@ -157,6 +222,12 @@ public class DatabaseController {
 
     // ==== ANY DATABASE FROM A FILE ====
 
+    /**
+     * Get a list of database files inside the default history directory.
+     * It automatically checks each file if it is a valid database and only adds these to the list.
+     *
+     * @return A list of all valid database files in the default history directory.
+     */
     public ArrayList<File> getFileList() {
         File path = new File(DATABASE_HISTORY_PATH);
         File[] files = path.listFiles();
@@ -190,20 +261,45 @@ public class DatabaseController {
         return fileList;
     }
 
+    /**
+     * Get an array of all graphs inside the given database file.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return Array of all graphs inside the given database file.
+     * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
+     */
     public LineGraphSeries[] getAllGraphs(File databaseFile) {
         return getAllGraphs(databaseModel.readData(databaseFile));
     }
 
+    /**
+     * Get the latest time that is in the given database file.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return The latest time (UTC time in milliseconds) inside the database.
+     */
     public long getEndTime(File databaseFile) {
         Cursor cursor = databaseModel.getCursor(databaseFile);
         return getEndTime(cursor);
     }
 
+    /**
+     * Get the first time that is in the given database file.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return The first time (UTC time in milliseconds) inside the database.
+     */
     public long getStartTime(File databaseFile) {
         Cursor cursor = databaseModel.getCursor(databaseFile);
         return getStartTime(cursor);
     }
 
+    /**
+     * Checks if the given file is a valid SQLite database file.
+     *
+     * @param file The file to check.
+     * @return True if it is a valid database file, false if not.
+     */
     private boolean isFileValid(File file) {
         try {
             FileReader fileReader = new FileReader(file.getPath());
@@ -283,9 +379,21 @@ public class DatabaseController {
         }
     }
 
+    /**
+     * A DatabaseListener that listens for database changes in the app directory database.
+     */
     public interface DatabaseListener {
+        /**
+         * Called when a graph point was added to the app directory database.
+         *
+         * @param dataPoints An array of DataPoints. You can distinguish which point belongs to
+         *                   which graph with the GRAPH_INDEX_* constants.
+         */
         void onValueAdded(DataPoint[] dataPoints);
 
+        /**
+         * Called when the app directory database has been cleared.
+         */
         void onTableReset();
     }
 }
