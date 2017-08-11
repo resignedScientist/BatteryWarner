@@ -316,21 +316,24 @@ public class DatabaseController {
     // ==== GENERAL STUFF ====
 
     private LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues) {
-        LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
-        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
-        long startTime = databaseValues[0].getUtcTimeInMillis();
-        for (DatabaseValue databaseValue : databaseValues) {
-            long time = databaseValue.getUtcTimeInMillis() - startTime;
-            double timeInMinutes = (double) time / (1000 * 60);
-            // battery level graph
-            double batteryLevel = (double) databaseValue.getBatteryLevel();
-            graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, MAX_DATA_POINTS);
-            // temperature graph
-            double temperature = databaseValue.getTemperature() / 10;
-            graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+        if (databaseValues != null) {
+            LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+            graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
+            graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+            long startTime = databaseValues[0].getUtcTimeInMillis();
+            for (DatabaseValue databaseValue : databaseValues) {
+                long time = databaseValue.getUtcTimeInMillis() - startTime;
+                double timeInMinutes = (double) time / (1000 * 60);
+                // battery level graph
+                double batteryLevel = (double) databaseValue.getBatteryLevel();
+                graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, MAX_DATA_POINTS);
+                // temperature graph
+                double temperature = databaseValue.getTemperature() / 10;
+                graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+            }
+            return graphs;
         }
-        return graphs;
+        return null;
     }
 
     private long getEndTime(Cursor cursor) {

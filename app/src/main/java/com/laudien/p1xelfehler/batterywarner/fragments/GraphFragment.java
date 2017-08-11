@@ -153,7 +153,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     protected LineGraphSeries[] getGraphs() {
         DatabaseController databaseController = DatabaseController.getInstance(getContext());
         LineGraphSeries[] graphs = databaseController.getAllGraphs();
-        styleGraphs(graphs);
+        if (graphs != null) {
+            styleGraphs(graphs);
+        }
         return graphs;
     }
 
