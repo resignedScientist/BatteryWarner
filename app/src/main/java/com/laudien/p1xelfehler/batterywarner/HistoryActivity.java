@@ -154,6 +154,9 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
     private void loadGraph() {
         DatabaseController databaseController = DatabaseController.getInstance(this);
         ArrayList<File> fileList = databaseController.getFileList();
+        if (fileList == null || fileList.isEmpty()) {
+            textView_nothingSaved.setVisibility(VISIBLE);
+        }
         adapter = new HistoryPagerAdapter(getSupportFragmentManager(), fileList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
