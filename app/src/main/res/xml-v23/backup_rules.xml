@@ -5,5 +5,5 @@
         path="." />
     <exclude
         domain="sharedpref"
-        path="TemporaryPrefs.xml" />
+        path="BackgroundServicePrefs.xml" />
 </full-backup-content>

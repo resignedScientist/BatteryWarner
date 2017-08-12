@@ -12,7 +12,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
-import static android.content.Context.MODE_PRIVATE;
 import static android.os.Build.VERSION.SDK_INT;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_GRANT_ROOT;
 
@@ -31,25 +30,10 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 return; // return if intro was not finished
 
             Log.d(getClass().getSimpleName(), "App update received!");
-            // patch old shared preferences v1.109(144) =>
-            SharedPreferences temporaryPrefs = context.getSharedPreferences(context.getString(R.string.prefs_temporary), MODE_PRIVATE);
-            // last percentage (remove it, it is no longer used!)
-            String key = "lastPercentage";
-            if (sharedPreferences.contains(key)) {
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // intent time
-            key = context.getString(R.string.pref_intent_time);
-            if (sharedPreferences.contains(key)) {
-                temporaryPrefs.edit().putLong(key, sharedPreferences.getLong(key, -1)).apply();
-                sharedPreferences.edit().remove(key).apply();
-            }
-            // <= patch old shared preferences
             // create notification channels
             if (SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationHelper.createNotificationChannels(context);
             }
-            // show notification if not rooted anymore
             // check if one of the root preferences is enabled
             String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
             boolean oneRootPermissionIsEnabled = false;
@@ -65,19 +49,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             } else { // start the service directly
                 ServiceHelper.startService(context.getApplicationContext());
             }
-            // show a notification on special events
-            /*if (!IS_PRO && SDK_INT >= M) {
-                Intent emailIntent = new Intent(context.getApplicationContext(), EventService.class);
-                NotificationHelper.showEventNotification(
-                        context,
-                        "Indonesian translator searched!",
-                        "Welcome to all new Indonesian app users! :)\n" +
-                                "For giving you the best possible experience with the app I need an Indonesian translator. " +
-                                "He/She will get the pro version of the app for free!",
-                        "Write me an email!",
-                        emailIntent
-                );
-            }*/
         }
     }
 }

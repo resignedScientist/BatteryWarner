@@ -42,7 +42,6 @@
     <string name="pref_info_current" translatable="false">infoCurrent</string>
     <string name="pref_dark_info_notification" translatable="false">infoDarkTheme</string>
     <!-- Not directly changeable by user -->
-    <string name="prefs_temporary" translatable="false">TemporaryPrefs</string>
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_intent_time" translatable="false">intentTime</string>
