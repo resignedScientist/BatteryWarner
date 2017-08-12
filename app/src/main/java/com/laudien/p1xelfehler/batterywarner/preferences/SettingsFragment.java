@@ -39,10 +39,17 @@ import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedR
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int REQUEST_AUTO_SAVE = 70;
-    private TwoStatePreference pref_autoSave, pref_warningHighEnabled, pref_usb, pref_ac,
-            pref_wireless, pref_graphEnabled, switch_darkTheme, pref_infoNotificationEnabled,
-            pref_usb_disabled, pref_stopCharging, pref_power_saving_mode,
-            pref_reset_battery_stats, pref_darkInfoNotification;
+    private TwoStatePreference pref_autoSave;
+    private TwoStatePreference pref_warningHighEnabled;
+    private TwoStatePreference pref_usb;
+    private TwoStatePreference pref_graphEnabled;
+    private TwoStatePreference switch_darkTheme;
+    private TwoStatePreference pref_infoNotificationEnabled;
+    private TwoStatePreference pref_usb_disabled;
+    private TwoStatePreference pref_stopCharging;
+    private TwoStatePreference pref_power_saving_mode;
+    private TwoStatePreference pref_reset_battery_stats;
+    private TwoStatePreference pref_darkInfoNotification;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items, pref_infoTextSize;
     private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
@@ -77,8 +84,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_graphEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_graph_enabled));
         pref_warningHighEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_warning_high_enabled));
         pref_usb = (TwoStatePreference) findPreference(getString(R.string.pref_usb_enabled));
-        pref_ac = (TwoStatePreference) findPreference(getString(R.string.pref_ac_enabled));
-        pref_wireless = (TwoStatePreference) findPreference(getString(R.string.pref_wireless_enabled));
         pref_stopCharging = (TwoStatePreference) findPreference(getString(R.string.pref_stop_charging));
         pref_usb_disabled = (TwoStatePreference) findPreference(getString(R.string.pref_usb_charging_disabled));
         pref_smart_charging = findPreference(getString(R.string.pref_smart_charging_enabled));
@@ -244,8 +249,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                 String sound = sharedPreferences.getString(getString(warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low), "");
                 Ringtone ringtone = RingtoneManager.getRingtone(context, Uri.parse(sound));
-                Preference preference = warningHigh ? ringtonePreference_high : ringtonePreference_low;
-                preference.setSummary(ringtone.getTitle(context));
+                if (ringtone != null) {
+                    Preference preference = warningHigh ? ringtonePreference_high : ringtonePreference_low;
+                    preference.setSummary(ringtone.getTitle(context));
+                }
             }
         }
     }
