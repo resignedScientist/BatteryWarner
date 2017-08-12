@@ -43,7 +43,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 
 public class BackgroundService extends Service {
     public static final String ACTION_CHARGING_ENABLED = "chargingEnabled";
-    public static final String ACTION_RESET_ALL = "resetAll";
+    public static final String ACTION_RESET_ALL = "resetService";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
@@ -59,7 +59,8 @@ public class BackgroundService extends Service {
     private long smartChargingResumeTime;
     private String infoNotificationMessage;
     private NotificationCompat.Builder infoNotificationBuilder;
-    private BroadcastReceiver batteryChangedReceiver, screenOnOffReceiver;
+    private BroadcastReceiver screenOnOffReceiver;
+    private BatteryChangedReceiver batteryChangedReceiver;
     private NotificationManager notificationManager;
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
@@ -136,12 +137,11 @@ public class BackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) {
-                resetAll();
+            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification
                 chargingDisabledInFile = false;
-                NotificationHelper.cancelNotification(getApplicationContext(), BackgroundService.NOTIFICATION_ID_WARNING_HIGH);
-            } else if (intent.getAction().equals(ACTION_RESET_ALL)) {
-                resetAll();
+                batteryChangedReceiver.onPowerDisconnected();
+            } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
+                resetService();
             }
         }
         // battery info notification
@@ -188,13 +188,12 @@ public class BackgroundService extends Service {
         lastBatteryLevel = backgroundServicePrefs.getInt("lastBatteryLevel", lastBatteryLevel);
     }
 
-    private void resetAll() {
+    private void resetService() {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
         chargingResumedByAutoResume = false;
         chargingPausedByIllegalUsbCharging = false;
         alreadyNotified = false;
-        charging = false;
         lastBatteryLevel = -1;
     }
 
@@ -405,13 +404,6 @@ public class BackgroundService extends Service {
         }
     }
 
-    private void resetSmartCharging() {
-        chargingPausedBySmartCharging = false;
-        chargingResumedBySmartCharging = false;
-        chargingResumedByAutoResume = false;
-        chargingPausedByIllegalUsbCharging = false;
-    }
-
     private class BatteryChangedReceiver extends BroadcastReceiver {
 
         @Override
@@ -469,23 +461,10 @@ public class BackgroundService extends Service {
          * Charging was stopped by the app or the user disconnects the charger.
          */
         private void onPowerDisconnected() {
-            // save graph
-            if (!chargingPausedByIllegalUsbCharging && !chargingPausedBySmartCharging || chargingResumedBySmartCharging) {
-                boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-                boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
-                if (graphEnabled && autoSaveGraphEnabled) {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            databaseController.saveGraph(BackgroundService.this);
-                        }
-                    });
-                }
-            }
-            // cancel the notification and reset smart charging
             if (!chargingDisabledInFile) {
+                saveGraph();
                 notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                resetSmartCharging();
+                resetService();
             }
         }
 
@@ -658,6 +637,19 @@ public class BackgroundService extends Service {
                     }
                 }
             });
+        }
+
+        private void saveGraph() {
+            boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
+            if (graphEnabled && autoSaveGraphEnabled) {
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        databaseController.saveGraph(BackgroundService.this);
+                    }
+                });
+            }
         }
 
         private void resetGraph() {
