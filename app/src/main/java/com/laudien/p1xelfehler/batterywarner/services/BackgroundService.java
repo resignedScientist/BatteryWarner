@@ -385,25 +385,6 @@ public class BackgroundService extends Service {
         return resumeTime;
     }
 
-    private boolean isWarningSoundEnabled(Intent batteryIntent) {
-        boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
-        if (!warningHighEnabled) {
-            return false;
-        } else {
-            int chargingType = batteryIntent.getIntExtra(EXTRA_PLUGGED, -1);
-            switch (chargingType) {
-                case BatteryManager.BATTERY_PLUGGED_AC:
-                    return sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
-                case BatteryManager.BATTERY_PLUGGED_USB:
-                    return sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
-                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
-                    return sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-                default: // discharging or unknown charging type
-                    return false;
-            }
-        }
-    }
-
     private class BatteryChangedReceiver extends BroadcastReceiver {
 
         @Override
@@ -683,6 +664,25 @@ public class BackgroundService extends Service {
                     }
                 }
             });
+        }
+
+        private boolean isWarningSoundEnabled(Intent batteryIntent) {
+            boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+            if (!warningHighEnabled) {
+                return false;
+            } else {
+                int chargingType = batteryIntent.getIntExtra(EXTRA_PLUGGED, -1);
+                switch (chargingType) {
+                    case BatteryManager.BATTERY_PLUGGED_AC:
+                        return sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
+                    case BatteryManager.BATTERY_PLUGGED_USB:
+                        return sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
+                    case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                        return sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+                    default: // discharging or unknown charging type
+                        return false;
+                }
+            }
         }
     }
 
