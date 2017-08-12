@@ -532,8 +532,8 @@ public class BackgroundService extends Service {
                                 }
                                 boolean enableSound = warningEnabled && !chargingResumedByAutoResume;
                                 stopCharging(enableSound);
-                                // show warning high notification
-                            } else if (warningEnabled) {
+                                chargingResumedByAutoResume = false;
+                            } else if (warningEnabled) { // stop charging is disabled
                                 showWarningHighNotification();
                             }
                         }
