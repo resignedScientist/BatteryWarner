@@ -593,6 +593,7 @@ public class BackgroundService extends Service {
                 public void run() {
                     try {
                         RootHelper.enableCharging();
+                        notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
                     } catch (RootHelper.NotRootedException e) {
                         e.printStackTrace();
                         chargingDisabledInFile = true;
