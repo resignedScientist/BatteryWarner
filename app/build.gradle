@@ -8,12 +8,12 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 184
-        versionName "1.120-beta"
+        versionCode 185
+        versionName "1.120-pro"
         resConfigs "de", "en", "fr", "bn", "ro", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue 'string', 'package_name', applicationId
-        resValue 'string', 'app_name', 'Battery Warner Pro (Beta)'
+        resValue 'string', 'app_name', 'Battery Warner Pro'
     }
     buildTypes {
         release {
@@ -69,6 +69,6 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile project(path: ':material-intro-screen')
-    compile 'com.android.support:appcompat-v7:26.0.0'
-    compile 'com.android.support:design:26.0.0'
+    compile 'com.android.support:appcompat-v7:26.0.1'
+    compile 'com.android.support:design:26.0.1'
 }
