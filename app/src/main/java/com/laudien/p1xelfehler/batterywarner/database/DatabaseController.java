@@ -51,7 +51,10 @@ public class DatabaseController {
      * The number of different graphs.
      */
     public static final int NUMBER_OF_GRAPHS = 2;
-    private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
+    /**
+     * The path where the graphs will be saved.
+     */
+    public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
