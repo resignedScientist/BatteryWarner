@@ -159,4 +159,8 @@
     <string name="toast_success_renaming">Datei umbenannt!</string>
     <string name="toast_success_saving">Der Graph wurde gespeichert!</string>
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
+    <string name="title_graph_auto_delete">Automatisch löschen</string>
+    <string name="title_graph_auto_delete_time">Graphen löschen älter als:</string>
+    <string name="unit_days">\ Tage</string>
+    <string name="summary_graph_auto_delete">Ältere Graphen automatisch löschen.</string>
 </resources>
