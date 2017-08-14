@@ -67,5 +67,7 @@ public class GraphAutoDeleteService extends JobService {
             }
         }
         jobFinished(jobParameters, true);
+        // TODO: Do this with the DatabaseController
+        // TODO: Add onGraphDeleted() callback to the DatabaseController
     }
 }
