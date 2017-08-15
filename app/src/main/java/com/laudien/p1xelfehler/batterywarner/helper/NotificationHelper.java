@@ -27,7 +27,8 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.O;
 
 /**
- * Helper class to show a notification with the given type. All notifications used in the app are listed here.
+ * Helper class to show a notification with the given type.
+ * All notifications used in the app that are not for the BackgroundService only are listed here.
  */
 public final class NotificationHelper {
     public static final int ID_GRANT_ROOT = 1001;
