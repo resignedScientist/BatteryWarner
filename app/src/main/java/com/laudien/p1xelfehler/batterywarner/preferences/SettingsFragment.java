@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -14,10 +15,12 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.SettingsActivity;
+import com.laudien.p1xelfehler.batterywarner.helper.JobHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.O;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -50,6 +54,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private TwoStatePreference pref_power_saving_mode;
     private TwoStatePreference pref_reset_battery_stats;
     private TwoStatePreference pref_darkInfoNotification;
+    @RequiresApi(api = LOLLIPOP)
+    private TwoStatePreference pref_graph_auto_delete;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_smart_charging, pref_info_notification_items, pref_infoTextSize;
     private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
@@ -93,6 +99,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
         pref_infoNotificationEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
         pref_infoTextSize = findPreference(getString(R.string.pref_info_text_size));
+        if (Build.VERSION.SDK_INT >= LOLLIPOP) {
+            pref_graph_auto_delete = (TwoStatePreference) findPreference(getString(R.string.pref_graph_auto_delete));
+        }
 
         Context context = getContext();
         if (context != null) {
@@ -200,6 +209,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Context context = getContext();
             if (context != null) {
                 ServiceHelper.startService(context);
+            }
+        } else if (SDK_INT >= LOLLIPOP && preference == pref_graph_auto_delete) {
+            if (pref_graph_auto_delete.isChecked()) {
+                JobHelper.scheduleJob(getContext());
+            } else {
+                JobHelper.cancelJob(getContext());
             }
         }
     }
