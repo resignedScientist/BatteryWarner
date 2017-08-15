@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Locale;
@@ -54,11 +57,12 @@ public class DatabaseController {
     /**
      * The path where the graphs will be saved.
      */
-    public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
+    private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
-    private HashSet<DatabaseListener> listeners = new HashSet<>();
+    private HashSet<DatabaseListener> databaseListeners = new HashSet<>();
+    private HashSet<OnGraphFileDeletedListener> graphFileDeletedListeners = new HashSet<>();
 
     private DatabaseController(Context context) {
         databaseModel = new DatabaseModel(context);
@@ -84,7 +88,7 @@ public class DatabaseController {
      * @param listener A DatabaseListener which listens for database changes.
      */
     public void registerDatabaseListener(DatabaseListener listener) {
-        listeners.add(listener);
+        databaseListeners.add(listener);
     }
 
     /**
@@ -93,7 +97,15 @@ public class DatabaseController {
      * @param listener A DatabaseListener which listens for database changes.
      */
     public void unregisterListener(DatabaseListener listener) {
-        listeners.remove(listener);
+        databaseListeners.remove(listener);
+    }
+
+    public void registerOnGraphFileDeletedListener(OnGraphFileDeletedListener listener) {
+        graphFileDeletedListeners.add(listener);
+    }
+
+    public void unregisterOnGraphFileDeletedListener(OnGraphFileDeletedListener listener) {
+        graphFileDeletedListeners.remove(listener);
     }
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
@@ -263,6 +275,30 @@ public class DatabaseController {
         return fileList;
     }
 
+    public Collection<File> getOldGraphFiles(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int days = sharedPreferences.getInt(context.getString(R.string.pref_graph_auto_delete_time), context.getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
+        // calculate the time - everything older than this time will be deleted
+        long daysInMillis = days * 24 * 60 * 60 * 1000;
+        long targetTime = SystemClock.currentThreadTimeMillis() - daysInMillis;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(targetTime);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        long targetTimeFlattened = calendar.getTimeInMillis();
+        // delete every file older than the target time
+        File directory = new File(DatabaseController.DATABASE_HISTORY_PATH);
+        File[] files = directory.listFiles();
+        HashSet<File> oldFiles = new HashSet<>();
+        for (File file : files) {
+            if (file.lastModified() < targetTimeFlattened) {
+                oldFiles.add(file);
+            }
+        }
+        return oldFiles;
+    }
+
     /**
      * Get an array of all graphs inside the given database file.
      *
@@ -362,7 +398,7 @@ public class DatabaseController {
     }
 
     private void notifyValueAdded(DatabaseValue databaseValue) {
-        if (!listeners.isEmpty()) {
+        if (!databaseListeners.isEmpty()) {
             DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
             long time = databaseValue.getUtcTimeInMillis() - getStartTime();
             double timeInMinutes = (double) time / (1000 * 60);
@@ -372,15 +408,21 @@ public class DatabaseController {
             // temperature point
             double temperature = databaseValue.getTemperature() / 10;
             dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
-            for (DatabaseListener listener : listeners) {
+            for (DatabaseListener listener : databaseListeners) {
                 listener.onValueAdded(dataPoints);
             }
         }
     }
 
     private void notifyTableReset() {
-        for (DatabaseListener listener : listeners) {
+        for (DatabaseListener listener : databaseListeners) {
             listener.onTableReset();
+        }
+    }
+
+    public void notifyGraphFileDeleted(File file) {
+        for (OnGraphFileDeletedListener listener : graphFileDeletedListeners) {
+            listener.onGraphFileDeleted(file);
         }
     }
 
@@ -400,5 +442,9 @@ public class DatabaseController {
          * Called when the app directory database has been cleared.
          */
         void onTableReset();
+    }
+
+    public interface OnGraphFileDeletedListener {
+        void onGraphFileDeleted(File file);
     }
 }
