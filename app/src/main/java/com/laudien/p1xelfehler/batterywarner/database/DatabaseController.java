@@ -2,7 +2,6 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -139,8 +138,8 @@ public class DatabaseController {
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime() {
-        Cursor cursor = databaseModel.getCursor();
-        return getEndTime(cursor);
+        DatabaseValue databaseValue = databaseModel.getLast();
+        return databaseValue.getUtcTimeInMillis();
     }
 
     /**
@@ -149,8 +148,8 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime() {
-        Cursor cursor = databaseModel.getCursor();
-        return getStartTime(cursor);
+        DatabaseValue databaseValue = databaseModel.getFirst();
+        return databaseValue.getUtcTimeInMillis();
     }
 
     /**
@@ -181,52 +180,52 @@ public class DatabaseController {
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
         // return if graph disabled in settings or the database has not enough data
         if (graphEnabled) {
-            Cursor cursor = databaseModel.getCursor();
-            if (cursor != null) {
-                if (cursor.getCount() > 1) { // check if there is enough data
-                    cursor.moveToLast();
-                    long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-                    cursor.close();
-                    String outputFileDir = String.format(
-                            Locale.getDefault(),
-                            "%s/%s",
-                            DATABASE_HISTORY_PATH,
-                            DateFormat.getDateInstance(SHORT)
-                                    .format(endTime)
-                                    .replace("/", "_")
-                    );
-                    // rename the file if it already exists
-                    File outputFile = new File(outputFileDir);
-                    String baseFileDir = outputFileDir;
-                    for (byte i = 1; outputFile.exists() && i < 127; i++) {
-                        outputFileDir = baseFileDir + " (" + i + ")";
-                        outputFile = new File(outputFileDir);
-                    }
-                    File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
-                    try {
-                        File directory = new File(DATABASE_HISTORY_PATH);
-                        if (!directory.exists()) {
-                            if (!directory.mkdirs()) {
-                                return false;
-                            }
-                        }
-                        FileInputStream inputStream = new FileInputStream(inputFile);
-                        FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-                        byte[] buffer = new byte[1024];
-                        while (inputStream.read(buffer) != -1) {
-                            outputStream.write(buffer);
-                        }
-                        outputStream.flush();
-                        outputStream.close();
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                    Log.d("GraphSaver", "Graph saved!");
-                    result = true;
+            DatabaseValue[] databaseValues = databaseModel.getFirstAndLast();
+            long startTime = 0;
+            long endTime = 0;
+            if (databaseValues[0] != null && databaseValues[1] != null) {
+                startTime = databaseValues[0].getUtcTimeInMillis();
+                endTime = databaseValues[1].getUtcTimeInMillis();
+            }
+            if (startTime != endTime) { // check if there is enough data
+                String outputFileDir = String.format(
+                        Locale.getDefault(),
+                        "%s/%s",
+                        DATABASE_HISTORY_PATH,
+                        DateFormat.getDateInstance(SHORT)
+                                .format(endTime)
+                                .replace("/", "_")
+                );
+                // rename the file if it already exists
+                File outputFile = new File(outputFileDir);
+                String baseFileDir = outputFileDir;
+                for (byte i = 1; outputFile.exists() && i < 127; i++) {
+                    outputFileDir = baseFileDir + " (" + i + ")";
+                    outputFile = new File(outputFileDir);
                 }
-                cursor.close();
+                File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
+                try {
+                    File directory = new File(DATABASE_HISTORY_PATH);
+                    if (!directory.exists()) {
+                        if (!directory.mkdirs()) {
+                            return false;
+                        }
+                    }
+                    FileInputStream inputStream = new FileInputStream(inputFile);
+                    FileOutputStream outputStream = new FileOutputStream(outputFile, false);
+                    byte[] buffer = new byte[1024];
+                    while (inputStream.read(buffer) != -1) {
+                        outputStream.write(buffer);
+                    }
+                    outputStream.flush();
+                    outputStream.close();
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                Log.d("GraphSaver", "Graph saved!");
+                result = true;
             }
         }
         Log.d(TAG, "Graph Saving successful: " + result);
@@ -320,8 +319,8 @@ public class DatabaseController {
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime(File databaseFile) {
-        Cursor cursor = databaseModel.getCursor(databaseFile);
-        return getEndTime(cursor);
+        DatabaseValue databaseValue = databaseModel.getLast(databaseFile);
+        return databaseValue.getUtcTimeInMillis();
     }
 
     /**
@@ -331,8 +330,8 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime(File databaseFile) {
-        Cursor cursor = databaseModel.getCursor(databaseFile);
-        return getStartTime(cursor);
+        DatabaseValue databaseValue = databaseModel.getFirst(databaseFile);
+        return databaseValue.getUtcTimeInMillis();
     }
 
     /**
@@ -376,28 +375,6 @@ public class DatabaseController {
             return graphs;
         }
         return null;
-    }
-
-    private long getEndTime(Cursor cursor) {
-        long endTime = 0;
-        if (cursor != null) {
-            if (cursor.moveToLast()) {
-                endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-            }
-            cursor.close();
-        }
-        return endTime;
-    }
-
-    private long getStartTime(Cursor cursor) {
-        long startTime = 0;
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                startTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-            }
-            cursor.close();
-        }
-        return startTime;
     }
 
     private void notifyValueAdded(DatabaseValue databaseValue) {
