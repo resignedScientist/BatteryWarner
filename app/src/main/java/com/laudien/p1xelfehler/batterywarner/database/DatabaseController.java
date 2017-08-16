@@ -291,7 +291,7 @@ public class DatabaseController {
         File[] files = directory.listFiles();
         HashSet<File> oldFiles = new HashSet<>();
         for (File file : files) {
-            if (file.lastModified() < targetTimeFlattened) {
+            if (file.lastModified() != 0L && file.lastModified() < targetTimeFlattened) {
                 oldFiles.add(file);
             }
         }
