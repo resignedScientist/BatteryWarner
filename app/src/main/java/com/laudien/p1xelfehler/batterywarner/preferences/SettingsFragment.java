@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -111,6 +112,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             // register receivers
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
             context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
+            // Check for storage permission
+            int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                pref_autoSave.setChecked(false);
+            }
         }
     }
 

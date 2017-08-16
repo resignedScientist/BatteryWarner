@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -278,10 +277,11 @@ public class DatabaseController {
     public Collection<File> getOldGraphFiles(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         int days = sharedPreferences.getInt(context.getString(R.string.pref_graph_auto_delete_time), context.getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
+        Log.d(TAG, "Collecting Graph files older than " + days + " days...");
         // calculate the time - everything older than this time will be deleted
         long daysInMillis = days * 24 * 60 * 60 * 1000;
-        long targetTime = SystemClock.currentThreadTimeMillis() - daysInMillis;
         Calendar calendar = Calendar.getInstance();
+        long targetTime = calendar.getTimeInMillis() - daysInMillis;
         calendar.setTimeInMillis(targetTime);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -295,6 +295,9 @@ public class DatabaseController {
             if (file.lastModified() < targetTimeFlattened) {
                 oldFiles.add(file);
             }
+        }
+        if (oldFiles.isEmpty()) {
+            Log.d(TAG, "No old files found!");
         }
         return oldFiles;
     }
