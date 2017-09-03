@@ -30,12 +30,16 @@ import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
 
 /**
  * Super class of all Fragments that are using the charging curve.
  */
 public abstract class BasicGraphFragment extends Fragment {
+    private static final double HIGHEST_X_DEFAULT = 1;
+    private static final double HIGHEST_Y_DEFAULT = 100;
     /**
      * An instance of the {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject} holding information about the charging curve.
      */
@@ -52,6 +56,14 @@ public abstract class BasicGraphFragment extends Fragment {
      * Switch which turns the temperature graph on and off.
      */
     protected Switch switch_temp;
+    /**
+     * Switch which turns the current graph on and off.
+     */
+    protected Switch switch_current;
+    /**
+     * Switch which turns the voltage graph on and off.
+     */
+    protected Switch switch_voltage;
     /**
      * TextView that contains the title over the GraphView.
      */
@@ -72,14 +84,15 @@ public abstract class BasicGraphFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             Series s = null;
-            if (compoundButton == switch_percentage) {
-                if (graphs != null) {
+            if (graphs != null) {
+                if (compoundButton == switch_percentage)
                     s = graphs[GRAPH_INDEX_BATTERY_LEVEL];
-                }
-            } else if (compoundButton == switch_temp) {
-                if (graphs != null) {
+                else if (compoundButton == switch_temp)
                     s = graphs[GRAPH_INDEX_TEMPERATURE];
-                }
+                else if (compoundButton == switch_current)
+                    s = graphs[GRAPH_INDEX_CURRENT];
+                else if (compoundButton == switch_voltage)
+                    s = graphs[GRAPH_INDEX_VOLTAGE];
             }
             if (s != null) {
                 if (checked) {
@@ -87,6 +100,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 } else {
                     graphView.removeSeries(s);
                 }
+                applyMaxValues();
             }
         }
     };
@@ -104,6 +118,10 @@ public abstract class BasicGraphFragment extends Fragment {
         switch_percentage.setOnCheckedChangeListener(onSwitchChangedListener);
         switch_temp = view.findViewById(R.id.switch_temp);
         switch_temp.setOnCheckedChangeListener(onSwitchChangedListener);
+        switch_current = view.findViewById(R.id.switch_current);
+        switch_current.setOnCheckedChangeListener(onSwitchChangedListener);
+        switch_voltage = view.findViewById(R.id.switch_voltage);
+        switch_voltage.setOnCheckedChangeListener(onSwitchChangedListener);
         textView_title = view.findViewById(R.id.textView_title);
         textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
         initGraphView();
@@ -134,23 +152,47 @@ public abstract class BasicGraphFragment extends Fragment {
      */
     void loadSeries() {
         graphs = getGraphs();
-        double maxX = 1;
         if (graphs != null) {
             if (switch_percentage.isChecked() && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null) {
                 graphView.addSeries(graphs[GRAPH_INDEX_BATTERY_LEVEL]);
-                maxX = graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX();
             }
             if (switch_temp.isChecked() && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
                 graphView.addSeries(graphs[GRAPH_INDEX_TEMPERATURE]);
-                maxX = graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueX();
             }
-            if (maxX == 0) {
-                maxX = 1;
+            if (switch_current.isChecked() && graphs[GRAPH_INDEX_CURRENT] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_CURRENT]);
             }
+            if (switch_voltage.isChecked() && graphs[GRAPH_INDEX_VOLTAGE] != null) {
+                graphView.addSeries(graphs[GRAPH_INDEX_VOLTAGE]);
+            }
+            applyMaxValues();
             createOrUpdateInfoObject();
         }
-        graphView.getViewport().setMaxX(maxX);
         setTimeText();
+    }
+
+    private void applyMaxValues() {
+        double maxX = 0;
+        double maxY = 0;
+        for (Series graph : graphView.getSeries()) {
+            if (graph != null) {
+                if (graph.getHighestValueX() > maxX) {
+                    maxX = graph.getHighestValueX();
+                }
+                if (graph.getHighestValueY() > maxY) {
+                    maxY = graph.getHighestValueY() * 1.2;
+                }
+            }
+        }
+        if (maxX == 0) {
+            maxX = HIGHEST_X_DEFAULT;
+            maxY = HIGHEST_Y_DEFAULT;
+        }
+        if (maxY == 0) {
+            maxY = HIGHEST_Y_DEFAULT;
+        }
+        graphView.getViewport().setMaxX(maxX);
+        graphView.getViewport().setMaxY(maxY);
     }
 
     /**
@@ -248,8 +290,9 @@ public abstract class BasicGraphFragment extends Fragment {
         viewport.setXAxisBoundsManual(true);
         viewport.setYAxisBoundsManual(true);
         viewport.setMinX(0);
-        viewport.setMaxY(100);
+        viewport.setMaxX(HIGHEST_X_DEFAULT);
         viewport.setMinY(0);
+        viewport.setMaxY(HIGHEST_Y_DEFAULT);
     }
 
     /**
