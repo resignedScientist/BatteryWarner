@@ -7,8 +7,8 @@ import android.annotation.SuppressLint;
  * It should only be used by DatabaseController and DatabaseModel.
  */
 public class DatabaseValue {
-    private int batteryLevel;
-    private double temperature;
+    private int batteryLevel, current;
+    private double temperature, voltage;
     private long utcTimeInMillis;
 
     /**
@@ -18,17 +18,19 @@ public class DatabaseValue {
      * @param temperature     The temperature in degrees celsius.
      * @param utcTimeInMillis The UTC time in milliseconds.
      */
-    DatabaseValue(int batteryLevel, double temperature, long utcTimeInMillis) {
+    DatabaseValue(int batteryLevel, double temperature, double voltage, int current, long utcTimeInMillis) {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
+        this.voltage = voltage;
+        this.current = current;
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return String.format("[time=%d, batteryLevel=%d, temperature=%.1f]",
-                utcTimeInMillis, batteryLevel, temperature);
+        return String.format("[time=%d, batteryLevel=%d, temperature=%.1f, voltage=%.0f, current=%d]",
+                utcTimeInMillis, batteryLevel, temperature, voltage, current);
     }
 
     /**
@@ -48,6 +50,24 @@ public class DatabaseValue {
      */
     double getTemperature() {
         return temperature;
+    }
+
+    /**
+     * Get the voltage saved in this instance.
+     *
+     * @return The voltage in volts.
+     */
+    double getVoltage() {
+        return voltage;
+    }
+
+    /**
+     * Get the current saved in this instance.
+     *
+     * @return The current in mA.
+     */
+    int getCurrent() {
+        return current;
     }
 
     /**

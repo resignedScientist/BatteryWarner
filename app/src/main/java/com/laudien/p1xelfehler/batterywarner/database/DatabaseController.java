@@ -44,13 +44,21 @@ public class DatabaseController {
      */
     public static final int GRAPH_INDEX_TEMPERATURE = 1;
     /**
-     * The maximum DataPoints that can be displayed in a GraphView.
+     * Array index for the voltage graph.
      */
-    public static final int MAX_DATA_POINTS = 1000;
+    public static final int GRAPH_INDEX_VOLTAGE = 2;
+    /**
+     * Array index for the current graph.
+     */
+    public static final int GRAPH_INDEX_CURRENT = 3;
     /**
      * The number of different graphs.
      */
-    public static final int NUMBER_OF_GRAPHS = 2;
+    public static final int NUMBER_OF_GRAPHS = 4;
+    /**
+     * The maximum DataPoints that can be displayed in a GraphView.
+     */
+    public static final int MAX_DATA_POINTS = 1000;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
@@ -102,8 +110,8 @@ public class DatabaseController {
      * @param temperature     The current battery temperature.
      * @param utcTimeInMillis The current UTC time in milliseconds.
      */
-    public void addValue(int batteryLevel, double temperature, long utcTimeInMillis) {
-        DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, utcTimeInMillis);
+    public void addValue(int batteryLevel, double temperature, double voltage, int current, long utcTimeInMillis) {
+        DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
         databaseModel.addValue(databaseValue);
         notifyValueAdded(databaseValue);
         Log.d(TAG, "Value added: " + databaseValue);
@@ -320,6 +328,10 @@ public class DatabaseController {
             LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
             graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+            if (databaseValues[0].getVoltage() != 0)
+                graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
+            if (databaseValues[0].getCurrent() != 0)
+                graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
             long startTime = databaseValues[0].getUtcTimeInMillis();
             for (DatabaseValue databaseValue : databaseValues) {
                 long time = databaseValue.getUtcTimeInMillis() - startTime;
@@ -330,6 +342,16 @@ public class DatabaseController {
                 // temperature graph
                 double temperature = databaseValue.getTemperature() / 10;
                 graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+                // voltage graph
+                if (graphs[GRAPH_INDEX_VOLTAGE] != null) {
+                    double voltage = databaseValue.getVoltage() / 1000;
+                    graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, voltage), false, MAX_DATA_POINTS);
+                }
+                // current graph
+                if (graphs[GRAPH_INDEX_CURRENT] != null) {
+                    int current = databaseValue.getCurrent();
+                    graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
+                }
             }
             return graphs;
         }
@@ -369,6 +391,13 @@ public class DatabaseController {
             // temperature point
             double temperature = databaseValue.getTemperature() / 10;
             dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+            // voltage point
+            double voltage = databaseValue.getVoltage();
+            dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+            // current point
+            int current = databaseValue.getCurrent();
+            dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+            // notify the listeners
             for (DatabaseListener listener : listeners) {
                 listener.onValueAdded(dataPoints);
             }

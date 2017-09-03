@@ -285,8 +285,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         if (graphs == null) { // first point
             graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
-                graphView.addSeries(graphs[i]);
+                if (dataPoints[i] != null) {
+                    graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
+                    graphView.addSeries(graphs[i]);
+                }
             }
             styleGraphs(graphs);
         } else { // not the first point
