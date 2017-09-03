@@ -167,8 +167,32 @@ public abstract class BasicGraphFragment extends Fragment {
             }
             applyMaxValues();
             createOrUpdateInfoObject();
+            disableNotSupportedSwitches();
         }
         setTimeText();
+    }
+
+    private void disableNotSupportedSwitches() {
+        if (graphs != null) {
+            for (byte i = 0; i < graphs.length; i++) {
+                if (graphs[i] == null) {
+                    switch (i) {
+                        case GRAPH_INDEX_BATTERY_LEVEL:
+                            switch_percentage.setEnabled(false);
+                            break;
+                        case GRAPH_INDEX_TEMPERATURE:
+                            switch_temp.setEnabled(false);
+                            break;
+                        case GRAPH_INDEX_CURRENT:
+                            switch_current.setEnabled(false);
+                            break;
+                        case GRAPH_INDEX_VOLTAGE:
+                            switch_voltage.setEnabled(false);
+                            break;
+                    }
+                }
+            }
+        }
     }
 
     private void applyMaxValues() {
