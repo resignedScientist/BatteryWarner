@@ -271,11 +271,18 @@ public abstract class BasicGraphFragment extends Fragment {
                     if (labelCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
-                } else if (switch_percentage.isChecked() ^ switch_temp.isChecked()) { // Y-axis (percent)
+                } else if (switch_percentage.isChecked() ^ switch_temp.isChecked() ^ switch_current.isChecked() ^ switch_voltage.isChecked()) { // Y-axis (percent)
+                    String suffix = "";
                     if (switch_percentage.isChecked())
-                        return super.formatLabel(value, false) + "%";
+                        suffix = "%";
                     if (switch_temp.isChecked())
-                        return super.formatLabel(value, false) + "°C";
+                        suffix = "°C";
+                    if (switch_current.isChecked())
+                        suffix = "mA";
+                    if (switch_voltage.isChecked())
+                        suffix = "V";
+                    return super.formatLabel(value, false) + suffix;
+
                 }
                 return super.formatLabel(value, false);
             }
