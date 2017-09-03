@@ -172,6 +172,10 @@ public abstract class BasicGraphFragment extends Fragment {
         setTimeText();
     }
 
+    /**
+     * Disables all switches that have no graph. This can be because the value is not supported on
+     * the device or when using older database files.
+     */
     private void disableNotSupportedSwitches() {
         if (graphs != null) {
             for (byte i = 0; i < graphs.length; i++) {
@@ -195,6 +199,9 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
+    /**
+     * Dynamically scales the axis of the graphView.
+     */
     private void applyMaxValues() {
         double maxX = 0;
         double maxY = 0;
