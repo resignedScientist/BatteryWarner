@@ -345,12 +345,12 @@ public class DatabaseController {
                 // voltage graph
                 if (graphs[GRAPH_INDEX_VOLTAGE] != null) {
                     double voltage = databaseValue.getVoltage() / 1000;
-                    graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, voltage), false, MAX_DATA_POINTS);
+                    graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, MAX_DATA_POINTS);
                 }
                 // current graph
                 if (graphs[GRAPH_INDEX_CURRENT] != null) {
-                    int current = databaseValue.getCurrent();
-                    graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
+                    int current = databaseValue.getCurrent() / 1000;
+                    graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
                 }
             }
             return graphs;
