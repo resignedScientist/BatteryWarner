@@ -392,12 +392,12 @@ public class DatabaseController {
             double temperature = databaseValue.getTemperature() / 10;
             dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
             // voltage point
-            double voltage = databaseValue.getVoltage();
+            double voltage = databaseValue.getVoltage() / 1000;
             if (voltage != 0) {
                 dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
             }
             // current point
-            int current = databaseValue.getCurrent();
+            int current = databaseValue.getCurrent() / 1000;
             if (current != 0) {
                 dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
             }
