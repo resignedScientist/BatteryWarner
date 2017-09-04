@@ -13,7 +13,7 @@ android {
         resConfigs "de", "en", "fr", "bn", "ro", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue 'string', 'package_name', applicationId
-        resValue 'string', 'app_name', 'Battery Warner Pro'
+        resValue 'string', 'app_name', 'Battery Warner Pro (Beta)'
     }
     buildTypes {
         release {

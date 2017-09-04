@@ -63,9 +63,42 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside the app directory database.
      */
     DatabaseValue[] readData() {
-        return readData(getCursor());
+        SQLiteDatabase database = getReadableDatabase();
+        DatabaseValue[] databaseValues = readData(getCursor(database));
+        database.close();
+        return databaseValues;
     }
 
+    DatabaseValue getFirst() {
+        SQLiteDatabase database = getReadableDatabase();
+        DatabaseValue firstValue = getFirst(database);
+        database.close();
+        return firstValue;
+    }
+
+    DatabaseValue getLast() {
+        SQLiteDatabase database = getReadableDatabase();
+        DatabaseValue lastValue = getLast(database);
+        database.close();
+        return lastValue;
+    }
+
+    DatabaseValue[] getFirstAndLast() {
+        DatabaseValue[] databaseValues = new DatabaseValue[2];
+        SQLiteDatabase database = getReadableDatabase();
+        Cursor cursor = getCursor(database);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                databaseValues[0] = readCurrentDatabaseValue(cursor);
+            }
+            if (cursor.moveToLast()) {
+                databaseValues[1] = readCurrentDatabaseValue(cursor);
+            }
+            cursor.close();
+        }
+        database.close();
+        return databaseValues;
+    }
 
     /**
      * Add a value to the app directory database.
@@ -86,6 +119,7 @@ class DatabaseModel extends SQLiteOpenHelper {
             onCreate(database);
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
         }
+        database.close();
     }
 
     /**
@@ -93,15 +127,6 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     void resetTable() {
         getWritableDatabase().execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-    }
-
-    /**
-     * Get a Cursor instance which points to the app directory database.
-     *
-     * @return A Cursor instance which points to the app directory database.
-     */
-    Cursor getCursor() {
-        return getCursor(getReadableDatabase());
     }
 
     // ==== ANY DATABASE FROM A FILE ====
@@ -113,18 +138,24 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside given database.
      */
     DatabaseValue[] readData(File databaseFile) {
-        return readData(getCursor(databaseFile));
+        SQLiteDatabase database = getReadableDatabase(databaseFile);
+        DatabaseValue[] databaseValues = readData(getCursor(database));
+        database.close();
+        return databaseValues;
     }
 
-    /**
-     * Get a Cursor instance which points to the given database.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return A Cursor instance which points to the given database.
-     */
-    Cursor getCursor(File databaseFile) {
+    DatabaseValue getFirst(File databaseFile) {
         SQLiteDatabase database = getReadableDatabase(databaseFile);
-        return getCursor(database);
+        DatabaseValue firstValue = getFirst(database);
+        database.close();
+        return firstValue;
+    }
+
+    DatabaseValue getLast(File databaseFile) {
+        SQLiteDatabase database = getReadableDatabase(databaseFile);
+        DatabaseValue lastValue = getLast(database);
+        database.close();
+        return lastValue;
     }
 
     // ==== GENERAL STUFF ====
@@ -147,6 +178,13 @@ class DatabaseModel extends SQLiteOpenHelper {
             cursor.close();
         }
         return databaseValues;
+    }
+
+    private DatabaseValue readCurrentDatabaseValue(Cursor cursor) {
+        int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
+        double temperature = cursor.getDouble(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
+        long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+        return new DatabaseValue(batteryLevel, temperature, time);
     }
 
     private Cursor getCursor(SQLiteDatabase database) {
@@ -192,5 +230,29 @@ class DatabaseModel extends SQLiteOpenHelper {
             );
         }
         return database;
+    }
+
+    private DatabaseValue getFirst(SQLiteDatabase database) {
+        DatabaseValue databaseValue = null;
+        Cursor cursor = getCursor(database);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                databaseValue = readCurrentDatabaseValue(cursor);
+            }
+            cursor.close();
+        }
+        return databaseValue;
+    }
+
+    private DatabaseValue getLast(SQLiteDatabase database) {
+        DatabaseValue databaseValue = null;
+        Cursor cursor = getCursor(database);
+        if (cursor != null) {
+            if (cursor.moveToLast()) {
+                databaseValue = readCurrentDatabaseValue(cursor);
+            }
+            cursor.close();
+        }
+        return databaseValue;
     }
 }
