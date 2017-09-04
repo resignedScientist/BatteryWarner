@@ -33,6 +33,7 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
 
 /**
  * Super class of all Fragments that are using the charging curve.
@@ -41,6 +42,10 @@ public abstract class BasicGraphFragment extends Fragment {
     private static final double HIGHEST_X_DEFAULT = 1;
     private static final double HIGHEST_Y_DEFAULT = 100;
     /**
+     * Array of all switches.
+     */
+    protected Switch[] switches = new Switch[NUMBER_OF_GRAPHS];
+    /**
      * An instance of the {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject} holding information about the charging curve.
      */
     protected InfoObject infoObject;
@@ -48,22 +53,6 @@ public abstract class BasicGraphFragment extends Fragment {
      * The GraphView where the graphs are shown
      */
     protected GraphView graphView;
-    /**
-     * Switch which turns the percentage graph on and off.
-     */
-    protected Switch switch_percentage;
-    /**
-     * Switch which turns the temperature graph on and off.
-     */
-    protected Switch switch_temp;
-    /**
-     * Switch which turns the current graph on and off.
-     */
-    protected Switch switch_current;
-    /**
-     * Switch which turns the voltage graph on and off.
-     */
-    protected Switch switch_voltage;
     /**
      * TextView that contains the title over the GraphView.
      */
@@ -83,24 +72,21 @@ public abstract class BasicGraphFragment extends Fragment {
     private final CompoundButton.OnCheckedChangeListener onSwitchChangedListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-            Series s = null;
             if (graphs != null) {
-                if (compoundButton == switch_percentage)
-                    s = graphs[GRAPH_INDEX_BATTERY_LEVEL];
-                else if (compoundButton == switch_temp)
-                    s = graphs[GRAPH_INDEX_TEMPERATURE];
-                else if (compoundButton == switch_current)
-                    s = graphs[GRAPH_INDEX_CURRENT];
-                else if (compoundButton == switch_voltage)
-                    s = graphs[GRAPH_INDEX_VOLTAGE];
-            }
-            if (s != null) {
-                if (checked) {
-                    graphView.addSeries(s);
-                } else {
-                    graphView.removeSeries(s);
+                for (byte i = 0; i < switches.length; i++) { // iterate through every graph/switch id
+                    if (switches[i] == compoundButton) { // the id of the changed switch was found
+                        LineGraphSeries graph = graphs[i]; // get the graph with that id
+                        if (graph != null) {
+                            if (checked) {
+                                graphView.addSeries(graph);
+                            } else { // unchecked
+                                graphView.removeSeries(graph);
+                            }
+                            applyMaxValues();
+                        }
+                        break;
+                    }
                 }
-                applyMaxValues();
             }
         }
     };
@@ -114,14 +100,14 @@ public abstract class BasicGraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = view.findViewById(R.id.graphView);
-        switch_percentage = view.findViewById(R.id.switch_percentage);
-        switch_percentage.setOnCheckedChangeListener(onSwitchChangedListener);
-        switch_temp = view.findViewById(R.id.switch_temp);
-        switch_temp.setOnCheckedChangeListener(onSwitchChangedListener);
-        switch_current = view.findViewById(R.id.switch_current);
-        switch_current.setOnCheckedChangeListener(onSwitchChangedListener);
-        switch_voltage = view.findViewById(R.id.switch_voltage);
-        switch_voltage.setOnCheckedChangeListener(onSwitchChangedListener);
+        switches[GRAPH_INDEX_BATTERY_LEVEL] = view.findViewById(R.id.switch_percentage);
+        switches[GRAPH_INDEX_TEMPERATURE] = view.findViewById(R.id.switch_temp);
+        switches[GRAPH_INDEX_CURRENT] = view.findViewById(R.id.switch_current);
+        switches[GRAPH_INDEX_VOLTAGE] = view.findViewById(R.id.switch_voltage);
+        // set the listener for each switch
+        for (Switch s : switches) {
+            s.setOnCheckedChangeListener(onSwitchChangedListener);
+        }
         textView_title = view.findViewById(R.id.textView_title);
         textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
         initGraphView();
@@ -153,48 +139,33 @@ public abstract class BasicGraphFragment extends Fragment {
     void loadSeries() {
         graphs = getGraphs();
         if (graphs != null) {
-            if (switch_percentage.isChecked() && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null) {
-                graphView.addSeries(graphs[GRAPH_INDEX_BATTERY_LEVEL]);
-            }
-            if (switch_temp.isChecked() && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
-                graphView.addSeries(graphs[GRAPH_INDEX_TEMPERATURE]);
-            }
-            if (switch_current.isChecked() && graphs[GRAPH_INDEX_CURRENT] != null) {
-                graphView.addSeries(graphs[GRAPH_INDEX_CURRENT]);
-            }
-            if (switch_voltage.isChecked() && graphs[GRAPH_INDEX_VOLTAGE] != null) {
-                graphView.addSeries(graphs[GRAPH_INDEX_VOLTAGE]);
+            for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                if (switches[i].isChecked() && graphs[i] != null) {
+                    graphView.addSeries(graphs[i]);
+                }
             }
             applyMaxValues();
             createOrUpdateInfoObject();
-            disableNotSupportedSwitches();
+            enableOrDisableSwitches();
         }
         setTimeText();
     }
 
-    /**
-     * Disables all switches that have no graph. This can be because the value is not supported on
-     * the device or when using older database files.
-     */
-    private void disableNotSupportedSwitches() {
+    protected void enableOrDisableSwitches() {
         if (graphs != null) {
             for (byte i = 0; i < graphs.length; i++) {
-                if (graphs[i] == null) {
-                    switch (i) {
-                        case GRAPH_INDEX_BATTERY_LEVEL:
-                            switch_percentage.setEnabled(false);
-                            break;
-                        case GRAPH_INDEX_TEMPERATURE:
-                            switch_temp.setEnabled(false);
-                            break;
-                        case GRAPH_INDEX_CURRENT:
-                            switch_current.setEnabled(false);
-                            break;
-                        case GRAPH_INDEX_VOLTAGE:
-                            switch_voltage.setEnabled(false);
-                            break;
+                if (graphs[i] != null && graphs[i].getHighestValueX() > 0) {
+                    switches[i].setEnabled(true);
+                } else { // the graph with the id i is null or has not enough data points
+                    switches[i].setEnabled(false);
+                    if (graphs[i] == null) {
+                        switches[i].setChecked(false);
                     }
                 }
+            }
+        } else { // graph array is null
+            for (Switch s : switches) {
+                s.setEnabled(false);
             }
         }
     }
@@ -230,7 +201,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * Creates a new or updates the existing instance of the
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
      */
-    private void createOrUpdateInfoObject() {
+    protected void createOrUpdateInfoObject() {
         if (graphs != null
                 && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null
                 && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
@@ -302,20 +273,38 @@ public abstract class BasicGraphFragment extends Fragment {
                     if (labelCounter++ % 3 == 0)
                         return super.formatLabel(value, true) + " min";
                     return "";
-                } else if (switch_percentage.isChecked() ^ switch_temp.isChecked() ^ switch_current.isChecked() ^ switch_voltage.isChecked()) { // Y-axis (percent)
-                    String suffix = "";
-                    if (switch_percentage.isChecked())
-                        suffix = "%";
-                    if (switch_temp.isChecked())
-                        suffix = "°C";
-                    if (switch_current.isChecked())
-                        suffix = "mA";
-                    if (switch_voltage.isChecked())
-                        suffix = "V";
-                    return super.formatLabel(value, false) + suffix;
-
+                } else { // Y-axis (percent)
+                    byte checkedSwitches = 0;
+                    byte checkedSwitchId = -1;
+                    for (byte i = 0; i < switches.length; i++) {
+                        if (switches[i].isChecked()) {
+                            checkedSwitches++;
+                            checkedSwitchId = i;
+                        }
+                    }
+                    if (checkedSwitches == 1) { // only one switch is checked
+                        String suffix;
+                        switch (checkedSwitchId) {
+                            case GRAPH_INDEX_BATTERY_LEVEL:
+                                suffix = "%";
+                                break;
+                            case GRAPH_INDEX_TEMPERATURE:
+                                suffix = "°C";
+                                break;
+                            case GRAPH_INDEX_CURRENT:
+                                suffix = "mA";
+                                break;
+                            case GRAPH_INDEX_VOLTAGE:
+                                suffix = "V";
+                                break;
+                            default:
+                                suffix = "";
+                        }
+                        return super.formatLabel(value, false) + suffix;
+                    } else {
+                        return super.formatLabel(value, false);
+                    }
                 }
-                return super.formatLabel(value, false);
             }
         };
     }
