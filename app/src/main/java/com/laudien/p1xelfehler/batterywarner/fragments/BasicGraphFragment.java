@@ -1,10 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
@@ -336,25 +334,22 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     protected void styleGraphs(LineGraphSeries[] graphs) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), getResources().getBoolean(R.bool.pref_dark_theme_enabled_default));
-        // percentage
+        int[] colors = new int[NUMBER_OF_GRAPHS];
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-        int color_percentage = typedValue.data;
-        int color_percentageBackground = ColorUtils.setAlphaComponent(color_percentage, 64);
-        // temperature
-        int color_temperature;
-        if (darkThemeEnabled) { // dark theme
-            color_temperature = Color.GREEN;
-        } else { // default theme
-            theme.resolveAttribute(R.attr.colorPrimary, typedValue, true);
-            color_temperature = typedValue.data;
+        colors[GRAPH_INDEX_BATTERY_LEVEL] = typedValue.data;
+        int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
+        colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
+        colors[GRAPH_INDEX_TEMPERATURE] = Color.GREEN;
+        colors[GRAPH_INDEX_CURRENT] = Color.BLUE;
+        // set colors
+        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (graphs[i] != null) {
+                graphs[i].setColor(colors[i]);
+            }
         }
         graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
-        graphs[GRAPH_INDEX_BATTERY_LEVEL].setColor(color_percentage);
         graphs[GRAPH_INDEX_BATTERY_LEVEL].setBackgroundColor(color_percentageBackground);
-        graphs[GRAPH_INDEX_TEMPERATURE].setColor(color_temperature);
     }
 }
