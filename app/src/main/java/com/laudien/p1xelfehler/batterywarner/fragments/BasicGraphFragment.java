@@ -79,7 +79,7 @@ public abstract class BasicGraphFragment extends Fragment {
                             } else { // unchecked
                                 graphView.removeSeries(graph);
                             }
-                            applyMaxValues();
+                            applyGraphScale();
                         }
                         break;
                     }
@@ -141,7 +141,7 @@ public abstract class BasicGraphFragment extends Fragment {
                     graphView.addSeries(graphs[i]);
                 }
             }
-            applyMaxValues();
+            applyGraphScale();
             createOrUpdateInfoObject();
             enableOrDisableSwitches();
         }
@@ -170,9 +170,10 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Dynamically scales the axis of the graphView.
      */
-    protected void applyMaxValues() {
+    protected void applyGraphScale() {
         double maxX = 0;
         double maxY = 0;
+        double minY = 0;
         for (Series graph : graphView.getSeries()) {
             if (graph != null) {
                 if (graph.getHighestValueX() > maxX) {
@@ -180,6 +181,9 @@ public abstract class BasicGraphFragment extends Fragment {
                 }
                 if (graph.getHighestValueY() > maxY) {
                     maxY = graph.getHighestValueY() * 1.2;
+                }
+                if (graph.getLowestValueY() < minY) {
+                    minY = graph.getLowestValueY();
                 }
             }
         }
@@ -193,8 +197,10 @@ public abstract class BasicGraphFragment extends Fragment {
         if (maxY < 100 && switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked()) {
             maxY = 100;
         }
-        graphView.getViewport().setMaxX(maxX);
-        graphView.getViewport().setMaxY(maxY);
+        Viewport viewport = graphView.getViewport();
+        viewport.setMaxX(maxX);
+        viewport.setMaxY(maxY);
+        viewport.setMinY(minY);
     }
 
     /**

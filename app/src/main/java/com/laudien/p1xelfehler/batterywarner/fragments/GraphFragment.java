@@ -324,7 +324,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             }
         }
         createOrUpdateInfoObject();
-        applyMaxValues();
+        applyGraphScale();
         enableOrDisableSwitches();
         setTimeText();
     }
