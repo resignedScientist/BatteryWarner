@@ -19,7 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+import android.widget.CompoundButton;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -244,7 +244,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         textView_chargingTime.setText(disableText);
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
         if (disableCheckBoxes) {
-            for (Switch s : switches) {
+            for (CompoundButton s : switches) {
                 s.setEnabled(false);
             }
         }

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.DefaultLabelFormatter;
@@ -42,7 +41,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Array of all switches.
      */
-    protected Switch[] switches = new Switch[NUMBER_OF_GRAPHS];
+    protected CompoundButton[] switches = new CompoundButton[NUMBER_OF_GRAPHS];
     /**
      * An instance of the {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject} holding information about the charging curve.
      */
@@ -103,7 +102,7 @@ public abstract class BasicGraphFragment extends Fragment {
         switches[GRAPH_INDEX_CURRENT] = view.findViewById(R.id.switch_current);
         switches[GRAPH_INDEX_VOLTAGE] = view.findViewById(R.id.switch_voltage);
         // set the listener for each switch
-        for (Switch s : switches) {
+        for (CompoundButton s : switches) {
             s.setOnCheckedChangeListener(onSwitchChangedListener);
         }
         textView_title = view.findViewById(R.id.textView_title);
@@ -162,7 +161,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 }
             }
         } else { // graph array is null
-            for (Switch s : switches) {
+            for (CompoundButton s : switches) {
                 s.setEnabled(false);
             }
         }

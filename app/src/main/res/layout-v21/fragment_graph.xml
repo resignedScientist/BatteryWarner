@@ -45,7 +45,7 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:text="Ladezeit: 999s" />
 
-    <CheckBox
+    <Switch
         android:id="@+id/switch_percentage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <CheckBox
+    <Switch
         android:id="@+id/switch_temp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <CheckBox
+    <Switch
         android:id="@+id/switch_voltage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
-    <CheckBox
+    <Switch
         android:id="@+id/switch_current"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
