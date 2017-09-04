@@ -349,7 +349,7 @@ public class DatabaseController {
                 }
                 // current graph
                 if (graphs[GRAPH_INDEX_CURRENT] != null) {
-                    int current = databaseValue.getCurrent() / 1000;
+                    int current = databaseValue.getCurrent() / -1000;
                     graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
                 }
             }
@@ -397,7 +397,7 @@ public class DatabaseController {
                 dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
             }
             // current point
-            double current = databaseValue.getCurrent() / 1000;
+            double current = databaseValue.getCurrent() / -1000;
             if (current != 0) {
                 dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
             }
