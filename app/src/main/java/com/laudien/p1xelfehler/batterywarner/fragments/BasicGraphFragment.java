@@ -202,7 +202,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Dynamically scales the axis of the graphView.
      */
-    private void applyMaxValues() {
+    protected void applyMaxValues() {
         double maxX = 0;
         double maxY = 0;
         for (Series graph : graphView.getSeries()) {

@@ -25,4 +25,9 @@
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_reset_battery_stats_default">false</bool>
     <bool name="pref_smart_charging_auto_resume_default">true</bool>
+    <!-- default switch states -->
+    <bool name="switch_percentage_default">true</bool>
+    <bool name="switch_temperature_default">true</bool>
+    <bool name="switch_current_default">false</bool>
+    <bool name="switch_voltage_default">false</bool>
 </resources>

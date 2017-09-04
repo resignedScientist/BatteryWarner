@@ -281,7 +281,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
 
     @Override
     public void onValueAdded(DataPoint[] dataPoints) {
-        double maxX = 1;
         if (graphs == null) { // first point
             graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
@@ -295,9 +294,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 graphs[i].appendData(dataPoints[i], false, DatabaseController.MAX_DATA_POINTS);
             }
-            maxX = dataPoints[0].getX();
         }
-        graphView.getViewport().setMaxX(maxX);
+        applyMaxValues();
         setTimeText();
     }
 
