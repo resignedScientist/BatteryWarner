@@ -341,12 +341,13 @@ public abstract class BasicGraphFragment extends Fragment {
         colors[GRAPH_INDEX_BATTERY_LEVEL] = typedValue.data;
         int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
         colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
-        colors[GRAPH_INDEX_TEMPERATURE] = Color.GREEN;
-        colors[GRAPH_INDEX_CURRENT] = Color.BLUE;
+        colors[GRAPH_INDEX_TEMPERATURE] = Color.argb(255, 104, 159, 56);
+        colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
         // set colors
         for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
             if (graphs[i] != null) {
                 graphs[i].setColor(colors[i]);
+                switches[i].setTextColor(colors[i]);
             }
         }
         graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
