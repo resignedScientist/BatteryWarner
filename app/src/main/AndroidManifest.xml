@@ -92,9 +92,6 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-        <service
-            android:name=".services.GraphAutoDeleteService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".services.BackgroundService" />
         <service android:name=".services.DisableRootFeaturesService" />
         <service android:name=".services.EnableChargingService" />

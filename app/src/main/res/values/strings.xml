@@ -8,8 +8,6 @@
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
     <string name="pref_graph_enabled" translatable="false">graphEnabled</string>
     <string name="pref_graph_autosave" translatable="false">graphAutoSave</string>
-    <string name="pref_graph_auto_delete" translatable="false">graphAutoDelete</string>
-    <string name="pref_graph_auto_delete_time" translatable="false">graphAutoDeleteTime</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
     <string name="pref_sound_uri_high" translatable="false">savedSoundUriHigh</string>
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
@@ -65,8 +63,6 @@
     <string name="title_sound_uri">Choose notification Sound</string>
     <string name="title_time_format">Time format</string>
     <string name="title_graph_autosave">Save automatically</string>
-    <string name="title_graph_auto_delete">Auto Delete</string>
-    <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
     <string name="title_advanced_features">Advanced features</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
@@ -107,10 +103,7 @@
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
-    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
-    <!-- preference units -->
-    <string name="unit_days">\ days</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
