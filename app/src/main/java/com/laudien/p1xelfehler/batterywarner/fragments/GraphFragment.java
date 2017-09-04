@@ -37,7 +37,9 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
 
 /**
@@ -67,12 +69,17 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (graphEnabled) {
             switches[GRAPH_INDEX_BATTERY_LEVEL].setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.switch_percentage_default))
             );
             switches[GRAPH_INDEX_TEMPERATURE].setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.switch_temperature_default))
             );
-            // TODO: load missing switch states
+            switches[GRAPH_INDEX_CURRENT].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_current), getResources().getBoolean(R.bool.switch_current_default))
+            );
+            switches[GRAPH_INDEX_VOLTAGE].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
+            );
             databaseController = DatabaseController.getInstance(getContext());
         } else {
             setBigText(getString(R.string.toast_disabled_in_settings), true);
@@ -98,8 +105,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             sharedPreferences.edit()
                     .putBoolean(getString(R.string.pref_checkBox_percent), switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked())
                     .putBoolean(getString(R.string.pref_checkBox_temperature), switches[GRAPH_INDEX_TEMPERATURE].isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_voltage), switches[GRAPH_INDEX_VOLTAGE].isChecked())
                     .apply();
-            // TODO: save missing switch states
             databaseController.unregisterListener(this);
             getContext().unregisterReceiver(chargingStateChangedReceiver);
         }
