@@ -397,7 +397,7 @@ public class DatabaseController {
                 dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
             }
             // current point
-            int current = databaseValue.getCurrent() / 1000;
+            double current = databaseValue.getCurrent() / 1000;
             if (current != 0) {
                 dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
             }
