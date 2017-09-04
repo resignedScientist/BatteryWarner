@@ -244,7 +244,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void saveGraph() {
-        if (graphView.getSeries().size() > 0 && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
+        if (graphs != null && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
