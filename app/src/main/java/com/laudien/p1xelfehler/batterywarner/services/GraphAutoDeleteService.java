@@ -49,7 +49,7 @@ public class GraphAutoDeleteService extends JobService {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) { // storage permission granted
                 DatabaseController databaseController = DatabaseController.getInstance(this);
-                int days = sharedPreferences.getInt(getString(R.string.pref_auto_delete_days), getResources().getInteger(R.integer.pref_auto_delete_days_default));
+                int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
                 long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
                 ArrayList<File> files = databaseController.getFileList();
                 for (File file : files) {

@@ -20,8 +20,8 @@
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
     <string name="pref_info_text_size" translatable="false">infoTextSize</string>
-    <string name="pref_auto_delete_days" translatable="false">autoDeleteDays</string>
-    <string name="pref_graph_auto_delete" translatable="false">autoDeleteEnabled</string>
+    <string name="pref_graph_auto_delete" translatable="false">graphAutoDelete</string>
+    <string name="pref_graph_auto_delete_time" translatable="false">graphAutoDeleteTime</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
@@ -90,6 +90,8 @@
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
+    <string name="title_graph_auto_delete">Auto Delete</string>
+    <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <!-- other titles -->
     <string name="title_preferences">Settings</string>
     <string name="title_main_page">Main page</string>
@@ -108,6 +110,7 @@
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
+    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
@@ -225,4 +228,5 @@
     <string name="donation_link" translatable="false">https://www.paypal.me/p1xelfehler</string>
     <string name="charging">Charging</string>
     <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
+    <string name="unit_days">\ days</string>
 </resources>
