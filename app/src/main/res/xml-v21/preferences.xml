@@ -97,12 +97,6 @@
             android:key="@string/pref_graph_enabled"
             android:summary="@string/summary_graph_enabled"
             android:title="@string/title_graph_enabled" />
-        <SwitchPreference
-            android:defaultValue="@bool/pref_graph_autosave_default"
-            android:dependency="@string/pref_graph_enabled"
-            android:key="@string/pref_graph_autosave"
-            android:summary="@string/summary_graph_autosave"
-            android:title="@string/title_graph_autosave" />
         <ListPreference
             android:defaultValue="@string/pref_time_format_default"
             android:dependency="@string/pref_graph_enabled"
@@ -111,6 +105,26 @@
             android:key="@string/pref_time_format"
             android:summary="%s"
             android:title="@string/title_time_format" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_graph_autosave_default"
+            android:dependency="@string/pref_graph_enabled"
+            android:key="@string/pref_graph_autosave"
+            android:summary="@string/summary_graph_autosave"
+            android:title="@string/title_graph_autosave" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_graph_auto_delete_default"
+            android:dependency="@string/pref_graph_autosave"
+            android:key="@string/pref_graph_auto_delete"
+            android:summary="@string/summary_graph_auto_delete"
+            android:title="@string/title_graph_auto_delete" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_graph_auto_delete_time_default"
+            android:dependency="@string/pref_graph_auto_delete"
+            android:key="@string/pref_graph_auto_delete_time"
+            android:title="@string/title_graph_auto_delete_time"
+            app:slider_max="@integer/pref_graph_auto_delete_time_max"
+            app:slider_min="@integer/pref_graph_auto_delete_time_min"
+            app:unit="@string/unit_days" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_theming">
         <SwitchPreference
