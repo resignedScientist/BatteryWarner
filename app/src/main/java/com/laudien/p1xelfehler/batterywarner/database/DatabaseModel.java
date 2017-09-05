@@ -69,7 +69,6 @@ class DatabaseModel extends SQLiteOpenHelper {
         return readData(getCursor());
     }
 
-
     /**
      * Add a value to the app directory database.
      *
