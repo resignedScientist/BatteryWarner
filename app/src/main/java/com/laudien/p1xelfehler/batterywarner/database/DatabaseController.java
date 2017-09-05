@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Locale;
@@ -412,6 +414,28 @@ public class DatabaseController {
         for (DatabaseListener listener : listeners) {
             listener.onTableReset();
         }
+    }
+
+    public void upgradeAllSavedDatabases(Context context) {
+        Log.d(TAG, "Upgrading all saved databases...");
+        DatabaseController databaseController = DatabaseController.getInstance(context);
+        ArrayList<File> files = databaseController.getFileList();
+        Collections.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                if (f1.lastModified() == f2.lastModified()) {
+                    return 0;
+                }
+                return f1.lastModified() < f2.lastModified() ? -1 : 1;
+            }
+        });
+        for (File file : files) {
+            Log.d(TAG, "Upgrading file: " + file.getPath());
+            Log.d(TAG, "last modified: " + file.lastModified());
+            SQLiteDatabase database = databaseModel.getReadableDatabase(file);
+            database.close();
+        }
+        Log.d(TAG, "Upgrade finished!");
     }
 
     /**

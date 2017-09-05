@@ -43,6 +43,7 @@ class DatabaseModel extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         Log.d(getClass().getSimpleName(), "onUpgrade() -> oldVersion = " + oldVersion + ", newVersion = " + newVersion);
         if (oldVersion < 5) {
+            Log.d(getClass().getSimpleName(), "Upgrading file: " + sqLiteDatabase.getPath());
             String statement = "ALTER TABLE %s ADD COLUMN %s INTEGER DEFAULT 0";
             try {
                 sqLiteDatabase.execSQL(String.format(
@@ -168,7 +169,7 @@ class DatabaseModel extends SQLiteOpenHelper {
         );
     }
 
-    private SQLiteDatabase getReadableDatabase(File databaseFile) {
+    SQLiteDatabase getReadableDatabase(File databaseFile) {
         SQLiteDatabase database = SQLiteDatabase.openDatabase(
                 databaseFile.getPath(),
                 null,
@@ -176,6 +177,7 @@ class DatabaseModel extends SQLiteOpenHelper {
         );
         // upgrade database if necessary
         if (database.getVersion() < DATABASE_VERSION) {
+            long lastModified = databaseFile.lastModified();
             database.close();
             database = SQLiteDatabase.openDatabase(
                     databaseFile.getPath(),
@@ -185,6 +187,7 @@ class DatabaseModel extends SQLiteOpenHelper {
             onUpgrade(database, database.getVersion(), DATABASE_VERSION);
             database.setVersion(DATABASE_VERSION);
             database.close();
+            databaseFile.setLastModified(lastModified); // keep last modified date the same
             database = SQLiteDatabase.openDatabase(
                     databaseFile.getPath(),
                     null,
