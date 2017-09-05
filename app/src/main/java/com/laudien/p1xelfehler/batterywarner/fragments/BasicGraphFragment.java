@@ -208,29 +208,35 @@ public abstract class BasicGraphFragment extends Fragment {
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
      */
     protected void createOrUpdateInfoObject() {
-        if (graphs != null
-                && graphs[GRAPH_INDEX_BATTERY_LEVEL] != null
-                && graphs[GRAPH_INDEX_TEMPERATURE] != null) {
+        if (graphs != null) {
             if (infoObject == null) {
                 infoObject = new InfoObject(
                         getStartTime(),
                         getEndTime(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
-                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
-                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
+                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN
                 );
             } else {
                 infoObject.updateValues(
                         getStartTime(),
                         getEndTime(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(),
-                        graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(),
-                        graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY()
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
+                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN
                 );
             }
-        } else { // any graph is null
+        } else { // there are no graphs
             infoObject = null;
         }
     }

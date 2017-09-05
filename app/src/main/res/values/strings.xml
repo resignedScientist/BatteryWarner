@@ -142,6 +142,7 @@
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
     <string name="toast_nothing_to_delete">There is nothing to delete!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
+    <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <!-- notifications -->
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
@@ -150,7 +151,6 @@
     <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
-    <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="notification_button_grant_root">Grant root</string>
     <string name="notification_button_enable_charging">Enable charging</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
@@ -195,10 +195,14 @@
     <!-- graph information -->
     <string name="info_startTime">Start</string>
     <string name="info_endTime">Finished</string>
-    <string name="info_max_temp">Highest temperature</string>
-    <string name="info_min_temp">Lowest temperature</string>
+    <string name="info_max_temp">Max. temperature</string>
+    <string name="info_min_temp">Min. temperature</string>
     <string name="info_charging_time">Charging time</string>
     <string name="info_charging_speed">Charging speed</string>
+    <string name="info_min_current">Min. current</string>
+    <string name="info_max_current">Max. current</string>
+    <string name="info_min_voltage">Min. voltage</string>
+    <string name="info_max_voltage">Max. voltage</string>
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
     <string name="tile_warning_low">Low battery warning</string>

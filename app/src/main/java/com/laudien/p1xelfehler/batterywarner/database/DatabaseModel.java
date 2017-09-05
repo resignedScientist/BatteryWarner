@@ -137,8 +137,8 @@ class DatabaseModel extends SQLiteOpenHelper {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToPosition(i);
                     int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
-                    double temperature = cursor.getDouble(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
-                    double voltage = cursor.getDouble(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
+                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
+                    int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
                     int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
                     long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
                     databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time);
