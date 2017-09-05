@@ -289,7 +289,9 @@ public class DatabaseController {
      */
     public long getEndTime(File databaseFile) {
         Cursor cursor = databaseModel.getCursor(databaseFile);
-        return getEndTime(cursor);
+        long endTime = getEndTime(cursor);
+        databaseModel.close(databaseFile);
+        return endTime;
     }
 
     /**
@@ -300,7 +302,9 @@ public class DatabaseController {
      */
     public long getStartTime(File databaseFile) {
         Cursor cursor = databaseModel.getCursor(databaseFile);
-        return getStartTime(cursor);
+        long startTime = getStartTime(cursor);
+        databaseModel.close(databaseFile);
+        return startTime;
     }
 
     /**

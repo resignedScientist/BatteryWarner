@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * The Model for the charging graph databases. Only the DatabaseController should communicate to
@@ -20,6 +21,7 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 5; // if the version is changed, a new database will be created!
+    private HashMap<String, SQLiteDatabase> openedDatabases = new HashMap<>();
 
     DatabaseModel(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,13 +89,16 @@ class DatabaseModel extends SQLiteOpenHelper {
             onCreate(database);
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
         }
+        database.close();
     }
 
     /**
      * Clears the table of the app directory database.
      */
     void resetTable() {
-        getWritableDatabase().execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        SQLiteDatabase database = getWritableDatabase();
+        database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        database.close();
     }
 
     /**
@@ -114,7 +119,9 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside given database.
      */
     DatabaseValue[] readData(File databaseFile) {
-        return readData(getCursor(databaseFile));
+        DatabaseValue[] values = readData(getCursor(databaseFile));
+        close(databaseFile);
+        return values;
     }
 
     /**
@@ -125,7 +132,16 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     Cursor getCursor(File databaseFile) {
         SQLiteDatabase database = getReadableDatabase(databaseFile);
+        openedDatabases.put(databaseFile.getPath(), database);
         return getCursor(database);
+    }
+
+    void close(File file) {
+        SQLiteDatabase database = openedDatabases.get(file.getPath());
+        if (database != null) {
+            database.close();
+            openedDatabases.remove(file.getPath());
+        }
     }
 
     // ==== GENERAL STUFF ====
