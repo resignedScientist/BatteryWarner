@@ -160,4 +160,8 @@
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
     <string name="menu_donate">Donate</string>
     <string name="menu_contact_developer">Contact the developer</string>
+    <string name="info_min_current">Min. current</string>
+    <string name="info_max_current">Max. current</string>
+    <string name="info_min_voltage">Min. voltage</string>
+    <string name="info_max_voltage">Max. voltage</string>
 </resources>

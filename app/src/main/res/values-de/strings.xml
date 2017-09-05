@@ -159,4 +159,8 @@
     <string name="toast_success_renaming">Datei umbenannt!</string>
     <string name="toast_success_saving">Der Graph wurde gespeichert!</string>
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
+    <string name="info_min_current">Min. Stromstärke</string>
+    <string name="info_max_current">Max. Stromstärke</string>
+    <string name="info_min_voltage">Min. Spannung</string>
+    <string name="info_max_voltage">Max. Spannung</string>
 </resources>

@@ -161,4 +161,8 @@
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
 
     <!-- new strings -->
+    <string name="info_min_current">Min. current</string>
+    <string name="info_max_current">Max. current</string>
+    <string name="info_min_voltage">Min. voltage</string>
+    <string name="info_max_voltage">Max. voltage</string>
 </resources>
