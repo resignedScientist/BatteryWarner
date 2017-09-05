@@ -20,6 +20,8 @@
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
     <string name="pref_info_text_size" translatable="false">infoTextSize</string>
+    <string name="pref_auto_delete_days" translatable="false">autoDeleteDays</string>
+    <string name="pref_graph_auto_delete" translatable="false">autoDeleteEnabled</string>
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
