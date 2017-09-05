@@ -215,7 +215,7 @@ public class BackgroundService extends Service {
                 .setCustomBigContentView(content)
                 .setContentText(message);
         if (SDK_INT < O) {
-            infoNotificationBuilder.setPriority(Notification.PRIORITY_LOW);
+            infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
         }
         return infoNotificationBuilder.build();
     }
