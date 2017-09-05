@@ -16,7 +16,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 @RequiresApi(LOLLIPOP)
 public class JobHelper {
-    private static final int ID_AUTO_DELETE_GRAPHS = 1337;
+    public static final int ID_AUTO_DELETE_GRAPHS = 1337;
     private static final String TAG = JobHelper.class.getSimpleName();
 
     public static void schedule(Context context, int jobId) {
@@ -39,12 +39,11 @@ public class JobHelper {
             JobInfo jobInfo =
                     new JobInfo.Builder(ID_AUTO_DELETE_GRAPHS, componentName)
                             .setRequiresCharging(true)
-                            .setRequiresDeviceIdle(true)
                             .setPeriodic(1000 * 60 * 60 * 24)
                             .setPersisted(true) // survive reboots
                             .build();
             boolean result = jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_SUCCESS;
-            Log.d(TAG, "Job scheduled, success: " + result);
+            Log.d(TAG, "Job scheduled: " + ID_AUTO_DELETE_GRAPHS + ", success: " + result);
         } else {
             Log.d(TAG, "Scheduling job failed! No storage permission granted!");
         }
