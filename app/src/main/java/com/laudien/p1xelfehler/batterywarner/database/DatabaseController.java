@@ -129,16 +129,21 @@ public class DatabaseController {
         return getAllGraphs(databaseModel.readData());
     }
 
+    public void notifyTransitionsFinished() {
+        databaseModel.close();
+    }
+
+    public void notifyTransitionsFinished(File file) {
+        databaseModel.close(file);
+    }
+
     /**
      * Get the latest time that is in the app directory database.
      *
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime() {
-        Cursor cursor = databaseModel.getCursor();
-        long endTime = getEndTime(cursor);
-        databaseModel.close();
-        return endTime;
+        return getEndTime(databaseModel.getCursor());
     }
 
     /**
@@ -147,10 +152,7 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime() {
-        Cursor cursor = databaseModel.getCursor();
-        long startTime = getStartTime(cursor);
-        databaseModel.close();
-        return startTime;
+        return getStartTime(databaseModel.getCursor());
     }
 
     /**
@@ -292,10 +294,7 @@ public class DatabaseController {
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime(File databaseFile) {
-        Cursor cursor = databaseModel.getCursor(databaseFile);
-        long endTime = getEndTime(cursor);
-        databaseModel.close(databaseFile);
-        return endTime;
+        return getEndTime(databaseModel.getCursor(databaseFile));
     }
 
     /**
@@ -305,10 +304,7 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime(File databaseFile) {
-        Cursor cursor = databaseModel.getCursor(databaseFile);
-        long startTime = getStartTime(cursor);
-        databaseModel.close(databaseFile);
-        return startTime;
+        return getStartTime(databaseModel.getCursor(databaseFile));
     }
 
     /**

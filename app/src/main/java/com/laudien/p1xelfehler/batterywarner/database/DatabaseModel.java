@@ -118,9 +118,7 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside given database.
      */
     DatabaseValue[] readData(File databaseFile) {
-        DatabaseValue[] values = readData(getCursor(databaseFile));
-        close(databaseFile);
-        return values;
+        return readData(getCursor(databaseFile));
     }
 
     /**
@@ -141,6 +139,11 @@ class DatabaseModel extends SQLiteOpenHelper {
             database.close();
             openedDatabases.remove(file.getPath());
         }
+    }
+
+    @Override
+    public synchronized void close() {
+        super.close();
     }
 
     // ==== GENERAL STUFF ====

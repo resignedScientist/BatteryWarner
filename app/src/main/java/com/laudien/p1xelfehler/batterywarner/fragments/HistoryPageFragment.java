@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 
 import java.io.File;
 
@@ -66,7 +65,6 @@ public class HistoryPageFragment extends BasicGraphFragment {
     protected LineGraphSeries[] getGraphs() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             if (file != null && file.exists()) {
-                DatabaseController databaseController = DatabaseController.getInstance(getContext());
                 LineGraphSeries[] graphs = databaseController.getAllGraphs(file);
                 styleGraphs(graphs);
                 return graphs;
@@ -80,13 +78,16 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     @Override
     protected long getEndTime() {
-        DatabaseController databaseController = DatabaseController.getInstance(getContext());
         return databaseController.getEndTime(file);
     }
 
     @Override
     protected long getStartTime() {
-        DatabaseController databaseController = DatabaseController.getInstance(getContext());
         return databaseController.getStartTime(file);
+    }
+
+    @Override
+    protected void notifyTransitionsFinished() {
+        databaseController.notifyTransitionsFinished(file);
     }
 }

@@ -57,7 +57,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             setTimeText();
         }
     };
-    private DatabaseController databaseController;
     private boolean graphEnabled;
 
     @Nullable
@@ -80,7 +79,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             switches[GRAPH_INDEX_VOLTAGE].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
             );
-            databaseController = DatabaseController.getInstance(getContext());
         } else {
             setBigText(getString(R.string.toast_disabled_in_settings), true);
         }
@@ -94,7 +92,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
             databaseController.registerDatabaseListener(this);
-            reload();
         }
     }
 
@@ -163,7 +160,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
      */
     @Override
     protected LineGraphSeries[] getGraphs() {
-        DatabaseController databaseController = DatabaseController.getInstance(getContext());
         LineGraphSeries[] graphs = databaseController.getAllGraphs();
         if (graphs != null) {
             styleGraphs(graphs);
@@ -178,13 +174,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
      */
     @Override
     protected long getEndTime() {
-        DatabaseController databaseController = DatabaseController.getInstance(getContext());
         return databaseController.getEndTime();
     }
 
     @Override
     protected long getStartTime() {
-        DatabaseController databaseController = DatabaseController.getInstance(getContext());
         return databaseController.getStartTime();
     }
 
@@ -298,7 +292,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
                 .setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        DatabaseController databaseController = DatabaseController.getInstance(getContext());
                         databaseController.resetTable();
                         ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
@@ -327,6 +320,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         applyGraphScale();
         enableOrDisableSwitches();
         setTimeText();
+        notifyTransitionsFinished();
     }
 
     @Override

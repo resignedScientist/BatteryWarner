@@ -21,6 +21,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -58,6 +59,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * TextView that contains the charging time.
      */
     protected TextView textView_chargingTime;
+    protected DatabaseController databaseController;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
@@ -92,6 +94,12 @@ public abstract class BasicGraphFragment extends Fragment {
      */
     private byte labelCounter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        databaseController = DatabaseController.getInstance(getContext());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,8 +117,19 @@ public abstract class BasicGraphFragment extends Fragment {
         textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
         initGraphView();
         graphView.getGridLabelRenderer().setLabelFormatter(getLabelFormatter());
-        loadSeries();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadSeries();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        graphView.removeAllSeries();
     }
 
     /**
@@ -146,6 +165,11 @@ public abstract class BasicGraphFragment extends Fragment {
             enableOrDisableSwitches();
         }
         setTimeText();
+        notifyTransitionsFinished();
+    }
+
+    protected void notifyTransitionsFinished() {
+        databaseController.notifyTransitionsFinished();
     }
 
     protected void enableOrDisableSwitches() {
@@ -255,14 +279,6 @@ public abstract class BasicGraphFragment extends Fragment {
                     infoObject.getTimeString(getContext())
             ));
         }
-    }
-
-    /**
-     * Reloads the graphs from the database.
-     */
-    void reload() {
-        graphView.removeAllSeries();
-        loadSeries();
     }
 
     /**
