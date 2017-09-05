@@ -7,8 +7,7 @@ import android.annotation.SuppressLint;
  * It should only be used by DatabaseController and DatabaseModel.
  */
 public class DatabaseValue {
-    private int batteryLevel;
-    private double temperature;
+    private int batteryLevel, current, temperature, voltage;
     private long utcTimeInMillis;
 
     /**
@@ -18,17 +17,19 @@ public class DatabaseValue {
      * @param temperature     The temperature in degrees celsius.
      * @param utcTimeInMillis The UTC time in milliseconds.
      */
-    DatabaseValue(int batteryLevel, double temperature, long utcTimeInMillis) {
+    DatabaseValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
+        this.voltage = voltage;
+        this.current = current;
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return String.format("[time=%d, batteryLevel=%d, temperature=%.1f]",
-                utcTimeInMillis, batteryLevel, temperature);
+        return String.format("[time=%d, batteryLevel=%d%%, temperature=%.1f°C, voltage=%.3f V, current=%.3f mAh]",
+                utcTimeInMillis, batteryLevel, (double) temperature / 10, (double) voltage / 1000, (double) current / -1000);
     }
 
     /**
@@ -44,10 +45,28 @@ public class DatabaseValue {
     /**
      * Get the temperature saved in this instance.
      *
-     * @return The temperature in degrees celsius.
+     * @return The temperature in degrees celsius * 10.
      */
-    double getTemperature() {
+    int getTemperature() {
         return temperature;
+    }
+
+    /**
+     * Get the voltage saved in this instance.
+     *
+     * @return The voltage in volts * 1000.
+     */
+    int getVoltage() {
+        return voltage;
+    }
+
+    /**
+     * Get the current saved in this instance.
+     *
+     * @return The current in mA * -1000.
+     */
+    int getCurrent() {
+        return current;
     }
 
     /**

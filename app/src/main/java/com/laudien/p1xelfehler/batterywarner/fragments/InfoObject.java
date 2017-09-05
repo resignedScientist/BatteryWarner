@@ -17,7 +17,7 @@ import java.util.Locale;
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
 class InfoObject {
-    private double timeInMinutes, maxTemp, minTemp, percentCharged;
+    private double timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage;
     private long startTime, endTime;
 
     /**
@@ -29,8 +29,10 @@ class InfoObject {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    InfoObject(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
-        updateValues(startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
+    InfoObject(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
+               double percentCharged, double minCurrent, double maxCurrent, double minVoltage,
+               double maxVoltage) {
+        updateValues(startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -81,17 +83,26 @@ class InfoObject {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    void updateValues(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+    void updateValues(long startTime, long endTime, double timeInMinutes, double maxTemp,
+                      double minTemp, double percentCharged, double minCurrent, double maxCurrent,
+                      double minVoltage, double maxVoltage) {
         this.startTime = startTime;
-        updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged);
+        updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent,
+                maxCurrent, minVoltage, maxVoltage);
     }
 
-    void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp, double percentCharged) {
+    private void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp,
+                              double percentCharged, double minCurrent, double maxCurrent,
+                              double minVoltage, double maxVoltage) {
         this.endTime = endTime;
         this.timeInMinutes = timeInMinutes;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
         this.percentCharged = percentCharged;
+        this.minCurrent = minCurrent;
+        this.maxCurrent = maxCurrent;
+        this.minVoltage = minVoltage;
+        this.maxVoltage = maxVoltage;
     }
 
     /**
@@ -111,14 +122,6 @@ class InfoObject {
                 dialog.dismiss();
             }
         });
-        // charging time
-        TextView textView_totalTime = dialog.findViewById(R.id.textView_totalTime);
-        textView_totalTime.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                context.getString(R.string.info_charging_time),
-                getTimeString(context))
-        );
         // start time
         TextView textView_startTime = dialog.findViewById(R.id.textView_startTime);
         textView_startTime.setText(String.format(
@@ -135,6 +138,54 @@ class InfoObject {
                 context.getString(R.string.info_endTime),
                 dateFormat.format(endTime)
         ));
+        // min temperature
+        TextView textView_minTemp = dialog.findViewById(R.id.textView_minTemp);
+        textView_minTemp.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f°C",
+                context.getString(R.string.info_min_temp),
+                minTemp)
+        );
+        // max temperature
+        TextView textView_maxTemp = dialog.findViewById(R.id.textView_maxTemp);
+        textView_maxTemp.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f°C",
+                context.getString(R.string.info_max_temp),
+                maxTemp)
+        );
+        // min current
+        TextView textView_minCurrent = dialog.findViewById(R.id.textView_minCurrent);
+        textView_minCurrent.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f mAh",
+                context.getString(R.string.info_min_current),
+                minCurrent)
+        );
+        // max current
+        TextView textView_maxCurrent = dialog.findViewById(R.id.textView_maxCurrent);
+        textView_maxCurrent.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.1f mAh",
+                context.getString(R.string.info_max_current),
+                maxCurrent)
+        );
+        // min voltage
+        TextView textView_minVoltage = dialog.findViewById(R.id.textView_minVoltage);
+        textView_minVoltage.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.3f V",
+                context.getString(R.string.info_min_voltage),
+                minVoltage)
+        );
+        // max voltage
+        TextView textView_maxVoltage = dialog.findViewById(R.id.textView_maxVoltage);
+        textView_maxVoltage.setText(String.format(
+                Locale.getDefault(),
+                "%s: %.3f V",
+                context.getString(R.string.info_max_voltage),
+                maxVoltage)
+        );
         // charging speed
         TextView textView_speed = dialog.findViewById(R.id.textView_speed);
         double speed = percentCharged * 60 / timeInMinutes;
@@ -153,21 +204,13 @@ class InfoObject {
                     speed)
             );
         }
-        // max temperature
-        TextView textView_maxTemp = dialog.findViewById(R.id.textView_maxTemp);
-        textView_maxTemp.setText(String.format(
+        // charging time
+        TextView textView_totalTime = dialog.findViewById(R.id.textView_totalTime);
+        textView_totalTime.setText(String.format(
                 Locale.getDefault(),
-                "%s: %.1f°C",
-                context.getString(R.string.info_max_temp),
-                maxTemp)
-        );
-        // min temperature
-        TextView textView_minTemp = dialog.findViewById(R.id.textView_minTemp);
-        textView_minTemp.setText(String.format(
-                Locale.getDefault(),
-                "%s: %.1f°C",
-                context.getString(R.string.info_min_temp),
-                minTemp)
+                "%s: %s",
+                context.getString(R.string.info_charging_time),
+                getTimeString(context))
         );
         // show dialog
         dialog.show();

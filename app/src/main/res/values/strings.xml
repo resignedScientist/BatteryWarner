@@ -8,8 +8,6 @@
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
     <string name="pref_graph_enabled" translatable="false">graphEnabled</string>
     <string name="pref_graph_autosave" translatable="false">graphAutoSave</string>
-    <string name="pref_graph_auto_delete" translatable="false">graphAutoDelete</string>
-    <string name="pref_graph_auto_delete_time" translatable="false">graphAutoDeleteTime</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
     <string name="pref_sound_uri_high" translatable="false">savedSoundUriHigh</string>
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
@@ -25,6 +23,8 @@
     <!-- GraphFragment -->
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
+    <string name="pref_checkBox_current" translatable="false">checkBoxCurrent</string>
+    <string name="pref_checkBox_voltage" translatable="false">checkBoxVoltage</string>
     <!-- Smart Charging -->
     <string name="pref_smart_charging_enabled" translatable="false">smartChargingEnabled</string>
     <string name="pref_smart_charging_limit" translatable="false">smartChargingPercentMax</string>
@@ -65,8 +65,6 @@
     <string name="title_sound_uri">Choose notification Sound</string>
     <string name="title_time_format">Time format</string>
     <string name="title_graph_autosave">Save automatically</string>
-    <string name="title_graph_auto_delete">Auto Delete</string>
-    <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
     <string name="title_advanced_features">Advanced features</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
@@ -107,10 +105,7 @@
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
-    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
-    <!-- preference units -->
-    <string name="unit_days">\ days</string>
     <!-- time format preference -->
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
@@ -147,6 +142,7 @@
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
     <string name="toast_nothing_to_delete">There is nothing to delete!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
+    <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <!-- notifications -->
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
@@ -155,7 +151,6 @@
     <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
-    <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="notification_button_grant_root">Grant root</string>
     <string name="notification_button_enable_charging">Enable charging</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
@@ -200,10 +195,14 @@
     <!-- graph information -->
     <string name="info_startTime">Start</string>
     <string name="info_endTime">Finished</string>
-    <string name="info_max_temp">Highest temperature</string>
-    <string name="info_min_temp">Lowest temperature</string>
+    <string name="info_max_temp">Max. temperature</string>
+    <string name="info_min_temp">Min. temperature</string>
     <string name="info_charging_time">Charging time</string>
     <string name="info_charging_speed">Charging speed</string>
+    <string name="info_min_current">Min. current</string>
+    <string name="info_max_current">Max. current</string>
+    <string name="info_min_voltage">Min. voltage</string>
+    <string name="info_max_voltage">Max. voltage</string>
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
     <string name="tile_warning_low">Low battery warning</string>

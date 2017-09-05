@@ -43,14 +43,13 @@ import static com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragmen
 /**
  * Activity that shows all the charging curves that were saved.
  */
-public class HistoryActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener, DatabaseController.OnGraphFileDeletedListener {
+public class HistoryActivity extends BaseActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
     public static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static final int PERMISSION_REQUEST_CODE = 60;
     private ImageButton btn_next, btn_prev;
     private ViewPager viewPager;
     private HistoryPagerAdapter adapter;
     private TextView textView_nothingSaved, textView_fileName;
-    private DatabaseController databaseController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,14 +75,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
             );
         } else {
             loadGraph();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (databaseController != null) {
-            databaseController.unregisterOnGraphFileDeletedListener(this);
         }
     }
 
@@ -160,15 +151,8 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
     }
 
-    @Override
-    public void onGraphFileDeleted(File file) {
-        adapter.files.remove(file);
-        adapter.notifyDataSetChanged();
-    }
-
     private void loadGraph() {
-        databaseController = DatabaseController.getInstance(this);
-        databaseController.registerOnGraphFileDeletedListener(this);
+        DatabaseController databaseController = DatabaseController.getInstance(this);
         ArrayList<File> fileList = databaseController.getFileList();
         if (fileList == null || fileList.isEmpty()) {
             textView_nothingSaved.setVisibility(VISIBLE);

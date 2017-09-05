@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -36,6 +37,9 @@ import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
 
 /**
@@ -64,11 +68,17 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (graphEnabled) {
-            switch_percentage.setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.pref_checkBox_percent_default))
+            switches[GRAPH_INDEX_BATTERY_LEVEL].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.switch_percentage_default))
             );
-            switch_temp.setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.pref_checkBox_temperature_default))
+            switches[GRAPH_INDEX_TEMPERATURE].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.switch_temperature_default))
+            );
+            switches[GRAPH_INDEX_CURRENT].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_current), getResources().getBoolean(R.bool.switch_current_default))
+            );
+            switches[GRAPH_INDEX_VOLTAGE].setChecked(
+                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
             );
             databaseController = DatabaseController.getInstance(getContext());
         } else {
@@ -93,8 +103,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         super.onPause();
         if (graphEnabled) {
             sharedPreferences.edit()
-                    .putBoolean(getString(R.string.pref_checkBox_percent), switch_percentage.isChecked())
-                    .putBoolean(getString(R.string.pref_checkBox_temperature), switch_temp.isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_percent), switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_temperature), switches[GRAPH_INDEX_TEMPERATURE].isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked())
+                    .putBoolean(getString(R.string.pref_checkBox_voltage), switches[GRAPH_INDEX_VOLTAGE].isChecked())
                     .apply();
             databaseController.unregisterListener(this);
             getContext().unregisterReceiver(chargingStateChangedReceiver);
@@ -217,7 +229,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         if (isDatabaseEmpty) { // no data yet (database is empty or unavailable)
             setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
-            boolean hasEnoughData = infoObject.getTimeInMinutes() != 0;
+            LineGraphSeries graph = getFirstAvailableGraph();
+            boolean hasEnoughData = graph != null && graph.getHighestValueX() > 0;
             if (hasEnoughData) { // enough data
                 String timeString = infoObject.getTimeString(getContext());
                 setNormalText(String.format(Locale.getDefault(), "%s: %s", getString(R.string.info_charging_time), timeString));
@@ -231,20 +244,33 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         textView_chargingTime.setText(disableText);
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
         if (disableCheckBoxes) {
-            switch_temp.setEnabled(false);
-            switch_percentage.setEnabled(false);
+            for (CompoundButton s : switches) {
+                s.setEnabled(false);
+            }
         }
     }
 
     private void setNormalText(String enableText) {
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
         textView_chargingTime.setText(enableText);
-        switch_temp.setEnabled(true);
-        switch_percentage.setEnabled(true);
+        enableOrDisableSwitches();
+    }
+
+    private LineGraphSeries getFirstAvailableGraph() {
+        if (graphs != null) {
+            for (LineGraphSeries graph : graphs) {
+                if (graph != null) {
+                    return graph;
+                }
+            }
+        }
+        return null;
     }
 
     private void saveGraph() {
-        if (graphView.getSeries().size() > 0 && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
+        LineGraphSeries graph = getFirstAvailableGraph();
+        // check if there is enough data
+        if (graph != null && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
@@ -281,21 +307,25 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
 
     @Override
     public void onValueAdded(DataPoint[] dataPoints) {
-        double maxX = 1;
         if (graphs == null) { // first point
             graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
-                graphView.addSeries(graphs[i]);
+                if (dataPoints[i] != null) {
+                    graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
+                    graphView.addSeries(graphs[i]);
+                }
             }
             styleGraphs(graphs);
         } else { // not the first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                graphs[i].appendData(dataPoints[i], false, DatabaseController.MAX_DATA_POINTS);
+                if (graphs[i] != null && dataPoints[i] != null) {
+                    graphs[i].appendData(dataPoints[i], false, DatabaseController.MAX_DATA_POINTS);
+                }
             }
-            maxX = dataPoints[0].getX();
         }
-        graphView.getViewport().setMaxX(maxX);
+        createOrUpdateInfoObject();
+        applyGraphScale();
+        enableOrDisableSwitches();
         setTimeText();
     }
 
