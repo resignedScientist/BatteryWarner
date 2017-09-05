@@ -128,22 +128,16 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return A Cursor instance which points to the given database.
      */
     Cursor getCursor(File databaseFile) {
-        SQLiteDatabase database = getReadableDatabase(databaseFile);
-        openedDatabases.put(databaseFile.getPath(), database);
-        return getCursor(database);
+        return getCursor(getReadableDatabase(databaseFile));
     }
 
     void close(File file) {
+        Log.d(getClass().getSimpleName(), "Closing database: " + file.getPath());
         SQLiteDatabase database = openedDatabases.get(file.getPath());
         if (database != null) {
             database.close();
             openedDatabases.remove(file.getPath());
         }
-    }
-
-    @Override
-    public synchronized void close() {
-        super.close();
     }
 
     // ==== GENERAL STUFF ====
@@ -188,6 +182,9 @@ class DatabaseModel extends SQLiteOpenHelper {
     }
 
     SQLiteDatabase getReadableDatabase(File databaseFile) {
+        if (openedDatabases.containsKey(databaseFile.getPath())) {
+            return openedDatabases.get(databaseFile.getPath());
+        }
         SQLiteDatabase database = SQLiteDatabase.openDatabase(
                 databaseFile.getPath(),
                 null,
@@ -212,6 +209,8 @@ class DatabaseModel extends SQLiteOpenHelper {
                     SQLiteDatabase.OPEN_READONLY
             );
         }
+        Log.d(getClass().getSimpleName(), "Opened database: " + databaseFile.getPath());
+        openedDatabases.put(databaseFile.getPath(), database);
         return database;
     }
 }

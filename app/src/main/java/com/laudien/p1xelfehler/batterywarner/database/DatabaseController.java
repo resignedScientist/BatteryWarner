@@ -437,7 +437,7 @@ public class DatabaseController {
             Log.d(TAG, "Upgrading file: " + file.getPath());
             Log.d(TAG, "last modified: " + file.lastModified());
             SQLiteDatabase database = databaseModel.getReadableDatabase(file);
-            database.close();
+            databaseModel.close(file);
         }
         Log.d(TAG, "Upgrade finished!");
     }
