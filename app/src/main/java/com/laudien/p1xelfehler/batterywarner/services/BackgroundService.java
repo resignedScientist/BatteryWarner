@@ -146,7 +146,7 @@ public class BackgroundService extends Service {
         if (intent != null && intent.getAction() != null) {
             if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification
                 chargingDisabledInFile = false;
-                batteryChangedReceiver.onPowerDisconnected();
+                resetService();
             } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
                 resetService();
             }
