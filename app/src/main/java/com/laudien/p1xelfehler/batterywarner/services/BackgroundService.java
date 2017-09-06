@@ -564,11 +564,15 @@ public class BackgroundService extends Service {
                 AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
-                        String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
-                        infoNotificationContent = buildInfoNotificationContent(data);
-                        infoNotificationMessage = buildInfoNotificationMessage(data);
-                        infoNotificationBuilder.setContentText(infoNotificationMessage);
-                        notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+                        try {
+                            String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
+                            infoNotificationContent = buildInfoNotificationContent(data);
+                            infoNotificationMessage = buildInfoNotificationMessage(data);
+                            infoNotificationBuilder.setContentText(infoNotificationMessage);
+                            notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 
