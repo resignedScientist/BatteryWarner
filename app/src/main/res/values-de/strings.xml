@@ -171,4 +171,6 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
+    <string name="tasker_headline">Hallo Sir!</string>
+    <string name="tasker_subtitle">Was für eine nette Überraschung, dich hier zu treffen! :)</string>
 </resources>

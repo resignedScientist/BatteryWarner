@@ -171,4 +171,8 @@
     <string name="unit_days">\ days</string>
     <string name="tasker_disable_charging">Disable charging</string>
     <string name="tasker_choose_action">Choose your action:</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_headline">Hello Sir!</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_subtitle">I am glad that you got here! :)</string>
 </resources>
