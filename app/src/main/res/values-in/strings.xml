@@ -159,10 +159,14 @@
     <string name="toast_success_renaming">Nama file telah diganti!</string>
     <string name="toast_success_saving">Grafik telah tersimpan pada riwayat!</string>
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
+
+    <!-- new strings -->
+    <string name="info_min_current">Min. current</string>
+    <string name="info_max_current">Max. current</string>
+    <string name="info_min_voltage">Min. voltage</string>
+    <string name="info_max_voltage">Max. voltage</string>
+    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
     <string name="title_graph_auto_delete">Auto Delete</string>
     <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <string name="unit_days">\ days</string>
-    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
-
-    <!-- new strings -->
 </resources>

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
@@ -33,6 +34,7 @@ import static android.app.Notification.PRIORITY_HIGH;
 import static android.app.Notification.PRIORITY_LOW;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.os.BatteryManager.EXTRA_TEMPERATURE;
+import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
@@ -62,6 +64,8 @@ public class BackgroundService extends Service {
     private BroadcastReceiver screenOnOffReceiver;
     private BatteryChangedReceiver batteryChangedReceiver;
     private NotificationManager notificationManager;
+    @RequiresApi(LOLLIPOP)
+    private BatteryManager batteryManager;
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
     private BatteryHelper.BatteryData batteryData;
@@ -105,6 +109,9 @@ public class BackgroundService extends Service {
             }
         });
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (SDK_INT >= LOLLIPOP) {
+            batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
+        }
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         databaseController = DatabaseController.getInstance(this);
@@ -208,7 +215,7 @@ public class BackgroundService extends Service {
                 .setCustomBigContentView(content)
                 .setContentText(message);
         if (SDK_INT < O) {
-            infoNotificationBuilder.setPriority(Notification.PRIORITY_LOW);
+            infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
         }
         return infoNotificationBuilder.build();
     }
@@ -464,6 +471,8 @@ public class BackgroundService extends Service {
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
+            int voltage = intent.getIntExtra(EXTRA_VOLTAGE, 0);
+            int current = SDK_INT >= LOLLIPOP ? batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) : 0;
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
@@ -472,7 +481,7 @@ public class BackgroundService extends Service {
                 lastBatteryLevel = batteryLevel;
                 // add a value to the database
                 if (graphEnabled) {
-                    databaseController.addValue(batteryLevel, temperature, timeNow);
+                    databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
                 }
                 if (batteryLevel >= warningHigh) {
                     if (!chargingResumedBySmartCharging) {
@@ -509,7 +518,7 @@ public class BackgroundService extends Service {
                     if (timeNow >= smartChargingResumeTime) {
                         // add a graph point for optics/correctness
                         if (graphEnabled) {
-                            databaseController.addValue(batteryLevel, temperature, timeNow);
+                            databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
                         }
                         chargingResumedBySmartCharging = true;
                         resumeCharging();

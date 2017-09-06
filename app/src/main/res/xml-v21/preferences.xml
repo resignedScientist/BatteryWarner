@@ -19,8 +19,7 @@
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_warning_high"
             android:title="@string/title_warning_percentage"
-            app:slider_max="@integer/pref_warning_high_max"
-            app:slider_min="@integer/pref_warning_high_min"
+            app:slider_min="@integer/pref_slider_high_min"
             app:unit="%" />
         <SwitchPreference
             android:defaultValue="@bool/pref_stop_charging_default"
@@ -63,8 +62,8 @@
             android:dependency="@string/pref_warning_low_enabled"
             android:key="@string/pref_warning_low"
             android:title="@string/title_warning_percentage"
-            app:slider_max="@integer/pref_warning_low_max"
-            app:slider_min="@integer/pref_warning_low_min"
+            app:slider_max="@integer/pref_slider_low_max"
+            app:slider_min="@integer/pref_slider_low_min"
             app:unit="%" />
         <SwitchPreference
             android:defaultValue="@bool/pref_power_saving_mode_default"

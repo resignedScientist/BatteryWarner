@@ -2,6 +2,8 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +21,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Locale;
@@ -45,22 +46,26 @@ public class DatabaseController {
      */
     public static final int GRAPH_INDEX_TEMPERATURE = 1;
     /**
-     * The maximum DataPoints that can be displayed in a GraphView.
+     * Array index for the voltage graph.
      */
-    public static final int MAX_DATA_POINTS = 1000;
+    public static final int GRAPH_INDEX_VOLTAGE = 2;
+    /**
+     * Array index for the current graph.
+     */
+    public static final int GRAPH_INDEX_CURRENT = 3;
     /**
      * The number of different graphs.
      */
-    public static final int NUMBER_OF_GRAPHS = 2;
+    public static final int NUMBER_OF_GRAPHS = 4;
     /**
-     * The path where the graphs will be saved.
+     * The maximum DataPoints that can be displayed in a GraphView.
      */
+    public static final int MAX_DATA_POINTS = 1000;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
-    private HashSet<DatabaseListener> databaseListeners = new HashSet<>();
-    private HashSet<OnGraphFileDeletedListener> graphFileDeletedListeners = new HashSet<>();
+    private HashSet<DatabaseListener> listeners = new HashSet<>();
 
     private DatabaseController(Context context) {
         databaseModel = new DatabaseModel(context);
@@ -86,7 +91,7 @@ public class DatabaseController {
      * @param listener A DatabaseListener which listens for database changes.
      */
     public void registerDatabaseListener(DatabaseListener listener) {
-        databaseListeners.add(listener);
+        listeners.add(listener);
     }
 
     /**
@@ -95,15 +100,7 @@ public class DatabaseController {
      * @param listener A DatabaseListener which listens for database changes.
      */
     public void unregisterListener(DatabaseListener listener) {
-        databaseListeners.remove(listener);
-    }
-
-    public void registerOnGraphFileDeletedListener(OnGraphFileDeletedListener listener) {
-        graphFileDeletedListeners.add(listener);
-    }
-
-    public void unregisterOnGraphFileDeletedListener(OnGraphFileDeletedListener listener) {
-        graphFileDeletedListeners.remove(listener);
+        listeners.remove(listener);
     }
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
@@ -115,8 +112,8 @@ public class DatabaseController {
      * @param temperature     The current battery temperature.
      * @param utcTimeInMillis The current UTC time in milliseconds.
      */
-    public void addValue(int batteryLevel, double temperature, long utcTimeInMillis) {
-        DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, utcTimeInMillis);
+    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
+        DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
         databaseModel.addValue(databaseValue);
         notifyValueAdded(databaseValue);
         Log.d(TAG, "Value added: " + databaseValue);
@@ -132,14 +129,21 @@ public class DatabaseController {
         return getAllGraphs(databaseModel.readData());
     }
 
+    public void notifyTransitionsFinished() {
+        databaseModel.close();
+    }
+
+    public void notifyTransitionsFinished(File file) {
+        databaseModel.close(file);
+    }
+
     /**
      * Get the latest time that is in the app directory database.
      *
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime() {
-        DatabaseValue databaseValue = databaseModel.getLast();
-        return databaseValue.getUtcTimeInMillis();
+        return getEndTime(databaseModel.getCursor());
     }
 
     /**
@@ -148,8 +152,7 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime() {
-        DatabaseValue databaseValue = databaseModel.getFirst();
-        return databaseValue.getUtcTimeInMillis();
+        return getStartTime(databaseModel.getCursor());
     }
 
     /**
@@ -180,52 +183,52 @@ public class DatabaseController {
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
         // return if graph disabled in settings or the database has not enough data
         if (graphEnabled) {
-            DatabaseValue[] databaseValues = databaseModel.getFirstAndLast();
-            long startTime = 0;
-            long endTime = 0;
-            if (databaseValues[0] != null && databaseValues[1] != null) {
-                startTime = databaseValues[0].getUtcTimeInMillis();
-                endTime = databaseValues[1].getUtcTimeInMillis();
-            }
-            if (startTime != endTime) { // check if there is enough data
-                String outputFileDir = String.format(
-                        Locale.getDefault(),
-                        "%s/%s",
-                        DATABASE_HISTORY_PATH,
-                        DateFormat.getDateInstance(SHORT)
-                                .format(endTime)
-                                .replace("/", "_")
-                );
-                // rename the file if it already exists
-                File outputFile = new File(outputFileDir);
-                String baseFileDir = outputFileDir;
-                for (byte i = 1; outputFile.exists() && i < 127; i++) {
-                    outputFileDir = baseFileDir + " (" + i + ")";
-                    outputFile = new File(outputFileDir);
-                }
-                File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
-                try {
-                    File directory = new File(DATABASE_HISTORY_PATH);
-                    if (!directory.exists()) {
-                        if (!directory.mkdirs()) {
-                            return false;
+            Cursor cursor = databaseModel.getCursor();
+            if (cursor != null) {
+                if (cursor.getCount() > 1) { // check if there is enough data
+                    cursor.moveToLast();
+                    long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    cursor.close();
+                    String outputFileDir = String.format(
+                            Locale.getDefault(),
+                            "%s/%s",
+                            DATABASE_HISTORY_PATH,
+                            DateFormat.getDateInstance(SHORT)
+                                    .format(endTime)
+                                    .replace("/", "_")
+                    );
+                    // rename the file if it already exists
+                    File outputFile = new File(outputFileDir);
+                    String baseFileDir = outputFileDir;
+                    for (byte i = 1; outputFile.exists() && i < 127; i++) {
+                        outputFileDir = baseFileDir + " (" + i + ")";
+                        outputFile = new File(outputFileDir);
+                    }
+                    File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
+                    try {
+                        File directory = new File(DATABASE_HISTORY_PATH);
+                        if (!directory.exists()) {
+                            if (!directory.mkdirs()) {
+                                return false;
+                            }
                         }
+                        FileInputStream inputStream = new FileInputStream(inputFile);
+                        FileOutputStream outputStream = new FileOutputStream(outputFile, false);
+                        byte[] buffer = new byte[1024];
+                        while (inputStream.read(buffer) != -1) {
+                            outputStream.write(buffer);
+                        }
+                        outputStream.flush();
+                        outputStream.close();
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
                     }
-                    FileInputStream inputStream = new FileInputStream(inputFile);
-                    FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-                    byte[] buffer = new byte[1024];
-                    while (inputStream.read(buffer) != -1) {
-                        outputStream.write(buffer);
-                    }
-                    outputStream.flush();
-                    outputStream.close();
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
+                    Log.d("GraphSaver", "Graph saved!");
+                    result = true;
                 }
-                Log.d("GraphSaver", "Graph saved!");
-                result = true;
+                cursor.close();
             }
         }
         Log.d(TAG, "Graph Saving successful: " + result);
@@ -273,34 +276,6 @@ public class DatabaseController {
         return fileList;
     }
 
-    public Collection<File> getOldGraphFiles(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int days = sharedPreferences.getInt(context.getString(R.string.pref_graph_auto_delete_time), context.getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
-        Log.d(TAG, "Collecting Graph files older than " + days + " days...");
-        // calculate the time - everything older than this time will be deleted
-        long daysInMillis = days * 24 * 60 * 60 * 1000;
-        Calendar calendar = Calendar.getInstance();
-        long targetTime = calendar.getTimeInMillis() - daysInMillis;
-        calendar.setTimeInMillis(targetTime);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long targetTimeFlattened = calendar.getTimeInMillis();
-        // delete every file older than the target time
-        File directory = new File(DatabaseController.DATABASE_HISTORY_PATH);
-        File[] files = directory.listFiles();
-        HashSet<File> oldFiles = new HashSet<>();
-        for (File file : files) {
-            if (file.lastModified() != 0L && file.lastModified() < targetTimeFlattened) {
-                oldFiles.add(file);
-            }
-        }
-        if (oldFiles.isEmpty()) {
-            Log.d(TAG, "No old files found!");
-        }
-        return oldFiles;
-    }
-
     /**
      * Get an array of all graphs inside the given database file.
      *
@@ -319,8 +294,7 @@ public class DatabaseController {
      * @return The latest time (UTC time in milliseconds) inside the database.
      */
     public long getEndTime(File databaseFile) {
-        DatabaseValue databaseValue = databaseModel.getLast(databaseFile);
-        return databaseValue.getUtcTimeInMillis();
+        return getEndTime(databaseModel.getCursor(databaseFile));
     }
 
     /**
@@ -330,8 +304,7 @@ public class DatabaseController {
      * @return The first time (UTC time in milliseconds) inside the database.
      */
     public long getStartTime(File databaseFile) {
-        DatabaseValue databaseValue = databaseModel.getFirst(databaseFile);
-        return databaseValue.getUtcTimeInMillis();
+        return getStartTime(databaseModel.getCursor(databaseFile));
     }
 
     /**
@@ -361,49 +334,112 @@ public class DatabaseController {
             LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
             graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+            if (databaseValues[0].getVoltage() != 0)
+                graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
+            if (databaseValues[0].getCurrent() != 0)
+                graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
             long startTime = databaseValues[0].getUtcTimeInMillis();
             for (DatabaseValue databaseValue : databaseValues) {
                 long time = databaseValue.getUtcTimeInMillis() - startTime;
                 double timeInMinutes = (double) time / (1000 * 60);
                 // battery level graph
-                double batteryLevel = (double) databaseValue.getBatteryLevel();
+                int batteryLevel = databaseValue.getBatteryLevel();
                 graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, MAX_DATA_POINTS);
                 // temperature graph
-                double temperature = databaseValue.getTemperature() / 10;
+                double temperature = (double) databaseValue.getTemperature() / 10;
                 graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+                // voltage graph
+                if (graphs[GRAPH_INDEX_VOLTAGE] != null) {
+                    double voltage = (double) databaseValue.getVoltage() / 1000;
+                    graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, MAX_DATA_POINTS);
+                }
+                // current graph
+                if (graphs[GRAPH_INDEX_CURRENT] != null) {
+                    double current = (double) databaseValue.getCurrent() / -1000;
+                    graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
+                }
             }
             return graphs;
         }
         return null;
     }
 
+    private long getEndTime(Cursor cursor) {
+        long endTime = 0;
+        if (cursor != null) {
+            if (cursor.moveToLast()) {
+                endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            }
+            cursor.close();
+        }
+        return endTime;
+    }
+
+    private long getStartTime(Cursor cursor) {
+        long startTime = 0;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                startTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            }
+            cursor.close();
+        }
+        return startTime;
+    }
+
     private void notifyValueAdded(DatabaseValue databaseValue) {
-        if (!databaseListeners.isEmpty()) {
+        if (!listeners.isEmpty()) {
             DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
             long time = databaseValue.getUtcTimeInMillis() - getStartTime();
             double timeInMinutes = (double) time / (1000 * 60);
             // battery level point
-            double batteryLevel = (double) databaseValue.getBatteryLevel();
+            int batteryLevel = databaseValue.getBatteryLevel();
             dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
             // temperature point
-            double temperature = databaseValue.getTemperature() / 10;
+            double temperature = (double) databaseValue.getTemperature() / 10;
             dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
-            for (DatabaseListener listener : databaseListeners) {
+            // voltage point
+            double voltage = (double) databaseValue.getVoltage() / 1000;
+            if (voltage != 0) {
+                dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+            }
+            // current point
+            double current = (double) databaseValue.getCurrent() / -1000;
+            if (current != 0) {
+                dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+            }
+            // notify the listeners
+            for (DatabaseListener listener : listeners) {
                 listener.onValueAdded(dataPoints);
             }
         }
     }
 
     private void notifyTableReset() {
-        for (DatabaseListener listener : databaseListeners) {
+        for (DatabaseListener listener : listeners) {
             listener.onTableReset();
         }
     }
 
-    public void notifyGraphFileDeleted(File file) {
-        for (OnGraphFileDeletedListener listener : graphFileDeletedListeners) {
-            listener.onGraphFileDeleted(file);
+    public void upgradeAllSavedDatabases(Context context) {
+        Log.d(TAG, "Upgrading all saved databases...");
+        DatabaseController databaseController = DatabaseController.getInstance(context);
+        ArrayList<File> files = databaseController.getFileList();
+        Collections.sort(files, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                if (f1.lastModified() == f2.lastModified()) {
+                    return 0;
+                }
+                return f1.lastModified() < f2.lastModified() ? -1 : 1;
+            }
+        });
+        for (File file : files) {
+            Log.d(TAG, "Upgrading file: " + file.getPath());
+            Log.d(TAG, "last modified: " + file.lastModified());
+            SQLiteDatabase database = databaseModel.getReadableDatabase(file);
+            databaseModel.close(file);
         }
+        Log.d(TAG, "Upgrade finished!");
     }
 
     /**
@@ -422,9 +458,5 @@ public class DatabaseController {
          * Called when the app directory database has been cleared.
          */
         void onTableReset();
-    }
-
-    public interface OnGraphFileDeletedListener {
-        void onGraphFileDeleted(File file);
     }
 }

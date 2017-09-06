@@ -3,10 +3,13 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * The Model for the charging graph databases. Only the DatabaseController should communicate to
@@ -17,7 +20,8 @@ class DatabaseModel extends SQLiteOpenHelper {
      * The name of the database.
      */
     static final String DATABASE_NAME = "ChargeCurveDB";
-    private static final int DATABASE_VERSION = 4; // if the version is changed, a new database will be created!
+    private static final int DATABASE_VERSION = 5; // if the version is changed, a new database will be created!
+    private HashMap<String, SQLiteDatabase> openedDatabases = new HashMap<>();
 
     DatabaseModel(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,17 +30,32 @@ class DatabaseModel extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(
-                String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER);",
+                String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
                         DatabaseContract.TABLE_NAME,
                         DatabaseContract.TABLE_COLUMN_TIME,
                         DatabaseContract.TABLE_COLUMN_PERCENTAGE,
-                        DatabaseContract.TABLE_COLUMN_TEMP)
+                        DatabaseContract.TABLE_COLUMN_TEMP,
+                        DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                        DatabaseContract.TABLE_COLUMN_CURRENT
+                )
         );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
+        Log.d(getClass().getSimpleName(), "onUpgrade() -> oldVersion = " + oldVersion + ", newVersion = " + newVersion);
+        if (oldVersion < 5) {
+            Log.d(getClass().getSimpleName(), "Upgrading file: " + sqLiteDatabase.getPath());
+            String statement = "ALTER TABLE %s ADD COLUMN %s INTEGER DEFAULT 0";
+            try {
+                sqLiteDatabase.execSQL(String.format(
+                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_VOLTAGE));
+                sqLiteDatabase.execSQL(String.format(
+                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_CURRENT));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
@@ -47,41 +66,7 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside the app directory database.
      */
     DatabaseValue[] readData() {
-        SQLiteDatabase database = getReadableDatabase();
-        DatabaseValue[] databaseValues = readData(getCursor(database));
-        database.close();
-        return databaseValues;
-    }
-
-    DatabaseValue getFirst() {
-        SQLiteDatabase database = getReadableDatabase();
-        DatabaseValue firstValue = getFirst(database);
-        database.close();
-        return firstValue;
-    }
-
-    DatabaseValue getLast() {
-        SQLiteDatabase database = getReadableDatabase();
-        DatabaseValue lastValue = getLast(database);
-        database.close();
-        return lastValue;
-    }
-
-    DatabaseValue[] getFirstAndLast() {
-        DatabaseValue[] databaseValues = new DatabaseValue[2];
-        SQLiteDatabase database = getReadableDatabase();
-        Cursor cursor = getCursor(database);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                databaseValues[0] = readCurrentDatabaseValue(cursor);
-            }
-            if (cursor.moveToLast()) {
-                databaseValues[1] = readCurrentDatabaseValue(cursor);
-            }
-            cursor.close();
-        }
-        database.close();
-        return databaseValues;
+        return readData(getCursor());
     }
 
     /**
@@ -94,6 +79,8 @@ class DatabaseModel extends SQLiteOpenHelper {
         contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
         contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
         contentValues.put(DatabaseContract.TABLE_COLUMN_TEMP, value.getTemperature());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
         SQLiteDatabase database = getWritableDatabase();
         try {
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
@@ -108,7 +95,18 @@ class DatabaseModel extends SQLiteOpenHelper {
      * Clears the table of the app directory database.
      */
     void resetTable() {
-        getWritableDatabase().execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        SQLiteDatabase database = getWritableDatabase();
+        database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        database.close();
+    }
+
+    /**
+     * Get a Cursor instance which points to the app directory database.
+     *
+     * @return A Cursor instance which points to the app directory database.
+     */
+    Cursor getCursor() {
+        return getCursor(getReadableDatabase());
     }
 
     // ==== ANY DATABASE FROM A FILE ====
@@ -120,24 +118,26 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @return An array of all the data inside given database.
      */
     DatabaseValue[] readData(File databaseFile) {
-        SQLiteDatabase database = getReadableDatabase(databaseFile);
-        DatabaseValue[] databaseValues = readData(getCursor(database));
-        database.close();
-        return databaseValues;
+        return readData(getCursor(databaseFile));
     }
 
-    DatabaseValue getFirst(File databaseFile) {
-        SQLiteDatabase database = getReadableDatabase(databaseFile);
-        DatabaseValue firstValue = getFirst(database);
-        database.close();
-        return firstValue;
+    /**
+     * Get a Cursor instance which points to the given database.
+     *
+     * @param databaseFile A valid SQLite database file.
+     * @return A Cursor instance which points to the given database.
+     */
+    Cursor getCursor(File databaseFile) {
+        return getCursor(getReadableDatabase(databaseFile));
     }
 
-    DatabaseValue getLast(File databaseFile) {
-        SQLiteDatabase database = getReadableDatabase(databaseFile);
-        DatabaseValue lastValue = getLast(database);
-        database.close();
-        return lastValue;
+    void close(File file) {
+        Log.d(getClass().getSimpleName(), "Closing database: " + file.getPath());
+        SQLiteDatabase database = openedDatabases.get(file.getPath());
+        if (database != null) {
+            database.close();
+            openedDatabases.remove(file.getPath());
+        }
     }
 
     // ==== GENERAL STUFF ====
@@ -149,7 +149,12 @@ class DatabaseModel extends SQLiteOpenHelper {
                 databaseValues = new DatabaseValue[cursor.getCount()];
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToPosition(i);
-                    databaseValues[i] = readCurrentDatabaseValue(cursor);
+                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
+                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
+                    int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
+                    int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
+                    long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time);
                 }
             }
             cursor.close();
@@ -157,18 +162,14 @@ class DatabaseModel extends SQLiteOpenHelper {
         return databaseValues;
     }
 
-    private DatabaseValue readCurrentDatabaseValue(Cursor cursor) {
-        int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
-        double temperature = cursor.getDouble(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
-        long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-        return new DatabaseValue(batteryLevel, temperature, time);
-    }
-
     private Cursor getCursor(SQLiteDatabase database) {
         String[] columns = {
                 DatabaseContract.TABLE_COLUMN_TIME,
                 DatabaseContract.TABLE_COLUMN_PERCENTAGE,
-                DatabaseContract.TABLE_COLUMN_TEMP};
+                DatabaseContract.TABLE_COLUMN_TEMP,
+                DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                DatabaseContract.TABLE_COLUMN_CURRENT
+        };
         return database.query(
                 DatabaseContract.TABLE_NAME,
                 columns,
@@ -180,35 +181,36 @@ class DatabaseModel extends SQLiteOpenHelper {
         );
     }
 
-    private SQLiteDatabase getReadableDatabase(File databaseFile) {
-        return SQLiteDatabase.openDatabase(
+    SQLiteDatabase getReadableDatabase(File databaseFile) {
+        if (openedDatabases.containsKey(databaseFile.getPath())) {
+            return openedDatabases.get(databaseFile.getPath());
+        }
+        SQLiteDatabase database = SQLiteDatabase.openDatabase(
                 databaseFile.getPath(),
                 null,
                 SQLiteDatabase.OPEN_READONLY
         );
-    }
-
-    private DatabaseValue getFirst(SQLiteDatabase database) {
-        DatabaseValue databaseValue = null;
-        Cursor cursor = getCursor(database);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                databaseValue = readCurrentDatabaseValue(cursor);
-            }
-            cursor.close();
+        // upgrade database if necessary
+        if (database.getVersion() < DATABASE_VERSION) {
+            long lastModified = databaseFile.lastModified();
+            database.close();
+            database = SQLiteDatabase.openDatabase(
+                    databaseFile.getPath(),
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE
+            );
+            onUpgrade(database, database.getVersion(), DATABASE_VERSION);
+            database.setVersion(DATABASE_VERSION);
+            database.close();
+            databaseFile.setLastModified(lastModified); // keep last modified date the same
+            database = SQLiteDatabase.openDatabase(
+                    databaseFile.getPath(),
+                    null,
+                    SQLiteDatabase.OPEN_READONLY
+            );
         }
-        return databaseValue;
-    }
-
-    private DatabaseValue getLast(SQLiteDatabase database) {
-        DatabaseValue databaseValue = null;
-        Cursor cursor = getCursor(database);
-        if (cursor != null) {
-            if (cursor.moveToLast()) {
-                databaseValue = readCurrentDatabaseValue(cursor);
-            }
-            cursor.close();
-        }
-        return databaseValue;
+        Log.d(getClass().getSimpleName(), "Opened database: " + databaseFile.getPath());
+        openedDatabases.put(databaseFile.getPath(), database);
+        return database;
     }
 }

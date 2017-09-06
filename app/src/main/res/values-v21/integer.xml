@@ -17,6 +17,9 @@
     <integer name="pref_info_text_size_default">12</integer>
     <integer name="pref_info_text_size_min">8</integer>
     <integer name="pref_info_text_size_max">15</integer>
+    <integer name="pref_graph_auto_delete_time_default">30</integer>
+    <integer name="pref_graph_auto_delete_time_max">100</integer>
+    <integer name="pref_graph_auto_delete_time_min">3</integer>
     <integer name="text_size_charging_text_normal">14</integer>
     <integer name="text_size_charging_text_big">16</integer>
     <!-- The delay before the switch goes back off if device is not rooted -->

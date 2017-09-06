@@ -36,8 +36,12 @@
     <string name="info_current">Stromstärke</string>
     <string name="info_endTime">Ende</string>
     <string name="info_health">Gesundheit</string>
+    <string name="info_max_current">Max. Stromstärke</string>
     <string name="info_max_temp">Maximale Temperatur</string>
+    <string name="info_max_voltage">Max. Spannung</string>
+    <string name="info_min_current">Min. Stromstärke</string>
     <string name="info_min_temp">Minimale Temperatur</string>
+    <string name="info_min_voltage">Min. Spannung</string>
     <string name="info_startTime">Start</string>
     <string name="info_technology">Technologie</string>
     <string name="info_temperature">Temperatur</string>
@@ -78,6 +82,7 @@
     <string name="smart_charging_explanation">Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt.</string>
 
     <string name="summary_disabled">Deaktiviert</string>
+    <string name="summary_graph_auto_delete">Ältere Graphen automatisch löschen.</string>
     <string name="summary_graph_autosave">Den Graphen automatisch speichern, sobald das Gerät vollständig geladen oder das Ladekabel entfernt wurde.</string>
     <string name="summary_graph_enabled">Beim Laden eine Ladekurve aufzeichnen.</string>
     <string name="summary_info_dark_theme">Nutze das dunkle Thema bei der Info-Benachrichtigung.</string>
@@ -108,6 +113,8 @@
     <string name="title_discharging_notification">Aktiviere Entlade-Benachrichtigung</string>
     <string name="title_discharging_service">Entlade-Service</string>
     <string name="title_enabled">Aktiviert</string>
+    <string name="title_graph_auto_delete">Automatisch löschen</string>
+    <string name="title_graph_auto_delete_time">Graphen löschen älter als:</string>
     <string name="title_graph_autosave">Automatisch speichern</string>
     <string name="title_graph_enabled">Aufzeichnung einer Ladekurve</string>
     <string name="title_history">Gespeicherte Graphen</string>
@@ -159,8 +166,6 @@
     <string name="toast_success_renaming">Datei umbenannt!</string>
     <string name="toast_success_saving">Der Graph wurde gespeichert!</string>
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
-    <string name="title_graph_auto_delete">Automatisch löschen</string>
-    <string name="title_graph_auto_delete_time">Graphen löschen älter als:</string>
+
     <string name="unit_days">\ Tage</string>
-    <string name="summary_graph_auto_delete">Ältere Graphen automatisch löschen.</string>
 </resources>
