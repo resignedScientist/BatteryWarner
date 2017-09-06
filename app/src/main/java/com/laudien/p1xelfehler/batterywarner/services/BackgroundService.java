@@ -144,7 +144,7 @@ public class BackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification
+            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification or Tasker
                 chargingDisabledInFile = false;
                 batteryChangedReceiver.onPowerDisconnected();
             } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
