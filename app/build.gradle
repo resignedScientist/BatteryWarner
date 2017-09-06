@@ -71,9 +71,5 @@ dependencies {
     compile project(path: ':material-intro-screen')
     compile 'com.android.support:appcompat-v7:26.0.2'
     compile 'com.android.support:design:26.0.2'
-    compile 'com.twofortyfouram:android-annotation:2.0.1'
-    compile 'com.twofortyfouram:android-assertion:1.2.0'
-    compile 'com.twofortyfouram:android-plugin-api-for-locale:1.0.2'
-    compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3'
-    compile 'com.twofortyfouram:android-spackle:2.0.3'
+    compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3' // Tasker
 }
