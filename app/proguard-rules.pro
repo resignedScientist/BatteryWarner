@@ -22,3 +22,13 @@
 
 # Material Intro Screen
 -keep class agency.tango.materialintroscreen.animations.ViewTranslationWrapper
+
+# All the stuff needed for a working Tasker Plugin
+#----------------------------------------------------------------------------------
+# This improves obfuscation and moves non-public classes to their own namespace.
+-repackageclasses 'com.twofortyfouram.locale.example.setting.toast'
+
+# Ensure that stacktraces are reversible.
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+#----------------------------------------------------------------------------------
