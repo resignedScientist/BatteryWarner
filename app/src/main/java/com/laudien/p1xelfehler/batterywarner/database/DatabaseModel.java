@@ -130,7 +130,6 @@ class DatabaseModel extends SQLiteOpenHelper {
     }
 
     void close(File file) {
-        Log.d(getClass().getSimpleName(), "Closing database: " + file.getPath());
         SQLiteDatabase database = openedDatabases.get(file.getPath());
         if (database != null) {
             database.close();
@@ -212,7 +211,6 @@ class DatabaseModel extends SQLiteOpenHelper {
                         SQLiteDatabase.OPEN_READONLY
                 );
             }
-            Log.d(getClass().getSimpleName(), "Opened database: " + databaseFile.getPath());
             openedDatabases.put(databaseFile.getPath(), database);
             return database;
         } catch (SQLiteException e) {
