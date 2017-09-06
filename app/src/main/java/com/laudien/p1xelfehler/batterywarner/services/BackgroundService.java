@@ -561,12 +561,17 @@ public class BackgroundService extends Service {
         private void refreshInfoNotification(Intent intent) {
             batteryData.update(intent, BackgroundService.this);
             if (infoNotificationBuilder != null) {
-                String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
-                infoNotificationContent = buildInfoNotificationContent(data);
-                infoNotificationMessage = buildInfoNotificationMessage(data);
-                //Log.d(getClass().getSimpleName(), "Message: " + infoNotificationMessage);
-                infoNotificationBuilder.setContentText(infoNotificationMessage);
-                notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
+                        infoNotificationContent = buildInfoNotificationContent(data);
+                        infoNotificationMessage = buildInfoNotificationMessage(data);
+                        infoNotificationBuilder.setContentText(infoNotificationMessage);
+                        notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+                    }
+                });
+
             }
         }
 
