@@ -32,7 +32,6 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
 
         setContentView(R.layout.activity_tasker_edit);
-
         radioGroup_action = findViewById(R.id.radio_group_action);
 
         // make a root check
@@ -60,27 +59,6 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         toolbar.setSubtitle(getString(R.string.tasker_plugin_name));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        /*
-         * To help the user keep context, the title shows the host's name and the subtitle
-         * shows the plug-in's name.
-         */
-        /*CharSequence callingApplicationLabel = null;
-        try {
-            callingApplicationLabel =
-                    getPackageManager().getApplicationLabel(
-                            getPackageManager().getApplicationInfo(getCallingPackage(),
-                                    0));
-        } catch (final PackageManager.NameNotFoundException e) {
-            Lumberjack.e("Calling package couldn't be found%s", e); //$NON-NLS-1$
-        }
-        if (null != callingApplicationLabel) {
-            setTitle(callingApplicationLabel);
-        }
-
-        getSupportActionBar().setSubtitle("Neat battery warner plugin");
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
     }
 
     @Override
