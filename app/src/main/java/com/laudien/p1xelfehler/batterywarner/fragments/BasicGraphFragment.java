@@ -218,7 +218,7 @@ public abstract class BasicGraphFragment extends Fragment {
         if (maxY == 0) {
             maxY = HIGHEST_Y_DEFAULT;
         }
-        if (maxY < 100 && switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked()) {
+        if (maxY <= 100 * 1.2 && switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked()) {
             maxY = 100;
         }
         Viewport viewport = graphView.getViewport();
