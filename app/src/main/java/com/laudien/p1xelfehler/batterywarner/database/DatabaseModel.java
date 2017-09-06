@@ -76,20 +76,17 @@ class DatabaseModel extends SQLiteOpenHelper {
      * @param value A DatabaseValue containing all the data of the new graph point.
      */
     void addValue(DatabaseValue value) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMP, value.getTemperature());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
         SQLiteDatabase database = getWritableDatabase();
-        try {
+        if (database != null) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMP, value.getTemperature());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
-        } catch (Exception e) {
-            onCreate(database);
-            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+            database.close();
         }
-        database.close();
     }
 
     /**
