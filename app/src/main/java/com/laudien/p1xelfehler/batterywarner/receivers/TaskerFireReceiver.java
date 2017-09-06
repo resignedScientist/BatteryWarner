@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.receivers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -36,19 +37,24 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
             Intent intent = new Intent(context.getApplicationContext(), EnableChargingService.class);
             ServiceHelper.startService(context.getApplicationContext(), intent);
         } else { // charging should be disabled
-            try {
-                RootHelper.disableCharging();
-                // reset the background service
-                Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
-                intent.setAction(BackgroundService.ACTION_RESET_ALL);
-                ServiceHelper.startService(context.getApplicationContext(), intent);
-            } catch (RootHelper.NotRootedException e) {
-                e.printStackTrace();
-                NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_NOT_ROOTED);
-            } catch (RootHelper.NoBatteryFileFoundException e) {
-                e.printStackTrace();
-                NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
-            }
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        RootHelper.disableCharging();
+                        // reset the background service
+                        Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
+                        intent.setAction(BackgroundService.ACTION_RESET_ALL);
+                        ServiceHelper.startService(context.getApplicationContext(), intent);
+                    } catch (RootHelper.NotRootedException e) {
+                        e.printStackTrace();
+                        NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_NOT_ROOTED);
+                    } catch (RootHelper.NoBatteryFileFoundException e) {
+                        e.printStackTrace();
+                        NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
+                    }
+                }
+            });
         }
     }
 }

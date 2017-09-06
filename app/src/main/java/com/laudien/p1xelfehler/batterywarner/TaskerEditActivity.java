@@ -5,16 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
+import android.widget.RadioGroup;
 
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 import com.twofortyfouram.log.Lumberjack;
 
 public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
+    RadioGroup radioGroup_action;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasker_edit);
+
+        radioGroup_action = findViewById(R.id.radio_group_action);
 
         /*
          * To help the user keep context, the title shows the host's name and the subtitle
@@ -45,13 +50,15 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public void onPostCreateWithPreviousResult(@NonNull Bundle bundle, @NonNull String s) {
-
+        boolean charging = TaskerHelper.getBundleResult(bundle);
+        radioGroup_action.check(charging ? R.id.radioButton_enable_charging : R.id.radioButton_disable_charging);
     }
 
     @Nullable
     @Override
     public Bundle getResultBundle() {
-        return TaskerHelper.buildBundle(true);
+        boolean charging = radioGroup_action.getCheckedRadioButtonId() == R.id.radioButton_enable_charging;
+        return TaskerHelper.buildBundle(charging);
     }
 
     @NonNull

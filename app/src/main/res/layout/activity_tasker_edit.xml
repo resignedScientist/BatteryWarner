@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/textView2"
@@ -17,6 +18,34 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="That was successful!! :)"
+        android:text="I am glad that you got here! :)"
         android:textAlignment="center" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose your action:" />
+
+    <RadioGroup
+        android:id="@+id/radio_group_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioButton_enable_charging"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Enable charging" />
+
+        <RadioButton
+            android:id="@+id/radioButton_disable_charging"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disable charging" />
+    </RadioGroup>
 </LinearLayout>
