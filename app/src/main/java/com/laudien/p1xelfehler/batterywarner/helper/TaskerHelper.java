@@ -21,4 +21,14 @@ public class TaskerHelper {
         }
         return true;
     }
+
+    public static Bundle buildBundle(boolean charging) {
+        Bundle bundle = new Bundle(1);
+        bundle.putBoolean(EXTRA_TOGGLE_CHARGING, charging);
+        return bundle;
+    }
+
+    public static boolean getBundleResult(@NonNull Bundle bundle) {
+        return bundle.getBoolean(EXTRA_TOGGLE_CHARGING);
+    }
 }

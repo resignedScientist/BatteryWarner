@@ -51,13 +51,14 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Nullable
     @Override
     public Bundle getResultBundle() {
-        return null;
+        return TaskerHelper.buildBundle(true);
     }
 
     @NonNull
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
-        return null;
+        boolean result = TaskerHelper.getBundleResult(bundle);
+        return result ? "Enable charging" : "Disable charging";
     }
 
     @Override
