@@ -1,11 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
 
@@ -21,6 +24,13 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // apply the theme
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (sharedPreferences.getBoolean(getString(R.string.pref_dark_theme_enabled), getResources().getBoolean(R.bool.pref_dark_theme_enabled_default))) {
+            setTheme(R.style.AppTheme_Dark);
+        }
+
         setContentView(R.layout.activity_tasker_edit);
 
         radioGroup_action = findViewById(R.id.radio_group_action);
@@ -36,11 +46,26 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
             }
         });
 
+        // configure the toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        try {
+            CharSequence title =
+                    getPackageManager().getApplicationLabel(
+                            getPackageManager().getApplicationInfo(getCallingPackage(),
+                                    0));
+            toolbar.setTitle(title);
+        } catch (final PackageManager.NameNotFoundException e) {
+            Lumberjack.e("Calling package couldn't be found%s", e); //$NON-NLS-1$
+        }
+        toolbar.setSubtitle("Neat battery warner plugin");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         /*
          * To help the user keep context, the title shows the host's name and the subtitle
          * shows the plug-in's name.
          */
-        CharSequence callingApplicationLabel = null;
+        /*CharSequence callingApplicationLabel = null;
         try {
             callingApplicationLabel =
                     getPackageManager().getApplicationLabel(
@@ -55,7 +80,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
         getSupportActionBar().setSubtitle("Neat battery warner plugin");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
     }
 
     @Override

@@ -57,12 +57,7 @@
         </activity>
         <activity
             android:name=".TaskerEditActivity"
-            android:exported="false"
-            android:label="Neat battery warner plugin"
-            android:theme="@style/Theme.AppCompat"
-            android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustResize"
-            tools:ignore="UnusedAttribute" />
+            android:label="Neat battery warner plugin" />
 
         <activity-alias
             android:name="com.twofortyfouram.locale.example.setting.toast.ui.activity.PluginActivity"
