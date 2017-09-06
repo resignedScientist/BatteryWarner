@@ -45,6 +45,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 
 public class BackgroundService extends Service {
     public static final String ACTION_CHARGING_ENABLED = "chargingEnabled";
+    public static final String ACTION_CHARGING_DISABLED = "chargingDisabled";
     public static final String ACTION_RESET_ALL = "resetService";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
@@ -147,6 +148,9 @@ public class BackgroundService extends Service {
             if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification or Tasker
                 chargingDisabledInFile = false;
                 batteryChangedReceiver.onPowerDisconnected();
+            } else if (intent.getAction().equals(ACTION_CHARGING_DISABLED)) { // charging disabled by Tasker
+                chargingDisabledInFile = true;
+                resetService();
             } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
                 resetService();
             }
