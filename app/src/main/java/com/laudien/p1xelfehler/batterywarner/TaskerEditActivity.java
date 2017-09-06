@@ -1,12 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.widget.RadioGroup;
 
+import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 import com.twofortyfouram.log.Lumberjack;
@@ -20,6 +24,17 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         setContentView(R.layout.activity_tasker_edit);
 
         radioGroup_action = findViewById(R.id.radio_group_action);
+
+        // make a root check
+        final Context context = getApplicationContext();
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!RootHelper.isRootAvailable()) {
+                    NotificationHelper.showNotification(context, NotificationHelper.ID_NOT_ROOTED);
+                }
+            }
+        });
 
         /*
          * To help the user keep context, the title shows the host's name and the subtitle
