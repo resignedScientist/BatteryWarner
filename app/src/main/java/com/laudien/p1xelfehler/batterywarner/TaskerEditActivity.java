@@ -57,7 +57,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         } catch (final PackageManager.NameNotFoundException e) {
             Lumberjack.e("Calling package couldn't be found%s", e); //$NON-NLS-1$
         }
-        toolbar.setSubtitle("Neat battery warner plugin");
+        toolbar.setSubtitle(getString(R.string.tasker_plugin_name));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -55,15 +55,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".TaskerEditActivity"
-            android:label="Neat battery warner plugin" />
+        <activity android:name=".TaskerEditActivity" />
 
         <activity-alias
             android:name="com.twofortyfouram.locale.example.setting.toast.ui.activity.PluginActivity"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
-            android:label="Neat battery warner plugin"
+            android:label="@string/tasker_plugin_name"
             android:targetActivity=".TaskerEditActivity"
             tools:ignore="ExportedActivity">
             <intent-filter>

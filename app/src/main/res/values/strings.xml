@@ -222,7 +222,11 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_close">Close</string>
-    <!-- main switch -->
+    <!-- Tasker -->
+    <string name="tasker_plugin_name" translatable="false">Battery Warner Plugin</string>
+    <string name="tasker_enable_charging" translatable="false">@string/notification_button_enable_charging</string>
+    <string name="tasker_disable_charging">Disable charging</string>
+    <string name="tasker_choose_action">Choose your action:</string>
     <!-- the rest -->
     <string name="developer_mail" translatable="false">kontakt@norman-laudien.de</string>
     <string name="donation_link" translatable="false">https://www.paypal.me/p1xelfehler</string>

@@ -168,4 +168,6 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
+    <string name="tasker_disable_charging">Laden deaktivieren</string>
+    <string name="tasker_choose_action">Wähle die Aktion:</string>
 </resources>

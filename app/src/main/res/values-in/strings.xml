@@ -169,4 +169,6 @@
     <string name="title_graph_auto_delete">Auto Delete</string>
     <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <string name="unit_days">\ days</string>
+    <string name="tasker_disable_charging">Disable charging</string>
+    <string name="tasker_choose_action">Choose your action:</string>
 </resources>
