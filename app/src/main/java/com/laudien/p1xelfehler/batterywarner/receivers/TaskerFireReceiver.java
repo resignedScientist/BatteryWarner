@@ -42,7 +42,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
                 public void run() {
                     try {
                         RootHelper.disableCharging();
-                        // reset the background service
+                        // notify the background service
                         Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
                         intent.setAction(BackgroundService.ACTION_CHARGING_DISABLED);
                         ServiceHelper.startService(context.getApplicationContext(), intent);
