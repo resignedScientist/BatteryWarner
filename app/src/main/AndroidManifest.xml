@@ -55,6 +55,26 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TaskerEditActivity"
+            android:exported="false"
+            android:label="Neat battery warner plugin"
+            android:theme="@style/Theme.AppCompat"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="UnusedAttribute" />
+
+        <activity-alias
+            android:name="com.twofortyfouram.locale.example.setting.toast.ui.activity.PluginActivity"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Neat battery warner plugin"
+            android:targetActivity=".TaskerEditActivity"
+            tools:ignore="ExportedActivity">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity-alias>
 
         <receiver android:name=".receivers.BootReceiver">
             <intent-filter>
