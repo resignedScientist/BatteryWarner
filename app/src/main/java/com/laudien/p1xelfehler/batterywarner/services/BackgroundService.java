@@ -152,6 +152,8 @@ public class BackgroundService extends Service {
             } else if (intent.getAction().equals(ACTION_CHARGING_DISABLED)) { // charging disabled by Tasker
                 chargingDisabledInFile = true;
                 resetService();
+                Notification notification = buildStopChargingNotification(false);
+                notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
             } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
                 resetService();
             }
