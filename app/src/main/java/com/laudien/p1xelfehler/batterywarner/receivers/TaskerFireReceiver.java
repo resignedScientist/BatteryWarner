@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
+import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 import com.laudien.p1xelfehler.batterywarner.services.EnableChargingService;
 import com.twofortyfouram.locale.sdk.client.receiver.AbstractPluginSettingReceiver;
 
@@ -28,10 +31,24 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         final boolean charging = TaskerHelper.getBundleResult(bundle);
         Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Charging = " + charging);
 
-        if (charging) {
+        if (charging) { // charging should be enabled
             // do the same as the "Enable charging" button on the stop charging notification
             Intent intent = new Intent(context.getApplicationContext(), EnableChargingService.class);
             ServiceHelper.startService(context.getApplicationContext(), intent);
+        } else { // charging should be disabled
+            try {
+                RootHelper.disableCharging();
+                // reset the background service
+                Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
+                intent.setAction(BackgroundService.ACTION_RESET_ALL);
+                ServiceHelper.startService(context.getApplicationContext(), intent);
+            } catch (RootHelper.NotRootedException e) {
+                e.printStackTrace();
+                NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_NOT_ROOTED);
+            } catch (RootHelper.NoBatteryFileFoundException e) {
+                e.printStackTrace();
+                NotificationHelper.showNotification(context.getApplicationContext(), NotificationHelper.ID_STOP_CHARGING_NOT_WORKING);
+            }
         }
     }
 }
