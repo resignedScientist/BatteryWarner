@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.MenuItem;
 
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
@@ -57,5 +58,14 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
         return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
