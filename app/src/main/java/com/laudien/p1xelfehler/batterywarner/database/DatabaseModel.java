@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -163,54 +164,73 @@ class DatabaseModel extends SQLiteOpenHelper {
     }
 
     private Cursor getCursor(SQLiteDatabase database) {
-        String[] columns = {
-                DatabaseContract.TABLE_COLUMN_TIME,
-                DatabaseContract.TABLE_COLUMN_PERCENTAGE,
-                DatabaseContract.TABLE_COLUMN_TEMP,
-                DatabaseContract.TABLE_COLUMN_VOLTAGE,
-                DatabaseContract.TABLE_COLUMN_CURRENT
-        };
-        return database.query(
-                DatabaseContract.TABLE_NAME,
-                columns,
-                null,
-                null,
-                null,
-                null,
-                "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME
-        );
+        if (database != null) {
+            String[] columns = {
+                    DatabaseContract.TABLE_COLUMN_TIME,
+                    DatabaseContract.TABLE_COLUMN_PERCENTAGE,
+                    DatabaseContract.TABLE_COLUMN_TEMP,
+                    DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                    DatabaseContract.TABLE_COLUMN_CURRENT
+            };
+            return database.query(
+                    DatabaseContract.TABLE_NAME,
+                    columns,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME
+            );
+        } else {
+            return null;
+        }
     }
 
     SQLiteDatabase getReadableDatabase(File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }
-        SQLiteDatabase database = SQLiteDatabase.openDatabase(
-                databaseFile.getPath(),
-                null,
-                SQLiteDatabase.OPEN_READONLY
-        );
-        // upgrade database if necessary
-        if (database.getVersion() < DATABASE_VERSION) {
-            long lastModified = databaseFile.lastModified();
-            database.close();
-            database = SQLiteDatabase.openDatabase(
-                    databaseFile.getPath(),
-                    null,
-                    SQLiteDatabase.OPEN_READWRITE
-            );
-            onUpgrade(database, database.getVersion(), DATABASE_VERSION);
-            database.setVersion(DATABASE_VERSION);
-            database.close();
-            databaseFile.setLastModified(lastModified); // keep last modified date the same
-            database = SQLiteDatabase.openDatabase(
+        try {
+            SQLiteDatabase database = SQLiteDatabase.openDatabase(
                     databaseFile.getPath(),
                     null,
                     SQLiteDatabase.OPEN_READONLY
             );
+            // upgrade database if necessary
+            if (database.getVersion() < DATABASE_VERSION) {
+                long lastModified = databaseFile.lastModified();
+                database.close();
+                database = SQLiteDatabase.openDatabase(
+                        databaseFile.getPath(),
+                        null,
+                        SQLiteDatabase.OPEN_READWRITE
+                );
+                onUpgrade(database, database.getVersion(), DATABASE_VERSION);
+                database.setVersion(DATABASE_VERSION);
+                database.close();
+                databaseFile.setLastModified(lastModified); // keep last modified date the same
+                database = SQLiteDatabase.openDatabase(
+                        databaseFile.getPath(),
+                        null,
+                        SQLiteDatabase.OPEN_READONLY
+                );
+            }
+            Log.d(getClass().getSimpleName(), "Opened database: " + databaseFile.getPath());
+            openedDatabases.put(databaseFile.getPath(), database);
+            return database;
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
         }
-        Log.d(getClass().getSimpleName(), "Opened database: " + databaseFile.getPath());
-        openedDatabases.put(databaseFile.getPath(), database);
-        return database;
+    }
+
+    @Override
+    public SQLiteDatabase getReadableDatabase() {
+        try {
+            return super.getReadableDatabase();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
