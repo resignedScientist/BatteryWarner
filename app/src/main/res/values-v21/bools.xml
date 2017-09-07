@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- current in info notification -->
     <bool name="pref_info_current_default">true</bool>
+    <!-- alarm clock switch default in Smart Charging preferences -->
     <bool name="pref_smart_charging_use_alarm_clock_time_default">false</bool>
+    <!-- graph auto delete -->
     <bool name="pref_graph_auto_delete_default">false</bool>
 </resources>

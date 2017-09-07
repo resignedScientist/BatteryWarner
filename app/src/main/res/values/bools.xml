@@ -1,31 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <bool name="pref_warning_low_enabled_default">true</bool>
-    <bool name="pref_warning_high_enabled_default">true</bool>
-    <bool name="pref_stop_charging_default">false</bool>
-    <bool name="pref_ac_enabled_default">true</bool>
-    <bool name="pref_usb_enabled_default">true</bool>
-    <bool name="pref_wireless_enabled_default">true</bool>
-    <bool name="pref_graph_enabled_default">true</bool>
-    <bool name="pref_graph_autosave_default">false</bool>
+    <!-- app theming preferences -->
+    <bool name="pref_dark_info_notification_default">false</bool>
     <bool name="pref_dark_theme_enabled_default">false</bool>
-    <bool name="pref_first_start_default">true</bool>
-    <bool name="pref_usb_charging_disabled_default">false</bool>
-    <bool name="pref_smart_charging_enabled_default">false</bool>
+    <!-- charging graph preferences -->
+    <bool name="pref_graph_autosave_default">false</bool>
+    <bool name="pref_graph_enabled_default">true</bool>
+    <!-- items in the info notification -->
+    <bool name="pref_info_battery_level_default">false</bool>
+    <bool name="pref_info_current_default">false</bool>
+    <bool name="pref_info_health_default">false</bool>
     <bool name="pref_info_notification_enabled_default">false</bool>
     <bool name="pref_info_technology_default">false</bool>
     <bool name="pref_info_temperature_default">true</bool>
-    <bool name="pref_info_health_default">false</bool>
-    <bool name="pref_info_battery_level_default">false</bool>
     <bool name="pref_info_voltage_default">true</bool>
-    <bool name="pref_info_current_default">false</bool>
-    <bool name="pref_dark_info_notification_default">false</bool>
-    <bool name="pref_power_saving_mode_default">false</bool>
+    <!-- 'Charging Service' section in preferences -->
+    <bool name="pref_stop_charging_default">false</bool>
     <bool name="pref_reset_battery_stats_default">false</bool>
+    <bool name="pref_usb_charging_disabled_default">false</bool>
+    <bool name="pref_warning_high_enabled_default">true</bool>
+    <!-- 'Discharging Service' section in preferences -->
+    <bool name="pref_power_saving_mode_default">false</bool>
+    <bool name="pref_warning_low_enabled_default">true</bool>
+    <!-- smart charging -->
     <bool name="pref_smart_charging_auto_resume_default">true</bool>
+    <bool name="pref_smart_charging_enabled_default">false</bool>
+    <!-- 'Advanced features' section in the preferences -->
+    <bool name="pref_ac_enabled_default">true</bool>
+    <bool name="pref_usb_enabled_default">true</bool>
+    <bool name="pref_wireless_enabled_default">true</bool>
     <!-- default switch states -->
+    <bool name="switch_current_default">false</bool>
     <bool name="switch_percentage_default">true</bool>
     <bool name="switch_temperature_default">true</bool>
-    <bool name="switch_current_default">false</bool>
     <bool name="switch_voltage_default">false</bool>
 </resources>

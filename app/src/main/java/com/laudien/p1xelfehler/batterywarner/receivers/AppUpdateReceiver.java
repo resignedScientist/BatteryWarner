@@ -28,7 +28,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), context.getResources().getBoolean(R.bool.pref_first_start_default)))
+            if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
                 return; // return if intro was not finished
 
             Log.d(getClass().getSimpleName(), "App update received!");

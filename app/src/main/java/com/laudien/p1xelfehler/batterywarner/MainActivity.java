@@ -39,7 +39,7 @@ public class MainActivity extends BaseActivity {
             NotificationHelper.createNotificationChannels(this);
         }
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), getResources().getBoolean(R.bool.pref_first_start_default));
+        boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), true);
         if (firstStart) {
             startActivity(new Intent(this, IntroActivity.class));
             finish();
