@@ -45,6 +45,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
+    public static final String ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH = "enableChargingAndSaveGraph";
     public static final String ACTION_DISABLE_CHARGING = "disableCharging";
     public static final String ACTION_RESET_ALL = "resetService";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
@@ -148,6 +149,10 @@ public class BackgroundService extends Service {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
                 case ACTION_ENABLE_CHARGING: // enable charging action by notification or Tasker
+                    resumeCharging();
+                    break;
+                case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH:
+                    saveGraph();
                     resumeCharging();
                     break;
                 case ACTION_DISABLE_CHARGING: // disable charging action by Tasker
@@ -256,6 +261,19 @@ public class BackgroundService extends Service {
                 }
             }
         });
+    }
+
+    private void saveGraph() {
+        boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+        boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
+        if (graphEnabled && autoSaveGraphEnabled) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    databaseController.saveGraph(BackgroundService.this);
+                }
+            });
+        }
     }
 
     private void showWarningHighNotification() {
@@ -650,19 +668,6 @@ public class BackgroundService extends Service {
                     }
                 }
             });
-        }
-
-        private void saveGraph() {
-            boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-            boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
-            if (graphEnabled && autoSaveGraphEnabled) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        databaseController.saveGraph(BackgroundService.this);
-                    }
-                });
-            }
         }
 
         private void resetGraph() {

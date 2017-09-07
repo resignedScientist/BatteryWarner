@@ -36,7 +36,7 @@ public class EnableChargingService extends IntentService {
         }
         // resume charging using Background service
         Intent backgroundServiceIntent = new Intent(getApplicationContext(), BackgroundService.class);
-        backgroundServiceIntent.setAction(BackgroundService.ACTION_ENABLE_CHARGING);
+        backgroundServiceIntent.setAction(BackgroundService.ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH);
         ServiceHelper.startService(getApplicationContext(), backgroundServiceIntent);
     }
 }
