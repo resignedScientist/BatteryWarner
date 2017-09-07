@@ -80,7 +80,7 @@
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
     <string name="notification_button_grant_root">Grant root</string>
     <string name="notification_button_toggle_power_saving">Toggle power saving mode</string>
-    <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
+    <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again. This will not force enable charging and is intended to be used after the cable has been disconnected!</string>
     <string name="notification_grant_root">The app was updated. Please click here to grant root access again!</string>
     <string name="notification_no_items_enabled">No items enabled!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>

@@ -70,7 +70,7 @@
     <string name="notification_button_enable_usb_charging">USB-Laden aktivieren</string>
     <string name="notification_button_grant_root">Root erlauben</string>
     <string name="notification_button_toggle_power_saving">Energiesparmodus umschalten</string>
-    <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren.</string>
+    <string name="notification_charging_disabled">Das Laden wurde deaktiviert. Klicke hier, um es wieder zu aktivieren. Dies wird das Laden nicht erzwingen und sollte genutzt werden nachdem das Kabel vom Gerät getrennt wurde!</string>
     <string name="notification_grant_root">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
     <string name="notification_no_items_enabled">Alle Infos deaktiviert!</string>
     <string name="notification_not_rooted">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
