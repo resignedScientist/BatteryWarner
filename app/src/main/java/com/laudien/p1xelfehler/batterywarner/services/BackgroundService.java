@@ -148,10 +148,10 @@ public class BackgroundService extends Service {
         if (intent != null && intent.getAction() != null) {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
-                case ACTION_ENABLE_CHARGING: // enable charging action by notification or Tasker
+                case ACTION_ENABLE_CHARGING: // enable charging action used by Tasker
                     resumeCharging();
                     break;
-                case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH:
+                case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH: // enable charging and save graph (used by notification button)
                     saveGraph();
                     resumeCharging();
                     break;
