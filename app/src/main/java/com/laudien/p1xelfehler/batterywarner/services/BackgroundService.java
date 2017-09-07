@@ -44,8 +44,8 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 
 public class BackgroundService extends Service {
-    public static final String ACTION_CHARGING_ENABLED = "chargingEnabled";
-    public static final String ACTION_CHARGING_DISABLED = "chargingDisabled";
+    public static final String ACTION_ENABLE_CHARGING = "chargingEnabled";
+    public static final String ACTION_DISABLE_CHARGING = "chargingDisabled";
     public static final String ACTION_RESET_ALL = "resetService";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
@@ -145,17 +145,18 @@ public class BackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(ACTION_CHARGING_ENABLED)) { // charging enabled by notification or Tasker
-                chargingDisabledInFile = false;
-                notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                resetService();
-            } else if (intent.getAction().equals(ACTION_CHARGING_DISABLED)) { // charging disabled by Tasker
-                chargingDisabledInFile = true;
-                resetService();
-                Notification notification = buildStopChargingNotification(false);
-                notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
-            } else if (intent.getAction().equals(ACTION_RESET_ALL)) { // should reset service
-                resetService();
+            resetService(); // reset service on any valid action
+            switch (intent.getAction()) {
+                case ACTION_ENABLE_CHARGING: // enable charging action by notification or Tasker
+                    resumeCharging();
+                    break;
+                case ACTION_DISABLE_CHARGING: // disable charging action by Tasker
+                    stopCharging(false);
+                    break;
+                case ACTION_RESET_ALL: // just reset the service
+                    break;
+                default:
+                    throw new RuntimeException("Unknown action!");
             }
         }
         // battery info notification
@@ -209,6 +210,57 @@ public class BackgroundService extends Service {
         chargingPausedByIllegalUsbCharging = false;
         alreadyNotified = false;
         lastBatteryLevel = -1;
+    }
+
+    private void stopCharging(final boolean enableSound) {
+        chargingDisabledInFile = true;
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RootHelper.disableCharging();
+                    notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
+                    Notification stopChargingNotification = buildStopChargingNotification(enableSound);
+                    notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, stopChargingNotification);
+                } catch (RootHelper.NotRootedException e) {
+                    e.printStackTrace();
+                    NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
+                    showWarningHighNotification();
+                    chargingDisabledInFile = false;
+                } catch (RootHelper.NoBatteryFileFoundException e) {
+                    e.printStackTrace();
+                    NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
+                    showWarningHighNotification();
+                    chargingDisabledInFile = false;
+                }
+            }
+        });
+    }
+
+    private void resumeCharging() {
+        chargingDisabledInFile = false;
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RootHelper.enableCharging();
+                    notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
+                } catch (RootHelper.NotRootedException e) {
+                    e.printStackTrace();
+                    chargingDisabledInFile = true;
+                    NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
+                } catch (RootHelper.NoBatteryFileFoundException e) {
+                    e.printStackTrace();
+                    chargingDisabledInFile = true;
+                    NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
+                }
+            }
+        });
+    }
+
+    private void showWarningHighNotification() {
+        Notification notification = buildWarningHighNotification();
+        notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
     }
 
     private Notification buildInfoNotification(RemoteViews content, String message) {
@@ -586,52 +638,6 @@ public class BackgroundService extends Service {
             }
         }
 
-        private void stopCharging(final boolean enableSound) {
-            chargingDisabledInFile = true;
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        RootHelper.disableCharging();
-                        notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
-                        Notification stopChargingNotification = buildStopChargingNotification(enableSound);
-                        notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, stopChargingNotification);
-                    } catch (RootHelper.NotRootedException e) {
-                        e.printStackTrace();
-                        NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
-                        showWarningHighNotification();
-                        chargingDisabledInFile = false;
-                    } catch (RootHelper.NoBatteryFileFoundException e) {
-                        e.printStackTrace();
-                        NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
-                        showWarningHighNotification();
-                        chargingDisabledInFile = false;
-                    }
-                }
-            });
-        }
-
-        private void resumeCharging() {
-            chargingDisabledInFile = false;
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        RootHelper.enableCharging();
-                        notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
-                    } catch (RootHelper.NotRootedException e) {
-                        e.printStackTrace();
-                        chargingDisabledInFile = true;
-                        NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
-                    } catch (RootHelper.NoBatteryFileFoundException e) {
-                        e.printStackTrace();
-                        chargingDisabledInFile = true;
-                        NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
-                    }
-                }
-            });
-        }
-
         private void resetBatteryStats() {
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -664,11 +670,6 @@ public class BackgroundService extends Service {
             if (graphEnabled) {
                 databaseController.resetTable();
             }
-        }
-
-        private void showWarningHighNotification() {
-            Notification notification = buildWarningHighNotification();
-            notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
         }
 
         private void showWarningLowNotification(final int warningLow) {
