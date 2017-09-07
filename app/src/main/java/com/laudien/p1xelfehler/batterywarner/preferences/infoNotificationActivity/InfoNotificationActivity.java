@@ -1,10 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity;
 
+import android.app.ActivityManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.MenuItem;
 
 import com.laudien.p1xelfehler.batterywarner.BaseActivity;
+import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+
+import java.util.List;
 
 public class InfoNotificationActivity extends BaseActivity {
     @Override
@@ -14,5 +20,32 @@ public class InfoNotificationActivity extends BaseActivity {
         setToolbarTitle(getString(R.string.title_info_notification_items));
         // replace container layout with InfoNotificationFragment
         getFragmentManager().beginTransaction().replace(R.id.container_layout, new InfoNotificationFragment()).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        backStackBack();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            backStackBack();
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void backStackBack() {
+        // check if the back stack is empty
+        ActivityManager mngr = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> taskList = mngr.getRunningTasks(10);
+        if (taskList.get(0).numActivities == 1 &&
+                taskList.get(0).topActivity.getClassName().equals(InfoNotificationActivity.class.getName())) {
+            // start the main activity
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 }
