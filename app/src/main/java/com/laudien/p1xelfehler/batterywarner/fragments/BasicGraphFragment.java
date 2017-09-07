@@ -44,9 +44,9 @@ public abstract class BasicGraphFragment extends Fragment {
      */
     protected CompoundButton[] switches = new CompoundButton[NUMBER_OF_GRAPHS];
     /**
-     * An instance of the {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject} holding information about the charging curve.
+     * An instance of the {@link GraphInfo} holding information about the charging curve.
      */
-    protected InfoObject infoObject;
+    protected GraphInfo graphInfo;
     /**
      * The GraphView where the graphs are shown
      */
@@ -229,12 +229,12 @@ public abstract class BasicGraphFragment extends Fragment {
 
     /**
      * Creates a new or updates the existing instance of the
-     * {@link com.laudien.p1xelfehler.batterywarner.fragments.InfoObject}.
+     * {@link GraphInfo}.
      */
     protected void createOrUpdateInfoObject() {
         if (graphs != null) {
-            if (infoObject == null) {
-                infoObject = new InfoObject(
+            if (graphInfo == null) {
+                graphInfo = new GraphInfo(
                         getStartTime(),
                         getEndTime(),
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
@@ -247,7 +247,7 @@ public abstract class BasicGraphFragment extends Fragment {
                         graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN
                 );
             } else {
-                infoObject.updateValues(
+                graphInfo.updateValues(
                         getStartTime(),
                         getEndTime(),
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
@@ -261,7 +261,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 );
             }
         } else { // there are no graphs
-            infoObject = null;
+            graphInfo = null;
         }
     }
 
@@ -271,12 +271,12 @@ public abstract class BasicGraphFragment extends Fragment {
      * to the charging time.
      */
     void setTimeText() {
-        if (infoObject != null) {
+        if (graphInfo != null) {
             textView_chargingTime.setText(String.format(
                     Locale.getDefault(),
                     "%s: %s",
                     getString(R.string.info_charging_time),
-                    infoObject.getTimeString(getContext())
+                    graphInfo.getTimeString(getContext())
             ));
         }
     }
@@ -351,13 +351,13 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
-     * Shows the info dialog defined in the {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#infoObject}.
+     * Shows the info dialog defined in the {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo}.
      * Shows a toast if there are no graphs or if the
-     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#infoObject} is null.
+     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo} is null.
      */
     public void showInfo() {
-        if (graphs != null && infoObject != null) {
-            infoObject.showDialog(getContext());
+        if (graphs != null && graphInfo != null) {
+            graphInfo.showDialog(getContext());
         } else {
             ToastHelper.sendToast(getContext(), R.string.toast_no_data, LENGTH_SHORT);
         }

@@ -16,12 +16,12 @@ import java.util.Locale;
 /**
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
-class InfoObject {
+class GraphInfo {
     private double timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage;
     private long startTime, endTime;
 
     /**
-     * Constructor of the InfoObject. All values must be provided.
+     * Constructor of the GraphInfo. All values must be provided.
      *
      * @param endTime        The time the graph was created.
      * @param timeInMinutes  The time of charging in minutes.
@@ -29,9 +29,9 @@ class InfoObject {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    InfoObject(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
-               double percentCharged, double minCurrent, double maxCurrent, double minVoltage,
-               double maxVoltage) {
+    GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
+              double percentCharged, double minCurrent, double maxCurrent, double minVoltage,
+              double maxVoltage) {
         updateValues(startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage);
     }
 
@@ -74,7 +74,7 @@ class InfoObject {
     }
 
     /**
-     * With that method you can update this instance of the InfoObject without creating a new one.
+     * With that method you can update this instance of the GraphInfo without creating a new one.
      *
      * @param startTime      The time of the first point in the graph.
      * @param endTime        The time of the last point in the graph.

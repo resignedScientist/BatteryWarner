@@ -201,12 +201,12 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
                 if (isFull) { // fully charged
                     showDischargingText();
                 } else { // not fully charged
-                    boolean isDatabaseEmpty = graphs == null || infoObject == null;
+                    boolean isDatabaseEmpty = graphs == null || graphInfo == null;
                     String timeString;
                     if (isDatabaseEmpty) {
-                        timeString = InfoObject.getZeroTimeString(getContext());
+                        timeString = GraphInfo.getZeroTimeString(getContext());
                     } else {
-                        timeString = infoObject.getTimeString(getContext());
+                        timeString = graphInfo.getTimeString(getContext());
                     }
                     setNormalText(String.format(Locale.getDefault(), "%s... (%s)", getString(R.string.charging), timeString));
                 }
@@ -219,14 +219,14 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     private void showDischargingText() {
-        boolean isDatabaseEmpty = graphs == null || infoObject == null;
+        boolean isDatabaseEmpty = graphs == null || graphInfo == null;
         if (isDatabaseEmpty) { // no data yet (database is empty or unavailable)
             setBigText(getString(R.string.toast_no_data), true);
         } else { // database is not empty
             LineGraphSeries graph = getFirstAvailableGraph();
             boolean hasEnoughData = graph != null && graph.getHighestValueX() > 0;
             if (hasEnoughData) { // enough data
-                String timeString = infoObject.getTimeString(getContext());
+                String timeString = graphInfo.getTimeString(getContext());
                 setNormalText(String.format(Locale.getDefault(), "%s: %s", getString(R.string.info_charging_time), timeString));
             } else { // not enough data
                 setBigText(getString(R.string.toast_not_enough_data), true);
