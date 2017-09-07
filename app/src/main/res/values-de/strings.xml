@@ -74,7 +74,6 @@
     <string name="notification_grant_root">Die App wurde aktualisiert. Bitte klicke hier, um wieder Root-Zugriffe zu erlauben!</string>
     <string name="notification_no_items_enabled">Alle Infos deaktiviert!</string>
     <string name="notification_not_rooted">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
-    <string name="notification_sound_disabled">Achtung! Der Ton abgeschaltet!</string>
     <string name="notification_stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
     <string name="notification_warning_high">Der Akkustand ist höher als</string>
     <string name="notification_warning_low">Der Akkustand ist niedriger als</string>

@@ -48,7 +48,6 @@
     <!-- Not directly changeable by user -->
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
-    <string name="pref_intent_time" translatable="false">intentTime</string>
     <string name="pref_stats" translatable="false">stats</string>
     <!-- Notification channels -->
     <string name="channel_battery_warnings" translatable="false">batteryWarnings</string>
@@ -151,7 +150,6 @@
     <!-- notifications -->
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
-    <string name="notification_sound_disabled">Warning! The sound is disabled!</string>
     <string name="notification_grant_root">The app was updated. Please click here to grant root access again!</string>
     <string name="notification_charging_disabled">Charging has been disabled by the app. Click here to enable it again.</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>

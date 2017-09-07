@@ -68,7 +68,6 @@
     <string name="toast_no_alarm_time_found">Aucune alarme trouvée dans l\'application d\'alarme. Définissez une alarme dans votre application dédiée ou une heure manuellement dans Battery Warner afin d\'utiliser Smart Charging !</string>
     <string name="notification_no_items_enabled">Aucun élément activé !</string>
     <string name="notification_not_rooted">L\'application n\'a plus d\'accès root. Cliquez ici pour accorder de nouveau l\'accès root !</string>
-    <string name="notification_sound_disabled">Attention ! Le son est désactivé !</string>
     <string name="notification_stop_charging_not_working">L\'arrêt auto de charge ne semble pas fonctionner avec votre appareil ! Vous pouvez désactiver cette fonctionnalité !</string>
     <string name="notification_warning_high">Niveau de batterie au-dessus de</string>
     <string name="notification_warning_low">Niveau de batterie au-dessous de</string>

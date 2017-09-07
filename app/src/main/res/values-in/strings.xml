@@ -70,7 +70,6 @@
     <string name="notification_grant_root">Aplikasi ini telah diperbarui. Klik disini untuk memulihkan akses root!</string>
     <string name="notification_no_items_enabled">Tidak ada item yang dihidupkan!</string>
     <string name="notification_not_rooted">Aplikasi ini tidak lagi memiliki akses root! Klik disini untuk memulihkan akses root!</string>
-    <string name="notification_sound_disabled">Peringatan! Suara dimatikan!</string>
     <string name="notification_stop_charging_not_working">"Stop Charging" sepertinya tidak dapat bekerja pada perangkat anda! anda dapat menonaktifkan fitur tersebut!</string>
     <string name="notification_warning_high">Daya baterai di atas</string>
     <string name="notification_warning_low">Daya baterai di bawah</string>

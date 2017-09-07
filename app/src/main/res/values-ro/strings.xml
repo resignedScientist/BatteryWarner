@@ -68,7 +68,6 @@
     <string name="toast_no_alarm_time_found">Nu a fost găsită nici o alarmă activă în aplicaţia de alarme! Setează o alarmă sau manual un timp în aplicaţie ca să poţi folosi Încărcarea Inteligentă!</string>
     <string name="notification_no_items_enabled">Nici un element activat!</string>
     <string name="notification_not_rooted">Aplicaţia nu mai deţine acces root! Apasă aici ca să acorzi din nou accesul root!</string>
-    <string name="notification_sound_disabled">Atenţie! Sunetul este dezactivat!</string>
     <string name="notification_stop_charging_not_working">Oprirea încărcării pare să nu funcţioneze cu dispozitivul tău! Poţi dezactiva această caracteristică!</string>
     <string name="notification_warning_high">Nivelul bateriei este peste</string>
     <string name="notification_warning_low">Nivelul bateriei este sub</string>

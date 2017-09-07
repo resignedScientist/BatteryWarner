@@ -58,7 +58,6 @@
     <string name="notification_no_items_enabled">কিছুই চালু হয়নি!</string>
     <string name="toast_no_alarm_time_found">কোন  অ্যালার্মের নির্ধারিত সময় পাওয়া যায়নি! স্মার্ট চার্জিং ব্যবহারের জন্য অ্যালার্ম নির্ধারণ করতে হবে অথবা অ্যাপ থেকে চার্জের সময় নির্ধারণ করে দিতে হবে।</string>
     <string name="notification_not_rooted">অ্যাপটির রুট অনুমোদন আর নেই। পুনরায় অনুমতি দেয়ার জন্য এখানে ট্যাপ করুন!</string>
-    <string name="notification_sound_disabled">সতর্ক! শব্দ সংকেত বন্ধ করা আছে!</string>
     <string name="notification_stop_charging_not_working">এ অ্যাপের দ্বারা আপনার মোবাইলে চার্জিং বন্ধ করা যাচ্ছে না!</string>
     <string name="notification_warning_high">ব্যাটারির সীমা উপরে আছে</string>
     <string name="notification_warning_low">ব্যাটারির সীমা নিচে আছে</string>
