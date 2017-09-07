@@ -37,10 +37,10 @@
     <string name="info_endTime">Ende</string>
     <string name="info_health">Gesundheit</string>
     <string name="info_max_current">Max. Stromstärke</string>
-    <string name="info_max_temp">Maximale Temperatur</string>
+    <string name="info_max_temp">Max. Temperatur</string>
     <string name="info_max_voltage">Max. Spannung</string>
     <string name="info_min_current">Min. Stromstärke</string>
-    <string name="info_min_temp">Minimale Temperatur</string>
+    <string name="info_min_temp">Min. Temperatur</string>
     <string name="info_min_voltage">Min. Spannung</string>
     <string name="info_startTime">Start</string>
     <string name="info_technology">Technologie</string>
