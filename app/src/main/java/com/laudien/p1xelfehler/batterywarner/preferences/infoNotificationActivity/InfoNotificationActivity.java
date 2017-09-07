@@ -21,13 +21,15 @@ public class InfoNotificationActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        backStackBack();
+        if (isTaskRoot()) {
+            backStackBack();
+        }
         super.onBackPressed();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home && isTaskRoot()) {
             backStackBack();
             finish();
             return true;
@@ -35,10 +37,11 @@ public class InfoNotificationActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * This method will be executed if you click back in navigation keys or toolbar.
+     * It starts the main activity.
+     */
     private void backStackBack() {
-        if (isTaskRoot()) { // check if the back stack is empty
-            // start the main activity
-            startActivity(new Intent(this, MainActivity.class));
-        }
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
