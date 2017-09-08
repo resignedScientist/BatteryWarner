@@ -16,7 +16,19 @@ import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
  * It stops itself after it finished (like every IntentService does!).
  */
 public class ResumeChargingButtonService extends IntentService {
+    /**
+     * 'Enable Usb Charging' clicked.
+     */
     public static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
+    /**
+     * 'Enable Charging' clicked. This will save the graph.
+     */
+    public static final String ACTION_RESUME_CHARGING_SAVE_GRAPH = "resumeChargingSaveGraph";
+    /**
+     * 'Enable Usb Charging' clicked if charging is not allowed. The BackgroundService will not
+     * save the graph then.
+     */
+    public static final String ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH = "resumeChargingNotSaveGraph";
 
     public ResumeChargingButtonService() {
         super(null);
@@ -28,15 +40,26 @@ public class ResumeChargingButtonService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(ACTION_ENABLE_USB_CHARGING)) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            sharedPreferences.edit()
-                    .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
-                    .apply();
+        if (intent != null && intent.getAction() != null) {
+            Intent backgroundServiceIntent = new Intent(getApplicationContext(), BackgroundService.class);
+            switch (intent.getAction()) {
+                case ACTION_ENABLE_USB_CHARGING: // 'Enable USB charging' button
+                    // change 'USB charging disabled' to false
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    sharedPreferences.edit()
+                            .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
+                            .apply();
+                case ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH: // 'Enable charging' button if the notification was called because of not allowed charging
+                    backgroundServiceIntent.setAction(BackgroundService.ACTION_ENABLE_CHARGING);
+                    break;
+                case ACTION_RESUME_CHARGING_SAVE_GRAPH: // normal 'Enable charging' button
+                    backgroundServiceIntent.setAction(BackgroundService.ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH);
+                    break;
+                default:
+                    throw new RuntimeException("Unknown action!");
+            }
+            // resume charging using Background service
+            ServiceHelper.startService(getApplicationContext(), backgroundServiceIntent);
         }
-        // resume charging using Background service
-        Intent backgroundServiceIntent = new Intent(getApplicationContext(), BackgroundService.class);
-        backgroundServiceIntent.setAction(BackgroundService.ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH);
-        ServiceHelper.startService(getApplicationContext(), backgroundServiceIntent);
     }
 }

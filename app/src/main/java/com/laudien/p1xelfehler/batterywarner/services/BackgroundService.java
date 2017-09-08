@@ -148,7 +148,7 @@ public class BackgroundService extends Service {
         if (intent != null && intent.getAction() != null) {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
-                case ACTION_ENABLE_CHARGING: // enable charging action used by Tasker
+                case ACTION_ENABLE_CHARGING: // enable charging action (used by notification button or Tasker)
                     resumeCharging();
                     break;
                 case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH: // enable charging and save graph (used by notification button)
@@ -363,16 +363,12 @@ public class BackgroundService extends Service {
     }
 
     private Notification buildStopChargingNotification(boolean enableSound) {
-        PendingIntent pendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
-                new Intent(this, ResumeChargingButtonService.class), PendingIntent.FLAG_CANCEL_CURRENT);
         String messageText = getString(R.string.notification_charging_disabled);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), pendingIntent)
                 .setOngoing(true);
         if (SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
@@ -382,13 +378,22 @@ public class BackgroundService extends Service {
                 builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
             }
         }
-        if (chargingPausedByIllegalUsbCharging) {
+        Intent enableChargingIntent = new Intent(this, ResumeChargingButtonService.class);
+        if (chargingPausedByIllegalUsbCharging) { // add 'Enable Usb Charging' button
+            enableChargingIntent.setAction(ResumeChargingButtonService.ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH);
             Intent usbIntent = new Intent(this, ResumeChargingButtonService.class);
             usbIntent.setAction(ResumeChargingButtonService.ACTION_ENABLE_USB_CHARGING);
             PendingIntent usbPendingIntent = PendingIntent.getService(this,
                     NOTIFICATION_ID_WARNING_HIGH, usbIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_usb_charging), usbPendingIntent);
+        } else { // use the action with graph saving
+            enableChargingIntent.setAction(ResumeChargingButtonService.ACTION_RESUME_CHARGING_SAVE_GRAPH);
         }
+        // set PendingIntent for 'Enable Charging' button and notification click
+        PendingIntent enableChargingPendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
+                enableChargingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(enableChargingPendingIntent);
+        builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), enableChargingPendingIntent);
         return builder.build();
     }
 
@@ -477,20 +482,25 @@ public class BackgroundService extends Service {
                 // check if charging changed
                 int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
                 boolean isCharging = chargingType != 0;
-                boolean chargingAllowed = true;
+                // stop charging if it is not allowed to charge
+                if (!chargingPausedByIllegalUsbCharging && isCharging && !isChargingAllowed(chargingType)) {
+                    chargingPausedByIllegalUsbCharging = true;
+                    stopCharging(false);
+                    return;
+                }
+                // handle change in charging state
                 if (charging != isCharging) {
                     charging = isCharging;
                     onChargingStateChanged();
                     if (charging) { // started charging
-                        chargingAllowed = onPowerConnected(chargingType);
-                    } else { // started discharging
+                        onPowerConnected();
+                    } else if (!chargingPausedByIllegalUsbCharging) { // started discharging
                         onPowerDisconnected();
                     }
                 }
+                // handle charging/discharging
                 if (isCharging || chargingDisabledInFile && chargingPausedBySmartCharging) {
-                    if (chargingAllowed) {
-                        handleCharging(intent);
-                    }
+                    handleCharging(intent);
                 } else if (!chargingPausedByIllegalUsbCharging) { // discharging
                     handleDischarging(intent);
                 }
@@ -503,24 +513,13 @@ public class BackgroundService extends Service {
 
         /**
          * Charging was resumed by the app or the user connects the charger.
-         * @param chargingType The extra EXTRA_PLUGGED inside the battery intent.
-         * @return Returns true if charging is allowed, false if not - then this method will stop it.
          */
-        private boolean onPowerConnected(int chargingType) {
+        private void onPowerConnected() {
             if (!chargingDisabledInFile) {
                 notificationManager.cancel(NOTIFICATION_ID_WARNING_LOW);
-                boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-                boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
-                boolean chargingAllowed = !(usbCharging && usbChargingDisabled);
-                if (!chargingAllowed) {
-                    chargingPausedByIllegalUsbCharging = true;
-                    stopCharging(false);
-                } else if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) { // charging is allowed
+                if (!chargingResumedBySmartCharging && !chargingResumedByAutoResume) {
                     resetGraph();
                 }
-                return chargingAllowed;
-            } else {
-                return true;
             }
         }
 
@@ -635,6 +634,18 @@ public class BackgroundService extends Service {
                     }
                 }
             }
+        }
+
+        /**
+         * Method which returns if the current charging type is allowed.
+         *
+         * @param chargingType The extra EXTRA_PLUGGED in the battery intent.
+         * @return Returns true, if the charging is allowed and false if not.
+         */
+        private boolean isChargingAllowed(int chargingType) {
+            boolean usbChargingDisabled = sharedPreferences.getBoolean(getString(R.string.pref_usb_charging_disabled), getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
+            boolean usbCharging = chargingType == BatteryManager.BATTERY_PLUGGED_USB;
+            return !(usbCharging && usbChargingDisabled);
         }
 
         private void refreshInfoNotification(Intent intent) {
