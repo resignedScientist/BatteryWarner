@@ -243,12 +243,12 @@ public class BackgroundService extends Service {
     }
 
     private void resumeCharging() {
-        chargingDisabledInFile = false;
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     RootHelper.enableCharging();
+                    chargingDisabledInFile = false;
                     notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
                 } catch (RootHelper.NotRootedException e) {
                     e.printStackTrace();
@@ -503,6 +503,8 @@ public class BackgroundService extends Service {
 
         /**
          * Charging was resumed by the app or the user connects the charger.
+         * @param chargingType The extra EXTRA_PLUGGED inside the battery intent.
+         * @return Returns true if charging is allowed, false if not - then this method will stop it.
          */
         private boolean onPowerConnected(int chargingType) {
             if (!chargingDisabledInFile) {
@@ -612,9 +614,9 @@ public class BackgroundService extends Service {
                 } else { // charging already resumed
                     int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
                     if (batteryLevel >= smartChargingLimit) {
-                        stopCharging(true);
                         chargingPausedBySmartCharging = false;
                         chargingResumedBySmartCharging = false;
+                        stopCharging(true);
                     }
                 }
             }
