@@ -74,7 +74,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
                     PERMISSION_REQUEST_CODE
             );
         } else {
-            loadGraph();
+            loadGraphs(-1);
         }
     }
 
@@ -151,15 +151,19 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         viewPager.setCurrentItem(viewPager.getCurrentItem() + (v == btn_next ? 1 : -1), true);
     }
 
-    private void loadGraph() {
+    private void loadGraphs(int moveToPos) {
         DatabaseController databaseController = DatabaseController.getInstance(this);
         ArrayList<File> fileList = databaseController.getFileList();
         if (fileList == null || fileList.isEmpty()) {
             textView_nothingSaved.setVisibility(VISIBLE);
+            textView_fileName.setVisibility(INVISIBLE);
         }
         adapter = new HistoryPagerAdapter(getSupportFragmentManager(), fileList);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
+        if (moveToPos != -1) {
+            viewPager.setCurrentItem(moveToPos);
+        }
         onPageSelected(viewPager.getCurrentItem());
     }
 
@@ -215,7 +219,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
 
     private void showGraphInfo() {
         if (adapter.getCount() != 0) {
-            adapter.getCurrentFragment().showInfo();
+            adapter.currentFragment.showInfo();
         } else {
             ToastHelper.sendToast(this, R.string.toast_no_graphs_saved, LENGTH_SHORT);
         }
@@ -363,15 +367,6 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         }
 
         /**
-         * Returns the fragment that is currently shown in the foreground.
-         *
-         * @return Returns the fragment that is currently shown in the foreground.
-         */
-        HistoryPageFragment getCurrentFragment() {
-            return currentFragment;
-        }
-
-        /**
          * Removes the database file of the fragment at the given position.
          *
          * @param position The position of the fragment in the ViewPager.
@@ -381,8 +376,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
             if (position < files.size() && position >= 0) {
                 File file = files.get(position);
                 if (file.delete()) {
-                    files.remove(file);
-                    notifyDataSetChanged();
+                    loadGraphs(position);
                     return true;
                 }
             }
