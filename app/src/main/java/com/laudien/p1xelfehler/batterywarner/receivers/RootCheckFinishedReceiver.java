@@ -11,9 +11,19 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
+/**
+ * Abstract BroadcastReceiver that will be called after a check for root finished.
+ * This class is only used in PreferenceFragments that contain root preferences.
+ */
 public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
     public static final String ACTION_ROOT_CHECK_FINISHED = "com.laudien.p1xelfehler.batterywarner.ROOT_CHECK_FINISHED";
+    /**
+     * Required extra that contains a boolean. True = root was allowed; False = root was not allowed.
+     */
     public static final String EXTRA_ROOT_ALLOWED = "com.laudien.p1xelfehler.batterywarner.ROOT_ALLOWED";
+    /**
+     * Required extra that contains the preference key where root was asked for as String.
+     */
     public static final String EXTRA_PREFERENCE = "com.laudien.p1xelfehler.batterywarner.PREFERENCE";
 
     @Override
@@ -30,7 +40,7 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
                             disablePreferences(preferenceKey);
                         }
                     }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
-                } else {
+                } else { // root access was granted
                     ServiceHelper.restartService(context.getApplicationContext());
                 }
             } else {
@@ -39,5 +49,11 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * If root was not allowed, this method will be called for the preference key where root
+     * was asked for. The preference should be disabled here.
+     *
+     * @param preferenceKey The key that was given in EXTRA_PREFERENCE.
+     */
     protected abstract void disablePreferences(String preferenceKey);
 }
