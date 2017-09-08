@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -51,6 +52,8 @@ public class BackgroundService extends Service {
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
+    private static final int NOTIFICATION_LED_ON_TIME = 500;
+    private static final int NOTIFICATION_LED_OFF_TIME = 2000;
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
     private boolean chargingResumedByAutoResume = false;
@@ -369,6 +372,7 @@ public class BackgroundService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
+                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setOngoing(true);
         if (SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
@@ -408,6 +412,7 @@ public class BackgroundService extends Service {
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(this))
                 .setAutoCancel(true)
                 .setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true))
+                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
@@ -426,6 +431,7 @@ public class BackgroundService extends Service {
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(BackgroundService.this))
                 .setAutoCancel(true)
+                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false))
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
