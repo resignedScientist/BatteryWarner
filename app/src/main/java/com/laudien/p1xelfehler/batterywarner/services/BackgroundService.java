@@ -364,7 +364,7 @@ public class BackgroundService extends Service {
 
     private Notification buildStopChargingNotification(boolean enableSound) {
         PendingIntent pendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
-                new Intent(this, EnableChargingService.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                new Intent(this, ResumeChargingButtonService.class), PendingIntent.FLAG_CANCEL_CURRENT);
         String messageText = getString(R.string.notification_charging_disabled);
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -383,8 +383,8 @@ public class BackgroundService extends Service {
             }
         }
         if (chargingPausedByIllegalUsbCharging) {
-            Intent usbIntent = new Intent(this, EnableChargingService.class);
-            usbIntent.setAction(EnableChargingService.ACTION_ENABLE_USB_CHARGING);
+            Intent usbIntent = new Intent(this, ResumeChargingButtonService.class);
+            usbIntent.setAction(ResumeChargingButtonService.ACTION_ENABLE_USB_CHARGING);
             PendingIntent usbPendingIntent = PendingIntent.getService(this,
                     NOTIFICATION_ID_WARNING_HIGH, usbIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_usb_charging), usbPendingIntent);

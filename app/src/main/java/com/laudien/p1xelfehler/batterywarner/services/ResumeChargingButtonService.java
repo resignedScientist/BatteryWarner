@@ -10,19 +10,19 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 /**
- * An IntentService called by the app that enables the charging again.
+ * An IntentService called by the notification that enables the charging again.
  * If the device is not rooted anymore, the notification with the id
  * ID_NOT_ROOTED will be triggered.
  * It stops itself after it finished (like every IntentService does!).
  */
-public class EnableChargingService extends IntentService {
+public class ResumeChargingButtonService extends IntentService {
     public static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
 
-    public EnableChargingService() {
+    public ResumeChargingButtonService() {
         super(null);
     }
 
-    public EnableChargingService(String name) {
+    public ResumeChargingButtonService(String name) {
         super(name);
     }
 
