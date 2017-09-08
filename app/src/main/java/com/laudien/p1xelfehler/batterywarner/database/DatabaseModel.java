@@ -94,8 +94,10 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     void resetTable() {
         SQLiteDatabase database = getWritableDatabase();
-        database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-        database.close();
+        if (database != null) {
+            database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+            database.close();
+        }
     }
 
     /**
@@ -224,6 +226,16 @@ class DatabaseModel extends SQLiteOpenHelper {
         try {
             return super.getReadableDatabase();
         } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        try {
+            return super.getWritableDatabase();
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
