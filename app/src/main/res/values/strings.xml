@@ -166,7 +166,7 @@
     <!-- titles (e.g. for preferences) -->
     <string name="title_ac_enabled">Warning on AC charging</string>
     <string name="title_advanced_features">Advanced features</string>
-    <string name="title_charging_curve">Charging curve</string>
+    <string name="title_charging_curve">Charging graph</string>
     <string name="title_charging_limit">Charging limit:</string>
     <string name="title_charging_notification">Enable charging notification</string>
     <string name="title_charging_service">Charging Service</string>
@@ -177,7 +177,7 @@
     <string name="title_graph_auto_delete">Auto Delete</string>
     <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
     <string name="title_graph_autosave">Save automatically</string>
-    <string name="title_graph_enabled">Enable charging curve</string>
+    <string name="title_graph_enabled">Enable charging graph</string>
     <string name="title_history">History</string>
     <string name="title_info_dark_theme">Dark info notification</string>
     <string name="title_info_notification">Info notification</string>
@@ -210,7 +210,7 @@
     <string name="toast_disabled_in_settings">Disabled in settings!</string>
     <string name="toast_error_deleting">Deleting failed!</string>
     <string name="toast_error_renaming">Renaming failed!</string>
-    <string name="toast_error_renaming_wrong_characters">Unallowed character(s) used! Renaming failed!</string>
+    <string name="toast_error_renaming_wrong_characters">Not allowed character(s) used! Renaming failed!</string>
     <string name="toast_error_saving">Saving failed!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
