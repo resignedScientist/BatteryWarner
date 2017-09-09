@@ -153,7 +153,6 @@ public final class RootHelper {
         ToggleChargingFile[] files = new ToggleChargingFile[]{
                 new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/store_mode", "0", "1"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
                 new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
                 new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1"),
