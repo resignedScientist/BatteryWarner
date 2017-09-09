@@ -163,8 +163,8 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         viewPager.addOnPageChangeListener(this);
         if (moveToPos != -1) {
             viewPager.setCurrentItem(moveToPos);
+            onPageSelected(moveToPos);
         }
-        onPageSelected(viewPager.getCurrentItem());
     }
 
     private void showDeleteDialog() {
@@ -405,7 +405,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
          * @return Returns the database file of the fragment at the given position.
          */
         File getFile(int position) {
-            if (!files.isEmpty()) {
+            if (!files.isEmpty() && files.size() > position) {
                 return files.get(position);
             } else {
                 return null;
