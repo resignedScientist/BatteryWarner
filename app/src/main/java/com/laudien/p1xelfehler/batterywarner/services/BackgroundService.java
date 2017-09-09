@@ -43,6 +43,8 @@ import static android.os.Build.VERSION_CODES.O;
 import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.services.ResumeChargingButtonService.ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH;
+import static com.laudien.p1xelfehler.batterywarner.services.ResumeChargingButtonService.ACTION_RESUME_CHARGING_SAVE_GRAPH;
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
@@ -367,37 +369,37 @@ public class BackgroundService extends Service {
 
     private Notification buildStopChargingNotification(boolean enableSound) {
         String messageText = getString(R.string.notification_charging_disabled);
+        Intent enableChargingIntent = new Intent(this, ResumeChargingButtonService.class);
+        enableChargingIntent.setAction(chargingPausedByIllegalUsbCharging ?
+                ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH : ACTION_RESUME_CHARGING_SAVE_GRAPH);
+        PendingIntent enableChargingPendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
+                enableChargingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        // create base notification builder
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
                 .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
-                .setOngoing(true);
+                .setOngoing(true)
+                .setContentIntent(enableChargingPendingIntent)
+                .addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), enableChargingPendingIntent);
         if (SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
-        } else {
+        } else { // API lower than 26 (Android Oreo)
             builder.setPriority(PRIORITY_LOW);
             if (enableSound) {
                 builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
             }
         }
-        Intent enableChargingIntent = new Intent(this, ResumeChargingButtonService.class);
-        if (chargingPausedByIllegalUsbCharging) { // add 'Enable Usb Charging' button
-            enableChargingIntent.setAction(ResumeChargingButtonService.ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH);
+        // add 'Enable Usb Charging' button if needed
+        if (chargingPausedByIllegalUsbCharging) {
             Intent usbIntent = new Intent(this, ResumeChargingButtonService.class);
             usbIntent.setAction(ResumeChargingButtonService.ACTION_ENABLE_USB_CHARGING);
             PendingIntent usbPendingIntent = PendingIntent.getService(this,
                     NOTIFICATION_ID_WARNING_HIGH, usbIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_usb_charging), usbPendingIntent);
-        } else { // use the action with graph saving
-            enableChargingIntent.setAction(ResumeChargingButtonService.ACTION_RESUME_CHARGING_SAVE_GRAPH);
         }
-        // set PendingIntent for 'Enable Charging' button and notification click
-        PendingIntent enableChargingPendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
-                enableChargingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        builder.setContentIntent(enableChargingPendingIntent);
-        builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), enableChargingPendingIntent);
         return builder.build();
     }
 
