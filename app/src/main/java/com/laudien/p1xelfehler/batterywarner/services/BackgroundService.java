@@ -372,7 +372,7 @@ public class BackgroundService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
-                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
+                .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setOngoing(true);
         if (SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
@@ -412,7 +412,7 @@ public class BackgroundService extends Service {
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(this))
                 .setAutoCancel(true)
                 .setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true))
-                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
+                .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_battery_warnings));
@@ -431,7 +431,7 @@ public class BackgroundService extends Service {
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(BackgroundService.this))
                 .setAutoCancel(true)
-                .setLights(Color.WHITE, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
+                .setLights(Color.RED, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false))
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
