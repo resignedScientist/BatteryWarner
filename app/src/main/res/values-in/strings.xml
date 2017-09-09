@@ -36,8 +36,12 @@
     <string name="info_current">Arus</string>
     <string name="info_endTime">Selesai</string>
     <string name="info_health">Kesehatan</string>
+    <string name="info_max_current">Arus Maksimal</string>
     <string name="info_max_temp">Suhu tertinggi</string>
+    <string name="info_max_voltage">Tegangan Maksimal</string>
+    <string name="info_min_current">Arus Minimal</string>
     <string name="info_min_temp">Suhu terendah</string>
+    <string name="info_min_voltage">Tegangan Minimal</string>
     <string name="info_startTime">Mulai</string>
     <string name="info_technology">Teknologi</string>
     <string name="info_temperature">Suhu</string>
@@ -77,6 +81,7 @@
     <string name="smart_charging_explanation">Untuk orang-orang yang ingin mengisi penuh sepanjang malam tanpa merusak baterai dengan membiarkannya terisi 100% terlalu lama. Baterai akan terisi hingga batasan yang telah diatur di menu lain. Lalu pengisian akan dijeda dan X menit sebelum waktu yang telah anda atur disini pengisian akan dilanjutkan. Setelah mencapai batasan pada menu ini, pengisian akan dihentikan lagi.</string>
 
     <string name="summary_disabled">Dinonaktifkan</string>
+    <string name="summary_graph_auto_delete">Hapus grafik lama secara otomatis.</string>
     <string name="summary_graph_autosave">Simpan grafik yang telah direkam seraca otomatis kedalam riwayat ketika perangkat terisi penuh atau daya dicabut.</string>
     <string name="summary_graph_enabled">Rekam grafik ketika mengisi.</string>
     <string name="summary_info_dark_theme">Gunakan tema gelap untuk pemberitahuan info baterai.</string>
@@ -88,6 +93,13 @@
     <string name="summary_usb_charging_disabled">Mencegah pengisian daya jika dihubungkan dengan usb. Tidak bekerja pada semua perangkat!</string>
     <string name="summary_warning_high_enabled">Tampilkan peringatan daya baterai tinggi jika persentase yang diatur telah tercapai.</string>
     <string name="summary_warning_low_enabled">Tampilkan peringatan daya baterai rendah jika persentase yang diatur telah tercapai.</string>
+
+    <string name="tasker_choose_action">Pilih tindakan anda:</string>
+    <string name="tasker_disable_charging">Nonaktifkan pengisian daya</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_headline">Halo bray!</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_subtitle">Saya bangga kalian berada disini! :)</string>
 
     <string name="tile_stop_charging">Berhenti mengisi</string>
     <string name="tile_warning_high">Peringatan baterai penuh</string>
@@ -107,6 +119,8 @@
     <string name="title_discharging_notification">Aktifkan pemberitahuan pemakaian</string>
     <string name="title_discharging_service">Layanan Pemakaian</string>
     <string name="title_enabled">Aktif</string>
+    <string name="title_graph_auto_delete">Hapus Secara Otomatis</string>
+    <string name="title_graph_auto_delete_time">Hapus grafik yang berumur lebih dari:</string>
     <string name="title_graph_autosave">Simpan secara otomatis</string>
     <string name="title_graph_enabled">Aktifkan kurva pengisian</string>
     <string name="title_history">Riwayat</string>
@@ -159,19 +173,7 @@
     <string name="toast_success_saving">Grafik telah tersimpan pada riwayat!</string>
     <string name="toast_theme_changed">Tema akan diaktifkan ketika anda keluar dari pengaturan!</string>
 
+    <string name="unit_days">\ hari</string>
+
     <!-- new strings -->
-    <string name="info_min_current">Min. current</string>
-    <string name="info_max_current">Max. current</string>
-    <string name="info_min_voltage">Min. voltage</string>
-    <string name="info_max_voltage">Max. voltage</string>
-    <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
-    <string name="title_graph_auto_delete">Auto Delete</string>
-    <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
-    <string name="unit_days">\ days</string>
-    <string name="tasker_disable_charging">Disable charging</string>
-    <string name="tasker_choose_action">Choose your action:</string>
-    <!-- Just write something funny in your language here :) -->
-    <string name="tasker_headline">Hello Sir!</string>
-    <!-- Just write something funny in your language here :) -->
-    <string name="tasker_subtitle">I am glad that you got here! :)</string>
 </resources>
