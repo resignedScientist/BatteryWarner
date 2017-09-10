@@ -164,6 +164,8 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
         if (moveToPos != -1) {
             viewPager.setCurrentItem(moveToPos);
             onPageSelected(moveToPos);
+        } else {
+            onPageSelected(viewPager.getCurrentItem());
         }
     }
 
