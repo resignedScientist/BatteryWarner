@@ -44,6 +44,13 @@ public final class RootHelper {
         return Shell.SU.available();
     }
 
+    /**
+     * Checks if any preference is enabled that requires root.
+     *
+     * @param context           An instance of the Context class.
+     * @param sharedPreferences The default SharedPreferences. Can be null.
+     * @return Returns true, if any root preference is enabled and false if no root preference is enabled.
+     */
     public static boolean isAnyRootPreferenceEnabled(Context context, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -58,6 +65,11 @@ public final class RootHelper {
         return false;
     }
 
+    /**
+     * Disables all preferences that require root.
+     *
+     * @param context An instance of the Context class.
+     */
     public static void disableAllRootPreferences(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
