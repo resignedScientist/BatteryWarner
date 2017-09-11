@@ -121,7 +121,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".services.BackgroundService" />
         <service android:name=".services.DisableRootFeaturesService" />
-        <service android:name=".services.ResumeChargingButtonService" />
         <service android:name=".services.GrantRootService" />
         <service android:name=".services.TogglePowerSavingService" />
     </application>

@@ -43,11 +43,10 @@ import static android.os.Build.VERSION_CODES.O;
 import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
-import static com.laudien.p1xelfehler.batterywarner.services.ResumeChargingButtonService.ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH;
-import static com.laudien.p1xelfehler.batterywarner.services.ResumeChargingButtonService.ACTION_RESUME_CHARGING_SAVE_GRAPH;
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
+    public static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
     public static final String ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH = "enableChargingAndSaveGraph";
     public static final String ACTION_DISABLE_CHARGING = "disableCharging";
     public static final String ACTION_RESET_ALL = "resetService";
@@ -153,10 +152,15 @@ public class BackgroundService extends Service {
         if (intent != null && intent.getAction() != null) {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
-                case ACTION_ENABLE_CHARGING: // enable charging action (used by notification button or Tasker)
+                case ACTION_ENABLE_USB_CHARGING:
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    sharedPreferences.edit()
+                            .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
+                            .apply();
+                case ACTION_ENABLE_CHARGING: // enable charging action by Tasker or 'Enable charging' button after not allowed usb charging
                     resumeCharging();
                     break;
-                case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH: // enable charging and save graph (used by notification button)
+                case ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH: // 'Enable charging' button on the stop charging notification
                     saveGraph();
                     resumeCharging();
                     break;
@@ -369,9 +373,9 @@ public class BackgroundService extends Service {
 
     private Notification buildStopChargingNotification(boolean enableSound) {
         String messageText = getString(R.string.notification_charging_disabled);
-        Intent enableChargingIntent = new Intent(this, ResumeChargingButtonService.class);
+        Intent enableChargingIntent = new Intent(this, BackgroundService.class);
         enableChargingIntent.setAction(chargingPausedByIllegalUsbCharging ?
-                ACTION_RESUME_CHARGING_NOT_SAVE_GRAPH : ACTION_RESUME_CHARGING_SAVE_GRAPH);
+                ACTION_ENABLE_CHARGING : ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH);
         PendingIntent enableChargingPendingIntent = PendingIntent.getService(this, NOTIFICATION_ID_WARNING_HIGH,
                 enableChargingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         // create base notification builder
@@ -394,8 +398,8 @@ public class BackgroundService extends Service {
         }
         // add 'Enable Usb Charging' button if needed
         if (chargingPausedByIllegalUsbCharging) {
-            Intent usbIntent = new Intent(this, ResumeChargingButtonService.class);
-            usbIntent.setAction(ResumeChargingButtonService.ACTION_ENABLE_USB_CHARGING);
+            Intent usbIntent = new Intent(this, BackgroundService.class);
+            usbIntent.setAction(ACTION_ENABLE_USB_CHARGING);
             PendingIntent usbPendingIntent = PendingIntent.getService(this,
                     NOTIFICATION_ID_WARNING_HIGH, usbIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             builder.addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_usb_charging), usbPendingIntent);
