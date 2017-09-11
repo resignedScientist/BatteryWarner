@@ -18,6 +18,8 @@ import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 import com.twofortyfouram.log.Lumberjack;
 
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_CHARGING;
+
 public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     RadioGroup radioGroup_action;
 
@@ -68,22 +70,38 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public void onPostCreateWithPreviousResult(@NonNull Bundle bundle, @NonNull String s) {
-        boolean charging = TaskerHelper.getBundleResult(bundle);
-        radioGroup_action.check(charging ? R.id.radioButton_enable_charging : R.id.radioButton_disable_charging);
+        int action = TaskerHelper.getAction(bundle);
+        Object value = TaskerHelper.getValue(bundle);
+        switch (action) {
+            case ACTION_TOGGLE_CHARGING:
+                radioGroup_action.check(R.id.radioButton_toggle_charging);
+                break;
+        }
     }
 
     @Nullable
     @Override
     public Bundle getResultBundle() {
-        boolean charging = radioGroup_action.getCheckedRadioButtonId() == R.id.radioButton_enable_charging;
-        return TaskerHelper.buildBundle(charging);
+        int id = radioGroup_action.getCheckedRadioButtonId();
+        switch (id) {
+            case R.id.radioButton_toggle_charging:
+                return TaskerHelper.buildBundle(ACTION_TOGGLE_CHARGING, true);
+            default:
+                return null;
+        }
     }
 
     @NonNull
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
-        boolean result = TaskerHelper.getBundleResult(bundle);
-        return result ? getString(R.string.tasker_enable_charging) : getString(R.string.tasker_disable_charging);
+        int action = TaskerHelper.getAction(bundle);
+        Object value = TaskerHelper.getValue(bundle);
+        switch (action) {
+            case ACTION_TOGGLE_CHARGING:
+                return (Boolean) value ? getString(R.string.tasker_toggle_charging) : getString(R.string.tasker_disable_charging);
+            default:
+                return "Error!";
+        }
     }
 
     @Override

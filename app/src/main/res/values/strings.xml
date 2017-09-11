@@ -151,7 +151,7 @@
     <!-- Tasker -->
     <string name="tasker_choose_action">Choose your action:</string>
     <string name="tasker_disable_charging">Disable charging</string>
-    <string name="tasker_enable_charging" translatable="false">@string/notification_button_enable_charging</string>
+    <string name="tasker_toggle_charging">Toggle charging</string>
     <string name="tasker_headline">Hello Sir!</string>
     <string name="tasker_plugin_name" translatable="false">Battery Warner Plugin</string>
     <string name="tasker_subtitle">I am glad that you got here! :)</string>
