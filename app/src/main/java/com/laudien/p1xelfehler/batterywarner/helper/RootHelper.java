@@ -32,16 +32,19 @@ public final class RootHelper {
     private static final String TAG = "RootHelper";
 
     /**
-     * Checks if the app has root permissions. If the device is rooted, this method will trigger
-     * a dialog to ask for root permissions depending on the super user app used.
+     * Checks if the app has root permissions. If the device is rooted, this method will possibly
+     * trigger a dialog to ask for root permissions depending on the super user app used.
      *
      * @return Returns true if the app has root permissions, false if not.
      */
     public static boolean isRootAvailable() {
+        Log.d(TAG, "Checking for root...");
         if (Looper.myLooper() == Looper.getMainLooper()) {
             throw new InMainThreadException();
         }
-        return Shell.SU.available();
+        boolean rootAvailable = Shell.SU.available();
+        Log.d(TAG, rootAvailable ? "Root is available!" : "Root is not available!");
+        return rootAvailable;
     }
 
     /**
@@ -49,7 +52,7 @@ public final class RootHelper {
      *
      * @param context           An instance of the Context class.
      * @param sharedPreferences The default SharedPreferences. Can be null.
-     * @return Returns true, if any root preference is enabled and false if no root preference is enabled.
+     * @return Returns true, if any root preference is enabled and false if all root preferences are disabled.
      */
     public static boolean isAnyRootPreferenceEnabled(Context context, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
