@@ -12,6 +12,7 @@ import android.util.Log;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -49,15 +50,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
                 }
             });
             // check if one of the root preferences is enabled
-            String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
-            boolean oneRootPermissionIsEnabled = false;
-            for (String prefKey : rootPreferences) {
-                boolean enabled = sharedPreferences.getBoolean(prefKey, false);
-                if (enabled) {
-                    oneRootPermissionIsEnabled = true;
-                    break;
-                }
-            }
+            boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
             if (oneRootPermissionIsEnabled) { // this notification starts the service on click
                 NotificationHelper.showNotification(context, ID_GRANT_ROOT);
             } else { // start the service directly

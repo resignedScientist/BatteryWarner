@@ -125,15 +125,7 @@ public final class NotificationHelper {
 
     private static void showGrantRootNotification(Context context, SharedPreferences sharedPreferences) {
         // check if one of the root preferences is enabled
-        String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
-        boolean oneRootPermissionIsEnabled = false;
-        for (String key : rootPreferences) {
-            boolean enabled = sharedPreferences.getBoolean(key, false);
-            if (enabled) {
-                oneRootPermissionIsEnabled = true;
-                break;
-            }
-        }
+        boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
         // send the grant root notification only if one of the root preferences is enabled
         if (oneRootPermissionIsEnabled) {
             String messageText = context.getString(R.string.notification_grant_root);

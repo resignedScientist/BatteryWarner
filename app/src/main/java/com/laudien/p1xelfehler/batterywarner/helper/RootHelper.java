@@ -2,9 +2,14 @@ package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
 import java.util.List;
@@ -37,6 +42,30 @@ public final class RootHelper {
             throw new InMainThreadException();
         }
         return Shell.SU.available();
+    }
+
+    public static boolean isAnyRootPreferenceEnabled(Context context, @Nullable SharedPreferences sharedPreferences) {
+        if (sharedPreferences == null) {
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        }
+        String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
+        for (String prefKey : rootPreferences) {
+            boolean enabled = sharedPreferences.getBoolean(prefKey, false);
+            if (enabled) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void disableAllRootPreferences(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String[] rootPreferences = context.getResources().getStringArray(R.array.root_preferences);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for (String key : rootPreferences) {
+            editor.putBoolean(key, false);
+        }
+        editor.apply();
     }
 
     /**
@@ -92,6 +121,7 @@ public final class RootHelper {
 
     /**
      * Toggles the power saving mode on or off.
+     *
      * @param turnOn True = turn power saving mode on, False = turn it off
      * @throws NotRootedException thrown if the app has no root permissions.
      */
@@ -106,10 +136,11 @@ public final class RootHelper {
 
     /**
      * Resets the android internal battery stats
+     *
      * @throws NotRootedException thrown if the app has no root permissions.
      */
     public static void resetBatteryStats() throws NotRootedException {
-        if (isRootAvailable()){
+        if (isRootAvailable()) {
             Log.d(TAG, "Resetting android battery stats...");
             Shell.SU.run("dumpsys batterystats --reset");
         } else {
