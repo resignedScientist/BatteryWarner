@@ -186,6 +186,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         for (View layout : layouts) {
             layout.setVisibility(View.GONE);
         }
+        textView_setValue.setVisibility(View.VISIBLE);
         // then enable the correct layout
         switch (radioButtonId) {
             case R.id.radioButton_toggle_charging:
