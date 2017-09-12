@@ -95,32 +95,34 @@
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
 
     <string name="tasker_choose_action">Choose your action:</string>
-    <!-- Just write something funny in your language here :) -->
-    <string name="tasker_headline">Hello Sir!</string>
-    <!-- Just write something funny in your language here :) -->
-    <string name="tasker_subtitle">I am glad that you got here! :)</string>
     <string name="tasker_disable_charging">Disable charging</string>
     <string name="tasker_disable_smart_charging">Disable Smart Charging</string>
     <string name="tasker_disable_stop_charging">Disable Stop Charging</string>
     <string name="tasker_disable_warning_high">Disable high battery warning</string>
     <string name="tasker_disable_warning_low">Disable low battery warning</string>
+    <string name="tasker_enable">Enable</string>
     <string name="tasker_enable_charging">Enable charging</string>
     <string name="tasker_enable_smart_charging">Enable Smart Charging</string>
     <string name="tasker_enable_stop_charging">Enable Stop Charging</string>
     <string name="tasker_enable_warning_high">Enable high battery warning</string>
     <string name="tasker_enable_warning_low">Enable low battery warning</string>
-    <string name="tasker_enable">Enable</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_headline">Hello Sir!</string>
     <string name="tasker_reset_graph">Reset the recorded graph</string>
     <string name="tasker_save_graph">Save the recorded graph</string>
     <string name="tasker_set_smart_charging_limit">Set Smart Charging percentage limit</string>
-    <string name="tasker_set_smart_charging_time">Set Smart Charging time to</string>
+    <string name="tasker_set_smart_charging_time">Set Smart Charging time</string>
     <string name="tasker_set_value">Set your value:</string>
+    <string name="tasker_set_warning_high">Set high battery warning</string>
+    <string name="tasker_set_warning_low">Set low battery warning</string>
+    <!-- Just write something funny in your language here :) -->
+    <string name="tasker_subtitle">I am glad that you got here! :)</string>
     <string name="tasker_to">to</string>
     <string name="tasker_toggle_charging">Toggle charging</string>
     <string name="tasker_toggle_smart_charging">Toggle Smart Charging</string>
+    <string name="tasker_toggle_stop_charging">Toggle Stop Charging</string>
     <string name="tasker_toggle_warning_high">Toggle high battery warning</string>
     <string name="tasker_toggle_warning_low">Toggle low battery warning</string>
-    <string name="tasker_toggle_stop_charging">Toggle Stop Charging</string>
 
     <string name="tile_stop_charging">Stop Charging</string>
     <string name="tile_warning_high">High battery warning</string>

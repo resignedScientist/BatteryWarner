@@ -17,8 +17,8 @@ public class TaskerHelper {
     public static final int ACTION_TOGGLE_SMART_CHARGING = 2;
     public static final int ACTION_TOGGLE_WARNING_HIGH = 3;
     public static final int ACTION_TOGGLE_WARNING_LOW = 4;
-    public static final int ACTION_SET_WARNING_HIGH = 5;
-    public static final int ACTION_SET_WARNING_LOW = 6;
+    public static final int ACTION_SET_WARNING_HIGH = 5; // this
+    public static final int ACTION_SET_WARNING_LOW = 6; // this
     public static final int ACTION_SET_SMART_CHARGING_LIMIT = 7;
     public static final int ACTION_SET_SMART_CHARGING_TIME = 8;
     public static final int ACTION_SAVE_GRAPH = 9;
@@ -96,6 +96,10 @@ public class TaskerHelper {
                 return context.getString((Boolean) value ? R.string.tasker_enable_warning_high : R.string.tasker_disable_warning_high);
             case ACTION_TOGGLE_WARNING_LOW:
                 return context.getString((Boolean) value ? R.string.tasker_enable_warning_low : R.string.tasker_disable_warning_low);
+            case ACTION_SET_WARNING_HIGH:
+                return context.getString(R.string.tasker_set_warning_high) + " " + context.getString(R.string.tasker_to) + " " + value + "%";
+            case ACTION_SET_WARNING_LOW:
+                return context.getString(R.string.tasker_set_warning_low) + " " + context.getString(R.string.tasker_to) + " " + value + "%";
             case ACTION_SET_SMART_CHARGING_LIMIT:
                 return context.getString(R.string.tasker_set_smart_charging_limit) + " " + context.getString(R.string.tasker_to) + " " + value + "%";
             case ACTION_SET_SMART_CHARGING_TIME:

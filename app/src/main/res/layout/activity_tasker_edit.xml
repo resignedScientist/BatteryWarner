@@ -93,6 +93,18 @@
                 android:text="@string/tasker_toggle_warning_low" />
 
             <RadioButton
+                android:id="@+id/radioButton_set_warning_high"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tasker_set_warning_high" />
+
+            <RadioButton
+                android:id="@+id/radioButton_set_warning_low"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tasker_set_warning_low" />
+
+            <RadioButton
                 android:id="@+id/radioButton_set_smart_charging_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

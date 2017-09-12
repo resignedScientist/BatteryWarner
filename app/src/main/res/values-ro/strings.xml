@@ -186,7 +186,9 @@
     <string name="tasker_reset_graph">Reset the recorded graph</string>
     <string name="tasker_save_graph">Save the recorded graph</string>
     <string name="tasker_set_smart_charging_limit">Set Smart Charging percentage limit</string>
-    <string name="tasker_set_smart_charging_time">Set Smart Charging time to</string>
+    <string name="tasker_set_smart_charging_time">Set Smart Charging time</string>
+    <string name="tasker_set_warning_high">Set high battery warning</string>
+    <string name="tasker_set_warning_low">Set low battery warning</string>
     <string name="tasker_set_value">Set your value:</string>
     <string name="tasker_to">to</string>
     <string name="tasker_toggle_charging">Toggle charging</string>

@@ -193,4 +193,6 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
+    <string name="tasker_set_warning_high">Setze Akkust.-hoch Warnung</string>
+    <string name="tasker_set_warning_low">Setze Akkust.-niedrig Warnung</string>
 </resources>

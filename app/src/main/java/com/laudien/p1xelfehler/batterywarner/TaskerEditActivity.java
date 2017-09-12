@@ -31,6 +31,8 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_R
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SAVE_GRAPH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SET_SMART_CHARGING_LIMIT;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SET_SMART_CHARGING_TIME;
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SET_WARNING_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SET_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_SMART_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_STOP_CHARGING;
@@ -113,6 +115,8 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
             case ACTION_TOGGLE_WARNING_LOW:
                 ((Switch) layouts[LAYOUT_SWITCH]).setChecked((Boolean) value);
                 break;
+            case ACTION_SET_WARNING_HIGH:
+            case ACTION_SET_WARNING_LOW:
             case ACTION_SET_SMART_CHARGING_LIMIT:
                 NumberPicker numberPicker = (NumberPicker) layouts[LAYOUT_NUMBER_PICKER];
                 numberPicker.setValue((Integer) value);
@@ -149,6 +153,8 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 value = ((Switch) layouts[LAYOUT_SWITCH]).isChecked();
                 break;
             case ACTION_SET_SMART_CHARGING_LIMIT:
+            case ACTION_SET_WARNING_HIGH:
+            case ACTION_SET_WARNING_LOW:
                 value = ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).getValue();
                 break;
             case ACTION_SET_SMART_CHARGING_TIME:
@@ -199,10 +205,19 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 layouts[LAYOUT_SWITCH].setVisibility(View.VISIBLE);
                 break;
             case R.id.radioButton_set_smart_charging_limit:
-                NumberPicker numberPicker = (NumberPicker) layouts[LAYOUT_NUMBER_PICKER];
-                numberPicker.setVisibility(View.VISIBLE);
-                numberPicker.setMinValue(getResources().getInteger(R.integer.pref_smart_charging_limit_min));
-                numberPicker.setMaxValue(getResources().getInteger(R.integer.pref_smart_charging_limit_max));
+                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_smart_charging_limit_min));
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_smart_charging_limit_max));
+                break;
+            case R.id.radioButton_set_warning_high:
+                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_warning_high_min));
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_warning_high_max));
+                break;
+            case R.id.radioButton_set_warning_low:
+                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_warning_low_min));
+                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_warning_low_max));
                 break;
             case R.id.radioButton_set_smart_charging_time:
                 layouts[LAYOUT_TIME_PICKER].setVisibility(View.VISIBLE);
@@ -225,6 +240,10 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 return ACTION_TOGGLE_WARNING_HIGH;
             case R.id.radioButton_toggle_warning_low:
                 return ACTION_TOGGLE_WARNING_LOW;
+            case R.id.radioButton_set_warning_high:
+                return ACTION_SET_WARNING_HIGH;
+            case R.id.radioButton_set_warning_low:
+                return ACTION_SET_WARNING_LOW;
             case R.id.radioButton_set_smart_charging_limit:
                 return ACTION_SET_SMART_CHARGING_LIMIT;
             case R.id.radioButton_set_smart_charging_time:
@@ -250,6 +269,10 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 return R.id.radioButton_toggle_warning_high;
             case ACTION_TOGGLE_WARNING_LOW:
                 return R.id.radioButton_toggle_warning_low;
+            case ACTION_SET_WARNING_HIGH:
+                return R.id.radioButton_set_warning_high;
+            case ACTION_SET_WARNING_LOW:
+                return R.id.radioButton_set_warning_low;
             case ACTION_SET_SMART_CHARGING_LIMIT:
                 return R.id.radioButton_set_smart_charging_limit;
             case ACTION_SET_SMART_CHARGING_TIME:
