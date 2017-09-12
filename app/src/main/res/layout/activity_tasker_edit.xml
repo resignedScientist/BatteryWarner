@@ -72,7 +72,7 @@
                 android:id="@+id/radioButton_toggle_stop_charging"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toggle Stop Charging" />
+                android:text="@string/tasker_toggle_stop_charging" />
 
             <RadioButton
                 android:id="@+id/radioButton_toggle_smart_charging"
@@ -150,7 +150,7 @@
                 android:id="@+id/value_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tasker_enabled"
+                android:text="@string/tasker_enable"
                 android:visibility="gone" />
 
             <NumberPicker
