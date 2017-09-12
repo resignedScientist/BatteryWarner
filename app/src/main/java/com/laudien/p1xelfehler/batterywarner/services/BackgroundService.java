@@ -64,6 +64,9 @@ public class BackgroundService extends Service {
     private boolean chargingDisabledInFile = false;
     private boolean charging = false;
     private int lastBatteryLevel = -1;
+    private int lastCurrent = Integer.MIN_VALUE;
+    private double lastTemperature = Double.MIN_VALUE;
+    private double lastVoltage = Double.MIN_VALUE;
     private long smartChargingResumeTime;
     private String infoNotificationMessage;
     private NotificationCompat.Builder infoNotificationBuilder;
@@ -567,7 +570,7 @@ public class BackgroundService extends Service {
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
             // add a value to the database
-            if (graphEnabled) {
+            if (graphEnabled && didAnyBatteryValueChanged(batteryLevel, temperature, current, voltage)) {
                 databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
             }
             if (charging || chargingDisabledInFile && chargingPausedBySmartCharging) {
@@ -742,6 +745,20 @@ public class BackgroundService extends Service {
                         return false;
                 }
             }
+        }
+
+        private boolean didAnyBatteryValueChanged(int batteryLevel, double temperature, int current, double voltage) {
+            boolean result = batteryLevel != lastBatteryLevel
+                    || current != lastCurrent
+                    || temperature != lastTemperature
+                    || voltage != lastVoltage;
+            if (result) {
+                // Don't do this with the battery level!!!
+                lastTemperature = temperature;
+                lastCurrent = current;
+                lastVoltage = voltage;
+            }
+            return result;
         }
     }
 
