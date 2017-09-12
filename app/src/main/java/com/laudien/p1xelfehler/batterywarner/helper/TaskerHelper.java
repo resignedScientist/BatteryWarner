@@ -17,8 +17,8 @@ public class TaskerHelper {
     public static final int ACTION_TOGGLE_SMART_CHARGING = 2;
     public static final int ACTION_TOGGLE_WARNING_HIGH = 3;
     public static final int ACTION_TOGGLE_WARNING_LOW = 4;
-    public static final int ACTION_SET_WARNING_HIGH = 5; // this
-    public static final int ACTION_SET_WARNING_LOW = 6; // this
+    public static final int ACTION_SET_WARNING_HIGH = 5;
+    public static final int ACTION_SET_WARNING_LOW = 6;
     public static final int ACTION_SET_SMART_CHARGING_LIMIT = 7;
     public static final int ACTION_SET_SMART_CHARGING_TIME = 8;
     public static final int ACTION_SAVE_GRAPH = 9;
