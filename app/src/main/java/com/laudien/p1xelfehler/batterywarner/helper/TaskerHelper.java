@@ -1,8 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.laudien.p1xelfehler.batterywarner.R;
 import com.twofortyfouram.assertion.BundleAssertions;
 import com.twofortyfouram.log.Lumberjack;
 
@@ -80,29 +82,29 @@ public class TaskerHelper {
         return bundle.getInt(EXTRA_ACTION, ACTION_TOGGLE_CHARGING);
     }
 
-    public static String getResultBlurb(@NonNull Bundle bundle) {
+    public static String getResultBlurb(Context context, @NonNull Bundle bundle) {
         int action = TaskerHelper.getAction(bundle);
         Object value = TaskerHelper.getValue(bundle);
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
-                return (Boolean) value ? "Enable charging" : "Disable charging";
+                return context.getString((Boolean) value ? R.string.tasker_enable_charging : R.string.tasker_disable_charging);
             case ACTION_TOGGLE_STOP_CHARGING:
-                return (Boolean) value ? "Enable Stop Charging" : "Disable Stop Charging";
+                return context.getString((Boolean) value ? R.string.tasker_enable_stop_charging : R.string.tasker_disable_stop_charging);
             case ACTION_TOGGLE_SMART_CHARGING:
-                return (Boolean) value ? "Enable Smart Charging" : "Disable Smart Charging";
+                return context.getString((Boolean) value ? R.string.tasker_enable_smart_charging : R.string.tasker_disable_smart_charging);
             case ACTION_TOGGLE_WARNING_HIGH:
-                return (Boolean) value ? "Enable high battery warning" : "Disable high battery warning";
+                return context.getString((Boolean) value ? R.string.tasker_enable_warning_high : R.string.tasker_disable_warning_high);
             case ACTION_TOGGLE_WARNING_LOW:
-                return (Boolean) value ? "Enable low battery warning" : "Disable low battery warning";
+                return context.getString((Boolean) value ? R.string.tasker_enable_warning_low : R.string.tasker_disable_warning_low);
             case ACTION_SET_SMART_CHARGING_LIMIT:
-                return "Set Smart Charging limit to " + value + "%";
+                return context.getString(R.string.tasker_set_smart_charging_limit) + " " + context.getString(R.string.tasker_to) + " " + value + "%";
             case ACTION_SET_SMART_CHARGING_TIME:
                 DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
-                return "Set Smart Charging time to " + dateFormat.format(new Date((Long) value));
+                return context.getString(R.string.tasker_set_smart_charging_time) + " " + context.getString(R.string.tasker_to) + " " + dateFormat.format(new Date((Long) value));
             case ACTION_SAVE_GRAPH:
-                return "Save the recorded graph";
+                return context.getString(R.string.tasker_save_graph);
             case ACTION_RESET_GRAPH:
-                return "Reset the recorded graph";
+                return context.getString(R.string.tasker_reset_graph);
             default:
                 return "Error!";
         }

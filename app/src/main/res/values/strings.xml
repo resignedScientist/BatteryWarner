@@ -3,22 +3,26 @@
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
     <string name="channel_battery_warnings" translatable="false">batteryWarnings</string>
-    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
     <!-- notification channel descriptions -->
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
     <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
+    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
     <!-- notification channel titles -->
     <string name="channel_title_battery_info">Battery Information</string>
     <string name="channel_title_battery_warnings">Battery Warnings</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
+
     <!-- Subtitles under the GraphView in the GraphFragment -->
     <string name="charging">Charging</string>
+
     <!-- check boxes -->
     <string name="checkbox_battery_level">Battery level (%)</string>
     <string name="checkbox_temperature">Temperature (°C)</string>
+
     <!-- my mail address -->
     <string name="developer_mail" translatable="false">kontakt@norman-laudien.de</string>
+
     <!-- dialogs -->
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_close">Close</string>
@@ -29,8 +33,10 @@
     <string name="dialog_title_are_you_sure">Are you sure?</string>
     <string name="dialog_title_graph_info">Graph information</string>
     <string name="dialog_title_information">Information</string>
+
     <!-- the donation link -->
     <string name="donation_link" translatable="false">https://www.paypal.me/p1xelfehler</string>
+
     <!-- battery health -->
     <string name="health_cold">Cold</string>
     <string name="health_dead">Dead</string>
@@ -39,6 +45,7 @@
     <string name="health_overvoltage">Overvoltage</string>
     <string name="health_unknown">Unknown</string>
     <string name="health_unspecified_failure">Unspecified failure</string>
+
     <!-- graph or battery information -->
     <string name="info_battery_level">Battery level</string>
     <string name="info_charging_speed">Charging speed</string>
@@ -56,6 +63,7 @@
     <string name="info_technology">Technology</string>
     <string name="info_temperature">Temperature</string>
     <string name="info_voltage">Voltage</string>
+
     <!-- intro -->
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
     <string name="intro_slide_1_description">It will help your battery to live longer!</string>
@@ -66,6 +74,7 @@
     <string name="intro_slide_3_title">For the longest life, you have to charge \"flat\"!</string>
     <string name="intro_slide_prefs_description">Choose your settings right here!</string>
     <string name="intro_slide_prefs_title">Let\'s get started!</string>
+
     <!-- menu items -->
     <string name="menu_contact_developer">Contact the developer</string>
     <string name="menu_delete">Delete</string>
@@ -75,6 +84,7 @@
     <string name="menu_rename">Rename</string>
     <string name="menu_rename_graph">Rename graph</string>
     <string name="menu_save_to_history">Save to history</string>
+
     <!-- notifications -->
     <string name="notification_button_enable_charging">Enable charging</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
@@ -87,6 +97,7 @@
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
+
     <!-- Shared Preference Keys -->
     <string name="pref_ac_enabled" translatable="false">acEnabled</string>
     <string name="pref_checkBox_current" translatable="false">checkBoxCurrent</string>
@@ -131,9 +142,13 @@
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
+
+    <!-- names of SharedPrefs files -->
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
+
     <!-- explanation of smart charging -->
     <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
+
     <!-- preference summaries -->
     <string name="summary_disabled">Disabled</string>
     <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
@@ -148,21 +163,44 @@
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
-    <!-- Tasker -->
+
+    <!-- tasker -->
     <string name="tasker_choose_action">Choose your action:</string>
     <string name="tasker_disable_charging">Disable charging</string>
-    <string name="tasker_toggle_charging">Toggle charging</string>
+    <string name="tasker_disable_smart_charging">Disable Smart Charging</string>
+    <string name="tasker_disable_stop_charging">Disable Stop Charging</string>
+    <string name="tasker_disable_warning_high">Disable high battery warning</string>
+    <string name="tasker_disable_warning_low">Disable low battery warning</string>
+    <string name="tasker_enable_charging">Enable charging</string>
+    <string name="tasker_enable_smart_charging">Enable Smart Charging</string>
+    <string name="tasker_enable_stop_charging">Enable Stop Charging</string>
+    <string name="tasker_enable_warning_high">Enable high battery warning</string>
+    <string name="tasker_enable_warning_low">Enable low battery warning</string>
+    <string name="tasker_enabled">@string/title_enabled</string>
     <string name="tasker_headline">Hello Sir!</string>
     <string name="tasker_plugin_name" translatable="false">Battery Warner Plugin</string>
+    <string name="tasker_reset_graph">Reset the recorded graph</string>
+    <string name="tasker_save_graph">Save the recorded graph</string>
+    <string name="tasker_set_smart_charging_limit">Set Smart Charging percentage limit</string>
+    <string name="tasker_set_smart_charging_time">Set Smart Charging time to</string>
+    <string name="tasker_set_value">Set your value:</string>
     <string name="tasker_subtitle">I am glad that you got here! :)</string>
+    <string name="tasker_to">to</string>
+    <string name="tasker_toggle_charging">Toggle charging</string>
+    <string name="tasker_toggle_smart_charging">Toggle Smart Charging</string>
+    <string name="tasker_toggle_warning_high">Toggle high battery warning</string>
+    <string name="tasker_toggle_warning_low">Toggle low battery warning</string>
+
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
     <string name="tile_warning_high">High battery warning</string>
     <string name="tile_warning_low">Low battery warning</string>
+
     <!-- time format preference -->
     <string name="time_format_hours_comma_minutes">1 h 30.5 min</string>
     <string name="time_format_hours_minutes">1 h 30 min</string>
     <string name="time_format_hours_minutes_seconds">1 h 30 min 30 s</string>
+
     <!-- titles (e.g. for preferences) -->
     <string name="title_ac_enabled">Warning on AC charging</string>
     <string name="title_advanced_features">Advanced features</string>
@@ -204,6 +242,7 @@
     <string name="title_usb_enabled">Warning on USB charging</string>
     <string name="title_warning_percentage">Warning percentage:</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
+
     <!-- toasts -->
     <string name="toast_charging_type_disabled">The current charging type is disabled in settings!</string>
     <string name="toast_click_to_exit">Click again to exit app!</string>
@@ -227,6 +266,7 @@
     <string name="toast_success_renaming">File renamed!</string>
     <string name="toast_success_saving">The graph was saved to history!</string>
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
+
     <!-- units after a slider in a SeekBarPreference -->
     <string name="unit_days">\ days</string>
 </resources>

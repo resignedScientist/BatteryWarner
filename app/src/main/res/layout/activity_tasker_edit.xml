@@ -78,43 +78,43 @@
                 android:id="@+id/radioButton_toggle_smart_charging"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toggle Smart Charging" />
+                android:text="@string/tasker_toggle_smart_charging" />
 
             <RadioButton
                 android:id="@+id/radioButton_toggle_warning_high"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toggle high battery warning" />
+                android:text="@string/tasker_toggle_warning_high" />
 
             <RadioButton
                 android:id="@+id/radioButton_toggle_warning_low"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Toggle low battery warning" />
+                android:text="@string/tasker_toggle_warning_low" />
 
             <RadioButton
                 android:id="@+id/radioButton_set_smart_charging_limit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Set Smart Charging percentage limit" />
+                android:text="@string/tasker_set_smart_charging_limit" />
 
             <RadioButton
                 android:id="@+id/radioButton_set_smart_charging_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Set Smart Charging time" />
+                android:text="@string/tasker_set_smart_charging_time" />
 
             <RadioButton
                 android:id="@+id/radioButton_save_graph"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Save the recorded graph" />
+                android:text="@string/tasker_save_graph" />
 
             <RadioButton
                 android:id="@+id/radioButton_reset_graph"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Reset the recorded graph" />
+                android:text="@string/tasker_reset_graph" />
         </RadioGroup>
 
         <TextView
@@ -124,7 +124,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Set your value:"
+            android:text="@string/tasker_set_value"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radio_group_action" />
@@ -150,7 +150,7 @@
                 android:id="@+id/value_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enabled"
+                android:text="@string/tasker_enabled"
                 android:visibility="gone" />
 
             <NumberPicker

@@ -46,7 +46,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     protected void firePluginSetting(@NonNull final Context context, @NonNull Bundle bundle) {
         int action = TaskerHelper.getAction(bundle);
         Object value = TaskerHelper.getValue(bundle);
-        Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Action: " + TaskerHelper.getResultBlurb(bundle));
+        Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Action: " + TaskerHelper.getResultBlurb(context, bundle));
         try {
             switch (action) {
                 case ACTION_TOGGLE_CHARGING:

@@ -169,7 +169,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @NonNull
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
-        return TaskerHelper.getResultBlurb(bundle);
+        return TaskerHelper.getResultBlurb(this, bundle);
     }
 
     @Override
