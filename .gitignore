@@ -31,3 +31,5 @@ app/free/debug/
 app/release/
 
 app/beta/debug/
+
+app/pro/debug/
