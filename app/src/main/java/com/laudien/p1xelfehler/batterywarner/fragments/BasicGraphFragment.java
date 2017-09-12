@@ -235,6 +235,7 @@ public abstract class BasicGraphFragment extends Fragment {
         if (graphs != null) {
             if (graphInfo == null) {
                 graphInfo = new GraphInfo(
+                        getContext(),
                         getStartTime(),
                         getEndTime(),
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
@@ -248,6 +249,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 );
             } else {
                 graphInfo.updateValues(
+                        getContext(),
                         getStartTime(),
                         getEndTime(),
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,

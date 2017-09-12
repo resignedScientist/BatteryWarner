@@ -19,6 +19,7 @@ import java.util.Locale;
 class GraphInfo {
     private double timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage;
     private long startTime, endTime;
+    private Dialog dialog;
 
     /**
      * Constructor of the GraphInfo. All values must be provided.
@@ -29,10 +30,10 @@ class GraphInfo {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
+    GraphInfo(Context context, long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
               double percentCharged, double minCurrent, double maxCurrent, double minVoltage,
               double maxVoltage) {
-        updateValues(startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage);
+        updateValues(context, startTime, endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent, maxCurrent, minVoltage, maxVoltage);
     }
 
     private static String[] getTimeFormats(Context context) {
@@ -83,12 +84,13 @@ class GraphInfo {
      * @param minTemp        The minimal battery temperature while charging.
      * @param percentCharged The battery level difference from the beginning to the end of charging in percent.
      */
-    void updateValues(long startTime, long endTime, double timeInMinutes, double maxTemp,
+    void updateValues(Context context, long startTime, long endTime, double timeInMinutes, double maxTemp,
                       double minTemp, double percentCharged, double minCurrent, double maxCurrent,
                       double minVoltage, double maxVoltage) {
         this.startTime = startTime;
         updateValues(endTime, timeInMinutes, maxTemp, minTemp, percentCharged, minCurrent,
                 maxCurrent, minVoltage, maxVoltage);
+        updateDialog(context);
     }
 
     private void updateValues(long endTime, double timeInMinutes, double maxTemp, double minTemp,
@@ -111,129 +113,136 @@ class GraphInfo {
      * @param context An instance of the Context class.
      */
     void showDialog(Context context) {
-        final Dialog dialog = new Dialog(context);
+        dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_graph_info);
-        DateFormat dateFormat = DateFormat.getDateTimeInstance();
-        TextView textView;
         // close button
         Button btn_close = dialog.findViewById(R.id.btn_close);
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                dialog = null; // make the dialog object ready for garbage collection
             }
         });
-        // start time
-        textView = dialog.findViewById(R.id.textView_startTime);
-        textView.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                context.getString(R.string.info_startTime),
-                dateFormat.format(startTime)
-        ));
-        // end time
-        textView = dialog.findViewById(R.id.textView_endTime);
-        textView.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                context.getString(R.string.info_endTime),
-                dateFormat.format(endTime)
-        ));
-        // min temperature
-        textView = dialog.findViewById(R.id.textView_minTemp);
-        if (minTemp != Double.NaN) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f°C",
-                    context.getString(R.string.info_min_temp),
-                    minTemp)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // max temperature
-        textView = dialog.findViewById(R.id.textView_maxTemp);
-        if (!Double.isNaN(maxTemp)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f°C",
-                    context.getString(R.string.info_max_temp),
-                    maxTemp)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // min current
-        textView = dialog.findViewById(R.id.textView_minCurrent);
-        if (!Double.isNaN(minCurrent)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f mAh",
-                    context.getString(R.string.info_min_current),
-                    minCurrent)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // max current
-        textView = dialog.findViewById(R.id.textView_maxCurrent);
-        if (!Double.isNaN(maxCurrent)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f mAh",
-                    context.getString(R.string.info_max_current),
-                    maxCurrent)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // min voltage
-        textView = dialog.findViewById(R.id.textView_minVoltage);
-        if (!Double.isNaN(minVoltage)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.3f V",
-                    context.getString(R.string.info_min_voltage),
-                    minVoltage)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // max voltage
-        textView = dialog.findViewById(R.id.textView_maxVoltage);
-        if (!Double.isNaN(maxVoltage)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.3f V",
-                    context.getString(R.string.info_max_voltage),
-                    maxVoltage)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // charging speed
-        textView = dialog.findViewById(R.id.textView_speed);
-        double speed = percentCharged * 60 / timeInMinutes;
-        if (!Double.isNaN(speed)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.2f %%/h",
-                    context.getString(R.string.info_charging_speed),
-                    speed)
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
-        // charging time
-        textView = dialog.findViewById(R.id.textView_totalTime);
-        textView.setText(String.format(
-                Locale.getDefault(),
-                "%s: %s",
-                context.getString(R.string.info_charging_time),
-                getTimeString(context))
-        );
+        updateDialog(context);
         // show dialog
         dialog.show();
+    }
+
+    private void updateDialog(Context context) {
+        if (dialog != null) {
+            DateFormat dateFormat = DateFormat.getDateTimeInstance();
+            TextView textView;
+            // start time
+            textView = dialog.findViewById(R.id.textView_startTime);
+            textView.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s",
+                    context.getString(R.string.info_startTime),
+                    dateFormat.format(startTime)
+            ));
+            // end time
+            textView = dialog.findViewById(R.id.textView_endTime);
+            textView.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s",
+                    context.getString(R.string.info_endTime),
+                    dateFormat.format(endTime)
+            ));
+            // min temperature
+            textView = dialog.findViewById(R.id.textView_minTemp);
+            if (minTemp != Double.NaN) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f°C",
+                        context.getString(R.string.info_min_temp),
+                        minTemp)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // max temperature
+            textView = dialog.findViewById(R.id.textView_maxTemp);
+            if (!Double.isNaN(maxTemp)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f°C",
+                        context.getString(R.string.info_max_temp),
+                        maxTemp)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // min current
+            textView = dialog.findViewById(R.id.textView_minCurrent);
+            if (!Double.isNaN(minCurrent)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f mAh",
+                        context.getString(R.string.info_min_current),
+                        minCurrent)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // max current
+            textView = dialog.findViewById(R.id.textView_maxCurrent);
+            if (!Double.isNaN(maxCurrent)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f mAh",
+                        context.getString(R.string.info_max_current),
+                        maxCurrent)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // min voltage
+            textView = dialog.findViewById(R.id.textView_minVoltage);
+            if (!Double.isNaN(minVoltage)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.3f V",
+                        context.getString(R.string.info_min_voltage),
+                        minVoltage)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // max voltage
+            textView = dialog.findViewById(R.id.textView_maxVoltage);
+            if (!Double.isNaN(maxVoltage)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.3f V",
+                        context.getString(R.string.info_max_voltage),
+                        maxVoltage)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // charging speed
+            textView = dialog.findViewById(R.id.textView_speed);
+            double speed = percentCharged * 60 / timeInMinutes;
+            if (!Double.isNaN(speed)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.2f %%/h",
+                        context.getString(R.string.info_charging_speed),
+                        speed)
+                );
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+            // charging time
+            textView = dialog.findViewById(R.id.textView_totalTime);
+            textView.setText(String.format(
+                    Locale.getDefault(),
+                    "%s: %s",
+                    context.getString(R.string.info_charging_time),
+                    getTimeString(context))
+            );
+        }
     }
 
     /**
