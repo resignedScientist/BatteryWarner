@@ -747,6 +747,15 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * Method that checks if any graph relevant battery value has changed.
+         *
+         * @param batteryLevel The battery level as int.
+         * @param temperature  The temperature as double.
+         * @param current      The current as int.
+         * @param voltage      The voltage as double.
+         * @return Returns true, if any value has changed and false if none of the relevant values has changed.
+         */
         private boolean didAnyBatteryValueChanged(int batteryLevel, double temperature, int current, double voltage) {
             boolean result = batteryLevel != lastBatteryLevel
                     || current != lastCurrent
