@@ -514,7 +514,7 @@ public class BackgroundService extends Service {
                     }
                 }
                 // handle charging/discharging
-                boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+                boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
                 if (isCharging || chargingDisabledInFile && (chargingPausedBySmartCharging || graphEnabled)) {
                     handleCharging(intent, graphEnabled);
                 } else if (!chargingPausedByIllegalUsbCharging) { // discharging
