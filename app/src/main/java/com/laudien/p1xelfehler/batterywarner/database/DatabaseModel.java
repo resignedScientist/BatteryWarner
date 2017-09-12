@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -74,9 +75,11 @@ class DatabaseModel extends SQLiteOpenHelper {
      * Add a value to the app directory database.
      *
      * @param value A DatabaseValue containing all the data of the new graph point.
+     * @return Returns the total number of rows in the database after adding the value.
      */
-    void addValue(DatabaseValue value) {
+    long addValue(DatabaseValue value) {
         SQLiteDatabase database = getWritableDatabase();
+        long totalNumberOfRows = 0;
         if (database != null) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
@@ -85,8 +88,10 @@ class DatabaseModel extends SQLiteOpenHelper {
             contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
             contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+            totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
             database.close();
         }
+        return totalNumberOfRows;
     }
 
     /**

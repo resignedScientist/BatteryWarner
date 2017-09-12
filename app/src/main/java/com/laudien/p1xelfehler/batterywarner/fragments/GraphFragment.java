@@ -299,7 +299,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     @Override
-    public void onValueAdded(DataPoint[] dataPoints) {
+    public void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows) {
         if (graphs == null) { // first point
             graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
@@ -312,7 +312,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
         } else { // not the first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (graphs[i] != null && dataPoints[i] != null) {
-                    graphs[i].appendData(dataPoints[i], false, DatabaseController.MAX_DATA_POINTS);
+                    graphs[i].appendData(dataPoints[i], false, (int) totalNumberOfRows);
                 }
             }
         }

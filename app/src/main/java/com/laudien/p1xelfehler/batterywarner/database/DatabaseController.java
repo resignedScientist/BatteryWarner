@@ -57,10 +57,6 @@ public class DatabaseController {
      * The number of different graphs.
      */
     public static final int NUMBER_OF_GRAPHS = 4;
-    /**
-     * The maximum DataPoints that can be displayed in a GraphView.
-     */
-    public static final int MAX_DATA_POINTS = 1000;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
@@ -114,8 +110,8 @@ public class DatabaseController {
      */
     public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
         DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
-        databaseModel.addValue(databaseValue);
-        notifyValueAdded(databaseValue);
+        long totalNumberOfRows = databaseModel.addValue(databaseValue);
+        notifyValueAdded(databaseValue, totalNumberOfRows);
         Log.d(TAG, "Value added: " + databaseValue);
     }
 
@@ -339,24 +335,25 @@ public class DatabaseController {
             if (databaseValues[0].getCurrent() != 0)
                 graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
             long startTime = databaseValues[0].getUtcTimeInMillis();
+            int maxDataPoints = databaseValues.length;
             for (DatabaseValue databaseValue : databaseValues) {
                 long time = databaseValue.getUtcTimeInMillis() - startTime;
                 double timeInMinutes = (double) time / (1000 * 60);
                 // battery level graph
                 int batteryLevel = databaseValue.getBatteryLevel();
-                graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, MAX_DATA_POINTS);
+                graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, maxDataPoints);
                 // temperature graph
                 double temperature = (double) databaseValue.getTemperature() / 10;
-                graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, MAX_DATA_POINTS);
+                graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, maxDataPoints);
                 // voltage graph
                 if (graphs[GRAPH_INDEX_VOLTAGE] != null) {
                     double voltage = (double) databaseValue.getVoltage() / 1000;
-                    graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, MAX_DATA_POINTS);
+                    graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, maxDataPoints);
                 }
                 // current graph
                 if (graphs[GRAPH_INDEX_CURRENT] != null) {
                     double current = (double) databaseValue.getCurrent() / -1000;
-                    graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, MAX_DATA_POINTS);
+                    graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, maxDataPoints);
                 }
             }
             return graphs;
@@ -386,7 +383,7 @@ public class DatabaseController {
         return startTime;
     }
 
-    private void notifyValueAdded(DatabaseValue databaseValue) {
+    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows) {
         if (!listeners.isEmpty()) {
             DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
             long time = databaseValue.getUtcTimeInMillis() - getStartTime();
@@ -409,7 +406,7 @@ public class DatabaseController {
             }
             // notify the listeners
             for (DatabaseListener listener : listeners) {
-                listener.onValueAdded(dataPoints);
+                listener.onValueAdded(dataPoints, totalNumberOfRows);
             }
         }
     }
@@ -452,7 +449,7 @@ public class DatabaseController {
          * @param dataPoints An array of DataPoints. You can distinguish which point belongs to
          *                   which graph with the GRAPH_INDEX_* constants.
          */
-        void onValueAdded(DataPoint[] dataPoints);
+        void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows);
 
         /**
          * Called when the app directory database has been cleared.
