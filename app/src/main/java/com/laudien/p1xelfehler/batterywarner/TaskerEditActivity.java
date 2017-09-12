@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -59,6 +60,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         layouts[LAYOUT_TIME_PICKER] = findViewById(R.id.value_time_picker);
         layouts[LAYOUT_SWITCH] = findViewById(R.id.value_switch);
         layouts[LAYOUT_NUMBER_PICKER] = findViewById(R.id.value_number_picker);
+        ((TimePicker) layouts[LAYOUT_TIME_PICKER]).setIs24HourView(DateFormat.is24HourFormat(this));
         textView_setValue = findViewById(R.id.textView_set_value);
         enableCorrectLayout(radioGroup_action.getCheckedRadioButtonId());
         // set listeners
