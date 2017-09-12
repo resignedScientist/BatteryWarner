@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.receivers;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -104,15 +105,19 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     }
 
     private void changePreference(Context context, String key, Object value) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        if (value instanceof Boolean) {
-            editor.putBoolean(key, (Boolean) value);
-        } else if (value instanceof Integer) {
-            editor.putInt(key, (Integer) value);
-        } else if (value instanceof Long) {
-            editor.putLong(key, (Long) value);
+        try {
+            Context myContext = context.createPackageContext(context.getString(R.string.package_name), 0);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if (value instanceof Boolean) {
+                editor.putBoolean(key, (Boolean) value);
+            } else if (value instanceof Integer) {
+                editor.putInt(key, (Integer) value);
+            } else if (value instanceof Long) {
+                editor.putLong(key, (Long) value);
+            }
+            editor.apply();
+        } catch (PackageManager.NameNotFoundException ignored) { // cannot happen!
         }
-        editor.apply();
     }
 }
