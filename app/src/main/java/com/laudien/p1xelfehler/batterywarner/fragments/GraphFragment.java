@@ -225,7 +225,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (dataPoints[i] != null) {
                     graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
-                    graphView.addSeries(graphs[i]);
+                    if (switches[i].isChecked()) {
+                        graphView.addSeries(graphs[i]);
+                    }
                 }
             }
             styleGraphs(graphs);
