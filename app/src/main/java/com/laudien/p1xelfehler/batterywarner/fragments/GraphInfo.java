@@ -245,6 +245,13 @@ class GraphInfo {
         }
     }
 
+    void dismissDialog() {
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
+
     /**
      * Returns the time string with the charging time. The format is defined by the user in the settings.
      *

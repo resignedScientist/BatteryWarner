@@ -247,6 +247,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
 
     @Override
     public void onTableReset() {
+        if (graphInfo != null) {
+            graphInfo.dismissDialog();
+        }
         if (graphs != null) {
             graphView.removeAllSeries();
             graphs = null;
