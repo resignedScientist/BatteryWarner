@@ -10,14 +10,11 @@ import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
-import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
-import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 import com.twofortyfouram.locale.sdk.client.receiver.AbstractPluginSettingReceiver;
 
-import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_RESET_GRAPH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SAVE_GRAPH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SET_SMART_CHARGING_LIMIT;
@@ -48,17 +45,17 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     protected void firePluginSetting(@NonNull final Context context, @NonNull Bundle bundle) {
         int action = TaskerHelper.getAction(bundle);
         Object value = TaskerHelper.getValue(bundle);
-        Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Action = " + action + ", value = " + value);
+        Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Action: " + TaskerHelper.getResultBlurb(bundle));
         try {
             switch (action) {
                 case ACTION_TOGGLE_CHARGING:
                     toggleCharging(context, (Boolean) value);
                     break;
                 case ACTION_TOGGLE_STOP_CHARGING:
-                    changeRootPreference(context, context.getString(R.string.pref_stop_charging), value);
+                    changePreference(context, context.getString(R.string.pref_stop_charging), value);
                     break;
                 case ACTION_TOGGLE_SMART_CHARGING:
-                    changeRootPreference(context, context.getString(R.string.pref_smart_charging_enabled), value);
+                    changePreference(context, context.getString(R.string.pref_smart_charging_enabled), value);
                     break;
                 case ACTION_TOGGLE_WARNING_HIGH:
                     changePreference(context, context.getString(R.string.pref_warning_high_enabled), value);
@@ -104,15 +101,6 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     private void resetGraph(Context context) {
         DatabaseController databaseController = DatabaseController.getInstance(context);
         databaseController.resetTable();
-    }
-
-    private void changeRootPreference(Context context, String key, Object value) {
-        if (RootHelper.isRootAvailable()) {
-            changeRootPreference(context, key, value);
-        } else {
-            NotificationHelper.showNotification(context, ID_NOT_ROOTED);
-        }
-
     }
 
     private void changePreference(Context context, String key, Object value) {
