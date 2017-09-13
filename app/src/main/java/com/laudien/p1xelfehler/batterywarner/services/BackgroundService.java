@@ -517,9 +517,8 @@ public class BackgroundService extends Service {
                     }
                 }
                 // handle charging/discharging
-                boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-                if (isCharging || chargingDisabledInFile && (chargingPausedBySmartCharging || graphEnabled)) {
-                    handleCharging(intent, graphEnabled);
+                if (isCharging || chargingDisabledInFile && chargingPausedBySmartCharging) {
+                    handleCharging(intent);
                 } else if (!chargingPausedByIllegalUsbCharging) { // discharging
                     handleDischarging(intent);
                 }
@@ -564,7 +563,7 @@ public class BackgroundService extends Service {
             }
         }
 
-        private void handleCharging(Intent intent, boolean graphEnabled) {
+        private void handleCharging(Intent intent) {
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
@@ -572,70 +571,69 @@ public class BackgroundService extends Service {
             int current = SDK_INT >= LOLLIPOP ? batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) : 0;
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
-            // add a value to the database
-            if (graphEnabled && didAnyBatteryValueChanged(batteryLevel, temperature, current, voltage)) {
-                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
-            }
-            if (charging || chargingDisabledInFile && chargingPausedBySmartCharging) {
-                // battery level changed
-                if (batteryLevel != lastBatteryLevel) {
-                    lastBatteryLevel = batteryLevel;
-                    if (batteryLevel >= warningHigh) {
-                        if (!chargingResumedBySmartCharging) {
-                            boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
-                            if (!alreadyNotified) {
-                                alreadyNotified = true;
-                                boolean warningEnabled = isWarningSoundEnabled(intent);
-                                boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
-                                // reset android battery stats
-                                if (shouldResetBatteryStats) {
-                                    resetBatteryStats();
+            boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            // battery level changed
+            if (batteryLevel != lastBatteryLevel) {
+                lastBatteryLevel = batteryLevel;
+                // add a value to the database
+                if (graphEnabled) {
+                    databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
+                }
+                if (batteryLevel >= warningHigh) {
+                    if (!chargingResumedBySmartCharging) {
+                        boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
+                        if (!alreadyNotified) {
+                            alreadyNotified = true;
+                            boolean warningEnabled = isWarningSoundEnabled(intent);
+                            boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
+                            // reset android battery stats
+                            if (shouldResetBatteryStats) {
+                                resetBatteryStats();
+                            }
+                            // stop charging
+                            if (stopChargingEnabled) {
+                                if (smartChargingEnabled) {
+                                    chargingPausedBySmartCharging = true;
                                 }
-                                // stop charging
-                                if (stopChargingEnabled) {
-                                    if (smartChargingEnabled) {
-                                        chargingPausedBySmartCharging = true;
-                                    }
-                                    boolean enableSound = warningEnabled && !chargingResumedByAutoResume;
-                                    stopCharging(enableSound);
-                                    chargingResumedByAutoResume = false;
-                                } else if (warningEnabled) { // stop charging is disabled
-                                    showWarningHighNotification();
-                                }
+                                boolean enableSound = warningEnabled && !chargingResumedByAutoResume;
+                                stopCharging(enableSound);
+                                chargingResumedByAutoResume = false;
+                            } else if (warningEnabled) { // stop charging is disabled
+                                showWarningHighNotification();
                             }
                         }
                     }
                 }
-                // check smart charging resume time
-                if (chargingPausedBySmartCharging) {
-                    if (!chargingResumedBySmartCharging) {
-                        if (smartChargingResumeTime == 0) {
-                            smartChargingResumeTime = getSmartChargingResumeTime();
+            }
+            // check smart charging resume time
+            if (chargingPausedBySmartCharging) {
+                if (!chargingResumedBySmartCharging) {
+                    if (smartChargingResumeTime == 0) {
+                        smartChargingResumeTime = getSmartChargingResumeTime();
+                    }
+                    if (timeNow >= smartChargingResumeTime) {
+                        // add a graph point for optics/correctness
+                        if (graphEnabled) {
+                            databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
                         }
-                        if (timeNow >= smartChargingResumeTime) {
-                            // add a graph point for optics/correctness
-                            if (graphEnabled) {
-                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
-                            }
-                            chargingResumedBySmartCharging = true;
+                        chargingResumedBySmartCharging = true;
+                        resumeCharging();
+                    } else if (!chargingResumedByAutoResume) { // resume time not reached yet and not resumed
+                        boolean autoResumeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_auto_resume), getResources().getBoolean(R.bool.pref_smart_charging_auto_resume_default));
+                        int autoResumePercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_auto_resume_percentage), getResources().getInteger(R.integer.pref_smart_charging_auto_resume_percentage_default));
+                        // resume charging if the auto resume percentage limit was reached
+                        if (autoResumeEnabled && batteryLevel <= warningHigh - autoResumePercentage) {
+                            chargingResumedByAutoResume = true;
+                            alreadyNotified = false;
                             resumeCharging();
-                        } else if (!chargingResumedByAutoResume) { // resume time not reached yet and not resumed
-                            boolean autoResumeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_auto_resume), getResources().getBoolean(R.bool.pref_smart_charging_auto_resume_default));
-                            int autoResumePercentage = sharedPreferences.getInt(getString(R.string.pref_smart_charging_auto_resume_percentage), getResources().getInteger(R.integer.pref_smart_charging_auto_resume_percentage_default));
-                            // resume charging if the auto resume percentage limit was reached
-                            if (autoResumeEnabled && batteryLevel <= warningHigh - autoResumePercentage) {
-                                chargingResumedByAutoResume = true;
-                                alreadyNotified = false;
-                                resumeCharging();
-                            }
                         }
-                    } else { // charging already resumed
-                        int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
-                        if (batteryLevel >= smartChargingLimit) {
-                            chargingPausedBySmartCharging = false;
-                            chargingResumedBySmartCharging = false;
-                            stopCharging(true);
-                        }
+                    }
+                } else { // charging already resumed
+                    int smartChargingLimit = sharedPreferences.getInt(getString(R.string.pref_smart_charging_limit), getResources().getInteger(R.integer.pref_smart_charging_limit_default));
+                    if (batteryLevel >= smartChargingLimit) {
+                        chargingPausedBySmartCharging = false;
+                        chargingResumedBySmartCharging = false;
+                        stopCharging(true);
                     }
                 }
             }
@@ -748,29 +746,6 @@ public class BackgroundService extends Service {
                         return false;
                 }
             }
-        }
-
-        /**
-         * Method that checks if any graph relevant battery value has changed.
-         *
-         * @param batteryLevel The battery level as int.
-         * @param temperature  The temperature as double.
-         * @param current      The current as int.
-         * @param voltage      The voltage as double.
-         * @return Returns true, if any value has changed and false if none of the relevant values has changed.
-         */
-        private boolean didAnyBatteryValueChanged(int batteryLevel, double temperature, int current, double voltage) {
-            boolean result = batteryLevel != lastBatteryLevel
-                    || current != lastCurrent
-                    || temperature != lastTemperature
-                    || voltage != lastVoltage;
-            if (result) {
-                // Don't do this with the battery level!!!
-                lastTemperature = temperature;
-                lastCurrent = current;
-                lastVoltage = voltage;
-            }
-            return result;
         }
     }
 
