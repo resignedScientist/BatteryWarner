@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -38,11 +39,12 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
 import static android.os.Build.VERSION_CODES.O;
 import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.LARGE_ICON_RESOURCE;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.SMALL_ICON_RESOURCE;
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
@@ -297,10 +299,11 @@ public class BackgroundService extends Service {
         Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
         PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
         infoNotificationBuilder = new NotificationCompat.Builder(this, getString(R.string.channel_battery_info))
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
                 .setOngoing(true)
                 .setContentIntent(clickPendingIntent)
                 .setContentTitle(getString(R.string.title_info_notification))
-                .setSmallIcon(R.mipmap.ic_launcher)
                 .setCustomBigContentView(content)
                 .setContentText(message);
         if (SDK_INT < O) {
@@ -316,9 +319,6 @@ public class BackgroundService extends Service {
                 infoNotificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info_dark);
             } else { // default theme
                 infoNotificationContent = new RemoteViews(getPackageName(), R.layout.notification_battery_info);
-            }
-            if (SDK_INT == LOLLIPOP || SDK_INT == LOLLIPOP_MR1) {
-                infoNotificationContent.setImageViewResource(R.id.img_battery, R.mipmap.ic_launcher_round);
             }
         }
         // set text sizes
@@ -383,7 +383,8 @@ public class BackgroundService extends Service {
                 enableChargingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         // create base notification builder
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
@@ -414,7 +415,8 @@ public class BackgroundService extends Service {
         int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_high), warningHigh);
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
@@ -434,7 +436,8 @@ public class BackgroundService extends Service {
     private Notification buildWarningLowNotification(int warningLow, boolean showPowerSaving) {
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_low), warningLow);
         Notification.Builder builder = new Notification.Builder(BackgroundService.this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))

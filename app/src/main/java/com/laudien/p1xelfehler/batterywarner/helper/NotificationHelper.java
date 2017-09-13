@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -52,7 +53,9 @@ public final class NotificationHelper {
 
     public static final long[] VIBRATE_PATTERN = {0, 300, 300, 300};
 
-    private static final int SMALL_ICON_RESOURCE = R.mipmap.ic_launcher;
+    public static final int SMALL_ICON_RESOURCE = R.drawable.ic_stat_battery_full_white;
+
+    public static final int LARGE_ICON_RESOURCE = R.drawable.ic_battery_status_full_green_48dp;
 
     private NotificationHelper() {
     }
@@ -105,6 +108,7 @@ public final class NotificationHelper {
                     new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
                     .setSmallIcon(SMALL_ICON_RESOURCE)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
@@ -131,8 +135,9 @@ public final class NotificationHelper {
             String messageText = context.getString(R.string.notification_grant_root);
             PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
             Notification.Builder builder = new Notification.Builder(context)
-                    .setOngoing(true)
                     .setSmallIcon(SMALL_ICON_RESOURCE)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
+                    .setOngoing(true)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(messageText)
                     .setStyle(getBigTextStyle(messageText))
@@ -158,6 +163,7 @@ public final class NotificationHelper {
         Notification.Builder builder = new Notification.Builder(context)
                 .setOngoing(true)
                 .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(getBigTextStyle(messageText))
@@ -181,6 +187,7 @@ public final class NotificationHelper {
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, new Intent(context, SmartChargingActivity.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
                 .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(messageText)
                 .setStyle(getBigTextStyle(messageText))
