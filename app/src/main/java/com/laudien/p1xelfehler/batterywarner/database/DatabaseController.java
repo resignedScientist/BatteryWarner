@@ -419,24 +419,28 @@ public class DatabaseController {
 
     public void upgradeAllSavedDatabases(Context context) {
         Log.d(TAG, "Upgrading all saved databases...");
-        DatabaseController databaseController = DatabaseController.getInstance(context);
-        ArrayList<File> files = databaseController.getFileList();
-        Collections.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File f1, File f2) {
-                if (f1.lastModified() == f2.lastModified()) {
-                    return 0;
+        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            DatabaseController databaseController = DatabaseController.getInstance(context);
+            ArrayList<File> files = databaseController.getFileList();
+            Collections.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File f1, File f2) {
+                    if (f1.lastModified() == f2.lastModified()) {
+                        return 0;
+                    }
+                    return f1.lastModified() < f2.lastModified() ? -1 : 1;
                 }
-                return f1.lastModified() < f2.lastModified() ? -1 : 1;
+            });
+            for (File file : files) {
+                Log.d(TAG, "Upgrading file: " + file.getPath());
+                Log.d(TAG, "last modified: " + file.lastModified());
+                SQLiteDatabase database = databaseModel.getReadableDatabase(file);
+                databaseModel.close(file);
             }
-        });
-        for (File file : files) {
-            Log.d(TAG, "Upgrading file: " + file.getPath());
-            Log.d(TAG, "last modified: " + file.lastModified());
-            SQLiteDatabase database = databaseModel.getReadableDatabase(file);
-            databaseModel.close(file);
+            Log.d(TAG, "Upgrade finished!");
+        } else {
+            Log.d(TAG, "Storage permission not granted!");
         }
-        Log.d(TAG, "Upgrade finished!");
     }
 
     /**
