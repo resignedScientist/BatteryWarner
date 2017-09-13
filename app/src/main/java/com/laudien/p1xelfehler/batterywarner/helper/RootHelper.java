@@ -187,14 +187,16 @@ public final class RootHelper {
     }
 
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
+        ToggleChargingFile toggleChargingFile = null;
         if (MODEL.contains("Pixel")) {
-            return new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
+            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
+        } else if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
+            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
+        } else if (BRAND.equals("samsung")) {
+            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
         }
-        if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
-            return new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
-        }
-        if (BRAND.equals("samsung")) {
-            return new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
+        if (toggleChargingFile != null && new File(toggleChargingFile.path).exists()) {
+            return toggleChargingFile;
         }
         ToggleChargingFile[] files = new ToggleChargingFile[]{
                 new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
