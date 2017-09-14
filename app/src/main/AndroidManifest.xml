@@ -69,6 +69,8 @@
             </intent-filter>
         </activity-alias>
 
+        <activity android:name=".FragmentUtilActivity" />
+
         <receiver android:name=".receivers.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

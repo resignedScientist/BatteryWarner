@@ -219,11 +219,13 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     }
 
     @Override
-    public void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows) {
+    public void onValueAdded(@NonNull DataPoint[] dataPoints, long totalNumberOfRows) {
         if (graphs == null) { // first point
-            graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (dataPoints[i] != null) {
+                    if (graphs == null){ // only initialize graphs if any DataPoint is not null
+                        graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+                    }
                     graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
                     if (switches[i].isChecked()) {
                         graphView.addSeries(graphs[i]);

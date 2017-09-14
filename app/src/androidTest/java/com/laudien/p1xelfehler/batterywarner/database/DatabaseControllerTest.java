@@ -2,6 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.jjoe64.graphview.series.DataPoint;
@@ -10,8 +11,10 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
@@ -22,10 +25,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
+@LargeTest
 public class DatabaseControllerTest {
     private Context context;
+    private boolean methodCalled;
+    private DataPoint[] receivedDataPoints = null;
 
     @Before
     public void setup() {
@@ -55,6 +62,7 @@ public class DatabaseControllerTest {
             LineGraphSeries s = lineGraphSeries[i];
             assertNotNull(s);
             Iterator<DataPoint> iterator = s.getValues(s.getLowestValueX(), s.getHighestValueX());
+            assertTrue(iterator.hasNext());
             iterator.next();
             assertFalse(iterator.hasNext()); // there has to be no second value!
         }
@@ -78,5 +86,137 @@ public class DatabaseControllerTest {
                 assertNull(lineGraphSeries[i]);
             }
         }
+    }
+
+    @Test
+    public void notifyValueAddedTest() {
+        DatabaseController databaseController = DatabaseController.getInstance(context);
+        databaseController.resetTable();
+        DatabaseValue databaseValue = getRandomDatabaseValue();
+        receivedDataPoints = null;
+        DatabaseController.DatabaseListener databaseListener = new DatabaseController.DatabaseListener() {
+            @Override
+            public void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows) {
+                methodCalled = true;
+                receivedDataPoints = dataPoints;
+            }
+
+            @Override
+            public void onTableReset() {
+
+            }
+        };
+
+        // register listener
+        databaseController.registerDatabaseListener(databaseListener);
+
+        // wrong inputs -> method should not be called!
+        methodCalled = false;
+        databaseController.notifyValueAdded(databaseValue, null, 10);
+        assertFalse(methodCalled);
+        methodCalled = false;
+        databaseController.notifyValueAdded(databaseValue, getRandomDatabaseValue(), 0);
+        assertFalse(methodCalled);
+        methodCalled = false;
+        databaseController.notifyValueAdded(databaseValue, getRandomDatabaseValue(), -1);
+        assertFalse(methodCalled);
+
+        // add value to empty table -> method should be called!
+        methodCalled = false;
+        databaseController.addValue(
+                databaseValue.getBatteryLevel(),
+                databaseValue.getTemperature(),
+                databaseValue.getVoltage(),
+                databaseValue.getCurrent(),
+                databaseValue.getUtcTimeInMillis()
+        );
+        assertTrue(methodCalled);
+
+        // check the DataPoints
+        assertNotNull(receivedDataPoints);
+        assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            assertNotNull(receivedDataPoints[i]);
+            double expectedValue = 0d;
+            switch (i) {
+                case GRAPH_INDEX_BATTERY_LEVEL:
+                    expectedValue = databaseValue.getBatteryLevel();
+                    break;
+                case GRAPH_INDEX_TEMPERATURE:
+                    expectedValue = (double) databaseValue.getTemperature() / 10;
+                    break;
+                case GRAPH_INDEX_VOLTAGE:
+                    expectedValue = (double) databaseValue.getVoltage() / 1000;
+                    break;
+                case GRAPH_INDEX_CURRENT:
+                    expectedValue = (double) databaseValue.getCurrent() / -1000;
+                    break;
+            }
+            if (expectedValue == 0d && i != GRAPH_INDEX_BATTERY_LEVEL && i != GRAPH_INDEX_TEMPERATURE) {
+                assertNull(receivedDataPoints[i]);
+            } else {
+                assertNotNull(receivedDataPoints[i]);
+                assertEquals(0d, receivedDataPoints[i].getX(), 0d);
+                assertEquals(expectedValue, receivedDataPoints[i].getY(), 0d);
+            }
+        }
+
+        // add the same values again -> the method should not be called!
+        methodCalled = false;
+        databaseController.addValue(
+                databaseValue.getBatteryLevel(),
+                databaseValue.getTemperature(),
+                databaseValue.getVoltage(),
+                databaseValue.getCurrent(),
+                databaseValue.getUtcTimeInMillis()
+        );
+        assertFalse(methodCalled);
+
+        // add a DIFFERENT point -> the method should be called!
+        methodCalled = false;
+        DatabaseValue anotherValue = getRandomDatabaseValue();
+        databaseController.addValue(
+                anotherValue.getBatteryLevel(),
+                anotherValue.getTemperature(),
+                anotherValue.getVoltage(),
+                anotherValue.getCurrent(),
+                databaseValue.getUtcTimeInMillis() + 1
+        );
+        assertTrue(methodCalled);
+
+        /* add all 0 values
+        -> the method should be called
+        -> each DataPoint (except batteryLevel and temperature) in the array should be null!
+        */
+        receivedDataPoints = null;
+        methodCalled = false;
+        databaseController.addValue(
+                0,
+                0,
+                0,
+                0,
+                databaseValue.getUtcTimeInMillis() + 2
+        );
+        assertTrue(methodCalled);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (i != GRAPH_INDEX_BATTERY_LEVEL && i != GRAPH_INDEX_TEMPERATURE) {
+                assertNull(receivedDataPoints[i]);
+            } else {
+                assertNotNull(receivedDataPoints[i]);
+            }
+        }
+
+        // unregister the listener
+        databaseController.unregisterListener(databaseListener);
+    }
+
+    public static DatabaseValue getRandomDatabaseValue() {
+        Random random = new Random();
+        int batteryLevel = random.nextInt();
+        int temperature = random.nextInt();
+        int voltage = random.nextInt();
+        int current = random.nextInt();
+        long time = random.nextLong();
+        return new DatabaseValue(batteryLevel, temperature, voltage, current, time);
     }
 }

@@ -32,6 +32,20 @@ public class DatabaseValue {
                 utcTimeInMillis, batteryLevel, (double) temperature / 10, (double) voltage / 1000, (double) current / -1000);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DatabaseValue){
+            DatabaseValue other = (DatabaseValue) obj;
+            return other.utcTimeInMillis == utcTimeInMillis
+                    && other.current == current
+                    && other.voltage == voltage
+                    && other.temperature == temperature
+                    && other.batteryLevel == batteryLevel;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Get the battery level saved in this instance.
      *

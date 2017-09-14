@@ -381,10 +381,12 @@ public abstract class BasicGraphFragment extends Fragment {
                 if (graphs[i] != null) {
                     graphs[i].setColor(colors[i]);
                     switches[i].setTextColor(colors[i]);
+                    if (i == GRAPH_INDEX_BATTERY_LEVEL){
+                        graphs[i].setDrawBackground(true);
+                        graphs[i].setBackgroundColor(color_percentageBackground);
+                    }
                 }
             }
-            graphs[GRAPH_INDEX_BATTERY_LEVEL].setDrawBackground(true);
-            graphs[GRAPH_INDEX_BATTERY_LEVEL].setBackgroundColor(color_percentageBackground);
         }
     }
 }

@@ -71,6 +71,10 @@ class DatabaseModel extends SQLiteOpenHelper {
         return readData(getCursor());
     }
 
+    DatabaseValue getLastValue() {
+        return readLastValue(getCursor());
+    }
+
     /**
      * Add a value to the app directory database.
      *
@@ -164,6 +168,29 @@ class DatabaseModel extends SQLiteOpenHelper {
             cursor.close();
         }
         return databaseValues;
+    }
+
+    DatabaseValue readLastValue(Cursor cursor) {
+        if (cursor != null) {
+            try {
+                if (!cursor.isClosed() && cursor.moveToLast()) {
+                    return new DatabaseValue(
+                            cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE)),
+                            cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP)),
+                            cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE)),
+                            cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT)),
+                            cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME))
+                    );
+                } else { // empty or closed cursor
+                    return null;
+                }
+            } catch (Exception e){ // database error (closed, not readable, or other)
+                return null;
+            }
+
+        } else { // cursor is null
+            return null;
+        }
     }
 
     private Cursor getCursor(SQLiteDatabase database) {

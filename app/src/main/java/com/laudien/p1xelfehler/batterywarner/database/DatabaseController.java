@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -109,10 +110,11 @@ public class DatabaseController {
      * @param utcTimeInMillis The current UTC time in milliseconds.
      */
     public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
-        DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
-        long totalNumberOfRows = databaseModel.addValue(databaseValue);
-        notifyValueAdded(databaseValue, totalNumberOfRows);
-        Log.d(TAG, "Value added: " + databaseValue);
+        DatabaseValue lastValue = databaseModel.getLastValue();
+        DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
+        long totalNumberOfRows = databaseModel.addValue(newValue);
+        notifyValueAdded(lastValue, newValue, totalNumberOfRows);
+        Log.d(TAG, "Value added: " + newValue);
     }
 
     /**
@@ -391,26 +393,37 @@ public class DatabaseController {
         return startTime;
     }
 
-    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows) {
-        if (!listeners.isEmpty()) {
+    void notifyValueAdded(DatabaseValue lastValue, DatabaseValue newValue, long totalNumberOfRows) {
+        if (newValue != null
+                && !listeners.isEmpty()
+                && (lastValue == null || !lastValue.equals(newValue))
+                && totalNumberOfRows > 0) {
             DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
-            long time = databaseValue.getUtcTimeInMillis() - getStartTime();
+            long time = newValue.getUtcTimeInMillis() - getStartTime();
             double timeInMinutes = (double) time / (1000 * 60);
             // battery level point
-            int batteryLevel = databaseValue.getBatteryLevel();
-            dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
+            if (lastValue == null || lastValue.getBatteryLevel() != newValue.getBatteryLevel()) {
+                int batteryLevel = newValue.getBatteryLevel();
+                dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
+            }
             // temperature point
-            double temperature = (double) databaseValue.getTemperature() / 10;
-            dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+            if (lastValue == null || lastValue.getTemperature() != newValue.getTemperature()) {
+                double temperature = (double) newValue.getTemperature() / 10;
+                dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+            }
             // voltage point
-            double voltage = (double) databaseValue.getVoltage() / 1000;
-            if (voltage != 0) {
-                dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+            if (lastValue == null || lastValue.getVoltage() != newValue.getVoltage()) {
+                double voltage = (double) newValue.getVoltage() / 1000;
+                if (voltage != 0) {
+                    dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+                }
             }
             // current point
-            double current = (double) databaseValue.getCurrent() / -1000;
-            if (current != 0) {
-                dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+            if (lastValue == null || lastValue.getCurrent() != newValue.getCurrent()) {
+                double current = (double) newValue.getCurrent() / -1000;
+                if (current != 0) {
+                    dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+                }
             }
             // notify the listeners
             for (DatabaseListener listener : listeners) {
@@ -461,7 +474,7 @@ public class DatabaseController {
          * @param dataPoints An array of DataPoints. You can distinguish which point belongs to
          *                   which graph with the GRAPH_INDEX_* constants.
          */
-        void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows);
+        void onValueAdded(@NonNull DataPoint[] dataPoints, long totalNumberOfRows);
 
         /**
          * Called when the app directory database has been cleared.
