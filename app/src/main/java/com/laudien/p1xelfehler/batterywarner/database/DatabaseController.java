@@ -325,7 +325,7 @@ public class DatabaseController {
 
     // ==== GENERAL STUFF ====
 
-    private LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues) {
+    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues) {
         if (databaseValues != null) {
             LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
@@ -336,24 +336,32 @@ public class DatabaseController {
                 graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
             long startTime = databaseValues[0].getUtcTimeInMillis();
             int maxDataPoints = databaseValues.length;
+            DatabaseValue lastDatabaseValue = null;
             for (DatabaseValue databaseValue : databaseValues) {
-                long time = databaseValue.getUtcTimeInMillis() - startTime;
-                double timeInMinutes = (double) time / (1000 * 60);
-                // battery level graph
-                int batteryLevel = databaseValue.getBatteryLevel();
-                graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, maxDataPoints);
-                // temperature graph
-                double temperature = (double) databaseValue.getTemperature() / 10;
-                graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, maxDataPoints);
-                // voltage graph
-                if (graphs[GRAPH_INDEX_VOLTAGE] != null) {
-                    double voltage = (double) databaseValue.getVoltage() / 1000;
-                    graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, maxDataPoints);
-                }
-                // current graph
-                if (graphs[GRAPH_INDEX_CURRENT] != null) {
-                    double current = (double) databaseValue.getCurrent() / -1000;
-                    graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, maxDataPoints);
+                if (databaseValue != null) {
+                    long time = databaseValue.getUtcTimeInMillis() - startTime;
+                    double timeInMinutes = (double) time / (1000 * 60);
+                    // battery level graph
+                    if (lastDatabaseValue == null || databaseValue.getBatteryLevel() != lastDatabaseValue.getBatteryLevel()) {
+                        int batteryLevel = databaseValue.getBatteryLevel();
+                        graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, maxDataPoints);
+                    }
+                    // temperature graph
+                    if (lastDatabaseValue == null || lastDatabaseValue.getTemperature() != lastDatabaseValue.getTemperature()) {
+                        double temperature = (double) databaseValue.getTemperature() / 10;
+                        graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, maxDataPoints);
+                    }
+                    // voltage graph
+                    if (graphs[GRAPH_INDEX_VOLTAGE] != null && (lastDatabaseValue == null || lastDatabaseValue.getVoltage() != databaseValue.getVoltage())) {
+                        double voltage = (double) databaseValue.getVoltage() / 1000;
+                        graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, maxDataPoints);
+                    }
+                    // current graph
+                    if (graphs[GRAPH_INDEX_CURRENT] != null && (lastDatabaseValue == null || lastDatabaseValue.getCurrent() != databaseValue.getCurrent())) {
+                        double current = (double) databaseValue.getCurrent() / -1000;
+                        graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, maxDataPoints);
+                    }
+                    lastDatabaseValue = databaseValue;
                 }
             }
             return graphs;
