@@ -140,13 +140,13 @@ public class DatabaseControllerTest {
 
         // wrong inputs -> method should not be called!
         methodCalled = false;
-        databaseController.notifyValueAdded(databaseValue, null, 10);
+        databaseController.notifyValueAdded(null, 10);
         assertFalse(methodCalled);
         methodCalled = false;
-        databaseController.notifyValueAdded(databaseValue, getRandomDatabaseValue(), 0);
+        databaseController.notifyValueAdded(getRandomDatabaseValue(), 0);
         assertFalse(methodCalled);
         methodCalled = false;
-        databaseController.notifyValueAdded(databaseValue, getRandomDatabaseValue(), -1);
+        databaseController.notifyValueAdded(getRandomDatabaseValue(), -1);
         assertFalse(methodCalled);
 
         // add value to empty table -> method should be called!
@@ -189,7 +189,7 @@ public class DatabaseControllerTest {
             }
         }
 
-        // add the same values again -> the method should not be called!
+        // add the same values again -> the method should be called again!
         methodCalled = false;
         databaseController.addValue(
                 databaseValue.getBatteryLevel(),
@@ -198,7 +198,7 @@ public class DatabaseControllerTest {
                 databaseValue.getCurrent(),
                 databaseValue.getUtcTimeInMillis()
         );
-        assertFalse(methodCalled);
+        assertTrue(methodCalled);
 
         // add a DIFFERENT point -> the method should be called!
         methodCalled = false;
@@ -228,9 +228,9 @@ public class DatabaseControllerTest {
         assertTrue(methodCalled);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
             if (i != GRAPH_INDEX_BATTERY_LEVEL && i != GRAPH_INDEX_TEMPERATURE) {
-                assertNull(receivedDataPoints[i]);
+                assertNull("Graph should be null: " + i, receivedDataPoints[i]);
             } else {
-                assertNotNull(receivedDataPoints[i]);
+                assertNotNull("Graph should NOT be null: " + i, receivedDataPoints[i]);
             }
         }
 
