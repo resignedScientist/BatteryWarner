@@ -54,4 +54,18 @@ public class DatabaseModelTest {
         database.close();
         databaseModel.getCursor(database);
     }
+
+    @Test
+    public void resetTableTest() {
+        // write some values into the database
+        DatabaseController databaseController = DatabaseController.getInstance(context);
+        databaseController.addValue(80, 303, 4111, 1234456, System.currentTimeMillis());
+
+        // reset the table
+        databaseModel.resetTable();
+
+        // check if the table is empty
+        Cursor cursor = databaseModel.getCursor();
+        assertEquals(0, cursor.getCount());
+    }
 }

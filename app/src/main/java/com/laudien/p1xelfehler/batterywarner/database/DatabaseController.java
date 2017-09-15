@@ -320,7 +320,6 @@ public class DatabaseController {
             String string = String.valueOf(buffer);
             return string.equals("SQLite format 3\u0000");
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
