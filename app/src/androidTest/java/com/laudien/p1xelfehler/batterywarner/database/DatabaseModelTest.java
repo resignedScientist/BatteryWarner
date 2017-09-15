@@ -27,7 +27,7 @@ public class DatabaseModelTest {
     }
 
     @Test
-    public void getCursorTest() {
+    public void getCursorTest1() {
         // database is null -> should return null
         Cursor cursor = databaseModel.getCursor((SQLiteDatabase) null);
         assertNull("If the database is null, the method should return null!", cursor);

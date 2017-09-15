@@ -27,6 +27,7 @@ public class GraphFragmentTest {
     public ActivityTestRule<FragmentUtilActivity> mActivityRule = new ActivityTestRule<>(
             FragmentUtilActivity.class);
     private GraphFragment graphFragment;
+    private Random random = new Random();
 
     @Before
     public void setup() {
@@ -40,32 +41,38 @@ public class GraphFragmentTest {
 
     @Test
     @UiThreadTest
-    public void onValueAddedTest() {
-        DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
-        Random random = new Random();
-
+    public void onValueAddedTest1() {
         // graphs == null and each dataPoint is null -> graphs should keep being null
+        DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
         graphFragment.graphs = null;
         graphFragment.onValueAdded(dataPoints, 4);
         assertNull(graphFragment.graphs);
+    }
 
+    @Test
+    @UiThreadTest
+    public void onValueAddedTest2() {
         /*
         graphs == null and one of the dataPoints is not null
         --> graphs should not be null
          */
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
             graphFragment.graphs = null;
-            dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
+            DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
             dataPoints[i] = new DataPoint(random.nextDouble(), random.nextDouble());
             graphFragment.onValueAdded(dataPoints, 4);
             assertNotNull(graphFragment.graphs);
             assertEquals(dataPoints[i].getX(), graphFragment.graphs[i].getHighestValueX(), 0d);
             assertEquals(dataPoints[i].getY(), graphFragment.graphs[i].getHighestValueY(), 0d);
         }
+    }
 
+    @Test
+    @UiThreadTest
+    public void onValueAddedTest3() {
         // check with valid random data
         graphFragment.graphs = null;
-        dataPoints = getRandomDataPoints(random);
+        DataPoint[] dataPoints = getRandomDataPoints(random);
         graphFragment.onValueAdded(dataPoints, 5);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
             assertEquals(dataPoints[i].getX(), graphFragment.graphs[i].getHighestValueX(), 0d);

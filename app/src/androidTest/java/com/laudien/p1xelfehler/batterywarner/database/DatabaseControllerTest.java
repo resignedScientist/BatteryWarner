@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 @LargeTest
 public class DatabaseControllerTest {
     private Context context;
+    private DatabaseController databaseController;
     private boolean methodCalled;
     private DataPoint[] receivedDataPoints = null;
 
@@ -46,14 +47,18 @@ public class DatabaseControllerTest {
     @Before
     public void setup() {
         context = InstrumentationRegistry.getTargetContext();
+        databaseController = DatabaseController.getInstance(context);
     }
 
     @Test
-    public void getAllGraphsTest() throws Exception {
+    public void getAllGraphsTest1() throws Exception {
+        // databaseValue == null -> should return null
         DatabaseController databaseController = DatabaseController.getInstance(context);
-        // 1. databaseValue == null -> should return null
         assertNull(databaseController.getAllGraphs((DatabaseValue[]) null));
+    }
 
+    @Test
+    public void getAllGraphsTest2() {
         // 2. create 2 dummy databaseValues, the second one is null
         int batteryLevel = 60;
         int temperature = 325;
@@ -77,11 +82,14 @@ public class DatabaseControllerTest {
         assertEquals((double) voltage / 1000, lineGraphSeries[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
         assertEquals((double) current / -1000, lineGraphSeries[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
         assertEquals(0d, lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(), 0d);
+    }
 
+    @Test
+    public void getAllGraphsTest3() {
         // 4. create 1 dummy databaseValue, all values are 0
-        databaseValues = new DatabaseValue[1];
+        DatabaseValue[] databaseValues = new DatabaseValue[1];
         databaseValues[0] = new DatabaseValue(0, 0, 0, 0, System.currentTimeMillis());
-        lineGraphSeries = databaseController.getAllGraphs(databaseValues);
+        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues);
 
         // 5. check graphs again -> this time every graph except batteryLevel and temperature needs to be null!
         assertEquals(NUMBER_OF_GRAPHS, lineGraphSeries.length);
@@ -92,27 +100,41 @@ public class DatabaseControllerTest {
                 assertNull(lineGraphSeries[i]);
             }
         }
+    }
 
-        // 6. Adding lots of the same values -> only 2 graph points are expected!
-        databaseValues = new DatabaseValue[20];
+    @Test
+    public void getAllGraphsTest4() {
+        // Adding lots of the same values
+        DatabaseValue[] databaseValues = new DatabaseValue[20];
+        DatabaseValue databaseValue = getRandomDatabaseValue();
+        long time = databaseValue.getUtcTimeInMillis();
         long lastTime = time;
         for (int i = 0; i < databaseValues.length; i++) {
             lastTime = time + 1000 * i;
             databaseValues[i] = new DatabaseValue(
-                    batteryLevel, temperature, voltage, current, lastTime
+                    databaseValue.getBatteryLevel(),
+                    databaseValue.getTemperature(),
+                    databaseValue.getVoltage(),
+                    databaseValue.getCurrent(),
+                    lastTime
             );
         }
-        lineGraphSeries = databaseController.getAllGraphs(databaseValues);
+
+        // check the size -> size = 2 is expected!
+        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues);
         for (LineGraphSeries graph : lineGraphSeries) {
             int size = getSize(graph);
             assertEquals(2, size);
         }
-        // also check for the correct value here
+
+        // check y axis
+        assertEquals(databaseValue.getBatteryLevel(), lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY(), 0d);
+        assertEquals((double) databaseValue.getTemperature() / 10, lineGraphSeries[GRAPH_INDEX_TEMPERATURE].getHighestValueY(), 0d);
+        assertEquals((double) databaseValue.getVoltage() / 1000, lineGraphSeries[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
+        assertEquals((double) databaseValue.getCurrent() / -1000, lineGraphSeries[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+
+        // check x axis
         double expectedTimeInMinutes = (double) (lastTime - time) / (1000 * 60);
-        assertEquals(batteryLevel, lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY(), 0d);
-        assertEquals((double) temperature / 10, lineGraphSeries[GRAPH_INDEX_TEMPERATURE].getHighestValueY(), 0d);
-        assertEquals((double) voltage / 1000, lineGraphSeries[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
-        assertEquals((double) current / -1000, lineGraphSeries[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
         assertEquals(expectedTimeInMinutes, lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(), 0d);
     }
 
