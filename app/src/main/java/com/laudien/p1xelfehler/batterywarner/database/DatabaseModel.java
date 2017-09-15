@@ -35,8 +35,8 @@ class DatabaseModel extends SQLiteOpenHelper {
                 String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
                         DatabaseContract.TABLE_NAME,
                         DatabaseContract.TABLE_COLUMN_TIME,
-                        DatabaseContract.TABLE_COLUMN_PERCENTAGE,
-                        DatabaseContract.TABLE_COLUMN_TEMP,
+                        DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                        DatabaseContract.TABLE_COLUMN_TEMPERATURE,
                         DatabaseContract.TABLE_COLUMN_VOLTAGE,
                         DatabaseContract.TABLE_COLUMN_CURRENT
                 )
@@ -83,8 +83,8 @@ class DatabaseModel extends SQLiteOpenHelper {
         if (database != null) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_PERCENTAGE, value.getBatteryLevel());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMP, value.getTemperature());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
             contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
             contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
@@ -153,8 +153,8 @@ class DatabaseModel extends SQLiteOpenHelper {
                 databaseValues = new DatabaseValue[cursor.getCount()];
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToPosition(i);
-                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_PERCENTAGE));
-                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMP));
+                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
+                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
                     int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
                     int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
                     long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
@@ -166,12 +166,12 @@ class DatabaseModel extends SQLiteOpenHelper {
         return databaseValues;
     }
 
-    private Cursor getCursor(SQLiteDatabase database) {
+    Cursor getCursor(SQLiteDatabase database) {
         if (database != null) {
             String[] columns = {
                     DatabaseContract.TABLE_COLUMN_TIME,
-                    DatabaseContract.TABLE_COLUMN_PERCENTAGE,
-                    DatabaseContract.TABLE_COLUMN_TEMP,
+                    DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                    DatabaseContract.TABLE_COLUMN_TEMPERATURE,
                     DatabaseContract.TABLE_COLUMN_VOLTAGE,
                     DatabaseContract.TABLE_COLUMN_CURRENT
             };
