@@ -39,7 +39,7 @@ public class DatabaseControllerTest {
         int temperature = random.nextInt();
         int voltage = random.nextInt();
         int current = random.nextInt();
-        long time = random.nextLong();
+        long time = System.currentTimeMillis();
         return new DatabaseValue(batteryLevel, temperature, voltage, current, time);
     }
 

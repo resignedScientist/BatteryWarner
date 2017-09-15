@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Random;
 
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,11 +23,10 @@ import static org.junit.Assert.assertNull;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class GraphFragmentTest {
-    private GraphFragment graphFragment;
-
     @Rule
     public ActivityTestRule<FragmentUtilActivity> mActivityRule = new ActivityTestRule<>(
             FragmentUtilActivity.class);
+    private GraphFragment graphFragment;
 
     @Before
     public void setup() {
@@ -78,7 +76,7 @@ public class GraphFragmentTest {
     private DataPoint[] getRandomDataPoints(Random random) {
         DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            dataPoints[i] = new DataPoint(random.nextDouble(), random.nextDouble());
+            dataPoints[i] = new DataPoint(System.currentTimeMillis(), random.nextDouble());
         }
         return dataPoints;
     }
