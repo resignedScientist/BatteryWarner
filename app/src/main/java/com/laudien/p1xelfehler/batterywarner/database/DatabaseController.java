@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -338,37 +339,49 @@ public class DatabaseController {
                 graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
             long startTime = databaseValues[0].getUtcTimeInMillis();
             int maxDataPoints = databaseValues.length;
-            DatabaseValue lastDatabaseValue = null;
-            for (DatabaseValue databaseValue : databaseValues) {
-                if (databaseValue != null) {
-                    long time = databaseValue.getUtcTimeInMillis() - startTime;
+            int lastDatabaseValue = -1;
+            int numberOfValidValues = 0;
+            for (int i = 0; i < databaseValues.length; i++) {
+                if (databaseValues[i] != null) {
+                    long time = databaseValues[i].getUtcTimeInMillis() - startTime;
                     double timeInMinutes = (double) time / (1000 * 60);
-                    // battery level graph
-                    if (lastDatabaseValue == null || databaseValue.getBatteryLevel() != lastDatabaseValue.getBatteryLevel()) {
-                        int batteryLevel = databaseValue.getBatteryLevel();
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL].appendData(new DataPoint(timeInMinutes, batteryLevel), false, maxDataPoints);
+                    for (int j = 0; j < NUMBER_OF_GRAPHS; j++) {
+                        if (lastDatabaseValue == -1 || databaseValues[i].get(j) != databaseValues[lastDatabaseValue].get(j)) {
+                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints);
+                        }
                     }
-                    // temperature graph
-                    if (lastDatabaseValue == null || lastDatabaseValue.getTemperature() != lastDatabaseValue.getTemperature()) {
-                        double temperature = (double) databaseValue.getTemperature() / 10;
-                        graphs[GRAPH_INDEX_TEMPERATURE].appendData(new DataPoint(timeInMinutes, temperature), false, maxDataPoints);
-                    }
-                    // voltage graph
-                    if (graphs[GRAPH_INDEX_VOLTAGE] != null && (lastDatabaseValue == null || lastDatabaseValue.getVoltage() != databaseValue.getVoltage())) {
-                        double voltage = (double) databaseValue.getVoltage() / 1000;
-                        graphs[GRAPH_INDEX_VOLTAGE].appendData(new DataPoint(timeInMinutes, voltage), false, maxDataPoints);
-                    }
-                    // current graph
-                    if (graphs[GRAPH_INDEX_CURRENT] != null && (lastDatabaseValue == null || lastDatabaseValue.getCurrent() != databaseValue.getCurrent())) {
-                        double current = (double) databaseValue.getCurrent() / -1000;
-                        graphs[GRAPH_INDEX_CURRENT].appendData(new DataPoint(timeInMinutes, current), false, maxDataPoints);
-                    }
-                    lastDatabaseValue = databaseValue;
+                    lastDatabaseValue = i;
+                    numberOfValidValues++;
+                }
+            }
+            if (lastDatabaseValue != -1 && numberOfValidValues > 1) {
+                long time = databaseValues[lastDatabaseValue].getUtcTimeInMillis() - startTime;
+                double timeInMinutes = (double) time / (1000 * 60);
+                for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints);
                 }
             }
             return graphs;
         }
         return null;
+    }
+
+    private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints) {
+        if (graph != null) {
+            double value = databaseValue.get(index);
+            switch (index) {
+                case GRAPH_INDEX_TEMPERATURE:
+                    value /= 10;
+                    break;
+                case GRAPH_INDEX_VOLTAGE:
+                    value /= 1000;
+                    break;
+                case GRAPH_INDEX_CURRENT:
+                    value /= -1000;
+                    break;
+            }
+            graph.appendData(new DataPoint(timeInMinutes, value), false, maxDataPoints);
+        }
     }
 
     private long getEndTime(Cursor cursor) {

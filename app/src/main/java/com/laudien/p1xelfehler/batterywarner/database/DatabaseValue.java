@@ -2,6 +2,11 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.annotation.SuppressLint;
 
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
+
 /**
  * A class that contains all the data of one point in a graph database.
  * It should only be used by DatabaseController and DatabaseModel.
@@ -34,7 +39,7 @@ public class DatabaseValue {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof DatabaseValue){
+        if (obj instanceof DatabaseValue) {
             DatabaseValue other = (DatabaseValue) obj;
             return other.utcTimeInMillis == utcTimeInMillis
                     && other.current == current
@@ -43,6 +48,21 @@ public class DatabaseValue {
                     && other.batteryLevel == batteryLevel;
         } else {
             return false;
+        }
+    }
+
+    int get(int index) {
+        switch (index) {
+            case GRAPH_INDEX_BATTERY_LEVEL:
+                return batteryLevel;
+            case GRAPH_INDEX_TEMPERATURE:
+                return temperature;
+            case GRAPH_INDEX_VOLTAGE:
+                return voltage;
+            case GRAPH_INDEX_CURRENT:
+                return current;
+            default:
+                throw new RuntimeException("Unknown index: + " + index);
         }
     }
 
