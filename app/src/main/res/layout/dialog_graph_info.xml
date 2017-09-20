@@ -14,7 +14,7 @@
         android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@mipmap/ic_launcher"
+        android:drawableLeft="@drawable/ic_battery_status_full_green_48dp"
         android:drawableStart="@mipmap/ic_launcher"
         android:gravity="center_vertical"
         android:text="@string/dialog_title_graph_info"
