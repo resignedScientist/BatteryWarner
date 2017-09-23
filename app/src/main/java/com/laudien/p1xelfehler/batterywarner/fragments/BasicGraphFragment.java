@@ -244,8 +244,8 @@ public abstract class BasicGraphFragment extends Fragment {
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
                         graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
                         graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN
                 );
             } else {
                 graphInfo.updateValues(
@@ -258,8 +258,8 @@ public abstract class BasicGraphFragment extends Fragment {
                         graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
                         graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
                         graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN,
+                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN
                 );
             }
         } else { // there are no graphs
