@@ -60,6 +60,7 @@ public class MainActivity extends BaseActivity {
             }
             // start services just in case
             ServiceHelper.startService(this);
+            // save the current-divisor in SharedPreferences
             if (!sharedPreferences.contains(getString(R.string.pref_current_divisor))) {
                 applyCurrentDivisor(sharedPreferences);
             }
