@@ -97,7 +97,7 @@ public class DatabaseValue {
     /**
      * Get the current saved in this instance.
      *
-     * @return The current in mA * -1000.
+     * @return The current in mA * currentDivisor (depends on the device; get it from SharedPrefs).
      */
     int getCurrent() {
         return current;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -117,10 +118,12 @@ public class BatteryHelper {
         private String technology;
         private int health, batteryLevel;
         private int current;
+        private int currentDivisor;
         private double temperature, voltage;
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
         private BatteryData(Intent batteryStatus, Context context) {
+            currentDivisor = PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(R.string.pref_current_divisor), -1000);
             update(batteryStatus, context);
         }
 
@@ -199,36 +202,31 @@ public class BatteryHelper {
             return values[index];
         }
 
-// --Commented out by Inspection START (16.06.2017 14:22):
-//        /**
-//         * Get the value with the given index as object.
-//         *
-//         * @param index One of the INDEX attributes that determine which value should be returned.
-//         * @return Returns the value with the given index as object or null if there is no object with that index.
-//         */
-//        public Object getValue(int index) {
-//            switch (index) {
-//                case INDEX_TECHNOLOGY:
-//                    return technology;
-//                case INDEX_TEMPERATURE:
-//                    return temperature;
-//                case INDEX_HEALTH:
-//                    return health;
-//                case INDEX_BATTERY_LEVEL:
-//                    return batteryLevel;
-//                case INDEX_VOLTAGE:
-//                    return voltage;
-//                case INDEX_CURRENT:
-//                    return current;
-//                case INDEX_SCREEN_ON:
-//                    return screenOn;
-//                case INDEX_SCREEN_OFF:
-//                    return screenOff;
-//                default:
-//                    return null;
-//            }
-//        }
-// --Commented out by Inspection STOP (16.06.2017 14:22)
+
+        /**
+         * Get the value with the given index as object.
+         *
+         * @param index One of the INDEX attributes that determine which value should be returned.
+         * @return Returns the value with the given index as object or null if there is no object with that index.
+         */
+        public Object getValue(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return technology;
+                case INDEX_TEMPERATURE:
+                    return temperature;
+                case INDEX_HEALTH:
+                    return health;
+                case INDEX_BATTERY_LEVEL:
+                    return batteryLevel;
+                case INDEX_VOLTAGE:
+                    return voltage;
+                case INDEX_CURRENT:
+                    return current;
+                default:
+                    return null;
+            }
+        }
 
         private void setTechnology(String technology, Context context) {
             if (this.technology == null || !this.technology.equals(technology)) {
@@ -254,15 +252,11 @@ public class BatteryHelper {
             }
         }
 
-        public int getBatteryLevel() {
-            return batteryLevel;
-        }
-
         @RequiresApi(api = LOLLIPOP)
         private void setCurrent(int current, Context context) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / -1000);
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / currentDivisor);
                 notifyListeners(INDEX_CURRENT);
             }
         }

@@ -64,8 +64,10 @@ public class DatabaseController {
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
     private HashSet<DatabaseListener> listeners = new HashSet<>();
+    private double currentDivisor;
 
     private DatabaseController(Context context) {
+        currentDivisor = PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(R.string.pref_current_divisor), -1000);
         databaseModel = new DatabaseModel(context);
     }
 
@@ -375,7 +377,7 @@ public class DatabaseController {
                     value /= 1000;
                     break;
                 case GRAPH_INDEX_CURRENT:
-                    value /= -1000;
+                    value /= currentDivisor;
                     break;
             }
             graph.appendData(new DataPoint(timeInMinutes, value), false, maxDataPoints);
@@ -422,7 +424,7 @@ public class DatabaseController {
                             value /= 1000;
                             break;
                         case GRAPH_INDEX_CURRENT:
-                            value /= -1000;
+                            value /= currentDivisor;
                             break;
                     }
                     dataPoints[i] = new DataPoint(timeInMinutes, value);

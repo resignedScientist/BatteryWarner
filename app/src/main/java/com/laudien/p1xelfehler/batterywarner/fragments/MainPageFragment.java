@@ -111,9 +111,10 @@ public class MainPageFragment extends Fragment implements BatteryData.OnBatteryV
 
     private void setBatteryColor() {
         byte nextColor;
-        if (batteryData.getBatteryLevel() <= warningLow) { // battery low
+        int batteryLevel = (int) batteryData.getValue(INDEX_BATTERY_LEVEL);
+        if (batteryLevel <= warningLow) { // battery low
             nextColor = COLOR_LOW;
-        } else if (batteryData.getBatteryLevel() < warningHigh) { // battery ok
+        } else if (batteryLevel < warningHigh) { // battery ok
             nextColor = COLOR_OK;
         } else { // battery high
             nextColor = COLOR_HIGH;
