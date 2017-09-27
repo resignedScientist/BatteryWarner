@@ -100,31 +100,27 @@ public final class NotificationHelper {
     }
 
     private static void showStopChargingNotWorkingNotification(Context context, SharedPreferences sharedPreferences) {
-        boolean stopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
-        boolean usbChargingDisabled = sharedPreferences.getBoolean(context.getString(R.string.pref_usb_charging_disabled), context.getResources().getBoolean(R.bool.pref_usb_charging_disabled_default));
-        if (stopChargingEnabled || usbChargingDisabled) {
-            String messageText = context.getString(R.string.notification_stop_charging_not_working);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
-                    new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
-            Notification.Builder builder = new Notification.Builder(context)
-                    .setSmallIcon(SMALL_ICON_RESOURCE)
-                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setContentText(messageText)
-                    .setStyle(getBigTextStyle(messageText))
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-                    .setSound(getDefaultSound())
-                    .setVibrate(VIBRATE_PATTERN);
-            if (SDK_INT >= O) {
-                builder.setChannelId(context.getString(R.string.channel_other_warnings));
-            } else {
-                builder.setPriority(PRIORITY_HIGH);
-            }
-            NotificationManager notificationManager = (NotificationManager)
-                    context.getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(ID_STOP_CHARGING_NOT_WORKING, builder.build());
+        String messageText = context.getString(R.string.notification_stop_charging_not_working);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
+        Notification.Builder builder = new Notification.Builder(context)
+                .setSmallIcon(SMALL_ICON_RESOURCE)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), LARGE_ICON_RESOURCE))
+                .setContentTitle(context.getString(R.string.app_name))
+                .setContentText(messageText)
+                .setStyle(getBigTextStyle(messageText))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setSound(getDefaultSound())
+                .setVibrate(VIBRATE_PATTERN);
+        if (SDK_INT >= O) {
+            builder.setChannelId(context.getString(R.string.channel_other_warnings));
+        } else {
+            builder.setPriority(PRIORITY_HIGH);
         }
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(ID_STOP_CHARGING_NOT_WORKING, builder.build());
     }
 
     private static void showGrantRootNotification(Context context, SharedPreferences sharedPreferences) {

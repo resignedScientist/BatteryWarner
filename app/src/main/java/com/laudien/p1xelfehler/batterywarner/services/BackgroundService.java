@@ -247,7 +247,6 @@ public class BackgroundService extends Service {
                     chargingDisabledInFile = false;
                 } catch (RootHelper.NoBatteryFileFoundException e) {
                     NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
-                    showWarningHighNotification();
                     chargingDisabledInFile = false;
                 }
             }
