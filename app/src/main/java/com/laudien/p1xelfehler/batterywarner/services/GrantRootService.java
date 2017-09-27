@@ -40,11 +40,9 @@ public class GrantRootService extends IntentService {
                     try {
                         RootHelper.isChargingEnabled();
                     } catch (RootHelper.NotRootedException e) { // user disabled root again after allowing it
-                        e.printStackTrace();
                         NotificationHelper.showNotification(getApplicationContext(), ID_NOT_ROOTED);
                     } catch (RootHelper.NoBatteryFileFoundException e) {
                         // Should not happen! Is checked before the user can enable the feature!
-                        e.printStackTrace();
                     }
                 }
             }

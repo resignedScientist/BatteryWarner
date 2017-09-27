@@ -242,12 +242,10 @@ public class BackgroundService extends Service {
                     Notification stopChargingNotification = buildStopChargingNotification(enableSound);
                     notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, stopChargingNotification);
                 } catch (RootHelper.NotRootedException e) {
-                    e.printStackTrace();
                     NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
                     showWarningHighNotification();
                     chargingDisabledInFile = false;
                 } catch (RootHelper.NoBatteryFileFoundException e) {
-                    e.printStackTrace();
                     NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
                     showWarningHighNotification();
                     chargingDisabledInFile = false;
@@ -265,11 +263,9 @@ public class BackgroundService extends Service {
                     chargingDisabledInFile = false;
                     notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
                 } catch (RootHelper.NotRootedException e) {
-                    e.printStackTrace();
                     chargingDisabledInFile = true;
                     NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
                 } catch (RootHelper.NoBatteryFileFoundException e) {
-                    e.printStackTrace();
                     chargingDisabledInFile = true;
                     NotificationHelper.showNotification(BackgroundService.this, ID_STOP_CHARGING_NOT_WORKING);
                 }
@@ -699,7 +695,6 @@ public class BackgroundService extends Service {
                     try {
                         RootHelper.resetBatteryStats();
                     } catch (RootHelper.NotRootedException e) {
-                        e.printStackTrace();
                         NotificationHelper.showNotification(BackgroundService.this, NotificationHelper.ID_NOT_ROOTED);
                     }
                 }

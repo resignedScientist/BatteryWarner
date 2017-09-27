@@ -28,7 +28,6 @@ public class TogglePowerSavingService extends IntentService {
             boolean powerSavingEnabled = powerManager.isPowerSaveMode();
             RootHelper.togglePowerSavingMode(!powerSavingEnabled);
         } catch (RootHelper.NotRootedException e) {
-            e.printStackTrace();
             NotificationHelper.showNotification(getApplicationContext(), NotificationHelper.ID_NOT_ROOTED);
         }
     }
