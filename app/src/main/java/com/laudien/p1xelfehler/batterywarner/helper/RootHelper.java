@@ -43,7 +43,11 @@ public final class RootHelper {
             throw new InMainThreadException();
         }
         boolean rootAvailable = Shell.SU.available();
-        Log.d(TAG, rootAvailable ? "Root is available!" : "Root is not available!");
+        if (rootAvailable) {
+            Log.d(TAG, "Root is available! :)");
+        } else {
+            Log.e(TAG, "Root is not available! :(");
+        }
         return rootAvailable;
     }
 
@@ -213,7 +217,7 @@ public final class RootHelper {
                 return file;
             }
         }
-        Log.d("RootHelper", "No file found!");
+        Log.e("RootHelper", "No battery file found to toggle charging! :(");
         throw new NoBatteryFileFoundException();
     }
 
