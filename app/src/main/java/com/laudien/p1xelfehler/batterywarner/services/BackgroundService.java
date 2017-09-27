@@ -15,11 +15,13 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
 
@@ -52,6 +54,9 @@ public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH = "enableChargingAndSaveGraph";
     public static final String ACTION_DISABLE_CHARGING = "disableCharging";
     public static final String ACTION_RESET_ALL = "resetService";
+    public static final String ACTION_CHANGE_PREFERENCE = "changePreference";
+    public static final String EXTRA_PREFERENCE_KEY = "preferenceKey";
+    public static final String EXTRA_PREFERENCE_VALUE = "preferenceValue";
     public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
@@ -66,9 +71,6 @@ public class BackgroundService extends Service {
     private boolean chargingDisabledInFile = false;
     private boolean charging = false;
     private int lastBatteryLevel = -1;
-    private int lastCurrent = Integer.MIN_VALUE;
-    private double lastTemperature = Double.MIN_VALUE;
-    private double lastVoltage = Double.MIN_VALUE;
     private long smartChargingResumeTime;
     private String infoNotificationMessage;
     private NotificationCompat.Builder infoNotificationBuilder;
@@ -158,7 +160,6 @@ public class BackgroundService extends Service {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
                 case ACTION_ENABLE_USB_CHARGING:
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     sharedPreferences.edit()
                             .putBoolean(getString(R.string.pref_usb_charging_disabled), false)
                             .apply();
@@ -173,6 +174,15 @@ public class BackgroundService extends Service {
                     stopCharging(false);
                     break;
                 case ACTION_RESET_ALL: // just reset the service
+                    break;
+                case ACTION_CHANGE_PREFERENCE:
+                    Bundle extras = intent.getExtras();
+                    if (!extras.containsKey(EXTRA_PREFERENCE_KEY) || !extras.containsKey(EXTRA_PREFERENCE_VALUE)) {
+                        throw new RuntimeException("Missing intent extras!");
+                    }
+                    String key = extras.getString(EXTRA_PREFERENCE_KEY);
+                    Object value = extras.get(EXTRA_PREFERENCE_VALUE);
+                    changePreference(key, value);
                     break;
                 default:
                     throw new RuntimeException("Unknown action!");
@@ -196,6 +206,19 @@ public class BackgroundService extends Service {
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
         onSaveState();
+    }
+
+    private void changePreference(String key, Object value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (value instanceof Boolean) {
+            editor.putBoolean(key, (Boolean) value);
+        } else if (value instanceof Integer) {
+            editor.putInt(key, (Integer) value);
+        } else if (value instanceof Long) {
+            editor.putLong(key, (Long) value);
+        }
+        editor.apply();
+        Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key);
     }
 
     private void onSaveState() {

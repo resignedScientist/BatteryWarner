@@ -2,10 +2,7 @@ package com.laudien.p1xelfehler.batterywarner.receivers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -27,8 +24,11 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.ACTION_CHANGE_PREFERENCE;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.ACTION_DISABLE_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.ACTION_ENABLE_CHARGING;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.EXTRA_PREFERENCE_KEY;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.EXTRA_PREFERENCE_VALUE;
 
 public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
 
@@ -105,19 +105,19 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     }
 
     private void changePreference(Context context, String key, Object value) {
-        try {
-            Context myContext = context.createPackageContext(context.getString(R.string.package_name), 0);
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(myContext);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            if (value instanceof Boolean) {
-                editor.putBoolean(key, (Boolean) value);
-            } else if (value instanceof Integer) {
-                editor.putInt(key, (Integer) value);
-            } else if (value instanceof Long) {
-                editor.putLong(key, (Long) value);
-            }
-            editor.apply();
-        } catch (PackageManager.NameNotFoundException ignored) { // cannot happen!
+        Intent intent = new Intent(context, BackgroundService.class);
+        intent.setAction(ACTION_CHANGE_PREFERENCE);
+        intent.putExtra(EXTRA_PREFERENCE_KEY, key);
+        if (value instanceof Boolean) {
+            intent.putExtra(EXTRA_PREFERENCE_VALUE, (boolean) value);
+        } else if (value instanceof Integer) {
+            intent.putExtra(EXTRA_PREFERENCE_VALUE, (int) value);
+        } else if (value instanceof Long) {
+            intent.putExtra(EXTRA_PREFERENCE_VALUE, (long) value);
+        } else {
+            Log.e(getClass().getSimpleName(), "Unsupported value type!");
+            return;
         }
+        ServiceHelper.startService(context, intent);
     }
 }
