@@ -26,30 +26,28 @@ public class TaskerHelper {
     public static final String ACTION_RESET_GRAPH = "com.laudien.p1xelfehler.batterywarner.reset_graph";
 
     public static boolean isBundleValid(Bundle bundle) {
-        if (bundle == null) {
+        if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle) || getAction(bundle) == null) {
             return false;
         }
         try {
-            String action = getAction(bundle);
-            if (action == null) {
-                throw new AssertionError("Unknown action!");
-            }
-            switch (action) {
-                case ACTION_TOGGLE_CHARGING:
-                case ACTION_TOGGLE_STOP_CHARGING:
-                case ACTION_TOGGLE_SMART_CHARGING:
-                case ACTION_TOGGLE_WARNING_HIGH:
-                case ACTION_TOGGLE_WARNING_LOW:
-                    BundleAssertions.assertHasBoolean(bundle, action);
-                    break;
-                case ACTION_SET_WARNING_HIGH:
-                case ACTION_SET_WARNING_LOW:
-                case ACTION_SET_SMART_CHARGING_LIMIT:
-                    BundleAssertions.assertHasInt(bundle, action);
-                    break;
-                case ACTION_SET_SMART_CHARGING_TIME:
-                    BundleAssertions.assertHasLong(bundle, action);
-            }
+            if (bundle.containsKey(ACTION_TOGGLE_CHARGING))
+                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_CHARGING);
+            if (bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING))
+                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_STOP_CHARGING);
+            if (bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING))
+                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_SMART_CHARGING);
+            if (bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH))
+                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_WARNING_HIGH);
+            if (bundle.containsKey(ACTION_TOGGLE_WARNING_LOW))
+                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_WARNING_LOW);
+            if (bundle.containsKey(ACTION_SET_WARNING_HIGH))
+                BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_HIGH);
+            if (bundle.containsKey(ACTION_SET_WARNING_LOW))
+                BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_LOW);
+            if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT))
+                BundleAssertions.assertHasInt(bundle, ACTION_SET_SMART_CHARGING_LIMIT);
+            if (bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME))
+                BundleAssertions.assertHasLong(bundle, ACTION_SET_SMART_CHARGING_TIME);
         } catch (AssertionError e) {
             Lumberjack.e("Bundle failed verification%s", e);
             return false;
@@ -97,6 +95,8 @@ public class TaskerHelper {
             return ACTION_SET_SMART_CHARGING_TIME;
         if (bundle.containsKey(ACTION_SAVE_GRAPH))
             return ACTION_SAVE_GRAPH;
+        if (bundle.containsKey(ACTION_RESET_GRAPH))
+            return ACTION_RESET_GRAPH;
         return null;
     }
 
@@ -133,5 +133,19 @@ public class TaskerHelper {
             default:
                 return "Error!";
         }
+    }
+
+    private static boolean containsKnownKey(@NonNull Bundle bundle) {
+        return bundle.containsKey(ACTION_TOGGLE_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH)
+                || bundle.containsKey(ACTION_TOGGLE_WARNING_LOW)
+                || bundle.containsKey(ACTION_SET_WARNING_HIGH)
+                || bundle.containsKey(ACTION_SET_WARNING_LOW)
+                || bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)
+                || bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME)
+                || bundle.containsKey(ACTION_SAVE_GRAPH)
+                || bundle.containsKey(ACTION_RESET_GRAPH);
     }
 }
