@@ -1,6 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.test.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +23,8 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TaskerHelperTest {
@@ -187,7 +191,26 @@ public class TaskerHelperTest {
 
     @Test
     public void getResultBlurb() throws Exception {
+        Context context = InstrumentationRegistry.getTargetContext();
 
+        // unknown key
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("randomKey", false);
+        assertNull(TaskerHelper.getResultBlurb(context, bundle));
+
+        // one known key
+        for (String key : allKeys) {
+            bundle = new Bundle();
+            if (booleanKeys.contains(key)) {
+                bundle.putBoolean(key, true);
+            } else if (intKeys.contains(key)) {
+                bundle.putInt(key, 1337);
+            } else if (longKeys.contains(key)) {
+                bundle.putLong(key, 1337);
+            } else if (actionKeys.contains(key)) {
+                bundle.putByte(key, (byte) 2);
+            }
+            assertNotNull(key, TaskerHelper.getResultBlurb(context, bundle));
+        }
     }
-
 }
