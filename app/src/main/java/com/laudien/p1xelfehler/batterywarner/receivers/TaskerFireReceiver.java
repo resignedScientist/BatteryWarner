@@ -44,48 +44,29 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected void firePluginSetting(@NonNull final Context context, @NonNull Bundle bundle) {
-        int action = TaskerHelper.getAction(bundle);
-        Object value = TaskerHelper.getValue(bundle);
-        Log.d(getClass().getSimpleName(), "Tasker Plugin fired! Action: " + TaskerHelper.getResultBlurb(context, bundle));
-        try {
-            switch (action) {
-                case ACTION_TOGGLE_CHARGING:
-                    toggleCharging(context, (Boolean) value);
-                    break;
-                case ACTION_TOGGLE_STOP_CHARGING:
-                    changePreference(context, context.getString(R.string.pref_stop_charging), value);
-                    break;
-                case ACTION_TOGGLE_SMART_CHARGING:
-                    changePreference(context, context.getString(R.string.pref_smart_charging_enabled), value);
-                    break;
-                case ACTION_TOGGLE_WARNING_HIGH:
-                    changePreference(context, context.getString(R.string.pref_warning_high_enabled), value);
-                    break;
-                case ACTION_TOGGLE_WARNING_LOW:
-                    changePreference(context, context.getString(R.string.pref_warning_low_enabled), value);
-                    break;
-                case ACTION_SET_WARNING_HIGH:
-                    changePreference(context, context.getString(R.string.pref_warning_high), value);
-                    break;
-                case ACTION_SET_WARNING_LOW:
-                    changePreference(context, context.getString(R.string.pref_warning_low), value);
-                    break;
-                case ACTION_SET_SMART_CHARGING_LIMIT:
-                    changePreference(context, context.getString(R.string.pref_smart_charging_limit), value);
-                    break;
-                case ACTION_SET_SMART_CHARGING_TIME:
-                    changePreference(context, context.getString(R.string.pref_smart_charging_time), value);
-                    break;
-                case ACTION_SAVE_GRAPH:
-                    saveGraph(context);
-                    break;
-                case ACTION_RESET_GRAPH:
-                    resetGraph(context);
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Log.d(getClass().getSimpleName(), "Tasker Plugin fired!");
+        if (bundle.containsKey(ACTION_TOGGLE_CHARGING))
+            toggleCharging(context, bundle.getBoolean(ACTION_TOGGLE_CHARGING));
+        if (bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING))
+            changePreference(context, R.string.pref_stop_charging, bundle.getBoolean(ACTION_TOGGLE_STOP_CHARGING));
+        if (bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING))
+            changePreference(context, R.string.pref_smart_charging_enabled, bundle.getBoolean(ACTION_TOGGLE_SMART_CHARGING));
+        if (bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH))
+            changePreference(context, R.string.pref_warning_high_enabled, bundle.getBoolean(ACTION_TOGGLE_WARNING_HIGH));
+        if (bundle.containsKey(ACTION_TOGGLE_WARNING_LOW))
+            changePreference(context, R.string.pref_warning_low_enabled, bundle.getBoolean(ACTION_TOGGLE_WARNING_LOW));
+        if (bundle.containsKey(ACTION_SET_WARNING_HIGH))
+            changePreference(context, R.string.pref_warning_high, bundle.getInt(ACTION_SET_WARNING_HIGH));
+        if (bundle.containsKey(ACTION_SET_WARNING_LOW))
+            changePreference(context, R.string.pref_warning_low, bundle.getInt(ACTION_SET_WARNING_LOW));
+        if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT))
+            changePreference(context, R.string.pref_smart_charging_limit, bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT));
+        if (bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME))
+            changePreference(context, R.string.pref_smart_charging_time, bundle.getLong(ACTION_SET_SMART_CHARGING_TIME));
+        if (bundle.containsKey(ACTION_SAVE_GRAPH))
+            saveGraph(context);
+        if (bundle.containsKey(ACTION_RESET_GRAPH))
+            resetGraph(context);
     }
 
     private void toggleCharging(Context context, boolean enabled) {
@@ -104,20 +85,27 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         databaseController.resetTable();
     }
 
-    private void changePreference(Context context, String key, Object value) {
-        Intent intent = new Intent(context, BackgroundService.class);
+    private void changePreference(Context context, int keyResource, int value) {
+        Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
         intent.setAction(ACTION_CHANGE_PREFERENCE);
-        intent.putExtra(EXTRA_PREFERENCE_KEY, key);
-        if (value instanceof Boolean) {
-            intent.putExtra(EXTRA_PREFERENCE_VALUE, (boolean) value);
-        } else if (value instanceof Integer) {
-            intent.putExtra(EXTRA_PREFERENCE_VALUE, (int) value);
-        } else if (value instanceof Long) {
-            intent.putExtra(EXTRA_PREFERENCE_VALUE, (long) value);
-        } else {
-            Log.e(getClass().getSimpleName(), "Unsupported value type!");
-            return;
-        }
+        intent.putExtra(EXTRA_PREFERENCE_KEY, keyResource);
+        intent.putExtra(EXTRA_PREFERENCE_VALUE, value);
+        ServiceHelper.startService(context, intent);
+    }
+
+    private void changePreference(Context context, int keyResource, long value) {
+        Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
+        intent.setAction(ACTION_CHANGE_PREFERENCE);
+        intent.putExtra(EXTRA_PREFERENCE_KEY, keyResource);
+        intent.putExtra(EXTRA_PREFERENCE_VALUE, value);
+        ServiceHelper.startService(context, intent);
+    }
+
+    private void changePreference(Context context, int keyResource, boolean value) {
+        Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
+        intent.setAction(ACTION_CHANGE_PREFERENCE);
+        intent.putExtra(EXTRA_PREFERENCE_KEY, keyResource);
+        intent.putExtra(EXTRA_PREFERENCE_VALUE, value);
         ServiceHelper.startService(context, intent);
     }
 }

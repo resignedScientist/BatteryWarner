@@ -105,35 +105,28 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public void onPostCreateWithPreviousResult(@NonNull Bundle bundle, @NonNull String s) {
-        int action = TaskerHelper.getAction(bundle);
-        Object value = TaskerHelper.getValue(bundle);
-        switch (action) {
-            case ACTION_TOGGLE_CHARGING:
-            case ACTION_TOGGLE_STOP_CHARGING:
-            case ACTION_TOGGLE_SMART_CHARGING:
-            case ACTION_TOGGLE_WARNING_HIGH:
-            case ACTION_TOGGLE_WARNING_LOW:
-                ((Switch) layouts[LAYOUT_SWITCH]).setChecked((Boolean) value);
-                break;
-            case ACTION_SET_WARNING_HIGH:
-            case ACTION_SET_WARNING_LOW:
-            case ACTION_SET_SMART_CHARGING_LIMIT:
-                NumberPicker numberPicker = (NumberPicker) layouts[LAYOUT_NUMBER_PICKER];
-                numberPicker.setValue((Integer) value);
-                break;
-            case ACTION_SET_SMART_CHARGING_TIME:
-                TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
-                long timeInMillis = (long) value;
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(timeInMillis);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
-                    timePicker.setMinute(calendar.get(Calendar.MINUTE));
-                } else {
-                    timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-                    timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
-                }
-                break;
+        String action = TaskerHelper.getAction(bundle);
+        if (action == null) {
+            return;
+        }
+        Object value = bundle.get(action);
+        if (value instanceof Boolean) {
+            ((Switch) layouts[LAYOUT_SWITCH]).setChecked((Boolean) value);
+        } else if (value instanceof Integer) {
+            NumberPicker numberPicker = (NumberPicker) layouts[LAYOUT_NUMBER_PICKER];
+            numberPicker.setValue((Integer) value);
+        } else if (value instanceof Long) {
+            TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
+            long timeInMillis = (long) value;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(timeInMillis);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+                timePicker.setMinute(calendar.get(Calendar.MINUTE));
+            } else {
+                timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+                timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+            }
         }
         radioGroup_action.check(getRadioButtonId(action));
     }
@@ -142,21 +135,18 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     public Bundle getResultBundle() {
         int radioButtonId = radioGroup_action.getCheckedRadioButtonId();
-        int action = getAction(radioButtonId);
-        Object value = null;
+        String action = getAction(radioButtonId);
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
             case ACTION_TOGGLE_STOP_CHARGING:
             case ACTION_TOGGLE_SMART_CHARGING:
             case ACTION_TOGGLE_WARNING_HIGH:
             case ACTION_TOGGLE_WARNING_LOW:
-                value = ((Switch) layouts[LAYOUT_SWITCH]).isChecked();
-                break;
+                return TaskerHelper.buildBundle(action, ((Switch) layouts[LAYOUT_SWITCH]).isChecked());
             case ACTION_SET_SMART_CHARGING_LIMIT:
             case ACTION_SET_WARNING_HIGH:
             case ACTION_SET_WARNING_LOW:
-                value = ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).getValue();
-                break;
+                return TaskerHelper.buildBundle(action, ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).getValue());
             case ACTION_SET_SMART_CHARGING_TIME:
                 TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
                 Calendar calendar = Calendar.getInstance();
@@ -168,10 +158,10 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                     calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
                     calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
                 }
-                value = calendar.getTimeInMillis();
-                break;
+                return TaskerHelper.buildBundle(action, calendar.getTimeInMillis());
+            default:
+                return null;
         }
-        return TaskerHelper.buildBundle(action, value);
     }
 
     @NonNull
@@ -228,7 +218,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
     }
 
-    private int getAction(int radioButtonId) {
+    private String getAction(int radioButtonId) {
         switch (radioButtonId) {
             case R.id.radioButton_toggle_charging:
                 return ACTION_TOGGLE_CHARGING;
@@ -257,7 +247,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
     }
 
-    private int getRadioButtonId(int action) {
+    private int getRadioButtonId(String action) {
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
                 return R.id.radioButton_toggle_charging;
