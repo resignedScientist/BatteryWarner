@@ -209,7 +209,8 @@ public final class RootHelper {
                 new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
                 new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1"),
                 new ToggleChargingFile("/sys/devices/qpnp-charger-f2d04c00/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled", "1", "0")
+                new ToggleChargingFile("/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled", "1", "0"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/input_suspend", "0", "1")
         };
         for (ToggleChargingFile file : files) {
             if (new File(file.path).exists()) {

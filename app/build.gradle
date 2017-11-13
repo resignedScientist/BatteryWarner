@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 196
+        versionCode 197
         versionName "1.122"
         resConfigs "de", "en", "fr", "bn", "ro", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
