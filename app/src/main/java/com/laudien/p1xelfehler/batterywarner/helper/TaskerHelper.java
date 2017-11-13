@@ -82,7 +82,7 @@ public class TaskerHelper {
         if (bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING))
             return ACTION_TOGGLE_SMART_CHARGING;
         if (bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH))
-            return ACTION_TOGGLE_SMART_CHARGING;
+            return ACTION_TOGGLE_WARNING_HIGH;
         if (bundle.containsKey(ACTION_TOGGLE_WARNING_LOW))
             return ACTION_TOGGLE_WARNING_LOW;
         if (bundle.containsKey(ACTION_SET_WARNING_HIGH))
