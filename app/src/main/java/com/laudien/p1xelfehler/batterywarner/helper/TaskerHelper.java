@@ -104,7 +104,7 @@ public class TaskerHelper {
         String action = getAction(bundle);
         Object value = bundle.get(action);
         if (action == null || value == null) {
-            return "Error!";
+            return null;
         }
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
@@ -130,8 +130,8 @@ public class TaskerHelper {
                 return context.getString(R.string.tasker_save_graph);
             case ACTION_RESET_GRAPH:
                 return context.getString(R.string.tasker_reset_graph);
-            default:
-                return "Error!";
+            default: // cannot happen because the bundles are validated first
+                return null;
         }
     }
 
