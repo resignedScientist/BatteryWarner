@@ -170,10 +170,24 @@ public class TaskerHelperTest {
 
     @Test
     public void getAction() throws Exception {
+        for (String key : allKeys) {
+            Bundle bundle = new Bundle();
+            if (booleanKeys.contains(key)) {
+                bundle.putBoolean(key, true);
+            } else if (intKeys.contains(key)) {
+                bundle.putInt(key, 1337);
+            } else if (longKeys.contains(key)) {
+                bundle.putLong(key, 1337);
+            } else if (actionKeys.contains(key)) {
+                bundle.putByte(key, (byte) 5);
+            }
+            assertEquals(key, TaskerHelper.getAction(bundle));
+        }
     }
 
     @Test
     public void getResultBlurb() throws Exception {
+
     }
 
 }
