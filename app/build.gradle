@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.laudien.p1xelfehler.batterywarner_pro"
         vectorDrawables.useSupportLibrary = true
@@ -64,7 +64,7 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile project(path: ':material-intro-screen')
-    compile 'com.android.support:appcompat-v7:26.0.2'
-    compile 'com.android.support:design:26.0.2'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3' // Tasker
 }
