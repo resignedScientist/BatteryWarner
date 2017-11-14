@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.text.DateFormat;
 import java.util.Locale;
@@ -154,9 +155,9 @@ class GraphInfo {
             if (minTemp != Double.NaN) {
                 textView.setText(String.format(
                         Locale.getDefault(),
-                        "%s: %.1f°C",
+                        "%s: %s",
                         context.getString(R.string.info_min_temp),
-                        minTemp)
+                        TemperatureConverter.getCorrectTemperatureString(context, minTemp))
                 );
             } else {
                 textView.setVisibility(View.GONE);
@@ -166,9 +167,9 @@ class GraphInfo {
             if (!Double.isNaN(maxTemp)) {
                 textView.setText(String.format(
                         Locale.getDefault(),
-                        "%s: %.1f°C",
+                        "%s: %s",
                         context.getString(R.string.info_max_temp),
-                        maxTemp)
+                        TemperatureConverter.getCorrectTemperatureString(context, maxTemp))
                 );
             } else {
                 textView.setVisibility(View.GONE);
