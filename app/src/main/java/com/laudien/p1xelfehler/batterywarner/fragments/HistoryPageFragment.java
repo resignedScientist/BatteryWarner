@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.io.File;
 
@@ -65,7 +66,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
     protected LineGraphSeries[] getGraphs() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             if (file != null && file.exists()) {
-                LineGraphSeries[] graphs = databaseController.getAllGraphs(file);
+                boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+                LineGraphSeries[] graphs = databaseController.getAllGraphs(file, useFahrenheit);
                 styleGraphs(graphs);
                 return graphs;
             } else {

@@ -14,6 +14,7 @@ import android.util.Log;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -125,8 +126,8 @@ public class DatabaseController {
      * @return An array of LineGraphSeries.
      * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
      */
-    public LineGraphSeries[] getAllGraphs() {
-        return getAllGraphs(databaseModel.readData());
+    public LineGraphSeries[] getAllGraphs(boolean useFahrenheit) {
+        return getAllGraphs(databaseModel.readData(), useFahrenheit);
     }
 
     public void notifyTransitionsFinished() {
@@ -283,8 +284,8 @@ public class DatabaseController {
      * @return Array of all graphs inside the given database file.
      * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
      */
-    public LineGraphSeries[] getAllGraphs(File databaseFile) {
-        return getAllGraphs(databaseModel.readData(databaseFile));
+    public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit) {
+        return getAllGraphs(databaseModel.readData(databaseFile), useFahrenheit);
     }
 
     /**
@@ -328,7 +329,7 @@ public class DatabaseController {
 
     // ==== GENERAL STUFF ====
 
-    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues) {
+    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit) {
         if (databaseValues != null) {
             LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
@@ -347,7 +348,7 @@ public class DatabaseController {
                     double timeInMinutes = (double) time / (1000 * 60);
                     for (int j = 0; j < NUMBER_OF_GRAPHS; j++) {
                         if (lastDatabaseValue == -1 || databaseValues[i].get(j) != databaseValues[lastDatabaseValue].get(j)) {
-                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints);
+                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints, useFahrenheit);
                         }
                     }
                     lastDatabaseValue = i;
@@ -358,7 +359,7 @@ public class DatabaseController {
                 long time = databaseValues[lastDatabaseValue].getUtcTimeInMillis() - startTime;
                 double timeInMinutes = (double) time / (1000 * 60);
                 for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints);
+                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints, useFahrenheit);
                 }
             }
             return graphs;
@@ -366,12 +367,15 @@ public class DatabaseController {
         return null;
     }
 
-    private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints) {
+    private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit) {
         if (graph != null) {
             double value = databaseValue.get(index);
             switch (index) {
                 case GRAPH_INDEX_TEMPERATURE:
                     value /= 10;
+                    if (useFahrenheit) {
+                        value = TemperatureConverter.convertCelsiusToFahrenheit(value);
+                    }
                     break;
                 case GRAPH_INDEX_VOLTAGE:
                     value /= 1000;

@@ -22,6 +22,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -319,7 +320,7 @@ public abstract class BasicGraphFragment extends Fragment {
                                 suffix = "%";
                                 break;
                             case GRAPH_INDEX_TEMPERATURE:
-                                suffix = "°C";
+                                suffix = TemperatureConverter.useFahrenheit(getContext()) ? "°F" : "°C";
                                 break;
                             case GRAPH_INDEX_CURRENT:
                                 suffix = "mA";

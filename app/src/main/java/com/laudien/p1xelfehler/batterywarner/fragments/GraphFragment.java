@@ -26,6 +26,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
@@ -160,7 +161,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
      */
     @Override
     protected LineGraphSeries[] getGraphs() {
-        LineGraphSeries[] graphs = databaseController.getAllGraphs();
+        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        LineGraphSeries[] graphs = databaseController.getAllGraphs(useFahrenheit);
         if (graphs != null) {
             styleGraphs(graphs);
         }

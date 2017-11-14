@@ -9,7 +9,7 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 public class TemperatureConverter {
-    private static double convertCelsiusToFahrenheit(double celsius) {
+    public static double convertCelsiusToFahrenheit(double celsius) {
         return ((celsius * 9) / 5) + 32;
     }
 
@@ -34,5 +34,10 @@ public class TemperatureConverter {
             default:
                 return null;
         }
+    }
+
+    public static boolean useFahrenheit(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(context.getString(R.string.pref_temp_unit), context.getString(R.string.pref_temp_unit_default)).equals("1");
     }
 }
