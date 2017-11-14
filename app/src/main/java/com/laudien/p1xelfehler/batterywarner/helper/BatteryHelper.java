@@ -264,7 +264,12 @@ public class BatteryHelper {
         private void setTemperature(double temperature, Context context) {
             if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
-                values[INDEX_TEMPERATURE] = String.format(Locale.getDefault(), context.getString(R.string.info_temperature) + ": %.1f °C", temperature);
+                values[INDEX_TEMPERATURE] = String.format(
+                        Locale.getDefault(),
+                        "%s: %s",
+                        context.getString(R.string.info_temperature),
+                        TemperatureConverter.getCorrectTemperatureString(context, temperature)
+                );
                 notifyListeners(INDEX_TEMPERATURE);
             }
         }
