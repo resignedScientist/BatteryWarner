@@ -135,8 +135,8 @@
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
-    <string name="pref_temp_unit">temperatureUnit</string>
-    <string name="pref_temp_unit_default">0</string>
+    <string name="pref_temp_unit" translatable="false">temperatureUnit</string>
+    <string name="pref_temp_unit_default" translatable="false">0</string>
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
@@ -271,6 +271,7 @@
     <string name="toast_not_rooted">You must be rooted for this!</string>
     <string name="toast_nothing_to_delete">There is nothing to delete!</string>
     <string name="toast_nothing_to_save">There is nothing to save!</string>
+    <string name="toast_preference_changed">Preference changed to\ </string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
     <string name="toast_success_delete_all_graphs">All graphs removed!</string>

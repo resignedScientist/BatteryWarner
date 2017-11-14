@@ -195,4 +195,12 @@
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
 
     <string name="unit_days">\ days</string>
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="title_temp_unit">Temperature unit</string>
+    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
+    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
+    <string name="channel_title_warning_high">High battery warning</string>
+    <string name="channel_title_warning_low">Low battery warning</string>
+    <string name="toast_preference_changed">Preference changed to\ </string>
 </resources>

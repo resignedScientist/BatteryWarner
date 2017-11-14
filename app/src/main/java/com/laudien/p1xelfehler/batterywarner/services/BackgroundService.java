@@ -220,7 +220,7 @@ public class BackgroundService extends Service {
         }
         editor.apply();
         Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key + " to value: " + value);
-        Toast.makeText(this, "Preference changed to " + value + "!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_preference_changed) + value + " !", Toast.LENGTH_SHORT).show();
     }
 
     private void onSaveState() {
