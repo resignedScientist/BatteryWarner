@@ -2,19 +2,17 @@
 <resources>
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
-    <string name="channel_warning_high" translatable="false">warningHigh</string>
-    <string name="channel_warning_low" translatable="false">warningLow</string>
-    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
-    <!-- notification channel descriptions -->
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
+    <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
     <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
     <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
-    <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
-    <!-- notification channel titles -->
+    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
     <string name="channel_title_battery_info">Battery Information</string>
+    <string name="channel_title_other_warnings">Other Warnings</string>
     <string name="channel_title_warning_high">High battery warning</string>
     <string name="channel_title_warning_low">Low battery warning</string>
-    <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_warning_high" translatable="false">warningHigh</string>
+    <string name="channel_warning_low" translatable="false">warningLow</string>
 
     <!-- Subtitles under the GraphView in the GraphFragment -->
     <string name="charging">Charging</string>
@@ -107,6 +105,7 @@
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
     <string name="pref_checkBox_voltage" translatable="false">checkBoxVoltage</string>
+    <string name="pref_current_divisor" translatable="false">currentDivisor</string>
     <string name="pref_dark_info_notification" translatable="false">infoDarkTheme</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -136,6 +135,8 @@
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_temp_unit">temperatureUnit</string>
+    <string name="pref_temp_unit_default">0</string>
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
@@ -145,7 +146,6 @@
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
-    <string name="pref_current_divisor" translatable="false">currentDivisor</string>
 
     <!-- names of SharedPrefs files -->
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
@@ -198,6 +198,10 @@
     <string name="tasker_toggle_warning_high">Toggle high battery warning</string>
     <string name="tasker_toggle_warning_low">Toggle low battery warning</string>
 
+    <!-- Temperature units -->
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
     <string name="tile_warning_high">High battery warning</string>
@@ -243,6 +247,7 @@
     <string name="title_sound_uri">Choose notification Sound</string>
     <string name="title_stats">Stats</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
+    <string name="title_temp_unit">Temperature unit</string>
     <string name="title_theming">Theming</string>
     <string name="title_time_format">Time format</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>

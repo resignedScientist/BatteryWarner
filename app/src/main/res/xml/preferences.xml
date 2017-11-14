@@ -93,6 +93,13 @@
     <PreferenceCategory
         android:key="@string/pref_stats"
         android:title="@string/title_stats">
+        <ListPreference
+            android:defaultValue="@string/pref_temp_unit_default"
+            android:entries="@array/tempUnits"
+            android:entryValues="@array/tempUnits_values"
+            android:key="@string/pref_temp_unit"
+            android:summary="%s"
+            android:title="@string/title_temp_unit" />
         <CheckBoxPreference
             android:defaultValue="@bool/pref_graph_enabled_default"
             android:key="@string/pref_graph_enabled"
