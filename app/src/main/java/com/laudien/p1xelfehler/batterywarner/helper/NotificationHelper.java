@@ -228,11 +228,14 @@ public final class NotificationHelper {
     @RequiresApi(api = O)
     public static void createNotificationChannels(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
         // battery warnings
         NotificationChannel channel = new NotificationChannel(
                 context.getString(R.string.channel_battery_warnings),
                 context.getString(R.string.channel_title_battery_warnings),
-                NotificationManager.IMPORTANCE_MAX
+                NotificationManager.IMPORTANCE_HIGH
         );
         channel.setDescription(context.getString(R.string.channel_description_battery_warnings));
         channel.enableLights(true);
@@ -257,7 +260,7 @@ public final class NotificationHelper {
         channel = new NotificationChannel(
                 context.getString(R.string.channel_other_warnings),
                 context.getString(R.string.channel_title_other_warnings),
-                NotificationManager.IMPORTANCE_MAX
+                NotificationManager.IMPORTANCE_HIGH
         );
         channel.setDescription(context.getString(R.string.channel_description_other_warnings));
         channel.enableLights(true);
