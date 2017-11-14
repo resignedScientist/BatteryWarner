@@ -9,10 +9,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.util.Locale;
 
 public class TemperatureConverter {
-    private static double convertFahrenheitToCelsius(double fahrenheit) {
-        return ((fahrenheit - 32) * 5 / 9);
-    }
-
     private static double convertCelsiusToFahrenheit(double celsius) {
         return ((celsius * 9) / 5) + 32;
     }
