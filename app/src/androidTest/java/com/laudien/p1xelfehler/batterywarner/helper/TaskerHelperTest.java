@@ -174,6 +174,7 @@ public class TaskerHelperTest {
 
     @Test
     public void getAction() throws Exception {
+        // normal valid values
         for (String key : ALL_ACTIONS) {
             Bundle bundle = new Bundle();
             if (booleanKeys.contains(key)) {
@@ -185,6 +186,13 @@ public class TaskerHelperTest {
             } else if (actionKeys.contains(key)) {
                 bundle.putByte(key, (byte) 5);
             }
+            assertEquals(key, TaskerHelper.getAction(bundle));
+        }
+
+        // Strings instead of integers
+        for (String key : intKeys) {
+            Bundle bundle = new Bundle();
+            bundle.putString(key, "1337");
             assertEquals(key, TaskerHelper.getAction(bundle));
         }
     }
