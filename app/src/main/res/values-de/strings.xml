@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
-    <string name="channel_description_battery_warnings">Alle Batterie-Warnungen, wie z.B. \'Der Akkustand ist höher als X%\'.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
     <string name="channel_title_battery_info">Batterie-Informationen</string>
-    <string name="channel_title_battery_warnings">Batterie Warnungen</string>
     <string name="channel_title_other_warnings">Andere Warnungen</string>
 
     <string name="charging">Lade</string>

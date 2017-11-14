@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">সকল ব্যাটারির তথ্যসহ স্থায়ী নোটিফিকেশন \'Charging Service\'</string>
-    <string name="channel_description_battery_warnings">সব ধরণের ব্যাটারি সতর্কবার্তা</string>
     <string name="channel_description_other_warnings">অন্যান্য সতর্ক সংকেত, যেমন রুট অনুমতি না পেলে!</string>
     <string name="channel_title_battery_info">ব্যাটারি তথ্য</string>
-    <string name="channel_title_battery_warnings">ব্যাটারি সতর্কবার্তাসমূহ</string>
     <string name="channel_title_other_warnings">অন্যান্য সতর্কবার্তাসমূহ</string>
 
     <string name="charging">চার্জিং</string>

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">Pemberitahuan permanen dengan segala info tentang baterai dan pemberitahuan \'Layanan Pengisian\' .</string>
-    <string name="channel_description_battery_warnings">Segala jenis peringatan baterai.</string>
     <string name="channel_description_other_warnings">Beberapa peringatan penting lain, misalnya jika aplikasi ini tidak lagi memiliki akses root.</string>
     <string name="channel_title_battery_info">Informasi Baterai</string>
-    <string name="channel_title_battery_warnings">Peringatan Baterai</string>
     <string name="channel_title_other_warnings">Peringatan Lain</string>
 
     <string name="charging">Mengisi</string>

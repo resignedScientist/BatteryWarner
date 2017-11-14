@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
-    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
     <string name="channel_title_battery_info">Battery Information</string>
-    <string name="channel_title_battery_warnings">Battery Warnings</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
 
     <string name="charging">Charging</string>

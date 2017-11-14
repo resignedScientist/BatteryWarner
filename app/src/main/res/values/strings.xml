@@ -2,15 +2,18 @@
 <resources>
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
-    <string name="channel_battery_warnings" translatable="false">batteryWarnings</string>
+    <string name="channel_warning_high" translatable="false">warningHigh</string>
+    <string name="channel_warning_low" translatable="false">warningLow</string>
+    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
     <!-- notification channel descriptions -->
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
-    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
+    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
+    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
-    <string name="channel_other_warnings" translatable="false">otherWarnings</string>
     <!-- notification channel titles -->
     <string name="channel_title_battery_info">Battery Information</string>
-    <string name="channel_title_battery_warnings">Battery Warnings</string>
+    <string name="channel_title_warning_high">High battery warning</string>
+    <string name="channel_title_warning_low">Low battery warning</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
 
     <!-- Subtitles under the GraphView in the GraphFragment -->

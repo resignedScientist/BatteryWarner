@@ -231,13 +231,26 @@ public final class NotificationHelper {
         if (notificationManager == null) {
             return;
         }
-        // battery warnings
+        // high battery warning
         NotificationChannel channel = new NotificationChannel(
-                context.getString(R.string.channel_battery_warnings),
-                context.getString(R.string.channel_title_battery_warnings),
+                context.getString(R.string.channel_warning_high),
+                context.getString(R.string.channel_title_warning_high),
                 NotificationManager.IMPORTANCE_HIGH
         );
-        channel.setDescription(context.getString(R.string.channel_description_battery_warnings));
+        channel.setDescription(context.getString(R.string.channel_description_warning_high));
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATE_PATTERN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(true);
+        notificationManager.createNotificationChannel(channel);
+        // low battery warning
+        channel = new NotificationChannel(
+                context.getString(R.string.channel_warning_low),
+                context.getString(R.string.channel_title_warning_low),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription(context.getString(R.string.channel_description_warning_low));
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);

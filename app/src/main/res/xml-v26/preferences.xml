@@ -14,7 +14,7 @@
             <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
                 <extra
                     android:name="android.provider.extra.CHANNEL_ID"
-                    android:value="@string/channel_battery_warnings" />
+                    android:value="@string/channel_warning_high" />
                 <extra
                     android:name="android.provider.extra.APP_PACKAGE"
                     android:value="@string/package_name" />
@@ -64,7 +64,7 @@
             <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
                 <extra
                     android:name="android.provider.extra.CHANNEL_ID"
-                    android:value="@string/channel_battery_warnings" />
+                    android:value="@string/channel_warning_low" />
                 <extra
                     android:name="android.provider.extra.APP_PACKAGE"
                     android:value="@string/package_name" />

@@ -413,7 +413,7 @@ public class BackgroundService extends Service {
                 .setContentIntent(enableChargingPendingIntent)
                 .addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), enableChargingPendingIntent);
         if (SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_high));
         } else { // API lower than 26 (Android Oreo)
             builder.setPriority(PRIORITY_LOW);
             if (enableSound) {
@@ -446,7 +446,7 @@ public class BackgroundService extends Service {
                 .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_high));
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
@@ -467,7 +467,7 @@ public class BackgroundService extends Service {
                 .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false))
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_low));
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
