@@ -132,6 +132,20 @@ public class TaskerHelperTest {
                 assertFalse(key, TaskerHelper.isBundleValid(bundle));
             }
         }
+
+        // valid keys with string values instead of integers
+        for (String key : intKeys) {
+            bundle = new Bundle();
+            bundle.putString(key, "50");
+            assertTrue(key, TaskerHelper.isBundleValid(bundle));
+        }
+
+        // valid keys with not parsable string values instead of integers
+        for (String key : intKeys) {
+            bundle = new Bundle();
+            bundle.putString(key, "abc123");
+            assertFalse(key, TaskerHelper.isBundleValid(bundle));
+        }
     }
 
     @Test
