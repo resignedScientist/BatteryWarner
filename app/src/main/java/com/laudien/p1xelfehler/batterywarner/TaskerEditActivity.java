@@ -1,8 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -25,10 +23,8 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerPlugin;
-import com.twofortyfouram.assertion.BundleAssertions;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 import com.twofortyfouram.log.Lumberjack;
-import com.twofortyfouram.spackle.bundle.BundleComparer;
 
 import java.util.Calendar;
 
@@ -44,7 +40,6 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ALL_ACTIONS;
-import static com.twofortyfouram.assertion.Assertions.assertNotNull;
 
 public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     private static final int LAYOUT_TIME_PICKER = 0;
@@ -107,7 +102,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public boolean isBundleValid(@NonNull Bundle bundle) {
-        return TaskerHelper.isBundleValid(bundle);
+        return TaskerHelper.isVariableBundleValid(bundle);
     }
 
     @Override
@@ -200,44 +195,6 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void finish() {
-        if (isLocalePluginIntent(getIntent())) {
-            if (!mIsCancelled) {
-                final Bundle resultBundle = getResultBundle();
-
-                if (null != resultBundle) {
-                    BundleAssertions.assertSerializable(resultBundle);
-
-                    final String blurb = getResultBlurb(resultBundle);
-                    assertNotNull(blurb, "blurb"); //$NON-NLS-1$
-
-                    if (!BundleComparer.areBundlesEqual(resultBundle, getPreviousBundle())
-                            || !blurb.equals(getPreviousBlurb())) {
-                        final Intent resultIntent = new Intent();
-                        resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE,
-                                resultBundle);
-                        resultIntent.putExtra(
-                                com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB,
-                                blurb);
-                        // my changes here -->
-                        if (TaskerPlugin.hostSupportsRelevantVariables(getIntent().getExtras())) {
-                            TaskerPlugin.addRelevantVariableList(resultIntent, new String[]{
-                                    "%warningHigh\nHigh battery warning percentage.",
-                                    "%warningLow\nLow battery warning percentage.",
-                                    "%smartChargingLimit\nThe limit when charging will be stopped the second time (if smart charging is enabled).",
-                                    "%smartChargingTime\nThe UTC time in milliseconds when smart charging should have finished."
-                            });
-                        }
-                        // <-- my changes here
-                        setResult(Activity.RESULT_OK, resultIntent);
-                    }
-                }
-            }
-        }
-        super.finish();
-    }
-
     private void enableCorrectLayout(int radioButtonId) {
         // first disable all layouts
         for (View layout : layouts) {
@@ -323,20 +280,5 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
             default:
                 throw new RuntimeException("Unknown action!");
         }
-    }
-
-    /**
-     * Method copied from PluginActivityDelegate
-     *
-     * @param intent Intent to check.
-     * @return True if intent is a Locale plug-in edit Intent.
-     */
-    private boolean isLocalePluginIntent(@NonNull final Intent intent) {
-        assertNotNull(intent, "intent"); //$NON-NLS-1$
-
-        final String action = intent.getAction();
-
-        return com.twofortyfouram.locale.api.Intent.ACTION_EDIT_CONDITION.equals(action)
-                || com.twofortyfouram.locale.api.Intent.ACTION_EDIT_SETTING.equals(action);
     }
 }

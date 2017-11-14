@@ -72,6 +72,51 @@ public class TaskerHelper {
         return true;
     }
 
+    public static boolean isVariableBundleValid(Bundle bundle) {
+        for (String action : ALL_ACTIONS) {
+            if (!bundle.containsKey(action) || bundle.getString(action) == null) {
+                continue;
+            }
+            String value = bundle.getString(action);
+            if (value == null && !isValueValid(action, bundle)
+                    || value != null && !TaskerPlugin.variableNameValid(value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isValueValid(String action, Bundle bundle) {
+        try {
+            switch (action) {
+                case ACTION_TOGGLE_CHARGING:
+                case ACTION_TOGGLE_STOP_CHARGING:
+                case ACTION_TOGGLE_SMART_CHARGING:
+                case ACTION_TOGGLE_WARNING_HIGH:
+                case ACTION_TOGGLE_WARNING_LOW:
+                    BundleAssertions.assertHasBoolean(bundle, action);
+                    break;
+                case ACTION_SET_WARNING_HIGH:
+                case ACTION_SET_WARNING_LOW:
+                case ACTION_SET_SMART_CHARGING_LIMIT:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    break;
+                case ACTION_SET_SMART_CHARGING_TIME:
+                    BundleAssertions.assertHasLong(bundle, action);
+                    break;
+                case ACTION_SAVE_GRAPH:
+                case ACTION_RESET_GRAPH:
+                    break;
+                default:
+                    return false;
+            }
+        } catch (AssertionError e) {
+            Lumberjack.e("Bundle failed verification%s", e);
+            return false;
+        }
+        return true;
+    }
+
     public static Bundle buildBundle(String action, long value) {
         Bundle bundle = new Bundle();
         bundle.putLong(action, value);
