@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
@@ -77,12 +78,17 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
 
     private void saveGraph(Context context) {
         DatabaseController databaseController = DatabaseController.getInstance(context);
-        databaseController.saveGraph(context);
+        if (databaseController.saveGraph(context)) {
+            Toast.makeText(context, R.string.toast_success_saving, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, R.string.toast_error_saving, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void resetGraph(Context context) {
         DatabaseController databaseController = DatabaseController.getInstance(context);
         databaseController.resetTable();
+        Toast.makeText(context, R.string.toast_success_delete_graph, Toast.LENGTH_SHORT).show();
     }
 
     private void changePreference(Context context, int keyResource, int value) {

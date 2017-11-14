@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
@@ -218,7 +219,8 @@ public class BackgroundService extends Service {
             editor.putLong(key, (Long) value);
         }
         editor.apply();
-        Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key);
+        Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key + " to value: " + value);
+        Toast.makeText(this, "Preference changed to " + value + "!", Toast.LENGTH_SHORT).show();
     }
 
     private void onSaveState() {
