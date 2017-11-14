@@ -21,6 +21,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ALL_ACTIONS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +29,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TaskerHelperTest {
-    private String[] allKeys;
     private TreeSet<String> booleanKeys;
     private TreeSet<String> intKeys;
     private TreeSet<String> longKeys;
@@ -36,20 +36,6 @@ public class TaskerHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        allKeys = new String[]{
-                ACTION_TOGGLE_CHARGING,
-                ACTION_TOGGLE_STOP_CHARGING,
-                ACTION_TOGGLE_SMART_CHARGING,
-                ACTION_TOGGLE_WARNING_HIGH,
-                ACTION_TOGGLE_WARNING_LOW,
-                ACTION_SET_WARNING_HIGH,
-                ACTION_SET_WARNING_LOW,
-                ACTION_SET_SMART_CHARGING_LIMIT,
-                ACTION_SET_SMART_CHARGING_TIME,
-                ACTION_SAVE_GRAPH,
-                ACTION_RESET_GRAPH
-        };
-
         // keys that have a value of type boolean
         booleanKeys = new TreeSet<>();
         booleanKeys.add(ACTION_TOGGLE_CHARGING);
@@ -93,7 +79,7 @@ public class TaskerHelperTest {
         assertFalse(TaskerHelper.isBundleValid(bundle));
 
         // unknown key and a valid key
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
             bundle.putLong("randomKey", 1337);
             if (booleanKeys.contains(key)) {
@@ -109,7 +95,7 @@ public class TaskerHelperTest {
         }
 
         // known keys but wrong value types
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
             bundle.putByte(key, randomByte);
             if (actionKeys.contains(key)) {
@@ -120,7 +106,7 @@ public class TaskerHelperTest {
         }
 
         // one valid key with valid type
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
@@ -137,7 +123,7 @@ public class TaskerHelperTest {
         // one valid key, one known key with wrong type
         bundle = new Bundle();
         bundle.putBoolean(booleanKeys.first(), true);
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
             bundle.putByte(key, randomByte);
             if (actionKeys.contains(key)) {
@@ -174,7 +160,7 @@ public class TaskerHelperTest {
 
     @Test
     public void getAction() throws Exception {
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             Bundle bundle = new Bundle();
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
@@ -199,7 +185,7 @@ public class TaskerHelperTest {
         assertNull(TaskerHelper.getResultBlurb(context, bundle));
 
         // one known key
-        for (String key : allKeys) {
+        for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);

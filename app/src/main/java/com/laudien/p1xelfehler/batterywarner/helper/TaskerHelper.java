@@ -24,9 +24,26 @@ public class TaskerHelper {
     public static final String ACTION_SET_SMART_CHARGING_TIME = "com.laudien.p1xelfehler.batterywarner.set_smart_charging_time";
     public static final String ACTION_SAVE_GRAPH = "com.laudien.p1xelfehler.batterywarner.save_graph";
     public static final String ACTION_RESET_GRAPH = "com.laudien.p1xelfehler.batterywarner.reset_graph";
+    public static final String[] ALL_ACTIONS = new String[]{
+            ACTION_TOGGLE_CHARGING,
+            ACTION_TOGGLE_STOP_CHARGING,
+            ACTION_TOGGLE_SMART_CHARGING,
+            ACTION_TOGGLE_WARNING_HIGH,
+            ACTION_TOGGLE_WARNING_LOW,
+            ACTION_SET_WARNING_HIGH,
+            ACTION_SET_WARNING_LOW,
+            ACTION_SET_SMART_CHARGING_LIMIT,
+            ACTION_SET_SMART_CHARGING_TIME,
+            ACTION_SAVE_GRAPH,
+            ACTION_RESET_GRAPH
+    };
 
     public static boolean isBundleValid(Bundle bundle) {
-        if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle) || getAction(bundle) == null) {
+        if (bundle == null
+                || bundle.isEmpty()
+                || !containsKnownKey(bundle)
+                || getAction(bundle) == null
+                || !replaceStringsWithInts(bundle)) {
             return false;
         }
         try {
@@ -70,6 +87,12 @@ public class TaskerHelper {
     public static Bundle buildBundle(String action, int value) {
         Bundle bundle = new Bundle();
         bundle.putInt(action, value);
+        return bundle;
+    }
+
+    public static Bundle buildBundle(String action, String value) {
+        Bundle bundle = new Bundle();
+        bundle.putString(action, value);
         return bundle;
     }
 
@@ -147,5 +170,21 @@ public class TaskerHelper {
                 || bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME)
                 || bundle.containsKey(ACTION_SAVE_GRAPH)
                 || bundle.containsKey(ACTION_RESET_GRAPH);
+    }
+
+    private static boolean replaceStringsWithInts(Bundle bundle) {
+        for (String action : ALL_ACTIONS) {
+            if (!bundle.containsKey(action) || bundle.getString(action) == null) {
+                continue;
+            }
+            String value = bundle.getString(action);
+            try {
+                int intValue = Integer.valueOf(value);
+                bundle.putInt(action, intValue);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return true;
     }
 }
