@@ -72,9 +72,12 @@ public class TaskerHelper {
         return true;
     }
 
-    public static boolean isVariableBundleValid(Bundle bundle) {
+    public static boolean isVariableBundleValid(@Nullable Bundle bundle) {
+        if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle)) {
+            return false;
+        }
         for (String action : ALL_ACTIONS) {
-            if (!bundle.containsKey(action) || bundle.getString(action) == null) {
+            if (!bundle.containsKey(action)) {
                 continue;
             }
             String value = bundle.getString(action);
