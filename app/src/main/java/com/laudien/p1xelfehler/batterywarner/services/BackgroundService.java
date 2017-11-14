@@ -177,10 +177,10 @@ public class BackgroundService extends Service {
                     break;
                 case ACTION_CHANGE_PREFERENCE:
                     Bundle extras = intent.getExtras();
-                    if (!extras.containsKey(EXTRA_PREFERENCE_KEY) || !extras.containsKey(EXTRA_PREFERENCE_VALUE)) {
+                    if (extras == null || !extras.containsKey(EXTRA_PREFERENCE_KEY) || !extras.containsKey(EXTRA_PREFERENCE_VALUE)) {
                         throw new RuntimeException("Missing intent extras!");
                     }
-                    String key = extras.getString(EXTRA_PREFERENCE_KEY);
+                    String key = getString(extras.getInt(EXTRA_PREFERENCE_KEY));
                     Object value = extras.get(EXTRA_PREFERENCE_VALUE);
                     changePreference(key, value);
                     break;
