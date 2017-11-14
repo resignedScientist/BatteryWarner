@@ -149,6 +149,90 @@ public class TaskerHelperTest {
     }
 
     @Test
+    public void isVariableBundleValid() throws Exception {
+        byte randomByte = (byte) 2;
+        // bundle == null
+        assertFalse(TaskerHelper.isVariableBundleValid(null));
+
+        // bundle is empty
+        Bundle bundle = new Bundle();
+        assertFalse(TaskerHelper.isVariableBundleValid(bundle));
+
+        // unknown key
+        bundle.putLong("randomKey", 1337);
+        assertFalse(TaskerHelper.isVariableBundleValid(bundle));
+
+        // unknown key and a valid key
+        for (String key : ALL_ACTIONS) {
+            bundle = new Bundle();
+            bundle.putLong("randomKey", 1337);
+            if (booleanKeys.contains(key)) {
+                bundle.putBoolean(key, true);
+            } else if (intKeys.contains(key)) {
+                bundle.putInt(key, 1337);
+            } else if (longKeys.contains(key)) {
+                bundle.putLong(key, 1337);
+            } else if (actionKeys.contains(key)) {
+                bundle.putByte(key, randomByte);
+            }
+            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+        }
+
+        // known keys but wrong value types
+        for (String key : ALL_ACTIONS) {
+            bundle = new Bundle();
+            bundle.putByte(key, randomByte);
+            if (actionKeys.contains(key)) {
+                assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+            } else {
+                assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+            }
+        }
+
+        // one valid key with valid type
+        for (String key : ALL_ACTIONS) {
+            bundle = new Bundle();
+            if (booleanKeys.contains(key)) {
+                bundle.putBoolean(key, true);
+            } else if (intKeys.contains(key)) {
+                bundle.putInt(key, 1337);
+            } else if (longKeys.contains(key)) {
+                bundle.putLong(key, 1337);
+            } else if (actionKeys.contains(key)) {
+                bundle.putByte(key, randomByte);
+            }
+            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+        }
+
+        // one valid key, one known key with wrong type
+        bundle = new Bundle();
+        bundle.putBoolean(booleanKeys.first(), true);
+        for (String key : ALL_ACTIONS) {
+            bundle = new Bundle();
+            bundle.putByte(key, randomByte);
+            if (actionKeys.contains(key)) {
+                assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+            } else {
+                assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+            }
+        }
+
+        // valid keys with variable instead of integers
+        for (String key : intKeys) {
+            bundle = new Bundle();
+            bundle.putString(key, "%test");
+            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+        }
+
+        // valid keys with wrong variable format instead of integers
+        for (String key : intKeys) {
+            bundle = new Bundle();
+            bundle.putString(key, "abc123");
+            assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+        }
+    }
+
+    @Test
     public void buildBundle() throws Exception {
         String key = booleanKeys.first();
         boolean value = true;
