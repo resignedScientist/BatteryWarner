@@ -170,6 +170,13 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                     calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
                 }
                 resultBundle = TaskerHelper.buildBundle(action, calendar.getTimeInMillis());
+                break;
+            case ACTION_SAVE_GRAPH:
+                resultBundle = TaskerHelper.buildBundle(ACTION_SAVE_GRAPH, true);
+                break;
+            case ACTION_RESET_GRAPH:
+                resultBundle = TaskerHelper.buildBundle(ACTION_RESET_GRAPH, true);
+                break;
         }
         if (resultBundle != null) {
             if (!TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(resultBundle)) {
