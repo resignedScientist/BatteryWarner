@@ -146,25 +146,24 @@ class DatabaseModel extends SQLiteOpenHelper {
     }
 
     void shortenGraph(File file) {
-        DatabaseValue[] oldValues = readData(file);
-        close(file);
-        if (oldValues == null || oldValues.length <= MAX_DATA_POINTS * 2) {
-            return;
-        }
         SQLiteDatabase database = getWritableDatabase(file);
         if (database == null) {
             return;
         }
-        int divisor = oldValues.length / MAX_DATA_POINTS;
+        Cursor cursor = getCursor(database);
+        int count = cursor.getCount();
+        int divisor = count / MAX_DATA_POINTS;
         database.beginTransaction();
-        for (int i = 0; i < oldValues.length; i++) {
+        for (int i = 0; i < count; i++) {
             if (i % divisor == 0) {
                 continue;
             }
+            cursor.moveToPosition(i);
+            long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
             database.delete(
                     DatabaseContract.TABLE_NAME,
                     DatabaseContract.TABLE_COLUMN_TIME + "=?",
-                    new String[]{String.valueOf(oldValues[i].getUtcTimeInMillis())}
+                    new String[]{String.valueOf(time)}
             );
         }
         database.setTransactionSuccessful();
