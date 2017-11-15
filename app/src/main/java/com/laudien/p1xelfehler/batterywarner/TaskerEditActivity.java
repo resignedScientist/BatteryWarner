@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
@@ -196,10 +197,26 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            if (checkBundle()) {
+                finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean checkBundle() {
+        Bundle resultBundle = getResultBundle();
+        if (resultBundle == null || !isBundleValid(resultBundle)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Wrong input")
+                    .setMessage("The given value is not valid!")
+                    .setPositiveButton("Close", null)
+                    .create()
+                    .show();
+            return false;
+        }
+        return true;
     }
 
     private void enableCorrectLayout(int radioButtonId) {
