@@ -74,6 +74,12 @@ public class TaskerHelper {
 
     public static boolean checkDependencies(@NonNull Context context, @NonNull Bundle bundle) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        for (String action : ALL_ACTIONS) {
+            if (bundle.containsKey(action)
+                    && !checkDependency(context, sharedPreferences, action)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -248,10 +254,15 @@ public class TaskerHelper {
     }
 
     @Nullable
-    private static String getDependency(String action) {
+    private static boolean checkDependency(@NonNull Context context, @NonNull SharedPreferences sharedPreferences, @NonNull String action) {
         switch (action) {
+            case ACTION_TOGGLE_STOP_CHARGING:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+            case ACTION_TOGGLE_SMART_CHARGING:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))
+                        && checkDependency(context, sharedPreferences, ACTION_TOGGLE_STOP_CHARGING);
             default:
-                return null;
+                return true;
         }
     }
 }
