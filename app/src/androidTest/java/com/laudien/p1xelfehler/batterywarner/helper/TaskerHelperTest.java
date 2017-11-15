@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 
+import com.laudien.p1xelfehler.batterywarner.R;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TaskerHelperTest {
+    private Context context;
     private TreeSet<String> booleanKeys;
     private TreeSet<String> intKeys;
     private TreeSet<String> longKeys;
@@ -36,6 +39,8 @@ public class TaskerHelperTest {
 
     @Before
     public void setUp() throws Exception {
+        context = InstrumentationRegistry.getTargetContext();
+
         // keys that have a value of type boolean
         booleanKeys = new TreeSet<>();
         booleanKeys.add(ACTION_TOGGLE_CHARGING);
@@ -88,7 +93,7 @@ public class TaskerHelperTest {
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
             } else if (intKeys.contains(key)) {
-                bundle.putInt(key, 1337);
+                bundle.putInt(key, getDefaultInt(key));
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
@@ -120,7 +125,7 @@ public class TaskerHelperTest {
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
             } else if (intKeys.contains(key)) {
-                bundle.putInt(key, 1337);
+                bundle.putInt(key, getDefaultInt(key));
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
@@ -151,7 +156,7 @@ public class TaskerHelperTest {
         // valid keys with string values instead of integers
         for (String key : intKeys) {
             Bundle bundle = new Bundle();
-            bundle.putString(key, "50");
+            bundle.putString(key, getDefaultString(key));
             assertTrue(key, TaskerHelper.isBundleValid(bundle));
         }
     }
@@ -168,12 +173,26 @@ public class TaskerHelperTest {
 
     @Test
     public void isBundleValid8() throws Exception {
-
+        // testing warning high values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_warning_high_min);
+        int max = context.getResources().getInteger(R.integer.pref_warning_high_max);
+        testBundleValidValueEdgeCases(min, max, ACTION_SET_WARNING_HIGH);
     }
 
     @Test
     public void isBundleValid9() throws Exception {
+        // testing warning low values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_warning_low_min);
+        int max = context.getResources().getInteger(R.integer.pref_warning_low_max);
+        testBundleValidValueEdgeCases(min, max, ACTION_SET_WARNING_LOW);
+    }
 
+    @Test
+    public void isBundleValid10() throws Exception {
+        // testing smart charging limit values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_smart_charging_limit_min);
+        int max = context.getResources().getInteger(R.integer.pref_smart_charging_limit_max);
+        testBundleValidValueEdgeCases(min, max, ACTION_SET_SMART_CHARGING_LIMIT);
     }
 
     @Test
@@ -311,8 +330,6 @@ public class TaskerHelperTest {
 
     @Test
     public void getResultBlurb() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
-
         // unknown key
         Bundle bundle = new Bundle();
         bundle.putBoolean("randomKey", false);
@@ -332,5 +349,47 @@ public class TaskerHelperTest {
             }
             assertNotNull(key, TaskerHelper.getResultBlurb(context, bundle));
         }
+    }
+
+    private void testBundleValidValueEdgeCases(int min, int max, String action) {
+        // too high
+        Bundle bundle = new Bundle();
+        bundle.putInt(action, max + 1);
+        assertFalse("max=" + max, TaskerHelper.isBundleValid(bundle));
+
+        // too low
+        bundle = new Bundle();
+        bundle.putInt(action, min - 1);
+        assertFalse("min=" + min, TaskerHelper.isBundleValid(bundle));
+
+        // just right (upper limit)
+        bundle = new Bundle();
+        bundle.putInt(action, max);
+        assertTrue("max=" + max, TaskerHelper.isBundleValid(bundle));
+
+        // just right (lower limit)
+        bundle = new Bundle();
+        bundle.putInt(action, min);
+        assertTrue("min=" + min, TaskerHelper.isBundleValid(bundle));
+    }
+
+    private int getDefaultInt(String action) {
+        int value = 1337;
+        switch (action) {
+            case ACTION_SET_WARNING_HIGH:
+                value = context.getResources().getInteger(R.integer.pref_warning_high_default);
+                break;
+            case ACTION_SET_WARNING_LOW:
+                value = context.getResources().getInteger(R.integer.pref_warning_low_default);
+                break;
+            case ACTION_SET_SMART_CHARGING_LIMIT:
+                value = context.getResources().getInteger(R.integer.pref_smart_charging_limit_default);
+                break;
+        }
+        return value;
+    }
+
+    private String getDefaultString(String action) {
+        return String.valueOf(getDefaultInt(action));
     }
 }
