@@ -481,12 +481,42 @@ public class TaskerHelperTest {
 
     @Test
     public void checkDependencies2() throws Exception {
-        // set high battery warning
+        // set high battery warning percentage
+
+        // preparation
+        boolean oldWarningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+        int oldWarningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
+
+        // create bundles
+        Bundle trueBundle = new Bundle();
+        trueBundle.putBoolean(ACTION_SET_WARNING_HIGH, true);
+        Bundle falseBundle = new Bundle();
+        falseBundle.putBoolean(ACTION_SET_WARNING_HIGH, false);
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, trueBundle));
+        assertTrue(TaskerHelper.checkDependencies(context, falseBundle));
+
+        // dependency not fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, trueBundle));
+        assertFalse(TaskerHelper.checkDependencies(context, falseBundle));
+
+        // clean up
+        sharedPreferences.edit()
+                .putInt(context.getString(R.string.pref_warning_high), oldWarningHigh)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), oldWarningHighEnabled)
+                .apply();
     }
 
     @Test
     public void checkDependencies3() throws Exception {
-        // set low battery warning
+        // set low battery warning percentage
     }
 
     @Test
