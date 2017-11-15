@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
-    <string name="channel_description_battery_warnings">Alle Batterie-Warnungen, wie z.B. \'Der Akkustand ist höher als X%\'.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
+    <string name="channel_description_warning_high">Die \'Der Akkustand ist höher als x%\' Warnung.</string>
+    <string name="channel_description_warning_low">Die \'Der Akkustand ist niedriger als x%\' Warnung.</string>
     <string name="channel_title_battery_info">Batterie-Informationen</string>
-    <string name="channel_title_battery_warnings">Batterie Warnungen</string>
     <string name="channel_title_other_warnings">Andere Warnungen</string>
+    <string name="channel_title_warning_high">Akkust. hoch Warnung</string>
+    <string name="channel_title_warning_low">Akkust. niedrig Warnung</string>
 
     <string name="charging">Lade</string>
 
@@ -95,30 +97,35 @@
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
 
     <string name="tasker_choose_action">Wähle deine Aktion:</string>
-    <string name="tasker_headline">Hallo Sir!</string>
-    <string name="tasker_subtitle">Was für eine nette Überraschung, dich hier zu treffen! :)</string>
     <string name="tasker_disable_charging">Laden deaktivieren</string>
     <string name="tasker_disable_smart_charging">Smart Charging deaktivieren</string>
     <string name="tasker_disable_stop_charging">Stop Charging deaktivieren</string>
     <string name="tasker_disable_warning_high">Akkust.-hoch Warnung deaktivieren</string>
     <string name="tasker_disable_warning_low">Akkust.-niedrig Warnung deaktivieren</string>
+    <string name="tasker_enable">Aktivieren</string>
     <string name="tasker_enable_charging">Laden aktivieren</string>
     <string name="tasker_enable_smart_charging">Smart Charging aktivieren</string>
     <string name="tasker_enable_stop_charging">Stop Charging aktivieren</string>
     <string name="tasker_enable_warning_high">Akkust.-hoch Warnung aktivieren</string>
     <string name="tasker_enable_warning_low">Akkust.-niedrig Warnung warning</string>
-    <string name="tasker_enable">Aktivieren</string>
+    <string name="tasker_headline">Hallo Sir!</string>
     <string name="tasker_reset_graph">Aufgezeichneten Graphen zurücksetzen</string>
     <string name="tasker_save_graph">Aufgezeichneten Graphen speichern</string>
     <string name="tasker_set_smart_charging_limit">Setze Smart Charging Ladelimit</string>
     <string name="tasker_set_smart_charging_time">Setze Smart Charging Zeit</string>
     <string name="tasker_set_value">Setze deinen Wert:</string>
+    <string name="tasker_set_warning_high">Setze Akkust.-hoch Warnung</string>
+    <string name="tasker_set_warning_low">Setze Akkust.-niedrig Warnung</string>
+    <string name="tasker_subtitle">Was für eine nette Überraschung, dich hier zu treffen! :)</string>
     <string name="tasker_to">auf</string>
     <string name="tasker_toggle_charging">Laden (de-)aktivieren</string>
     <string name="tasker_toggle_smart_charging">Smart Charging (de-)aktivieren</string>
+    <string name="tasker_toggle_stop_charging">Stop Charging (de-)aktivieren</string>
     <string name="tasker_toggle_warning_high">Akkust.-hoch Warnung (de-)aktivieren</string>
     <string name="tasker_toggle_warning_low">Akkust.-niedrig Warnung (de-)aktivieren</string>
-    <string name="tasker_toggle_stop_charging">Stop Charging (de-)aktivieren</string>
+
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
 
     <string name="tile_stop_charging">Laden abbrechen</string>
     <string name="tile_warning_high">Akkust.-hoch Warnung</string>
@@ -162,6 +169,7 @@
     <string name="title_sound_uri">Benachrichtigungston ändern</string>
     <string name="title_stats">Statistiken</string>
     <string name="title_stop_charging">Laden automatisch abbrechen [Root]</string>
+    <string name="title_temp_unit">Temperatur-Einheit</string>
     <string name="title_theming">Thema</string>
     <string name="title_time_format">Zeit-Format</string>
     <string name="title_usb_charging_disabled">USB-Laden deaktivieren [Root]</string>
@@ -184,6 +192,7 @@
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>
     <string name="toast_nothing_to_delete">Kein Graph zum Löschen vorhanden!</string>
     <string name="toast_nothing_to_save">Hier gibt es nichts zum Speichern!</string>
+    <string name="toast_preference_changed">Wert gesetzt auf\ </string>
     <string name="toast_root_denied">Root-Rechte wurden verweigert! Die entsprechenden Funktionen wurden deaktiviert.</string>
     <string name="toast_stop_charging_not_enabled">\'Laden automatisch abbrechen\' muss dafür an sein!</string>
     <string name="toast_success_delete_all_graphs">Alle Graphen gelöscht!</string>
@@ -193,6 +202,7 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
-    <string name="tasker_set_warning_high">Setze Akkust.-hoch Warnung</string>
-    <string name="tasker_set_warning_low">Setze Akkust.-niedrig Warnung</string>
+    <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
+    <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
+    <string name="title_reverse_current">Stromstärke korrigieren</string>
 </resources>

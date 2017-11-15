@@ -9,11 +9,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.NumberPicker;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import android.widget.TimePicker;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.TaskerPlugin;
 import com.twofortyfouram.locale.sdk.client.ui.activity.AbstractAppCompatPluginActivity;
 import com.twofortyfouram.log.Lumberjack;
 
@@ -38,11 +40,12 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ALL_ACTIONS;
 
 public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     private static final int LAYOUT_TIME_PICKER = 0;
     private static final int LAYOUT_SWITCH = 1;
-    private static final int LAYOUT_NUMBER_PICKER = 2;
+    private static final int LAYOUT_EDIT_TEXT = 2;
     private static final int NUMBER_OF_LAYOUTS = 3;
     private View layouts[] = new View[NUMBER_OF_LAYOUTS];
     private TextView textView_setValue;
@@ -61,7 +64,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         radioGroup_action = findViewById(R.id.radio_group_action);
         layouts[LAYOUT_TIME_PICKER] = findViewById(R.id.value_time_picker);
         layouts[LAYOUT_SWITCH] = findViewById(R.id.value_switch);
-        layouts[LAYOUT_NUMBER_PICKER] = findViewById(R.id.value_number_picker);
+        layouts[LAYOUT_EDIT_TEXT] = findViewById(R.id.value_edit_text);
         ((TimePicker) layouts[LAYOUT_TIME_PICKER]).setIs24HourView(DateFormat.is24HourFormat(this));
         textView_setValue = findViewById(R.id.textView_set_value);
         enableCorrectLayout(radioGroup_action.getCheckedRadioButtonId());
@@ -100,40 +103,33 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public boolean isBundleValid(@NonNull Bundle bundle) {
-        return TaskerHelper.isBundleValid(bundle);
+        return TaskerHelper.isVariableBundleValid(this, bundle);
     }
 
     @Override
     public void onPostCreateWithPreviousResult(@NonNull Bundle bundle, @NonNull String s) {
-        int action = TaskerHelper.getAction(bundle);
-        Object value = TaskerHelper.getValue(bundle);
-        switch (action) {
-            case ACTION_TOGGLE_CHARGING:
-            case ACTION_TOGGLE_STOP_CHARGING:
-            case ACTION_TOGGLE_SMART_CHARGING:
-            case ACTION_TOGGLE_WARNING_HIGH:
-            case ACTION_TOGGLE_WARNING_LOW:
-                ((Switch) layouts[LAYOUT_SWITCH]).setChecked((Boolean) value);
-                break;
-            case ACTION_SET_WARNING_HIGH:
-            case ACTION_SET_WARNING_LOW:
-            case ACTION_SET_SMART_CHARGING_LIMIT:
-                NumberPicker numberPicker = (NumberPicker) layouts[LAYOUT_NUMBER_PICKER];
-                numberPicker.setValue((Integer) value);
-                break;
-            case ACTION_SET_SMART_CHARGING_TIME:
-                TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
-                long timeInMillis = (long) value;
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(timeInMillis);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
-                    timePicker.setMinute(calendar.get(Calendar.MINUTE));
-                } else {
-                    timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-                    timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
-                }
-                break;
+        String action = TaskerHelper.getAction(bundle);
+        if (action == null) {
+            return;
+        }
+        Object value = bundle.get(action);
+        if (value instanceof Boolean) {
+            ((Switch) layouts[LAYOUT_SWITCH]).setChecked((Boolean) value);
+        } else if (value instanceof Integer || value instanceof String) {
+            EditText editText = (EditText) layouts[LAYOUT_EDIT_TEXT];
+            editText.setText(String.valueOf(value));
+        } else if (value instanceof Long) {
+            TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
+            long timeInMillis = (long) value;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(timeInMillis);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+                timePicker.setMinute(calendar.get(Calendar.MINUTE));
+            } else {
+                timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+                timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+            }
         }
         radioGroup_action.check(getRadioButtonId(action));
     }
@@ -141,21 +137,27 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     @Nullable
     @Override
     public Bundle getResultBundle() {
+        Bundle resultBundle = null;
         int radioButtonId = radioGroup_action.getCheckedRadioButtonId();
-        int action = getAction(radioButtonId);
-        Object value = null;
+        String action = getAction(radioButtonId);
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
             case ACTION_TOGGLE_STOP_CHARGING:
             case ACTION_TOGGLE_SMART_CHARGING:
             case ACTION_TOGGLE_WARNING_HIGH:
             case ACTION_TOGGLE_WARNING_LOW:
-                value = ((Switch) layouts[LAYOUT_SWITCH]).isChecked();
+                resultBundle = TaskerHelper.buildBundle(action, ((Switch) layouts[LAYOUT_SWITCH]).isChecked());
                 break;
             case ACTION_SET_SMART_CHARGING_LIMIT:
             case ACTION_SET_WARNING_HIGH:
             case ACTION_SET_WARNING_LOW:
-                value = ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).getValue();
+                String value = ((EditText) layouts[LAYOUT_EDIT_TEXT]).getText().toString();
+                try {
+                    int intValue = Integer.valueOf(value);
+                    resultBundle = TaskerHelper.buildBundle(action, intValue);
+                } catch (NumberFormatException e) {
+                    resultBundle = TaskerHelper.buildBundle(action, value);
+                }
                 break;
             case ACTION_SET_SMART_CHARGING_TIME:
                 TimePicker timePicker = (TimePicker) layouts[LAYOUT_TIME_PICKER];
@@ -168,25 +170,53 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                     calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
                     calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
                 }
-                value = calendar.getTimeInMillis();
+                resultBundle = TaskerHelper.buildBundle(action, calendar.getTimeInMillis());
+                break;
+            case ACTION_SAVE_GRAPH:
+                resultBundle = TaskerHelper.buildBundle(ACTION_SAVE_GRAPH, true);
+                break;
+            case ACTION_RESET_GRAPH:
+                resultBundle = TaskerHelper.buildBundle(ACTION_RESET_GRAPH, true);
                 break;
         }
-        return TaskerHelper.buildBundle(action, value);
+        if (resultBundle != null) {
+            if (!TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(resultBundle)) {
+                TaskerPlugin.Setting.setVariableReplaceKeys(resultBundle, ALL_ACTIONS);
+            }
+        }
+        return resultBundle;
     }
 
     @NonNull
     @Override
     public String getResultBlurb(@NonNull Bundle bundle) {
-        return TaskerHelper.getResultBlurb(this, bundle);
+        String resultBlurb = TaskerHelper.getResultBlurb(this, bundle);
+        return resultBlurb != null ? resultBlurb : "Error!";
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            if (checkBundle()) {
+                finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean checkBundle() {
+        Bundle resultBundle = getResultBundle();
+        if (resultBundle == null || !isBundleValid(resultBundle)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Wrong input")
+                    .setMessage("The given value is not valid!")
+                    .setPositiveButton("Close", null)
+                    .create()
+                    .show();
+            return false;
+        }
+        return true;
     }
 
     private void enableCorrectLayout(int radioButtonId) {
@@ -205,19 +235,9 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 layouts[LAYOUT_SWITCH].setVisibility(View.VISIBLE);
                 break;
             case R.id.radioButton_set_smart_charging_limit:
-                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_smart_charging_limit_min));
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_smart_charging_limit_max));
-                break;
             case R.id.radioButton_set_warning_high:
-                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_warning_high_min));
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_warning_high_max));
-                break;
             case R.id.radioButton_set_warning_low:
-                layouts[LAYOUT_NUMBER_PICKER].setVisibility(View.VISIBLE);
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMinValue(getResources().getInteger(R.integer.pref_warning_low_min));
-                ((NumberPicker) layouts[LAYOUT_NUMBER_PICKER]).setMaxValue(getResources().getInteger(R.integer.pref_warning_low_max));
+                layouts[LAYOUT_EDIT_TEXT].setVisibility(View.VISIBLE);
                 break;
             case R.id.radioButton_set_smart_charging_time:
                 layouts[LAYOUT_TIME_PICKER].setVisibility(View.VISIBLE);
@@ -228,7 +248,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
     }
 
-    private int getAction(int radioButtonId) {
+    private String getAction(int radioButtonId) {
         switch (radioButtonId) {
             case R.id.radioButton_toggle_charging:
                 return ACTION_TOGGLE_CHARGING;
@@ -257,7 +277,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
     }
 
-    private int getRadioButtonId(int action) {
+    private int getRadioButtonId(String action) {
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
                 return R.id.radioButton_toggle_charging;

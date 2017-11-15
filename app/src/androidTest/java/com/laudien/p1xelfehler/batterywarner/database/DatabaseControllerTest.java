@@ -54,7 +54,7 @@ public class DatabaseControllerTest {
     public void getAllGraphsTest1() throws Exception {
         // databaseValue == null -> should return null
         DatabaseController databaseController = DatabaseController.getInstance(context);
-        assertNull(databaseController.getAllGraphs((DatabaseValue[]) null));
+        assertNull(databaseController.getAllGraphs((DatabaseValue[]) null, false, false));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class DatabaseControllerTest {
         long time = System.currentTimeMillis();
         DatabaseValue[] databaseValues = new DatabaseValue[2];
         databaseValues[0] = new DatabaseValue(batteryLevel, temperature, voltage, current, time);
-        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues);
+        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues, false, false);
 
         // 3. check graphs
         assertEquals(NUMBER_OF_GRAPHS, lineGraphSeries.length);
@@ -89,7 +89,7 @@ public class DatabaseControllerTest {
         // 4. create 1 dummy databaseValue, all values are 0
         DatabaseValue[] databaseValues = new DatabaseValue[1];
         databaseValues[0] = new DatabaseValue(0, 0, 0, 0, System.currentTimeMillis());
-        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues);
+        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues, false, false);
 
         // 5. check graphs again -> this time every graph except batteryLevel and temperature needs to be null!
         assertEquals(NUMBER_OF_GRAPHS, lineGraphSeries.length);
@@ -121,7 +121,7 @@ public class DatabaseControllerTest {
         }
 
         // check the size -> size = 2 is expected!
-        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues);
+        LineGraphSeries[] lineGraphSeries = databaseController.getAllGraphs(databaseValues, false, false);
         for (LineGraphSeries graph : lineGraphSeries) {
             int size = getSize(graph);
             assertEquals(2, size);
@@ -162,13 +162,13 @@ public class DatabaseControllerTest {
 
         // wrong inputs -> method should not be called!
         methodCalled = false;
-        databaseController.notifyValueAdded(null, 10);
+        databaseController.notifyValueAdded(null, 10, false);
         assertFalse(methodCalled);
         methodCalled = false;
-        databaseController.notifyValueAdded(getRandomDatabaseValue(), 0);
+        databaseController.notifyValueAdded(getRandomDatabaseValue(), 0, false);
         assertFalse(methodCalled);
         methodCalled = false;
-        databaseController.notifyValueAdded(getRandomDatabaseValue(), -1);
+        databaseController.notifyValueAdded(getRandomDatabaseValue(), -1, false);
         assertFalse(methodCalled);
 
         // add value to empty table -> method should be called!
@@ -178,7 +178,8 @@ public class DatabaseControllerTest {
                 databaseValue.getTemperature(),
                 databaseValue.getVoltage(),
                 databaseValue.getCurrent(),
-                databaseValue.getUtcTimeInMillis()
+                databaseValue.getUtcTimeInMillis(),
+                false
         );
         assertTrue(methodCalled);
 
@@ -218,7 +219,8 @@ public class DatabaseControllerTest {
                 databaseValue.getTemperature(),
                 databaseValue.getVoltage(),
                 databaseValue.getCurrent(),
-                databaseValue.getUtcTimeInMillis()
+                databaseValue.getUtcTimeInMillis(),
+                false
         );
         assertTrue(methodCalled);
 
@@ -230,7 +232,8 @@ public class DatabaseControllerTest {
                 anotherValue.getTemperature(),
                 anotherValue.getVoltage(),
                 anotherValue.getCurrent(),
-                databaseValue.getUtcTimeInMillis() + 1
+                databaseValue.getUtcTimeInMillis() + 1,
+                false
         );
         assertTrue(methodCalled);
 
@@ -245,7 +248,8 @@ public class DatabaseControllerTest {
                 0,
                 0,
                 0,
-                databaseValue.getUtcTimeInMillis() + 2
+                databaseValue.getUtcTimeInMillis() + 2,
+                false
         );
         assertTrue(methodCalled);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {

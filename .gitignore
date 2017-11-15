@@ -33,3 +33,5 @@ app/release/
 app/beta/debug/
 
 app/pro/debug/
+
+app/experimental/release/

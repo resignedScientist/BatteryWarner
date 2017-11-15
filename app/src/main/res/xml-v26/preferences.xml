@@ -14,7 +14,7 @@
             <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
                 <extra
                     android:name="android.provider.extra.CHANNEL_ID"
-                    android:value="@string/channel_battery_warnings" />
+                    android:value="@string/channel_warning_high" />
                 <extra
                     android:name="android.provider.extra.APP_PACKAGE"
                     android:value="@string/package_name" />
@@ -64,7 +64,7 @@
             <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS">
                 <extra
                     android:name="android.provider.extra.CHANNEL_ID"
-                    android:value="@string/channel_battery_warnings" />
+                    android:value="@string/channel_warning_low" />
                 <extra
                     android:name="android.provider.extra.APP_PACKAGE"
                     android:value="@string/package_name" />
@@ -99,6 +99,13 @@
     <PreferenceCategory
         android:key="@string/pref_stats"
         android:title="@string/title_stats">
+        <ListPreference
+            android:defaultValue="@string/pref_temp_unit_default"
+            android:entries="@array/tempUnits"
+            android:entryValues="@array/tempUnits_values"
+            android:key="@string/pref_temp_unit"
+            android:summary="%s"
+            android:title="@string/title_temp_unit" />
         <SwitchPreference
             android:defaultValue="@bool/pref_graph_enabled_default"
             android:key="@string/pref_graph_enabled"
@@ -145,6 +152,11 @@
             android:title="@string/title_info_dark_theme" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_advanced_features">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_reverse_current_default"
+            android:key="@string/pref_reverse_current"
+            android:summary="@string/summary_reverse_current"
+            android:title="@string/title_reverse_current" />
         <SwitchPreference
             android:defaultValue="@bool/pref_ac_enabled_default"
             android:dependency="@string/pref_warning_high_enabled"

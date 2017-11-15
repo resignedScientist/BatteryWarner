@@ -228,13 +228,29 @@ public final class NotificationHelper {
     @RequiresApi(api = O)
     public static void createNotificationChannels(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-        // battery warnings
+        if (notificationManager == null) {
+            return;
+        }
+        // high battery warning
         NotificationChannel channel = new NotificationChannel(
-                context.getString(R.string.channel_battery_warnings),
-                context.getString(R.string.channel_title_battery_warnings),
-                NotificationManager.IMPORTANCE_MAX
+                context.getString(R.string.channel_warning_high),
+                context.getString(R.string.channel_title_warning_high),
+                NotificationManager.IMPORTANCE_HIGH
         );
-        channel.setDescription(context.getString(R.string.channel_description_battery_warnings));
+        channel.setDescription(context.getString(R.string.channel_description_warning_high));
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATE_PATTERN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(true);
+        notificationManager.createNotificationChannel(channel);
+        // low battery warning
+        channel = new NotificationChannel(
+                context.getString(R.string.channel_warning_low),
+                context.getString(R.string.channel_title_warning_low),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription(context.getString(R.string.channel_description_warning_low));
         channel.enableLights(true);
         channel.enableVibration(true);
         channel.setVibrationPattern(VIBRATE_PATTERN);
@@ -257,7 +273,7 @@ public final class NotificationHelper {
         channel = new NotificationChannel(
                 context.getString(R.string.channel_other_warnings),
                 context.getString(R.string.channel_title_other_warnings),
-                NotificationManager.IMPORTANCE_MAX
+                NotificationManager.IMPORTANCE_HIGH
         );
         channel.setDescription(context.getString(R.string.channel_description_other_warnings));
         channel.enableLights(true);

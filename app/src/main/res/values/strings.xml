@@ -2,16 +2,17 @@
 <resources>
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
-    <string name="channel_battery_warnings" translatable="false">batteryWarnings</string>
-    <!-- notification channel descriptions -->
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
-    <string name="channel_description_battery_warnings">All kinds of battery warnings.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
+    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
+    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
     <string name="channel_other_warnings" translatable="false">otherWarnings</string>
-    <!-- notification channel titles -->
     <string name="channel_title_battery_info">Battery Information</string>
-    <string name="channel_title_battery_warnings">Battery Warnings</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_title_warning_high">High battery warning</string>
+    <string name="channel_title_warning_low">Low battery warning</string>
+    <string name="channel_warning_high" translatable="false">warningHigh</string>
+    <string name="channel_warning_low" translatable="false">warningLow</string>
 
     <!-- Subtitles under the GraphView in the GraphFragment -->
     <string name="charging">Charging</string>
@@ -122,6 +123,7 @@
     <string name="pref_info_voltage" translatable="false">infoVoltage</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
+    <string name="pref_reverse_current" translatable="false">reverseCurrent</string>
     <string name="pref_smart_charging_auto_resume" translatable="false">autoResume</string>
     <string name="pref_smart_charging_auto_resume_percentage" translatable="false">autoResumePercentage</string>
     <string name="pref_smart_charging_enabled" translatable="false">smartChargingEnabled</string>
@@ -133,6 +135,8 @@
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_temp_unit" translatable="false">temperatureUnit</string>
+    <string name="pref_temp_unit_default" translatable="false">0</string>
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
@@ -142,7 +146,6 @@
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
-    <string name="pref_current_divisor" translatable="false">currentDivisor</string>
 
     <!-- names of SharedPrefs files -->
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
@@ -159,6 +162,7 @@
     <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
+    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
@@ -194,6 +198,10 @@
     <string name="tasker_toggle_stop_charging">Toggle Stop Charging</string>
     <string name="tasker_toggle_warning_high">Toggle high battery warning</string>
     <string name="tasker_toggle_warning_low">Toggle low battery warning</string>
+
+    <!-- Temperature units -->
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
 
     <!-- qs tiles -->
     <string name="tile_stop_charging">Stop Charging</string>
@@ -231,6 +239,7 @@
     <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_preferences">Settings</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
+    <string name="title_reverse_current">Reverse Current</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
@@ -240,6 +249,7 @@
     <string name="title_sound_uri">Choose notification Sound</string>
     <string name="title_stats">Stats</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
+    <string name="title_temp_unit">Temperature unit</string>
     <string name="title_theming">Theming</string>
     <string name="title_time_format">Time format</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
@@ -256,6 +266,7 @@
     <string name="toast_error_renaming_wrong_characters">Not allowed character(s) used! Renaming failed!</string>
     <string name="toast_error_saving">Saving failed!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="toast_no_data">No data yet!</string>
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
@@ -263,6 +274,7 @@
     <string name="toast_not_rooted">You must be rooted for this!</string>
     <string name="toast_nothing_to_delete">There is nothing to delete!</string>
     <string name="toast_nothing_to_save">There is nothing to save!</string>
+    <string name="toast_preference_changed">Preference changed to\ </string>
     <string name="toast_root_denied">Root access was denied! All functions that were using it are disabled.</string>
     <string name="toast_stop_charging_not_enabled">Stop Charging has to be enabled for that!</string>
     <string name="toast_success_delete_all_graphs">All graphs removed!</string>

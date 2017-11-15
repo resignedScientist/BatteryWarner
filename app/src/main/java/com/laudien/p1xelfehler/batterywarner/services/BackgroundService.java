@@ -24,6 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
@@ -177,10 +178,10 @@ public class BackgroundService extends Service {
                     break;
                 case ACTION_CHANGE_PREFERENCE:
                     Bundle extras = intent.getExtras();
-                    if (!extras.containsKey(EXTRA_PREFERENCE_KEY) || !extras.containsKey(EXTRA_PREFERENCE_VALUE)) {
+                    if (extras == null || !extras.containsKey(EXTRA_PREFERENCE_KEY) || !extras.containsKey(EXTRA_PREFERENCE_VALUE)) {
                         throw new RuntimeException("Missing intent extras!");
                     }
-                    String key = extras.getString(EXTRA_PREFERENCE_KEY);
+                    String key = getString(extras.getInt(EXTRA_PREFERENCE_KEY));
                     Object value = extras.get(EXTRA_PREFERENCE_VALUE);
                     changePreference(key, value);
                     break;
@@ -218,7 +219,8 @@ public class BackgroundService extends Service {
             editor.putLong(key, (Long) value);
         }
         editor.apply();
-        Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key);
+        Log.d(getClass().getSimpleName(), "Preference changed by tasker: " + key + " to value: " + value);
+        Toast.makeText(this, getString(R.string.toast_preference_changed) + value + " !", Toast.LENGTH_SHORT).show();
     }
 
     private void onSaveState() {
@@ -411,7 +413,7 @@ public class BackgroundService extends Service {
                 .setContentIntent(enableChargingPendingIntent)
                 .addAction(R.drawable.ic_battery_charging_full_white_24dp, getString(R.string.notification_button_enable_charging), enableChargingPendingIntent);
         if (SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_high));
         } else { // API lower than 26 (Android Oreo)
             builder.setPriority(PRIORITY_LOW);
             if (enableSound) {
@@ -444,7 +446,7 @@ public class BackgroundService extends Service {
                 .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_high));
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
@@ -465,7 +467,7 @@ public class BackgroundService extends Service {
                 .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false))
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
-            builder.setChannelId(getString(R.string.channel_battery_warnings));
+            builder.setChannelId(getString(R.string.channel_warning_low));
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
@@ -583,6 +585,7 @@ public class BackgroundService extends Service {
         }
 
         private void handleCharging(Intent intent, boolean graphEnabled) {
+            boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
@@ -592,7 +595,7 @@ public class BackgroundService extends Service {
 
             // add a value to the database
             if (graphEnabled) {
-                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
+                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, reverseCurrent);
             }
 
             // handle warnings, Stop Charging and Smart Charging
@@ -636,7 +639,7 @@ public class BackgroundService extends Service {
                         if (timeNow >= smartChargingResumeTime) {
                             // add a graph point for optics/correctness
                             if (graphEnabled) {
-                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
+                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, reverseCurrent);
                             }
                             chargingResumedBySmartCharging = true;
                             resumeCharging();

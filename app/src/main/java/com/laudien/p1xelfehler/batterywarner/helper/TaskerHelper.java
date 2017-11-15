@@ -1,8 +1,11 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.twofortyfouram.assertion.BundleAssertions;
@@ -12,79 +15,125 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class TaskerHelper {
-    public static final int ACTION_TOGGLE_CHARGING = 0;
-    public static final int ACTION_TOGGLE_STOP_CHARGING = 1;
-    public static final int ACTION_TOGGLE_SMART_CHARGING = 2;
-    public static final int ACTION_TOGGLE_WARNING_HIGH = 3;
-    public static final int ACTION_TOGGLE_WARNING_LOW = 4;
-    public static final int ACTION_SET_WARNING_HIGH = 5;
-    public static final int ACTION_SET_WARNING_LOW = 6;
-    public static final int ACTION_SET_SMART_CHARGING_LIMIT = 7;
-    public static final int ACTION_SET_SMART_CHARGING_TIME = 8;
-    public static final int ACTION_SAVE_GRAPH = 9;
-    public static final int ACTION_RESET_GRAPH = 10;
-    private static final String EXTRA_VALUE = "toggleCharging"; // leave it like this due to backwards compatibility!
-    private static final String EXTRA_ACTION = "action";
+    public static final String ACTION_TOGGLE_CHARGING = "com.laudien.p1xelfehler.batterywarner.toggle_charging";
+    public static final String ACTION_TOGGLE_STOP_CHARGING = "com.laudien.p1xelfehler.batterywarner.toggle_stop_charging";
+    public static final String ACTION_TOGGLE_SMART_CHARGING = "com.laudien.p1xelfehler.batterywarner.toggle_smart_charging";
+    public static final String ACTION_TOGGLE_WARNING_HIGH = "com.laudien.p1xelfehler.batterywarner.toggle_warning_high";
+    public static final String ACTION_TOGGLE_WARNING_LOW = "com.laudien.p1xelfehler.batterywarner.toggle_warning_low";
+    public static final String ACTION_SET_WARNING_HIGH = "com.laudien.p1xelfehler.batterywarner.set_warning_high";
+    public static final String ACTION_SET_WARNING_LOW = "com.laudien.p1xelfehler.batterywarner.set_warning_low";
+    public static final String ACTION_SET_SMART_CHARGING_LIMIT = "com.laudien.p1xelfehler.batterywarner.set_smart_charging_limit";
+    public static final String ACTION_SET_SMART_CHARGING_TIME = "com.laudien.p1xelfehler.batterywarner.set_smart_charging_time";
+    public static final String ACTION_SAVE_GRAPH = "com.laudien.p1xelfehler.batterywarner.save_graph";
+    public static final String ACTION_RESET_GRAPH = "com.laudien.p1xelfehler.batterywarner.reset_graph";
+    public static final String[] ALL_ACTIONS = new String[]{
+            ACTION_TOGGLE_CHARGING,
+            ACTION_TOGGLE_STOP_CHARGING,
+            ACTION_TOGGLE_SMART_CHARGING,
+            ACTION_TOGGLE_WARNING_HIGH,
+            ACTION_TOGGLE_WARNING_LOW,
+            ACTION_SET_WARNING_HIGH,
+            ACTION_SET_WARNING_LOW,
+            ACTION_SET_SMART_CHARGING_LIMIT,
+            ACTION_SET_SMART_CHARGING_TIME,
+            ACTION_SAVE_GRAPH,
+            ACTION_RESET_GRAPH
+    };
 
-    public static boolean isBundleValid(Bundle bundle) {
-        if (bundle == null) {
+    public static boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
+        if (bundle.isEmpty()
+                || !containsKnownKey(bundle)
+                || getAction(bundle) == null
+                || !replaceStringsWithInts(bundle)) {
             return false;
         }
-        try {
-            int action = getAction(bundle); // defaults to ACTION_TOGGLE_CHARGING due to backwards compatibility
-            switch (action) {
-                case ACTION_TOGGLE_CHARGING:
-                case ACTION_TOGGLE_STOP_CHARGING:
-                case ACTION_TOGGLE_SMART_CHARGING:
-                case ACTION_TOGGLE_WARNING_HIGH:
-                case ACTION_TOGGLE_WARNING_LOW:
-                    BundleAssertions.assertHasBoolean(bundle, EXTRA_VALUE);
-                    break;
-                case ACTION_SET_WARNING_HIGH:
-                case ACTION_SET_WARNING_LOW:
-                case ACTION_SET_SMART_CHARGING_LIMIT:
-                    BundleAssertions.assertHasInt(bundle, EXTRA_VALUE);
-                    break;
-                case ACTION_SET_SMART_CHARGING_TIME:
-                    BundleAssertions.assertHasLong(bundle, EXTRA_VALUE);
-                    break;
-                case ACTION_SAVE_GRAPH:
-                case ACTION_RESET_GRAPH:
-                    break;
-                default:
-                    throw new AssertionError("Unknown action!");
+        for (String key : ALL_ACTIONS) {
+            if (bundle.containsKey(key) && !isValueValid(context, key, bundle)) {
+                return false;
             }
-        } catch (AssertionError e) {
-            Lumberjack.e("Bundle failed verification%s", e);
-            return false;
         }
         return true;
     }
 
-    public static Bundle buildBundle(int action, Object value) {
-        Bundle bundle = new Bundle(1);
-        bundle.putInt(EXTRA_ACTION, action);
-        if (value instanceof Boolean) {
-            bundle.putBoolean(EXTRA_VALUE, (Boolean) value);
-        } else if (value instanceof Integer) {
-            bundle.putInt(EXTRA_VALUE, (Integer) value);
-        } else if (value instanceof Long) {
-            bundle.putLong(EXTRA_VALUE, (Long) value);
+    public static boolean isVariableBundleValid(@NonNull Context context, @Nullable Bundle bundle) {
+        if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle)) {
+            return false;
         }
+        for (String action : ALL_ACTIONS) {
+            if (!bundle.containsKey(action)) {
+                continue;
+            }
+            String value = bundle.getString(action);
+            if (value == null && !isValueValid(context, action, bundle)
+                    || value != null && !TaskerPlugin.variableNameValid(value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkDependencies(@NonNull Context context, @NonNull Bundle bundle) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return true;
+    }
+
+    public static Bundle buildBundle(String action, long value) {
+        Bundle bundle = new Bundle();
+        bundle.putLong(action, value);
         return bundle;
     }
 
-    public static Object getValue(@NonNull Bundle bundle) {
-        return bundle.get(EXTRA_VALUE);
+    public static Bundle buildBundle(String action, boolean value) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(action, value);
+        return bundle;
     }
 
-    public static int getAction(@NonNull Bundle bundle) {
-        return bundle.getInt(EXTRA_ACTION, ACTION_TOGGLE_CHARGING);
+    public static Bundle buildBundle(String action, int value) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(action, value);
+        return bundle;
+    }
+
+    public static Bundle buildBundle(String action, String value) {
+        Bundle bundle = new Bundle();
+        bundle.putString(action, value);
+        return bundle;
+    }
+
+    @Nullable
+    public static String getAction(@NonNull Bundle bundle) {
+        if (bundle.containsKey(ACTION_TOGGLE_CHARGING))
+            return ACTION_TOGGLE_CHARGING;
+        if (bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING))
+            return ACTION_TOGGLE_STOP_CHARGING;
+        if (bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING))
+            return ACTION_TOGGLE_SMART_CHARGING;
+        if (bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH))
+            return ACTION_TOGGLE_WARNING_HIGH;
+        if (bundle.containsKey(ACTION_TOGGLE_WARNING_LOW))
+            return ACTION_TOGGLE_WARNING_LOW;
+        if (bundle.containsKey(ACTION_SET_WARNING_HIGH))
+            return ACTION_SET_WARNING_HIGH;
+        if (bundle.containsKey(ACTION_SET_WARNING_LOW))
+            return ACTION_SET_WARNING_LOW;
+        if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT))
+            return ACTION_SET_SMART_CHARGING_LIMIT;
+        if (bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME))
+            return ACTION_SET_SMART_CHARGING_TIME;
+        if (bundle.containsKey(ACTION_SAVE_GRAPH))
+            return ACTION_SAVE_GRAPH;
+        if (bundle.containsKey(ACTION_RESET_GRAPH))
+            return ACTION_RESET_GRAPH;
+        return null;
     }
 
     public static String getResultBlurb(Context context, @NonNull Bundle bundle) {
-        int action = TaskerHelper.getAction(bundle);
-        Object value = TaskerHelper.getValue(bundle);
+        String action = getAction(bundle);
+        Object value = bundle.get(action);
+        if (action == null || value == null) {
+            return null;
+        }
         switch (action) {
             case ACTION_TOGGLE_CHARGING:
                 return context.getString((Boolean) value ? R.string.tasker_enable_charging : R.string.tasker_disable_charging);
@@ -109,8 +158,100 @@ public class TaskerHelper {
                 return context.getString(R.string.tasker_save_graph);
             case ACTION_RESET_GRAPH:
                 return context.getString(R.string.tasker_reset_graph);
+            default: // cannot happen because the bundles are validated first
+                return null;
+        }
+    }
+
+    private static boolean containsKnownKey(@NonNull Bundle bundle) {
+        return bundle.containsKey(ACTION_TOGGLE_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING)
+                || bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH)
+                || bundle.containsKey(ACTION_TOGGLE_WARNING_LOW)
+                || bundle.containsKey(ACTION_SET_WARNING_HIGH)
+                || bundle.containsKey(ACTION_SET_WARNING_LOW)
+                || bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)
+                || bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME)
+                || bundle.containsKey(ACTION_SAVE_GRAPH)
+                || bundle.containsKey(ACTION_RESET_GRAPH);
+    }
+
+    private static boolean replaceStringsWithInts(Bundle bundle) {
+        for (String action : ALL_ACTIONS) {
+            if (!bundle.containsKey(action) || bundle.getString(action) == null) {
+                continue;
+            }
+            String value = bundle.getString(action);
+            try {
+                int intValue = Integer.valueOf(value);
+                bundle.putInt(action, intValue);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isValueValid(@NonNull Context context, @NonNull String action, @NonNull Bundle bundle) {
+        try {
+            int value;
+            switch (action) {
+                case ACTION_TOGGLE_CHARGING:
+                case ACTION_TOGGLE_STOP_CHARGING:
+                case ACTION_TOGGLE_SMART_CHARGING:
+                case ACTION_TOGGLE_WARNING_HIGH:
+                case ACTION_TOGGLE_WARNING_LOW:
+                    BundleAssertions.assertHasBoolean(bundle, action);
+                    break;
+                case ACTION_SET_WARNING_HIGH:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    value = bundle.getInt(ACTION_SET_WARNING_HIGH);
+                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_high_min), context.getResources().getInteger(R.integer.pref_warning_high_max), value)) {
+                        return false;
+                    }
+                    break;
+                case ACTION_SET_WARNING_LOW:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    value = bundle.getInt(ACTION_SET_WARNING_LOW);
+                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_low_min), context.getResources().getInteger(R.integer.pref_warning_low_max), value)) {
+                        return false;
+                    }
+                    break;
+                case ACTION_SET_SMART_CHARGING_LIMIT:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    int min = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
+                    value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
+                    if (!isIntegerValid(min, context.getResources().getInteger(R.integer.pref_smart_charging_limit_max), value)) {
+                        return false;
+                    }
+                    break;
+                case ACTION_SET_SMART_CHARGING_TIME:
+                    BundleAssertions.assertHasLong(bundle, action);
+                    break;
+                case ACTION_SAVE_GRAPH:
+                case ACTION_RESET_GRAPH:
+                    break;
+                default:
+                    return false;
+            }
+        } catch (AssertionError e) {
+            Lumberjack.e("Bundle failed verification%s", e);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean isIntegerValid(int min, int max, int value) {
+        return !(value < min || value > max);
+    }
+
+    @Nullable
+    private static String getDependency(String action) {
+        switch (action) {
             default:
-                return "Error!";
+                return null;
         }
     }
 }

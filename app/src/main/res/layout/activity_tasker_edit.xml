@@ -165,10 +165,11 @@
                 android:text="@string/tasker_enable"
                 android:visibility="gone" />
 
-            <NumberPicker
-                android:id="@+id/value_number_picker"
+            <EditText
+                android:id="@+id/value_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Number or variable"
                 android:visibility="gone" />
         </FrameLayout>
     </android.support.constraint.ConstraintLayout>

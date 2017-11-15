@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">La notification permanente avec toutes les infos de la batterie et la notification \'Charging Service \'.</string>
-    <string name="channel_description_battery_warnings">Tous les types d\'alertes de batterie.</string>
     <string name="channel_description_other_warnings">D\'autres alertes importantes, par exemple, si l\'application n\'a plus d'accès root.</string>
     <string name="channel_title_battery_info">Informations sur la batterie</string>
-    <string name="channel_title_battery_warnings">Alertes de batterie</string>
     <string name="channel_title_other_warnings">Autres alertes</string>
 
     <string name="charging">En charge</string>
@@ -196,4 +194,15 @@
     <string name="tasker_toggle_warning_high">Toggle high battery warning</string>
     <string name="tasker_toggle_warning_low">Toggle low battery warning</string>
     <string name="tasker_toggle_stop_charging">Toggle Stop Charging</string>
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="title_temp_unit">Temperature unit</string>
+    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
+    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
+    <string name="channel_title_warning_high">High battery warning</string>
+    <string name="channel_title_warning_low">Low battery warning</string>
+    <string name="toast_preference_changed">Preference changed to\ </string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
+    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
+    <string name="title_reverse_current">Reverse Current</string>
 </resources>

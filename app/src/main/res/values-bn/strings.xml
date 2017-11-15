@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
     <string name="channel_description_battery_info">সকল ব্যাটারির তথ্যসহ স্থায়ী নোটিফিকেশন \'Charging Service\'</string>
-    <string name="channel_description_battery_warnings">সব ধরণের ব্যাটারি সতর্কবার্তা</string>
     <string name="channel_description_other_warnings">অন্যান্য সতর্ক সংকেত, যেমন রুট অনুমতি না পেলে!</string>
     <string name="channel_title_battery_info">ব্যাটারি তথ্য</string>
-    <string name="channel_title_battery_warnings">ব্যাটারি সতর্কবার্তাসমূহ</string>
     <string name="channel_title_other_warnings">অন্যান্য সতর্কবার্তাসমূহ</string>
 
     <string name="charging">চার্জিং</string>
@@ -197,4 +195,15 @@
     <!-- new strings -->
     <string name="tasker_set_warning_high">Set high battery warning</string>
     <string name="tasker_set_warning_low">Set low battery warning</string>
+    <string name="temperature_unit_celsius">Celsius (°C)</string>
+    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="title_temp_unit">Temperature unit</string>
+    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
+    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
+    <string name="channel_title_warning_high">High battery warning</string>
+    <string name="channel_title_warning_low">Low battery warning</string>
+    <string name="toast_preference_changed">Preference changed to\ </string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
+    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
+    <string name="title_reverse_current">Reverse Current</string>
 </resources>
