@@ -38,9 +38,8 @@ public class TaskerHelper {
             ACTION_RESET_GRAPH
     };
 
-    public static boolean isBundleValid(Bundle bundle) {
-        if (bundle == null
-                || bundle.isEmpty()
+    public static boolean isBundleValid(@NonNull Bundle bundle) {
+        if (bundle.isEmpty()
                 || !containsKnownKey(bundle)
                 || getAction(bundle) == null
                 || !replaceStringsWithInts(bundle)) {
