@@ -221,6 +221,7 @@ public class TaskerHelper {
 
     private static boolean isValueValid(String action, Bundle bundle) {
         try {
+            int value;
             switch (action) {
                 case ACTION_TOGGLE_CHARGING:
                 case ACTION_TOGGLE_STOP_CHARGING:
@@ -230,9 +231,25 @@ public class TaskerHelper {
                     BundleAssertions.assertHasBoolean(bundle, action);
                     break;
                 case ACTION_SET_WARNING_HIGH:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    value = bundle.getInt(ACTION_SET_WARNING_HIGH);
+                    if (!isIntegerValid(60, 100, value)) {
+                        return false;
+                    }
+                    break;
                 case ACTION_SET_WARNING_LOW:
+                    BundleAssertions.assertHasInt(bundle, action);
+                    value = bundle.getInt(ACTION_SET_WARNING_LOW);
+                    if (!isIntegerValid(5, 40, value)) {
+                        return false;
+                    }
+                    break;
                 case ACTION_SET_SMART_CHARGING_LIMIT:
                     BundleAssertions.assertHasInt(bundle, action);
+                    value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
+                    if (!isIntegerValid(80, 100, value)) {
+                        return false;
+                    }
                     break;
                 case ACTION_SET_SMART_CHARGING_TIME:
                     BundleAssertions.assertHasLong(bundle, action);

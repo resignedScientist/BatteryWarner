@@ -216,7 +216,7 @@ public class TaskerHelperTest {
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
             } else if (intKeys.contains(key)) {
-                bundle.putInt(key, 1337);
+                bundle.putInt(key, getDefaultInt(key));
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
@@ -242,7 +242,7 @@ public class TaskerHelperTest {
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
             } else if (intKeys.contains(key)) {
-                bundle.putInt(key, 1337);
+                bundle.putInt(key, getDefaultInt(key));
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
@@ -277,6 +277,30 @@ public class TaskerHelperTest {
             bundle.putString(key, "abc123");
             assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
         }
+    }
+
+    @Test
+    public void isVariableBundleValid1() throws Exception {
+        // testing warning high values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_warning_high_min);
+        int max = context.getResources().getInteger(R.integer.pref_warning_high_max);
+        testVariableBundleValidValueEdgeCases(min, max, ACTION_SET_WARNING_HIGH);
+    }
+
+    @Test
+    public void isVariableBundleValid2() throws Exception {
+        // testing warning low values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_warning_low_min);
+        int max = context.getResources().getInteger(R.integer.pref_warning_low_max);
+        testVariableBundleValidValueEdgeCases(min, max, ACTION_SET_WARNING_LOW);
+    }
+
+    @Test
+    public void isVariableBundleValid3() throws Exception {
+        // testing smart charging limit values (edge cases)
+        int min = context.getResources().getInteger(R.integer.pref_smart_charging_limit_min);
+        int max = context.getResources().getInteger(R.integer.pref_smart_charging_limit_max);
+        testVariableBundleValidValueEdgeCases(min, max, ACTION_SET_SMART_CHARGING_LIMIT);
     }
 
     @Test
@@ -371,6 +395,28 @@ public class TaskerHelperTest {
         bundle = new Bundle();
         bundle.putInt(action, min);
         assertTrue("min=" + min, TaskerHelper.isBundleValid(bundle));
+    }
+
+    private void testVariableBundleValidValueEdgeCases(int min, int max, String action) {
+        // too high
+        Bundle bundle = new Bundle();
+        bundle.putInt(action, max + 1);
+        assertFalse("max=" + max, TaskerHelper.isVariableBundleValid(bundle));
+
+        // too low
+        bundle = new Bundle();
+        bundle.putInt(action, min - 1);
+        assertFalse("min=" + min, TaskerHelper.isVariableBundleValid(bundle));
+
+        // just right (upper limit)
+        bundle = new Bundle();
+        bundle.putInt(action, max);
+        assertTrue("max=" + max, TaskerHelper.isVariableBundleValid(bundle));
+
+        // just right (lower limit)
+        bundle = new Bundle();
+        bundle.putInt(action, min);
+        assertTrue("min=" + min, TaskerHelper.isVariableBundleValid(bundle));
     }
 
     private int getDefaultInt(String action) {
