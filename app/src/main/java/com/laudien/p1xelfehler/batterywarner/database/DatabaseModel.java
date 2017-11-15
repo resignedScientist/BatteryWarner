@@ -23,6 +23,7 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 5; // if the version is changed, a new database will be created!
+    private static final int MAX_DATA_POINTS = 200;
     private HashMap<String, SQLiteDatabase> openedDatabases = new HashMap<>();
 
     DatabaseModel(Context context) {
@@ -144,6 +145,33 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
+    void shortenGraph(File file) {
+        DatabaseValue[] oldValues = readData(file);
+        close(file);
+        if (oldValues == null || oldValues.length <= MAX_DATA_POINTS * 2) {
+            return;
+        }
+        SQLiteDatabase database = getWritableDatabase(file);
+        if (database == null) {
+            return;
+        }
+        int divisor = oldValues.length / MAX_DATA_POINTS;
+        database.beginTransaction();
+        for (int i = 0; i < oldValues.length; i++) {
+            if (i % divisor == 0) {
+                continue;
+            }
+            database.delete(
+                    DatabaseContract.TABLE_NAME,
+                    DatabaseContract.TABLE_COLUMN_TIME + "=?",
+                    new String[]{String.valueOf(oldValues[i].getUtcTimeInMillis())}
+            );
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        close(file);
+    }
+
     // ==== GENERAL STUFF ====
 
     private DatabaseValue[] readData(Cursor cursor) {
@@ -218,6 +246,24 @@ class DatabaseModel extends SQLiteOpenHelper {
                         SQLiteDatabase.OPEN_READONLY
                 );
             }
+            openedDatabases.put(databaseFile.getPath(), database);
+            return database;
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private SQLiteDatabase getWritableDatabase(File databaseFile) {
+        if (openedDatabases.containsKey(databaseFile.getPath())) {
+            return openedDatabases.get(databaseFile.getPath());
+        }
+        try {
+            SQLiteDatabase database = SQLiteDatabase.openDatabase(
+                    databaseFile.getPath(),
+                    null,
+                    SQLiteDatabase.OPEN_READWRITE
+            );
             openedDatabases.put(databaseFile.getPath(), database);
             return database;
         } catch (SQLiteException e) {

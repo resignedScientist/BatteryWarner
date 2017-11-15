@@ -224,6 +224,7 @@ public class DatabaseController {
                         e.printStackTrace();
                         return false;
                     }
+                    databaseModel.shortenGraph(outputFile);
                     Log.d("GraphSaver", "Graph saved!");
                     result = true;
                 }
