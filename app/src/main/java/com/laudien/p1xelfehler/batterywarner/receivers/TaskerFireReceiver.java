@@ -43,7 +43,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
 
     @Override
     protected boolean isAsync() {
-        return false;
+        return true;
     }
 
     @Override
