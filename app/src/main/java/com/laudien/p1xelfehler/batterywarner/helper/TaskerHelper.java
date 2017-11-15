@@ -45,43 +45,10 @@ public class TaskerHelper {
                 || !replaceStringsWithInts(bundle)) {
             return false;
         }
-        try {
-            if (bundle.containsKey(ACTION_TOGGLE_CHARGING))
-                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_CHARGING);
-            if (bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING))
-                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_STOP_CHARGING);
-            if (bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING))
-                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_SMART_CHARGING);
-            if (bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH))
-                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_WARNING_HIGH);
-            if (bundle.containsKey(ACTION_TOGGLE_WARNING_LOW))
-                BundleAssertions.assertHasBoolean(bundle, ACTION_TOGGLE_WARNING_LOW);
-            if (bundle.containsKey(ACTION_SET_WARNING_HIGH)) {
-                BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_HIGH);
-                int value = bundle.getInt(ACTION_SET_WARNING_HIGH);
-                if (!isIntegerValid(60, 100, value)) {
-                    return false;
-                }
+        for (String key : ALL_ACTIONS) {
+            if (bundle.containsKey(key) && !isValueValid(key, bundle)) {
+                return false;
             }
-            if (bundle.containsKey(ACTION_SET_WARNING_LOW)) {
-                BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_LOW);
-                int value = bundle.getInt(ACTION_SET_WARNING_LOW);
-                if (!isIntegerValid(5, 40, value)) {
-                    return false;
-                }
-            }
-            if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)) {
-                BundleAssertions.assertHasInt(bundle, ACTION_SET_SMART_CHARGING_LIMIT);
-                int value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
-                if (!isIntegerValid(80, 100, value)) {
-                    return false;
-                }
-            }
-            if (bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME))
-                BundleAssertions.assertHasLong(bundle, ACTION_SET_SMART_CHARGING_TIME);
-        } catch (AssertionError e) {
-            Lumberjack.e("Bundle failed verification%s", e);
-            return false;
         }
         return true;
     }
