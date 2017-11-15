@@ -151,6 +151,9 @@ class DatabaseModel extends SQLiteOpenHelper {
             return;
         }
         Cursor cursor = getCursor(database);
+        if (cursor == null || cursor.isClosed() || cursor.getCount() <= MAX_DATA_POINTS * 2) {
+            return;
+        }
         int count = cursor.getCount();
         int divisor = count / MAX_DATA_POINTS;
         database.beginTransaction();
@@ -168,6 +171,7 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
         database.setTransactionSuccessful();
         database.endTransaction();
+        cursor.close();
         close(file);
     }
 
