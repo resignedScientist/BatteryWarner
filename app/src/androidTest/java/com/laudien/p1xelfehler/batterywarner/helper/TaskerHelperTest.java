@@ -551,6 +551,11 @@ public class TaskerHelperTest {
         // set smart charging time
     }
 
+    @Test
+    public void checkDependencies6() throws Exception {
+        // action without dependency and unknown action
+    }
+
     private void testBundleValidValueEdgeCases(int min, int max, String action) {
         // too high
         Bundle bundle = new Bundle();
