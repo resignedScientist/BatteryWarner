@@ -389,6 +389,36 @@ public class TaskerHelperTest {
         }
     }
 
+    @Test
+    public void checkDependencies() throws Exception {
+        // toggle stop charging
+    }
+
+    @Test
+    public void checkDependencies1() throws Exception {
+        // toggle smart charging
+    }
+
+    @Test
+    public void checkDependencies2() throws Exception {
+        // set high battery warning
+    }
+
+    @Test
+    public void checkDependencies3() throws Exception {
+        // set low battery warning
+    }
+
+    @Test
+    public void checkDependencies4() throws Exception {
+        // set smart charging percentage limit
+    }
+
+    @Test
+    public void checkDependencies5() throws Exception {
+        // set smart charging time
+    }
+
     private void testBundleValidValueEdgeCases(int min, int max, String action) {
         // too high
         Bundle bundle = new Bundle();
