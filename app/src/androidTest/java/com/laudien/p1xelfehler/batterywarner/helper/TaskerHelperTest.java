@@ -66,21 +66,24 @@ public class TaskerHelperTest {
 
     @Test
     public void isBundleValid() throws Exception {
-        byte randomByte = (byte) 2;
-        // bundle == null
-        assertFalse(TaskerHelper.isBundleValid(null));
-
         // bundle is empty
         Bundle bundle = new Bundle();
         assertFalse(TaskerHelper.isBundleValid(bundle));
+    }
 
+    @Test
+    public void isBundleValid1() throws Exception {
         // unknown key
+        Bundle bundle = new Bundle();
         bundle.putLong("randomKey", 1337);
         assertFalse(TaskerHelper.isBundleValid(bundle));
+    }
 
+    @Test
+    public void isBundleValid2() throws Exception {
         // unknown key and a valid key
         for (String key : ALL_ACTIONS) {
-            bundle = new Bundle();
+            Bundle bundle = new Bundle();
             bundle.putLong("randomKey", 1337);
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
@@ -89,25 +92,31 @@ public class TaskerHelperTest {
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
-                bundle.putByte(key, randomByte);
+                bundle.putByte(key, (byte) 2);
             }
             assertTrue(key, TaskerHelper.isBundleValid(bundle));
         }
+    }
 
+    @Test
+    public void isBundleValid3() throws Exception {
         // known keys but wrong value types
         for (String key : ALL_ACTIONS) {
-            bundle = new Bundle();
-            bundle.putByte(key, randomByte);
+            Bundle bundle = new Bundle();
+            bundle.putByte(key, (byte) 2);
             if (actionKeys.contains(key)) {
                 assertTrue(key, TaskerHelper.isBundleValid(bundle));
             } else {
                 assertFalse(key, TaskerHelper.isBundleValid(bundle));
             }
         }
+    }
 
+    @Test
+    public void isBundleValid4() throws Exception {
         // one valid key with valid type
         for (String key : ALL_ACTIONS) {
-            bundle = new Bundle();
+            Bundle bundle = new Bundle();
             if (booleanKeys.contains(key)) {
                 bundle.putBoolean(key, true);
             } else if (intKeys.contains(key)) {
@@ -115,37 +124,56 @@ public class TaskerHelperTest {
             } else if (longKeys.contains(key)) {
                 bundle.putLong(key, 1337);
             } else if (actionKeys.contains(key)) {
-                bundle.putByte(key, randomByte);
+                bundle.putByte(key, (byte) 2);
             }
             assertTrue(key, TaskerHelper.isBundleValid(bundle));
         }
+    }
 
+    @Test
+    public void isBundleValid5() throws Exception {
         // one valid key, one known key with wrong type
-        bundle = new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putBoolean(booleanKeys.first(), true);
         for (String key : ALL_ACTIONS) {
             bundle = new Bundle();
-            bundle.putByte(key, randomByte);
+            bundle.putByte(key, (byte) 2);
             if (actionKeys.contains(key)) {
                 assertTrue(key, TaskerHelper.isBundleValid(bundle));
             } else {
                 assertFalse(key, TaskerHelper.isBundleValid(bundle));
             }
         }
+    }
 
+    @Test
+    public void isBundleValid6() throws Exception {
         // valid keys with string values instead of integers
         for (String key : intKeys) {
-            bundle = new Bundle();
+            Bundle bundle = new Bundle();
             bundle.putString(key, "50");
             assertTrue(key, TaskerHelper.isBundleValid(bundle));
         }
+    }
 
+    @Test
+    public void isBundleValid7() throws Exception {
         // valid keys with not parsable string values instead of integers
         for (String key : intKeys) {
-            bundle = new Bundle();
+            Bundle bundle = new Bundle();
             bundle.putString(key, "abc123");
             assertFalse(key, TaskerHelper.isBundleValid(bundle));
         }
+    }
+
+    @Test
+    public void isBundleValid8() throws Exception {
+
+    }
+
+    @Test
+    public void isBundleValid9() throws Exception {
+
     }
 
     @Test
