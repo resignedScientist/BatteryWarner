@@ -261,6 +261,8 @@ public class TaskerHelper {
             case ACTION_TOGGLE_SMART_CHARGING:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default))
                         && checkDependency(context, sharedPreferences, ACTION_TOGGLE_STOP_CHARGING);
+            case ACTION_SET_WARNING_HIGH:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
             default:
                 return true;
         }
