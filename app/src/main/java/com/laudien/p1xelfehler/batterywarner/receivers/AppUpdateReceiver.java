@@ -27,35 +27,38 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 public class AppUpdateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
-                return; // return if intro was not finished
+        if (intent == null
+                || intent.getAction() == null
+                || !intent.getAction().equals("android.intent.action.MY_PACKAGE_REPLACED")) {
+            return;
+        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true))
+            return; // return if intro was not finished
 
-            Log.d(getClass().getSimpleName(), "App update received!");
-            // create notification channels
-            if (SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationHelper.createNotificationChannels(context);
-            }
-            // upgrade databases if necessary
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        DatabaseController databaseController = DatabaseController.getInstance(context);
-                        databaseController.upgradeAllSavedDatabases(context);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+        Log.d(getClass().getSimpleName(), "App update received!");
+        // create notification channels
+        if (SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationHelper.createNotificationChannels(context);
+        }
+        // upgrade databases if necessary
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    DatabaseController databaseController = DatabaseController.getInstance(context);
+                    databaseController.upgradeAllSavedDatabases(context);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-            // check if one of the root preferences is enabled
-            boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
-            if (oneRootPermissionIsEnabled) { // this notification starts the service on click
-                NotificationHelper.showNotification(context, ID_GRANT_ROOT);
-            } else { // start the service directly
-                ServiceHelper.startService(context.getApplicationContext());
             }
+        });
+        // check if one of the root preferences is enabled
+        boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
+        if (oneRootPermissionIsEnabled) { // this notification starts the service on click
+            NotificationHelper.showNotification(context, ID_GRANT_ROOT);
+        } else { // start the service directly
+            ServiceHelper.startService(context.getApplicationContext());
         }
     }
 }
