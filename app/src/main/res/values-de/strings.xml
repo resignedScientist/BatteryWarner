@@ -202,4 +202,5 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
+    <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
 </resources>

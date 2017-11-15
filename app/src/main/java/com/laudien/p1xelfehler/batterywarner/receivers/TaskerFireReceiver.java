@@ -36,7 +36,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     protected boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
         boolean valid = TaskerHelper.isBundleValid(context, bundle);
         if (!valid) {
-            Toast.makeText(context, "Invalid settings!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.toast_invalid_tasker_settings, Toast.LENGTH_SHORT).show();
         }
         return valid;
     }

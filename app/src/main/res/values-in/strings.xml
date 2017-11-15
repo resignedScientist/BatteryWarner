@@ -205,4 +205,5 @@
     <string name="channel_title_warning_high">High battery warning</string>
     <string name="channel_title_warning_low">Low battery warning</string>
     <string name="toast_preference_changed">Preference changed to\ </string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
 </resources>

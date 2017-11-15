@@ -279,6 +279,7 @@
     <string name="toast_success_renaming">File renamed!</string>
     <string name="toast_success_saving">The graph was saved to history!</string>
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
 
     <!-- units after a slider in a SeekBarPreference -->
     <string name="unit_days">\ days</string>
