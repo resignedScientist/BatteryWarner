@@ -153,6 +153,11 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_advanced_features">
         <SwitchPreference
+            android:defaultValue="@bool/pref_reverse_current_default"
+            android:key="@string/pref_reverse_current"
+            android:summary="@string/summary_reverse_current"
+            android:title="@string/title_reverse_current" />
+        <SwitchPreference
             android:defaultValue="@bool/pref_ac_enabled_default"
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_ac_enabled"

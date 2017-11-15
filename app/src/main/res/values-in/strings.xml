@@ -206,4 +206,6 @@
     <string name="channel_title_warning_low">Low battery warning</string>
     <string name="toast_preference_changed">Preference changed to\ </string>
     <string name="toast_invalid_tasker_settings">Invalid settings!</string>
+    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
+    <string name="title_reverse_current">Reverse Current</string>
 </resources>

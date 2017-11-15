@@ -105,7 +105,6 @@
     <string name="pref_checkBox_percent" translatable="false">checkBoxPercent</string>
     <string name="pref_checkBox_temperature" translatable="false">checkBoxTemperature</string>
     <string name="pref_checkBox_voltage" translatable="false">checkBoxVoltage</string>
-    <string name="pref_current_divisor" translatable="false">currentDivisor</string>
     <string name="pref_dark_info_notification" translatable="false">infoDarkTheme</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
@@ -124,6 +123,7 @@
     <string name="pref_info_voltage" translatable="false">infoVoltage</string>
     <string name="pref_power_saving_mode" translatable="false">enablePowerSavingMode</string>
     <string name="pref_reset_battery_stats" translatable="false">resetBatteryStats</string>
+    <string name="pref_reverse_current" translatable="false">reverseCurrent</string>
     <string name="pref_smart_charging_auto_resume" translatable="false">autoResume</string>
     <string name="pref_smart_charging_auto_resume_percentage" translatable="false">autoResumePercentage</string>
     <string name="pref_smart_charging_enabled" translatable="false">smartChargingEnabled</string>
@@ -162,6 +162,7 @@
     <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
+    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
@@ -238,6 +239,7 @@
     <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_preferences">Settings</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
+    <string name="title_reverse_current">Reverse Current</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="title_smart_charging_auto_resume_percentage">Auto Resume percentage:</string>
@@ -264,6 +266,7 @@
     <string name="toast_error_renaming_wrong_characters">Not allowed character(s) used! Renaming failed!</string>
     <string name="toast_error_saving">Saving failed!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
+    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="toast_no_data">No data yet!</string>
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
@@ -279,7 +282,6 @@
     <string name="toast_success_renaming">File renamed!</string>
     <string name="toast_success_saving">The graph was saved to history!</string>
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
-    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
 
     <!-- units after a slider in a SeekBarPreference -->
     <string name="unit_days">\ days</string>
