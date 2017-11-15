@@ -392,6 +392,36 @@ public class TaskerHelperTest {
     @Test
     public void checkDependencies() throws Exception {
         // toggle stop charging
+
+        // preparation
+        boolean oldStopCharging = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+        boolean oldWarningHigh = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+
+        // create bundles
+        Bundle trueBundle = new Bundle();
+        trueBundle.putBoolean(ACTION_TOGGLE_STOP_CHARGING, true);
+        Bundle falseBundle = new Bundle();
+        falseBundle.putBoolean(ACTION_TOGGLE_STOP_CHARGING, false);
+
+        // dependency not fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, trueBundle));
+        assertFalse(TaskerHelper.checkDependencies(context, falseBundle));
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, trueBundle));
+        assertTrue(TaskerHelper.checkDependencies(context, falseBundle));
+
+        // clean up
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_stop_charging), oldStopCharging)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), oldWarningHigh)
+                .apply();
     }
 
     @Test
