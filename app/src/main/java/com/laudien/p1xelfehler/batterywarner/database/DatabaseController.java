@@ -328,41 +328,41 @@ public class DatabaseController {
     // ==== GENERAL STUFF ====
 
     LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
-        if (databaseValues != null) {
-            LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-            graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
-            graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
-            if (databaseValues[0].getVoltage() != 0)
-                graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
-            if (databaseValues[0].getCurrent() != 0)
-                graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
-            long startTime = databaseValues[0].getUtcTimeInMillis();
-            int maxDataPoints = databaseValues.length;
-            int lastDatabaseValue = -1;
-            int numberOfValidValues = 0;
-            for (int i = 0; i < databaseValues.length; i++) {
-                if (databaseValues[i] != null) {
-                    long time = databaseValues[i].getUtcTimeInMillis() - startTime;
-                    double timeInMinutes = (double) time / (1000 * 60);
-                    for (int j = 0; j < NUMBER_OF_GRAPHS; j++) {
-                        if (lastDatabaseValue == -1 || databaseValues[i].get(j) != databaseValues[lastDatabaseValue].get(j)) {
-                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
-                        }
-                    }
-                    lastDatabaseValue = i;
-                    numberOfValidValues++;
-                }
-            }
-            if (lastDatabaseValue != -1 && numberOfValidValues > 1) {
-                long time = databaseValues[lastDatabaseValue].getUtcTimeInMillis() - startTime;
-                double timeInMinutes = (double) time / (1000 * 60);
-                for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
-                }
-            }
-            return graphs;
+        if (databaseValues == null || databaseValues[0] == null) {
+            return null;
         }
-        return null;
+        LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
+        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+        if (databaseValues[0].getVoltage() != 0)
+            graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
+        if (databaseValues[0].getCurrent() != 0)
+            graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
+        long startTime = databaseValues[0].getUtcTimeInMillis();
+        int maxDataPoints = databaseValues.length;
+        int lastDatabaseValue = -1;
+        int numberOfValidValues = 0;
+        for (int i = 0; i < databaseValues.length; i++) {
+            if (databaseValues[i] != null) {
+                long time = databaseValues[i].getUtcTimeInMillis() - startTime;
+                double timeInMinutes = (double) time / (1000 * 60);
+                for (int j = 0; j < NUMBER_OF_GRAPHS; j++) {
+                    if (lastDatabaseValue == -1 || databaseValues[i].get(j) != databaseValues[lastDatabaseValue].get(j)) {
+                        appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
+                    }
+                }
+                lastDatabaseValue = i;
+                numberOfValidValues++;
+            }
+        }
+        if (lastDatabaseValue != -1 && numberOfValidValues > 1) {
+            long time = databaseValues[lastDatabaseValue].getUtcTimeInMillis() - startTime;
+            double timeInMinutes = (double) time / (1000 * 60);
+            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
+            }
+        }
+        return graphs;
     }
 
     private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit, boolean reverseCurrent) {
