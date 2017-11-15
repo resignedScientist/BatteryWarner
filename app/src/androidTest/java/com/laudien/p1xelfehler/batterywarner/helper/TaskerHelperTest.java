@@ -1,7 +1,9 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -32,6 +34,8 @@ import static org.junit.Assert.assertTrue;
 
 public class TaskerHelperTest {
     private Context context;
+    private SharedPreferences sharedPreferences;
+    private int oldWarningHigh;
     private TreeSet<String> booleanKeys;
     private TreeSet<String> intKeys;
     private TreeSet<String> longKeys;
@@ -40,6 +44,11 @@ public class TaskerHelperTest {
     @Before
     public void setUp() throws Exception {
         context = InstrumentationRegistry.getTargetContext();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        oldWarningHigh = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
+        sharedPreferences.edit()
+                .putInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_min))
+                .apply();
 
         // keys that have a value of type boolean
         booleanKeys = new TreeSet<>();
@@ -67,13 +76,16 @@ public class TaskerHelperTest {
 
     @After
     public void tearDown() throws Exception {
+        sharedPreferences.edit()
+                .putInt(context.getString(R.string.pref_warning_high), oldWarningHigh)
+                .apply();
     }
 
     @Test
     public void isBundleValid() throws Exception {
         // bundle is empty
         Bundle bundle = new Bundle();
-        assertFalse(TaskerHelper.isBundleValid(bundle));
+        assertFalse(TaskerHelper.isBundleValid(context, bundle));
     }
 
     @Test
@@ -81,7 +93,7 @@ public class TaskerHelperTest {
         // unknown key
         Bundle bundle = new Bundle();
         bundle.putLong("randomKey", 1337);
-        assertFalse(TaskerHelper.isBundleValid(bundle));
+        assertFalse(TaskerHelper.isBundleValid(context, bundle));
     }
 
     @Test
@@ -99,7 +111,7 @@ public class TaskerHelperTest {
             } else if (actionKeys.contains(key)) {
                 bundle.putByte(key, (byte) 2);
             }
-            assertTrue(key, TaskerHelper.isBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isBundleValid(context, bundle));
         }
     }
 
@@ -110,9 +122,9 @@ public class TaskerHelperTest {
             Bundle bundle = new Bundle();
             bundle.putByte(key, (byte) 2);
             if (actionKeys.contains(key)) {
-                assertTrue(key, TaskerHelper.isBundleValid(bundle));
+                assertTrue(key, TaskerHelper.isBundleValid(context, bundle));
             } else {
-                assertFalse(key, TaskerHelper.isBundleValid(bundle));
+                assertFalse(key, TaskerHelper.isBundleValid(context, bundle));
             }
         }
     }
@@ -131,7 +143,7 @@ public class TaskerHelperTest {
             } else if (actionKeys.contains(key)) {
                 bundle.putByte(key, (byte) 2);
             }
-            assertTrue(key, TaskerHelper.isBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isBundleValid(context, bundle));
         }
     }
 
@@ -144,9 +156,9 @@ public class TaskerHelperTest {
             bundle = new Bundle();
             bundle.putByte(key, (byte) 2);
             if (actionKeys.contains(key)) {
-                assertTrue(key, TaskerHelper.isBundleValid(bundle));
+                assertTrue(key, TaskerHelper.isBundleValid(context, bundle));
             } else {
-                assertFalse(key, TaskerHelper.isBundleValid(bundle));
+                assertFalse(key, TaskerHelper.isBundleValid(context, bundle));
             }
         }
     }
@@ -157,7 +169,7 @@ public class TaskerHelperTest {
         for (String key : intKeys) {
             Bundle bundle = new Bundle();
             bundle.putString(key, getDefaultString(key));
-            assertTrue(key, TaskerHelper.isBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isBundleValid(context, bundle));
         }
     }
 
@@ -167,7 +179,7 @@ public class TaskerHelperTest {
         for (String key : intKeys) {
             Bundle bundle = new Bundle();
             bundle.putString(key, "abc123");
-            assertFalse(key, TaskerHelper.isBundleValid(bundle));
+            assertFalse(key, TaskerHelper.isBundleValid(context, bundle));
         }
     }
 
@@ -190,7 +202,8 @@ public class TaskerHelperTest {
     @Test
     public void isBundleValid10() throws Exception {
         // testing smart charging limit values (edge cases)
-        int min = context.getResources().getInteger(R.integer.pref_smart_charging_limit_min);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int min = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
         int max = context.getResources().getInteger(R.integer.pref_smart_charging_limit_max);
         testBundleValidValueEdgeCases(min, max, ACTION_SET_SMART_CHARGING_LIMIT);
     }
@@ -199,15 +212,15 @@ public class TaskerHelperTest {
     public void isVariableBundleValid() throws Exception {
         byte randomByte = (byte) 2;
         // bundle == null
-        assertFalse(TaskerHelper.isVariableBundleValid(null));
+        assertFalse(TaskerHelper.isVariableBundleValid(context, null));
 
         // bundle is empty
         Bundle bundle = new Bundle();
-        assertFalse(TaskerHelper.isVariableBundleValid(bundle));
+        assertFalse(TaskerHelper.isVariableBundleValid(context, bundle));
 
         // unknown key
         bundle.putLong("randomKey", 1337);
-        assertFalse(TaskerHelper.isVariableBundleValid(bundle));
+        assertFalse(TaskerHelper.isVariableBundleValid(context, bundle));
 
         // unknown key and a valid key
         for (String key : ALL_ACTIONS) {
@@ -222,7 +235,7 @@ public class TaskerHelperTest {
             } else if (actionKeys.contains(key)) {
                 bundle.putByte(key, randomByte);
             }
-            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
 
         // known keys but wrong value types
@@ -230,9 +243,9 @@ public class TaskerHelperTest {
             bundle = new Bundle();
             bundle.putByte(key, randomByte);
             if (actionKeys.contains(key)) {
-                assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+                assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
             } else {
-                assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+                assertFalse(key, TaskerHelper.isVariableBundleValid(context, bundle));
             }
         }
 
@@ -248,7 +261,7 @@ public class TaskerHelperTest {
             } else if (actionKeys.contains(key)) {
                 bundle.putByte(key, randomByte);
             }
-            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
 
         // one valid key, one known key with wrong type
@@ -258,9 +271,9 @@ public class TaskerHelperTest {
             bundle = new Bundle();
             bundle.putByte(key, randomByte);
             if (actionKeys.contains(key)) {
-                assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+                assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
             } else {
-                assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+                assertFalse(key, TaskerHelper.isVariableBundleValid(context, bundle));
             }
         }
 
@@ -268,14 +281,14 @@ public class TaskerHelperTest {
         for (String key : intKeys) {
             bundle = new Bundle();
             bundle.putString(key, "%test");
-            assertTrue(key, TaskerHelper.isVariableBundleValid(bundle));
+            assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
 
         // valid keys with wrong variable format instead of integers
         for (String key : intKeys) {
             bundle = new Bundle();
             bundle.putString(key, "abc123");
-            assertFalse(key, TaskerHelper.isVariableBundleValid(bundle));
+            assertFalse(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
     }
 
@@ -298,7 +311,8 @@ public class TaskerHelperTest {
     @Test
     public void isVariableBundleValid3() throws Exception {
         // testing smart charging limit values (edge cases)
-        int min = context.getResources().getInteger(R.integer.pref_smart_charging_limit_min);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int min = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
         int max = context.getResources().getInteger(R.integer.pref_smart_charging_limit_max);
         testVariableBundleValidValueEdgeCases(min, max, ACTION_SET_SMART_CHARGING_LIMIT);
     }
@@ -379,44 +393,44 @@ public class TaskerHelperTest {
         // too high
         Bundle bundle = new Bundle();
         bundle.putInt(action, max + 1);
-        assertFalse("max=" + max, TaskerHelper.isBundleValid(bundle));
+        assertFalse("max=" + max, TaskerHelper.isBundleValid(context, bundle));
 
         // too low
         bundle = new Bundle();
         bundle.putInt(action, min - 1);
-        assertFalse("min=" + min, TaskerHelper.isBundleValid(bundle));
+        assertFalse("min=" + min, TaskerHelper.isBundleValid(context, bundle));
 
         // just right (upper limit)
         bundle = new Bundle();
         bundle.putInt(action, max);
-        assertTrue("max=" + max, TaskerHelper.isBundleValid(bundle));
+        assertTrue("max=" + max, TaskerHelper.isBundleValid(context, bundle));
 
         // just right (lower limit)
         bundle = new Bundle();
         bundle.putInt(action, min);
-        assertTrue("min=" + min, TaskerHelper.isBundleValid(bundle));
+        assertTrue("min=" + min, TaskerHelper.isBundleValid(context, bundle));
     }
 
     private void testVariableBundleValidValueEdgeCases(int min, int max, String action) {
         // too high
         Bundle bundle = new Bundle();
         bundle.putInt(action, max + 1);
-        assertFalse("max=" + max, TaskerHelper.isVariableBundleValid(bundle));
+        assertFalse("max=" + max, TaskerHelper.isVariableBundleValid(context, bundle));
 
         // too low
         bundle = new Bundle();
         bundle.putInt(action, min - 1);
-        assertFalse("min=" + min, TaskerHelper.isVariableBundleValid(bundle));
+        assertFalse("min=" + min, TaskerHelper.isVariableBundleValid(context, bundle));
 
         // just right (upper limit)
         bundle = new Bundle();
         bundle.putInt(action, max);
-        assertTrue("max=" + max, TaskerHelper.isVariableBundleValid(bundle));
+        assertTrue("max=" + max, TaskerHelper.isVariableBundleValid(context, bundle));
 
         // just right (lower limit)
         bundle = new Bundle();
         bundle.putInt(action, min);
-        assertTrue("min=" + min, TaskerHelper.isVariableBundleValid(bundle));
+        assertTrue("min=" + min, TaskerHelper.isVariableBundleValid(context, bundle));
     }
 
     private int getDefaultInt(String action) {

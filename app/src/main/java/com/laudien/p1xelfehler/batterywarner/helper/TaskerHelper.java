@@ -1,7 +1,9 @@
 package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,7 +40,7 @@ public class TaskerHelper {
             ACTION_RESET_GRAPH
     };
 
-    public static boolean isBundleValid(@NonNull Bundle bundle) {
+    public static boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
         if (bundle.isEmpty()
                 || !containsKnownKey(bundle)
                 || getAction(bundle) == null
@@ -46,14 +48,14 @@ public class TaskerHelper {
             return false;
         }
         for (String key : ALL_ACTIONS) {
-            if (bundle.containsKey(key) && !isValueValid(key, bundle)) {
+            if (bundle.containsKey(key) && !isValueValid(context, key, bundle)) {
                 return false;
             }
         }
         return true;
     }
 
-    public static boolean isVariableBundleValid(@Nullable Bundle bundle) {
+    public static boolean isVariableBundleValid(@NonNull Context context, @Nullable Bundle bundle) {
         if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle)) {
             return false;
         }
@@ -62,7 +64,7 @@ public class TaskerHelper {
                 continue;
             }
             String value = bundle.getString(action);
-            if (value == null && !isValueValid(action, bundle)
+            if (value == null && !isValueValid(context, action, bundle)
                     || value != null && !TaskerPlugin.variableNameValid(value)) {
                 return false;
             }
@@ -186,7 +188,7 @@ public class TaskerHelper {
         return true;
     }
 
-    private static boolean isValueValid(String action, Bundle bundle) {
+    private static boolean isValueValid(@NonNull Context context, @NonNull String action, @NonNull Bundle bundle) {
         try {
             int value;
             switch (action) {
@@ -200,21 +202,23 @@ public class TaskerHelper {
                 case ACTION_SET_WARNING_HIGH:
                     BundleAssertions.assertHasInt(bundle, action);
                     value = bundle.getInt(ACTION_SET_WARNING_HIGH);
-                    if (!isIntegerValid(60, 100, value)) {
+                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_high_min), context.getResources().getInteger(R.integer.pref_warning_high_max), value)) {
                         return false;
                     }
                     break;
                 case ACTION_SET_WARNING_LOW:
                     BundleAssertions.assertHasInt(bundle, action);
                     value = bundle.getInt(ACTION_SET_WARNING_LOW);
-                    if (!isIntegerValid(5, 40, value)) {
+                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_low_min), context.getResources().getInteger(R.integer.pref_warning_low_max), value)) {
                         return false;
                     }
                     break;
                 case ACTION_SET_SMART_CHARGING_LIMIT:
                     BundleAssertions.assertHasInt(bundle, action);
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    int min = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
                     value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
-                    if (!isIntegerValid(80, 100, value)) {
+                    if (!isIntegerValid(min, context.getResources().getInteger(R.integer.pref_smart_charging_limit_max), value)) {
                         return false;
                     }
                     break;

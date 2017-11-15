@@ -103,7 +103,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
 
     @Override
     public boolean isBundleValid(@NonNull Bundle bundle) {
-        return TaskerHelper.isVariableBundleValid(bundle);
+        return TaskerHelper.isVariableBundleValid(this, bundle);
     }
 
     @Override
