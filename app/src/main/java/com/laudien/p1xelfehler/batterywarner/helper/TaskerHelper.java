@@ -59,27 +59,21 @@ public class TaskerHelper {
             if (bundle.containsKey(ACTION_SET_WARNING_HIGH)) {
                 BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_HIGH);
                 int value = bundle.getInt(ACTION_SET_WARNING_HIGH);
-                int max = 100;
-                int min = 60;
-                if (value < min || value > max) {
+                if (!isIntegerValid(60, 100, value)) {
                     return false;
                 }
             }
             if (bundle.containsKey(ACTION_SET_WARNING_LOW)) {
                 BundleAssertions.assertHasInt(bundle, ACTION_SET_WARNING_LOW);
                 int value = bundle.getInt(ACTION_SET_WARNING_LOW);
-                int max = 40;
-                int min = 5;
-                if (value < min || value > max) {
+                if (!isIntegerValid(5, 40, value)) {
                     return false;
                 }
             }
             if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)) {
                 BundleAssertions.assertHasInt(bundle, ACTION_SET_SMART_CHARGING_LIMIT);
                 int value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
-                int max = 100;
-                int min = 80;
-                if (value < min || value > max) {
+                if (!isIntegerValid(80, 100, value)) {
                     return false;
                 }
             }
@@ -254,5 +248,9 @@ public class TaskerHelper {
             return false;
         }
         return true;
+    }
+
+    private static boolean isIntegerValid(int min, int max, int value) {
+        return !(value < min || value > max);
     }
 }
