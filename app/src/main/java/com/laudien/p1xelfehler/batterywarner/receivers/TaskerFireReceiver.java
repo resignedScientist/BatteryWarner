@@ -12,7 +12,6 @@ import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
-import com.twofortyfouram.locale.sdk.client.receiver.AbstractPluginSettingReceiver;
 
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_RESET_GRAPH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_SAVE_GRAPH;
@@ -34,8 +33,12 @@ import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.E
 public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
 
     @Override
-    protected boolean isBundleValid(@NonNull Bundle bundle) {
-        return TaskerHelper.isBundleValid(bundle);
+    protected boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
+        boolean valid = TaskerHelper.isBundleValid(bundle);
+        if (!valid) {
+            Toast.makeText(context, "Invalid settings!", Toast.LENGTH_SHORT).show();
+        }
+        return valid;
     }
 
     @Override
