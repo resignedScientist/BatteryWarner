@@ -72,6 +72,11 @@ public class TaskerHelper {
         return true;
     }
 
+    public static boolean checkDependencies(@NonNull Context context, @NonNull Bundle bundle) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return true;
+    }
+
     public static Bundle buildBundle(String action, long value) {
         Bundle bundle = new Bundle();
         bundle.putLong(action, value);
@@ -240,5 +245,13 @@ public class TaskerHelper {
 
     private static boolean isIntegerValid(int min, int max, int value) {
         return !(value < min || value > max);
+    }
+
+    @Nullable
+    private static String getDependency(String action) {
+        switch (action) {
+            default:
+                return null;
+        }
     }
 }
