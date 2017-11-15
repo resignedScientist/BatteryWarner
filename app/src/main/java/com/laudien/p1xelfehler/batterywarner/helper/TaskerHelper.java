@@ -263,6 +263,8 @@ public class TaskerHelper {
                         && checkDependency(context, sharedPreferences, ACTION_TOGGLE_STOP_CHARGING);
             case ACTION_SET_WARNING_HIGH:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+            case ACTION_SET_WARNING_LOW:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
             default:
                 return true;
         }
