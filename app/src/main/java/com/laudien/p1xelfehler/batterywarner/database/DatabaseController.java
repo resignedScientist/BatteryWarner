@@ -65,10 +65,8 @@ public class DatabaseController {
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
     private HashSet<DatabaseListener> listeners = new HashSet<>();
-    private double currentDivisor;
 
     private DatabaseController(Context context) {
-        currentDivisor = PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(R.string.pref_current_divisor), -1000);
         databaseModel = new DatabaseModel(context);
     }
 
@@ -113,10 +111,10 @@ public class DatabaseController {
      * @param temperature     The current battery temperature.
      * @param utcTimeInMillis The current UTC time in milliseconds.
      */
-    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
+    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean reverseCurrent) {
         DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
         long totalNumberOfRows = databaseModel.addValue(newValue);
-        notifyValueAdded(newValue, totalNumberOfRows);
+        notifyValueAdded(newValue, totalNumberOfRows, reverseCurrent);
         Log.d(TAG, "Value added: " + newValue);
     }
 
@@ -126,8 +124,8 @@ public class DatabaseController {
      * @return An array of LineGraphSeries.
      * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
      */
-    public LineGraphSeries[] getAllGraphs(boolean useFahrenheit) {
-        return getAllGraphs(databaseModel.readData(), useFahrenheit);
+    public LineGraphSeries[] getAllGraphs(boolean useFahrenheit, boolean reverseCurrent) {
+        return getAllGraphs(databaseModel.readData(), useFahrenheit, reverseCurrent);
     }
 
     public void notifyTransitionsFinished() {
@@ -284,8 +282,8 @@ public class DatabaseController {
      * @return Array of all graphs inside the given database file.
      * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
      */
-    public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit) {
-        return getAllGraphs(databaseModel.readData(databaseFile), useFahrenheit);
+    public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
+        return getAllGraphs(databaseModel.readData(databaseFile), useFahrenheit, reverseCurrent);
     }
 
     /**
@@ -329,7 +327,7 @@ public class DatabaseController {
 
     // ==== GENERAL STUFF ====
 
-    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit) {
+    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
         if (databaseValues != null) {
             LineGraphSeries[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
@@ -348,7 +346,7 @@ public class DatabaseController {
                     double timeInMinutes = (double) time / (1000 * 60);
                     for (int j = 0; j < NUMBER_OF_GRAPHS; j++) {
                         if (lastDatabaseValue == -1 || databaseValues[i].get(j) != databaseValues[lastDatabaseValue].get(j)) {
-                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints, useFahrenheit);
+                            appendValue(graphs[j], databaseValues[i], j, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
                         }
                     }
                     lastDatabaseValue = i;
@@ -359,7 +357,7 @@ public class DatabaseController {
                 long time = databaseValues[lastDatabaseValue].getUtcTimeInMillis() - startTime;
                 double timeInMinutes = (double) time / (1000 * 60);
                 for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints, useFahrenheit);
+                    appendValue(graphs[i], databaseValues[lastDatabaseValue], i, timeInMinutes, maxDataPoints, useFahrenheit, reverseCurrent);
                 }
             }
             return graphs;
@@ -367,7 +365,7 @@ public class DatabaseController {
         return null;
     }
 
-    private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit) {
+    private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit, boolean reverseCurrent) {
         if (graph != null) {
             double value = databaseValue.get(index);
             switch (index) {
@@ -381,7 +379,7 @@ public class DatabaseController {
                     value /= 1000;
                     break;
                 case GRAPH_INDEX_CURRENT:
-                    value /= currentDivisor;
+                    value /= (reverseCurrent ? 1000 : -1000);
                     break;
             }
             graph.appendData(new DataPoint(timeInMinutes, value), false, maxDataPoints);
@@ -410,7 +408,7 @@ public class DatabaseController {
         return startTime;
     }
 
-    void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows) {
+    void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent) {
         if (databaseValue != null
                 && !listeners.isEmpty()
                 && totalNumberOfRows > 0) {
@@ -428,7 +426,7 @@ public class DatabaseController {
                             value /= 1000;
                             break;
                         case GRAPH_INDEX_CURRENT:
-                            value /= currentDivisor;
+                            value /= (reverseCurrent ? 1000 : -1000);
                             break;
                     }
                     dataPoints[i] = new DataPoint(timeInMinutes, value);

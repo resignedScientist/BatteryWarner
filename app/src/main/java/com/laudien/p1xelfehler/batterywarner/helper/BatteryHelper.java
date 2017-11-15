@@ -118,12 +118,10 @@ public class BatteryHelper {
         private String technology;
         private int health, batteryLevel;
         private int current;
-        private int currentDivisor;
         private double temperature, voltage;
         private ArrayList<OnBatteryValueChangedListener> listeners;
 
         private BatteryData(Intent batteryStatus, Context context) {
-            currentDivisor = PreferenceManager.getDefaultSharedPreferences(context).getInt(context.getString(R.string.pref_current_divisor), -1000);
             update(batteryStatus, context);
         }
 
@@ -256,7 +254,8 @@ public class BatteryHelper {
         private void setCurrent(int current, Context context) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / currentDivisor);
+                boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.pref_reverse_current), context.getResources().getBoolean(R.bool.pref_reverse_current_default));
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / (reverseCurrent ? 1000 : -1000));
                 notifyListeners(INDEX_CURRENT);
             }
         }

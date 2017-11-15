@@ -1,7 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,13 +18,10 @@ import android.view.MenuItem;
 import com.laudien.p1xelfehler.batterywarner.appIntro.IntroActivity;
 import com.laudien.p1xelfehler.batterywarner.fragments.GraphFragment;
 import com.laudien.p1xelfehler.batterywarner.fragments.MainPageFragment;
-import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
-import static android.os.BatteryManager.BATTERY_PLUGGED_USB;
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -60,10 +56,6 @@ public class MainActivity extends BaseActivity {
             }
             // start services just in case
             ServiceHelper.startService(this);
-            // save the current-divisor in SharedPreferences
-            if (!sharedPreferences.contains(getString(R.string.pref_current_divisor))) {
-                applyCurrentDivisor(sharedPreferences);
-            }
         }
     }
 
@@ -96,22 +88,6 @@ public class MainActivity extends BaseActivity {
             return true;
         } else {
             return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void applyCurrentDivisor(SharedPreferences sharedPreferences) {
-        Intent batteryStatus = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        if (batteryStatus != null && batteryStatus.hasExtra(EXTRA_PLUGGED)) {
-            boolean usbCharging = batteryStatus.getIntExtra(EXTRA_PLUGGED, 0) == BATTERY_PLUGGED_USB;
-            if (!usbCharging) {
-                BatteryHelper.BatteryData batteryData = BatteryHelper.getBatteryData(batteryStatus, this);
-                int current = (int) batteryData.getValue(BatteryHelper.BatteryData.INDEX_CURRENT) / -1000;
-                boolean isCharging = BatteryHelper.isCharging(batteryStatus);
-                int currentDivisor = (current < 0 && isCharging || current > 0 && !isCharging) ? 1000 : -1000;
-                sharedPreferences.edit()
-                        .putInt(getString(R.string.pref_current_divisor), currentDivisor)
-                        .apply();
-            }
         }
     }
 

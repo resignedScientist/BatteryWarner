@@ -585,6 +585,7 @@ public class BackgroundService extends Service {
         }
 
         private void handleCharging(Intent intent, boolean graphEnabled) {
+            boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
@@ -594,7 +595,7 @@ public class BackgroundService extends Service {
 
             // add a value to the database
             if (graphEnabled) {
-                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
+                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, reverseCurrent);
             }
 
             // handle warnings, Stop Charging and Smart Charging
@@ -638,7 +639,7 @@ public class BackgroundService extends Service {
                         if (timeNow >= smartChargingResumeTime) {
                             // add a graph point for optics/correctness
                             if (graphEnabled) {
-                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow);
+                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, reverseCurrent);
                             }
                             chargingResumedBySmartCharging = true;
                             resumeCharging();

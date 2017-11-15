@@ -59,7 +59,7 @@ public class DatabaseModelTest {
     public void resetTableTest() {
         // write some values into the database
         DatabaseController databaseController = DatabaseController.getInstance(context);
-        databaseController.addValue(80, 303, 4111, 1234456, System.currentTimeMillis());
+        databaseController.addValue(80, 303, 4111, 1234456, System.currentTimeMillis(), false);
 
         // reset the table
         databaseModel.resetTable();

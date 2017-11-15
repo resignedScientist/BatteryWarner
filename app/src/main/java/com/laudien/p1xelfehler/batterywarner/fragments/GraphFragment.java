@@ -162,7 +162,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseControl
     @Override
     protected LineGraphSeries[] getGraphs() {
         boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
-        LineGraphSeries[] graphs = databaseController.getAllGraphs(useFahrenheit);
+        boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+        LineGraphSeries[] graphs = databaseController.getAllGraphs(useFahrenheit, reverseCurrent);
         if (graphs != null) {
             styleGraphs(graphs);
         }
