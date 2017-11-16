@@ -205,4 +205,5 @@
     <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
     <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
     <string name="title_reverse_current">Stromstärke korrigieren</string>
+    <string name="toast_dependencies_not_fulfilled">Some dependencies are not fulfilled for that action!</string>
 </resources>

@@ -260,6 +260,7 @@
     <!-- toasts -->
     <string name="toast_charging_type_disabled">The current charging type is disabled in settings!</string>
     <string name="toast_click_to_exit">Click again to exit app!</string>
+    <string name="toast_dependencies_not_fulfilled">Some dependencies are not fulfilled for that action!</string>
     <string name="toast_disabled_in_settings">Disabled in settings!</string>
     <string name="toast_error_deleting">Deleting failed!</string>
     <string name="toast_error_renaming">Renaming failed!</string>
