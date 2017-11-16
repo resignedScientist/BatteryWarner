@@ -697,6 +697,122 @@ public class TaskerHelperTest {
     public void checkDependencies7() throws Exception {
         // set smart charging time
 
+        // preparation
+        long oldSmartChargingTime = sharedPreferences.getLong(context.getString(R.string.pref_smart_charging_time), 0);
+        boolean oldUseNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        boolean oldSmartChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_enabled), context.getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        boolean oldStopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+        boolean oldWarningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+
+        // create bundle
+        Bundle bundle = new Bundle();
+        bundle.putLong(ACTION_SET_SMART_CHARGING_TIME, 1337);
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), false) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+
+        // no dependency is fulfilled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        boolean useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // useNextAlarm is not fulfilled -> must be changed by the method!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertFalse(useNextAlarm);
+
+        // smart charging is disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // stop charging is disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // warning high is disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // smart charging and stop charging are disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // smart charging and warning high are disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // stop charging and warning high are disabled -> do not change useNextAlarm!
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), true) // must be false!
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+        useNextAlarm = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), context.getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
+        assertTrue(useNextAlarm);
+
+        // clean up
+        sharedPreferences.edit()
+                .putLong(context.getString(R.string.pref_smart_charging_time), oldSmartChargingTime)
+                .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), oldUseNextAlarm)
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), oldSmartChargingEnabled)
+                .putBoolean(context.getString(R.string.pref_stop_charging), oldStopChargingEnabled)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), oldWarningHighEnabled)
+                .apply();
     }
 
     @Test
