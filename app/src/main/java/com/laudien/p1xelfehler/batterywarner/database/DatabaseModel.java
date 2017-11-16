@@ -157,7 +157,7 @@ class DatabaseModel extends SQLiteOpenHelper {
         int count = cursor.getCount();
         int divisor = count / MAX_DATA_POINTS;
         database.beginTransaction();
-        for (int i = 0; i < count; i++) {
+        for (int i = 1; i < count - 1; i++) {
             if (i % divisor == 0) {
                 continue;
             }
