@@ -253,7 +253,6 @@ public class TaskerHelper {
         return !(value < min || value > max);
     }
 
-    @Nullable
     private static boolean checkDependency(@NonNull Context context, @NonNull SharedPreferences sharedPreferences, @NonNull String action) {
         switch (action) {
             case ACTION_TOGGLE_STOP_CHARGING:
@@ -265,6 +264,12 @@ public class TaskerHelper {
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
             case ACTION_SET_WARNING_LOW:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_warning_low_enabled), context.getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+            case ACTION_SET_SMART_CHARGING_LIMIT:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_enabled), context.getResources().getBoolean(R.bool.pref_smart_charging_enabled_default))
+                        && checkDependency(context, sharedPreferences, ACTION_TOGGLE_SMART_CHARGING);
+            case ACTION_SAVE_GRAPH:
+            case ACTION_RESET_GRAPH:
+                return sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
             default:
                 return true;
         }
