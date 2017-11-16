@@ -37,10 +37,12 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         boolean valid = TaskerHelper.isBundleValid(context, bundle);
         if (!valid) {
             Toast.makeText(context, R.string.toast_invalid_tasker_settings, Toast.LENGTH_SHORT).show();
-        }
-        boolean dependenciesFulfilled = TaskerHelper.checkDependencies(context, bundle);
-        if (!dependenciesFulfilled) {
-            Toast.makeText(context, R.string.toast_dependencies_not_fulfilled, Toast.LENGTH_SHORT).show();
+        } else {
+            boolean dependenciesFulfilled = TaskerHelper.checkDependencies(context, bundle);
+            if (!dependenciesFulfilled) {
+                Toast.makeText(context, R.string.toast_dependencies_not_fulfilled, Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         return valid;
     }
