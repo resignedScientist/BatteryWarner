@@ -639,12 +639,58 @@ public class TaskerHelperTest {
     public void checkDependencies5() throws Exception {
         // save graph
 
+        // preparation
+        boolean oldGraphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+
+        // create bundles
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ACTION_SAVE_GRAPH, true);
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+
+        // dependency not fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // clean up
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), oldGraphEnabled)
+                .apply();
     }
 
     @Test
     public void checkDependencies6() throws Exception {
         // reset graph
 
+        // preparation
+        boolean oldGraphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+
+        // create bundles
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ACTION_RESET_GRAPH, true);
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+
+        // dependency not fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // clean up
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_graph_enabled), oldGraphEnabled)
+                .apply();
     }
 
     @Test
