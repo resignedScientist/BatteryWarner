@@ -90,6 +90,7 @@
     <string name="summary_notification_sound">Ab Android O muss der Benachrichtigungston in den Android-Einstellungen eingestellt werden. Hier klicken, um die Einstellungen zu öffnen!</string>
     <string name="summary_power_saving_mode">Aktiviert den Energiesparmodus, sobald die Batterie-niedrig Warnung erscheint.</string>
     <string name="summary_reset_battery_stats">Zurücksetzen der Android-Akkustatistik sobald die Batterie-Warnung beim Laden erscheint.</string>
+    <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
     <string name="summary_smart_charging_auto_resume">"Laden fortsetzen, sobald der Akkustand um X% gesunken ist. Es wird dann bis zum ersten Limit weiter geladen."</string>
     <string name="summary_stop_charging">Stoppt das Laden, sobald die Batterie-Warnung erscheint. Funktioniert nicht auf jedem Gerät!</string>
     <string name="summary_usb_charging_disabled">Verhindert, dass das Gerät bei einer USB-Verbindung lädt. Funktioniert nicht auf jedem Gerät!</string>
@@ -160,6 +161,7 @@
     <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
     <string name="title_preferences">Einstellungen</string>
     <string name="title_reset_battery_stats">Akkustatistik zurücksetzen</string>
+    <string name="title_reverse_current">Stromstärke korrigieren</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
     <string name="title_smart_charging_auto_resume">Laden fortsetzen</string>
     <string name="title_smart_charging_auto_resume_percentage">Laden fortsetzen, wenn Akkustand gefallen um:</string>
@@ -179,12 +181,14 @@
 
     <string name="toast_charging_type_disabled">Die jetzige Lademethode ist deaktiviert!</string>
     <string name="toast_click_to_exit">Erneut klicken, um die App zu beenden!</string>
+    <string name="toast_dependencies_not_fulfilled">Einige für diese Aktion vorausgesetzte Einstellungen sind nicht gesetzt!</string>
     <string name="toast_disabled_in_settings">In den Einstellungen deaktiviert!</string>
     <string name="toast_error_deleting">Löschen fehlgeschlagen!</string>
     <string name="toast_error_renaming">Umbenennen fehlgeschlagen!</string>
     <string name="toast_error_renaming_wrong_characters">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
     <string name="toast_error_saving">Speichern fehlgeschlagen!</string>
     <string name="toast_graph_name_already_exists">Es gibt bereits einen Graphen mit dem Namen</string>
+    <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
     <string name="toast_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
     <string name="toast_no_data">Noch keine Daten!</string>
     <string name="toast_no_graphs_saved">Keine Graphen gefunden!</string>
@@ -202,8 +206,4 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
-    <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
-    <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
-    <string name="title_reverse_current">Stromstärke korrigieren</string>
-    <string name="toast_dependencies_not_fulfilled">Some dependencies are not fulfilled for that action!</string>
 </resources>
