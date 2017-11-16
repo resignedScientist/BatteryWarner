@@ -270,6 +270,14 @@ public class TaskerHelper {
             case ACTION_SAVE_GRAPH:
             case ACTION_RESET_GRAPH:
                 return sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            case ACTION_SET_SMART_CHARGING_TIME: // same dependencies as smart charging limit
+                boolean dependenciesFulfilled = checkDependency(context, sharedPreferences, ACTION_SET_SMART_CHARGING_LIMIT);
+                if (dependenciesFulfilled) {
+                    sharedPreferences.edit()
+                            .putBoolean(context.getString(R.string.pref_smart_charging_use_alarm_clock_time), false)
+                            .apply();
+                }
+                return dependenciesFulfilled;
             default:
                 return true;
         }
