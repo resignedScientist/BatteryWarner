@@ -40,6 +40,7 @@ public class TaskerHelperTest {
     private TreeSet<String> intKeys;
     private TreeSet<String> longKeys;
     private TreeSet<String> actionKeys;
+    private TreeSet<String> noDependencyKeys;
 
     @Before
     public void setUp() throws Exception {
@@ -72,6 +73,12 @@ public class TaskerHelperTest {
         actionKeys = new TreeSet<>();
         actionKeys.add(ACTION_SAVE_GRAPH);
         actionKeys.add(ACTION_RESET_GRAPH);
+
+        // keys that do not have dependencies
+        noDependencyKeys = new TreeSet<>();
+        noDependencyKeys.add(ACTION_TOGGLE_CHARGING);
+        noDependencyKeys.add(ACTION_TOGGLE_WARNING_HIGH);
+        noDependencyKeys.add(ACTION_TOGGLE_WARNING_LOW);
     }
 
     @After
@@ -544,16 +551,133 @@ public class TaskerHelperTest {
     @Test
     public void checkDependencies4() throws Exception {
         // set smart charging percentage limit
+
+        // preparation
+        int oldSmartChargingPercentageLimit = sharedPreferences.getInt(context.getString(R.string.pref_smart_charging_limit), context.getResources().getInteger(R.integer.pref_smart_charging_limit_default));
+        boolean oldSmartChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_smart_charging_enabled), context.getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
+        boolean oldStopChargingEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging), context.getResources().getBoolean(R.bool.pref_stop_charging_default));
+        boolean oldWarningHighEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_warning_high_enabled), context.getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
+
+        // create bundles
+        Bundle bundle = new Bundle();
+        bundle.putInt(ACTION_SET_SMART_CHARGING_LIMIT, oldSmartChargingPercentageLimit);
+
+        // dependency fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+
+        // none of the dependencies is fulfilled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // smart charging is disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // stop charging is disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // warning high is disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // smart charging and stop charging are disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), true)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // smart charging and warning high are disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), false)
+                .putBoolean(context.getString(R.string.pref_stop_charging), true)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // stop charging and warning high are disabled
+        sharedPreferences.edit()
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), true)
+                .putBoolean(context.getString(R.string.pref_stop_charging), false)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), false)
+                .apply();
+        assertFalse(TaskerHelper.checkDependencies(context, bundle));
+
+        // clean up
+        sharedPreferences.edit()
+                .putInt(context.getString(R.string.pref_smart_charging_limit), oldSmartChargingPercentageLimit)
+                .putBoolean(context.getString(R.string.pref_smart_charging_enabled), oldSmartChargingEnabled)
+                .putBoolean(context.getString(R.string.pref_stop_charging), oldStopChargingEnabled)
+                .putBoolean(context.getString(R.string.pref_warning_high_enabled), oldWarningHighEnabled)
+                .apply();
     }
 
     @Test
     public void checkDependencies5() throws Exception {
-        // set smart charging time
+        // save graph
+
     }
 
     @Test
     public void checkDependencies6() throws Exception {
-        // action without dependency and unknown action
+        // reset graph
+
+    }
+
+    @Test
+    public void checkDependencies7() throws Exception {
+        // set smart charging time
+
+    }
+
+    @Test
+    public void checkDependencies8() throws Exception {
+        // actions without dependency
+        for (String key : noDependencyKeys) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(key, true);
+            assertTrue(key, TaskerHelper.checkDependencies(context, bundle));
+            bundle = new Bundle();
+            bundle.putBoolean(key, false);
+            assertTrue(key, TaskerHelper.checkDependencies(context, bundle));
+            bundle = new Bundle();
+            bundle.putInt(key, 42);
+            assertTrue(key, TaskerHelper.checkDependencies(context, bundle));
+        }
+
+        // unknown action
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("UnknownAction", true);
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+        bundle = new Bundle();
+        bundle.putBoolean("UnknownAction", false);
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
+        bundle = new Bundle();
+        bundle.putInt("UnknownAction", 42);
+        assertTrue(TaskerHelper.checkDependencies(context, bundle));
     }
 
     private void testBundleValidValueEdgeCases(int min, int max, String action) {
