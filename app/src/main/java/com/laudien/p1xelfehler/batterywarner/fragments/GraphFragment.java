@@ -25,7 +25,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
@@ -48,7 +48,7 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.
  * It loads the graphs from the database in the app directory and registers a DatabaseChangedListener
  * to refresh automatically with the latest data.
  */
-public class GraphFragment extends BasicGraphFragment implements DatabaseController.DatabaseListener {
+public class GraphFragment extends BasicGraphFragment implements DatabaseContract.DatabaseListener {
 
     private static final int REQUEST_SAVE_GRAPH = 10;
     private SharedPreferences sharedPreferences;

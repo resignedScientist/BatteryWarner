@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment;
 import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper;
@@ -152,7 +153,7 @@ public class HistoryActivity extends BaseActivity implements ViewPager.OnPageCha
     }
 
     private void loadGraphs(int moveToPos) {
-        DatabaseController databaseController = DatabaseController.getInstance(this);
+        DatabaseContract.Controller databaseController = DatabaseController.getInstance(this);
         ArrayList<File> fileList = databaseController.getFileList();
         if (fileList == null || fileList.isEmpty()) {
             textView_nothingSaved.setVisibility(VISIBLE);

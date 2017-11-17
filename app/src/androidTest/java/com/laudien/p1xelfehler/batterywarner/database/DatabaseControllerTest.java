@@ -139,7 +139,7 @@ public class DatabaseControllerTest {
         databaseController.resetTable();
         DatabaseValue databaseValue = getRandomDatabaseValue();
         receivedDataPoints = null;
-        DatabaseController.DatabaseListener databaseListener = new DatabaseController.DatabaseListener() {
+        DatabaseContract.DatabaseListener databaseListener = new DatabaseContract.DatabaseListener() {
             @Override
             public void onValueAdded(DataPoint[] dataPoints, long totalNumberOfRows) {
                 methodCalled = true;

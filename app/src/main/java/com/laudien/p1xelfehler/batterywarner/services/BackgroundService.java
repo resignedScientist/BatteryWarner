@@ -27,6 +27,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
@@ -83,7 +84,7 @@ public class BackgroundService extends Service {
     private SharedPreferences sharedPreferences;
     private RemoteViews infoNotificationContent;
     private BatteryHelper.BatteryData batteryData;
-    private DatabaseController databaseController;
+    private DatabaseContract.Controller databaseController;
 
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {

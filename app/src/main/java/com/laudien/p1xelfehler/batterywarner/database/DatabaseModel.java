@@ -17,7 +17,7 @@ import java.util.HashMap;
  * The Model for the charging graph databases. Only the DatabaseController should communicate to
  * instances of this class.
  */
-class DatabaseModel extends SQLiteOpenHelper {
+class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.Model {
     /**
      * The name of the database.
      */
@@ -60,113 +60,48 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
+    @Override
+    public SQLiteDatabase getReadableDatabase() {
+        try {
+            return super.getReadableDatabase();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-    /**
-     * Reads all the data inside the app directory database.
-     *
-     * @return An array of all the data inside the app directory database.
-     */
-    DatabaseValue[] readData() {
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        try {
+            return super.getWritableDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public DatabaseValue[] readData() {
         return readData(getCursor());
     }
 
-    /**
-     * Add a value to the app directory database.
-     *
-     * @param value A DatabaseValue containing all the data of the new graph point.
-     * @return Returns the total number of rows in the database after adding the value.
-     */
-    long addValue(DatabaseValue value) {
-        SQLiteDatabase database = getWritableDatabase();
-        long totalNumberOfRows = 0;
-        if (database != null) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
-            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
-            totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
-            database.close();
-        }
-        return totalNumberOfRows;
-    }
-
-    /**
-     * Clears the table of the app directory database.
-     */
-    void resetTable() {
-        SQLiteDatabase database = getWritableDatabase();
-        if (database != null) {
-            database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-            database.close();
-        }
-    }
-
-    /**
-     * Get a Cursor instance which points to the app directory database.
-     *
-     * @return A Cursor instance which points to the app directory database.
-     */
-    Cursor getCursor() {
-        return getCursor(getReadableDatabase());
-    }
-
-    // ==== ANY DATABASE FROM A FILE ====
-
-    /**
-     * Get all the data of the given database file.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return An array of all the data inside given database.
-     */
-    DatabaseValue[] readData(File databaseFile) {
+    @Override
+    public DatabaseValue[] readData(File databaseFile) {
         return readData(getCursor(databaseFile));
     }
 
-    /**
-     * Get a Cursor instance which points to the given database.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return A Cursor instance which points to the given database.
-     */
-    Cursor getCursor(File databaseFile) {
+    @Override
+    public Cursor getCursor() {
+        return getCursor(getReadableDatabase());
+    }
+
+    @Override
+    public Cursor getCursor(File databaseFile) {
         return getCursor(getReadableDatabase(databaseFile));
     }
 
-    void close(File file) {
-        SQLiteDatabase database = openedDatabases.get(file.getPath());
-        if (database != null) {
-            database.close();
-            openedDatabases.remove(file.getPath());
-        }
-    }
-
-    // ==== GENERAL STUFF ====
-
-    private DatabaseValue[] readData(Cursor cursor) {
-        DatabaseValue[] databaseValues = null;
-        if (cursor != null) {
-            if (cursor.getCount() > 0) {
-                databaseValues = new DatabaseValue[cursor.getCount()];
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    cursor.moveToPosition(i);
-                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
-                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
-                    int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
-                    int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
-                    long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-                    databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time);
-                }
-            }
-            cursor.close();
-        }
-        return databaseValues;
-    }
-
-    Cursor getCursor(SQLiteDatabase database) {
+    @Override
+    public Cursor getCursor(SQLiteDatabase database) {
         if (database != null) {
             String[] columns = {
                     DatabaseContract.TABLE_COLUMN_TIME,
@@ -189,7 +124,8 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    SQLiteDatabase getReadableDatabase(File databaseFile) {
+    @Override
+    public SQLiteDatabase getReadableDatabase(File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }
@@ -226,7 +162,8 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    SQLiteDatabase getWritableDatabase(File databaseFile) {
+    @Override
+    public SQLiteDatabase getWritableDatabase(File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }
@@ -245,22 +182,63 @@ class DatabaseModel extends SQLiteOpenHelper {
     }
 
     @Override
-    public SQLiteDatabase getReadableDatabase() {
-        try {
-            return super.getReadableDatabase();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-            return null;
+    public long addValue(DatabaseValue value) {
+        SQLiteDatabase database = getWritableDatabase();
+        long totalNumberOfRows = 0;
+        if (database != null) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+            totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
+            database.close();
+        }
+        return totalNumberOfRows;
+    }
+
+    @Override
+    public void resetTable() {
+        SQLiteDatabase database = getWritableDatabase();
+        if (database != null) {
+            database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+            database.close();
         }
     }
 
     @Override
-    public SQLiteDatabase getWritableDatabase() {
-        try {
-            return super.getWritableDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+    public void closeLocalFile() {
+        close();
+    }
+
+    @Override
+    public void close(File file) {
+        SQLiteDatabase database = openedDatabases.get(file.getPath());
+        if (database != null) {
+            database.close();
+            openedDatabases.remove(file.getPath());
         }
+    }
+
+    DatabaseValue[] readData(Cursor cursor) {
+        DatabaseValue[] databaseValues = null;
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                databaseValues = new DatabaseValue[cursor.getCount()];
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    cursor.moveToPosition(i);
+                    int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
+                    int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
+                    int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
+                    int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
+                    long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time);
+                }
+            }
+            cursor.close();
+        }
+        return databaseValues;
     }
 }
