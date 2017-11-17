@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -39,7 +38,7 @@ import static java.text.DateFormat.SHORT;
  * The Controller for the charging graph databases. You can either use it with the database saved in
  * the app directory, or you can give the database file which should be used.
  */
-public class DatabaseController {
+public class DatabaseController implements DatabaseContract.Controller {
     /**
      * Array index for the battery level graph.
      */
@@ -64,11 +63,11 @@ public class DatabaseController {
     private static final int MAX_DATA_POINTS = 200;
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
-    private DatabaseModel databaseModel;
-    private HashSet<DatabaseListener> listeners = new HashSet<>();
+    private DatabaseContract.Model databaseModel;
+    private HashSet<DatabaseContract.DatabaseListener> listeners = new HashSet<>();
 
-    private DatabaseController(Context context) {
-        databaseModel = new DatabaseModel(context);
+    DatabaseController(DatabaseContract.Model databaseModel) {
+        this.databaseModel = databaseModel;
     }
 
     /**
@@ -79,97 +78,76 @@ public class DatabaseController {
      */
     public static DatabaseController getInstance(Context context) {
         if (instance == null) {
-            instance = new DatabaseController(context);
+            instance = new DatabaseController(new DatabaseModel(context));
         }
         return instance;
     }
 
-    /**
-     * Registers a DatabaseListener which will be called everytime something in the database changes.
-     * Don't forget to unregister the listener with unregisterListener() if not needed anymore!
-     *
-     * @param listener A DatabaseListener which listens for database changes.
-     */
-    public void registerDatabaseListener(DatabaseListener listener) {
-        listeners.add(listener);
+    @Override
+    public ArrayList<File> getFileList() {
+        File path = new File(DATABASE_HISTORY_PATH);
+        File[] files = path.listFiles();
+        ArrayList<File> fileList = new ArrayList<>();
+        if (files != null) { // there are files in the database folder
+            // sort the files by date
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    if (SDK_INT >= KITKAT) {
+                        return -Long.compare(o1.lastModified(), o2.lastModified());
+                    } else { // before KitKat
+                        if (o1.lastModified() == o2.lastModified()) {
+                            return 0;
+                        }
+                        if (o1.lastModified() > o2.lastModified()) {
+                            return -1;
+                        } else { // o1.lastModified() < o2.lastModified()
+                            return 1;
+                        }
+                    }
+                }
+            });
+            // add valid database file to the list
+            for (File file : files) {
+                if (isFileValid(file)) {
+                    fileList.add(file);
+                }
+            }
+        }
+        return fileList;
     }
 
-    /**
-     * Unregisters a DatabaseListener.
-     *
-     * @param listener A DatabaseListener which listens for database changes.
-     */
-    public void unregisterListener(DatabaseListener listener) {
-        listeners.remove(listener);
+    @Override
+    public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
+        return new LineGraphSeries[0];
     }
 
-    // ==== DEFAULT DATABASE IN THE APP DIRECTORY ====
-
-    /**
-     * Add a value to the database in the app directory.
-     *
-     * @param batteryLevel    The current battery level of the device.
-     * @param temperature     The current battery temperature.
-     * @param utcTimeInMillis The current UTC time in milliseconds.
-     */
-    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean reverseCurrent) {
-        DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
-        long totalNumberOfRows = databaseModel.addValue(newValue);
-        notifyValueAdded(newValue, totalNumberOfRows, reverseCurrent);
-        Log.d(TAG, "Value added: " + newValue);
-    }
-
-    /**
-     * Get all the graphs inside the app directory database.
-     *
-     * @return An array of LineGraphSeries.
-     * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
-     */
+    @Override
     public LineGraphSeries[] getAllGraphs(boolean useFahrenheit, boolean reverseCurrent) {
         return getAllGraphs(databaseModel.readData(), useFahrenheit, reverseCurrent);
     }
 
-    public void notifyTransitionsFinished() {
-        databaseModel.close();
-    }
-
-    public void notifyTransitionsFinished(File file) {
-        databaseModel.close(file);
-    }
-
-    /**
-     * Get the latest time that is in the app directory database.
-     *
-     * @return The latest time (UTC time in milliseconds) inside the database.
-     */
+    @Override
     public long getEndTime() {
         return getEndTime(databaseModel.getCursor());
     }
 
-    /**
-     * Get the first time that is in the app directory database.
-     *
-     * @return The first time (UTC time in milliseconds) inside the database.
-     */
+    @Override
+    public long getEndTime(File databaseFile) {
+        return getEndTime(databaseModel.getCursor(databaseFile));
+    }
+
+    @Override
     public long getStartTime() {
         return getStartTime(databaseModel.getCursor());
     }
 
-    /**
-     * Clears the table of the app directory database to make room for new data.
-     */
-    public void resetTable() {
-        databaseModel.resetTable();
-        notifyTableReset();
-        Log.d(TAG, "Table cleared!");
+    @Override
+    public long getStartTime(File databaseFile) {
+        return getStartTime(databaseModel.getCursor(databaseFile));
     }
 
-    /**
-     * Saves the graphs inside the app directory database to the default history directory.
-     *
-     * @param context An instance of the Context class.
-     * @return Returns true if the saving was successful, false if not.
-     */
+    @Override
     public boolean saveGraph(Context context) {
         // permission check
         if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
@@ -236,98 +214,101 @@ public class DatabaseController {
         return result;
     }
 
-    // ==== ANY DATABASE FROM A FILE ====
+    @Override
+    public void resetTable() {
+        databaseModel.resetTable();
+        notifyTableReset();
+        Log.d(TAG, "Table cleared!");
+    }
 
-    /**
-     * Get a list of database files inside the default history directory.
-     * It automatically checks each file if it is a valid database and only adds these to the list.
-     *
-     * @return A list of all valid database files in the default history directory.
-     */
-    public ArrayList<File> getFileList() {
-        File path = new File(DATABASE_HISTORY_PATH);
-        File[] files = path.listFiles();
-        ArrayList<File> fileList = new ArrayList<>();
-        if (files != null) { // there are files in the database folder
-            // sort the files by date
-            Arrays.sort(files, new Comparator<File>() {
+    @Override
+    public void registerDatabaseListener(DatabaseContract.DatabaseListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void unregisterListener(DatabaseContract.DatabaseListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean useFahrenheit, boolean reverseCurrent) {
+        DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
+        long totalNumberOfRows = databaseModel.addValue(newValue);
+        notifyValueAdded(newValue, totalNumberOfRows, useFahrenheit, reverseCurrent);
+        Log.d(TAG, "Value added: " + newValue);
+    }
+
+    @Override
+    public void notifyTransitionsFinished() {
+        databaseModel.closeLocalFile();
+    }
+
+    @Override
+    public void notifyTransitionsFinished(File file) {
+        databaseModel.close(file);
+    }
+
+    @Override
+    public void upgradeAllSavedDatabases(Context context) {
+        Log.d(TAG, "Upgrading all saved databases...");
+        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            DatabaseContract.Controller databaseController = DatabaseController.getInstance(context);
+            ArrayList<File> files = databaseController.getFileList();
+            Collections.sort(files, new Comparator<File>() {
                 @Override
-                public int compare(File o1, File o2) {
-                    if (SDK_INT >= KITKAT) {
-                        return -Long.compare(o1.lastModified(), o2.lastModified());
-                    } else { // before KitKat
-                        if (o1.lastModified() == o2.lastModified()) {
-                            return 0;
-                        }
-                        if (o1.lastModified() > o2.lastModified()) {
-                            return -1;
-                        } else { // o1.lastModified() < o2.lastModified()
-                            return 1;
-                        }
+                public int compare(File f1, File f2) {
+                    if (f1.lastModified() == f2.lastModified()) {
+                        return 0;
                     }
+                    return f1.lastModified() < f2.lastModified() ? -1 : 1;
                 }
             });
-            // add valid database file to the list
             for (File file : files) {
-                if (isFileValid(file)) {
-                    fileList.add(file);
+                Log.d(TAG, "Upgrading file: " + file.getPath());
+                Log.d(TAG, "last modified: " + file.lastModified());
+                SQLiteDatabase database = databaseModel.getReadableDatabase(file);
+                databaseModel.close(file);
+            }
+            Log.d(TAG, "Upgrade finished!");
+        } else {
+            Log.d(TAG, "Storage permission not granted!");
+        }
+    }
+
+    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean useFahrenheit, boolean reverseCurrent) {
+        if (databaseValue == null || listeners.isEmpty()) {
+            return;
+        }
+        DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
+        long startTime = getStartTime();
+        long time = startTime != 0L ? databaseValue.getUtcTimeInMillis() - startTime : 0L;
+        double timeInMinutes = (double) time / (1000 * 60);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            double value = databaseValue.get(i);
+            if (value != 0d || i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
+                switch (i) {
+                    case GRAPH_INDEX_TEMPERATURE:
+                        value /= 10;
+                        if (useFahrenheit) {
+                            value = TemperatureConverter.convertCelsiusToFahrenheit(value);
+                        }
+                        break;
+                    case GRAPH_INDEX_VOLTAGE:
+                        value /= 1000;
+                        break;
+                    case GRAPH_INDEX_CURRENT:
+                        value /= (reverseCurrent ? 1000 : -1000);
+                        break;
                 }
+                dataPoints[i] = new DataPoint(timeInMinutes, value);
             }
         }
-        return fileList;
-    }
-
-    /**
-     * Get an array of all graphs inside the given database file.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return Array of all graphs inside the given database file.
-     * You can use the GRAPH_INDEX_* constants to get the graph that you want out of the array.
-     */
-    public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
-        return getAllGraphs(databaseModel.readData(databaseFile), useFahrenheit, reverseCurrent);
-    }
-
-    /**
-     * Get the latest time that is in the given database file.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return The latest time (UTC time in milliseconds) inside the database.
-     */
-    public long getEndTime(File databaseFile) {
-        return getEndTime(databaseModel.getCursor(databaseFile));
-    }
-
-    /**
-     * Get the first time that is in the given database file.
-     *
-     * @param databaseFile A valid SQLite database file.
-     * @return The first time (UTC time in milliseconds) inside the database.
-     */
-    public long getStartTime(File databaseFile) {
-        return getStartTime(databaseModel.getCursor(databaseFile));
-    }
-
-    /**
-     * Checks if the given file is a valid SQLite database file.
-     *
-     * @param file The file to check.
-     * @return True if it is a valid database file, false if not.
-     */
-    private boolean isFileValid(File file) {
-        try {
-            FileReader fileReader = new FileReader(file.getPath());
-            char[] buffer = new char[16];
-            fileReader.read(buffer, 0, 16); // read first 16 bytes
-            fileReader.close();
-            String string = String.valueOf(buffer);
-            return string.equals("SQLite format 3\u0000");
-        } catch (Exception e) {
-            return false;
+        // notify the listeners
+        for (DatabaseContract.DatabaseListener listener : listeners) {
+            listener.onValueAdded(dataPoints, totalNumberOfRows);
         }
     }
-
-    // ==== GENERAL STUFF ====
 
     LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
         if (databaseValues == null || databaseValues[0] == null) {
@@ -365,6 +346,25 @@ public class DatabaseController {
             }
         }
         return graphs;
+    }
+
+    /**
+     * Checks if the given file is a valid SQLite database file.
+     *
+     * @param file The file to check.
+     * @return True if it is a valid database file, false if not.
+     */
+    private boolean isFileValid(File file) {
+        try {
+            FileReader fileReader = new FileReader(file.getPath());
+            char[] buffer = new char[16];
+            fileReader.read(buffer, 0, 16); // read first 16 bytes
+            fileReader.close();
+            String string = String.valueOf(buffer);
+            return string.equals("SQLite format 3\u0000");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit, boolean reverseCurrent) {
@@ -410,66 +410,9 @@ public class DatabaseController {
         return startTime;
     }
 
-    void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent) {
-        if (databaseValue != null
-                && !listeners.isEmpty()
-                && totalNumberOfRows > 0) {
-            DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
-            long time = databaseValue.getUtcTimeInMillis() - getStartTime();
-            double timeInMinutes = (double) time / (1000 * 60);
-            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                double value = databaseValue.get(i);
-                if (value != 0d || i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
-                    switch (i) {
-                        case GRAPH_INDEX_TEMPERATURE:
-                            value /= 10;
-                            break;
-                        case GRAPH_INDEX_VOLTAGE:
-                            value /= 1000;
-                            break;
-                        case GRAPH_INDEX_CURRENT:
-                            value /= (reverseCurrent ? 1000 : -1000);
-                            break;
-                    }
-                    dataPoints[i] = new DataPoint(timeInMinutes, value);
-                }
-            }
-            // notify the listeners
-            for (DatabaseListener listener : listeners) {
-                listener.onValueAdded(dataPoints, totalNumberOfRows);
-            }
-        }
-    }
-
     private void notifyTableReset() {
-        for (DatabaseListener listener : listeners) {
+        for (DatabaseContract.DatabaseListener listener : listeners) {
             listener.onTableReset();
-        }
-    }
-
-    public void upgradeAllSavedDatabases(Context context) {
-        Log.d(TAG, "Upgrading all saved databases...");
-        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-            DatabaseController databaseController = DatabaseController.getInstance(context);
-            ArrayList<File> files = databaseController.getFileList();
-            Collections.sort(files, new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    if (f1.lastModified() == f2.lastModified()) {
-                        return 0;
-                    }
-                    return f1.lastModified() < f2.lastModified() ? -1 : 1;
-                }
-            });
-            for (File file : files) {
-                Log.d(TAG, "Upgrading file: " + file.getPath());
-                Log.d(TAG, "last modified: " + file.lastModified());
-                SQLiteDatabase database = databaseModel.getReadableDatabase(file);
-                databaseModel.close(file);
-            }
-            Log.d(TAG, "Upgrade finished!");
-        } else {
-            Log.d(TAG, "Storage permission not granted!");
         }
     }
 
@@ -501,23 +444,5 @@ public class DatabaseController {
         database.endTransaction();
         cursor.close();
         databaseModel.close(file);
-    }
-
-    /**
-     * A DatabaseListener that listens for database changes in the app directory database.
-     */
-    public interface DatabaseListener {
-        /**
-         * Called when a graph point was added to the app directory database.
-         *
-         * @param dataPoints An array of DataPoints. You can distinguish which point belongs to
-         *                   which graph with the GRAPH_INDEX_* constants.
-         */
-        void onValueAdded(@NonNull DataPoint[] dataPoints, long totalNumberOfRows);
-
-        /**
-         * Called when the app directory database has been cleared.
-         */
-        void onTableReset();
     }
 }

@@ -21,6 +21,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
@@ -60,7 +61,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * TextView that contains the charging time.
      */
     protected TextView textView_chargingTime;
-    protected DatabaseController databaseController;
+    protected DatabaseContract.Controller databaseController;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
