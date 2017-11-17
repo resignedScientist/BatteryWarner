@@ -35,7 +35,10 @@ public class DatabaseControllerTest {
     private DatabaseContract.DatabaseListener databaseListener;
 
     @Captor
-    private ArgumentCaptor<DataPoint[]> captor;
+    private ArgumentCaptor<DataPoint[]> dataPointArrayCaptor;
+
+    @Captor
+    private ArgumentCaptor<DatabaseController> databaseControllerCaptor;
 
     private static DatabaseValue getRandomDatabaseValue() {
         Random random = new Random();
@@ -157,10 +160,10 @@ public class DatabaseControllerTest {
                 false,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -188,8 +191,8 @@ public class DatabaseControllerTest {
                 false,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
-        DataPoint[] receivedDataPoints = captor.getValue();
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
             if (i != GRAPH_INDEX_BATTERY_LEVEL && i != GRAPH_INDEX_TEMPERATURE) {
                 assertNull("Graph should be null: " + i, receivedDataPoints[i]);
@@ -211,10 +214,10 @@ public class DatabaseControllerTest {
                 false,
                 true
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -240,10 +243,10 @@ public class DatabaseControllerTest {
                 true,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -257,18 +260,12 @@ public class DatabaseControllerTest {
         }
     }
 
-    private int getSize(LineGraphSeries graph) {
-        Iterator<LineGraphSeries> iterator = graph.getValues(0d, Double.MAX_VALUE);
-        int size = 0;
-        while (iterator.hasNext()) {
-            iterator.next();
-            size++;
-        }
-        return size;
-    }
-
     @Test
     public void getInstance() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            DatabaseController controller = DatabaseController.getInstance(null);
+            assertEquals(databaseController, controller);
+        }
     }
 
     @Test
@@ -326,5 +323,15 @@ public class DatabaseControllerTest {
 
     @Test
     public void upgradeAllSavedDatabases() throws Exception {
+    }
+
+    private int getSize(LineGraphSeries graph) {
+        Iterator<LineGraphSeries> iterator = graph.getValues(0d, Double.MAX_VALUE);
+        int size = 0;
+        while (iterator.hasNext()) {
+            iterator.next();
+            size++;
+        }
+        return size;
     }
 }
