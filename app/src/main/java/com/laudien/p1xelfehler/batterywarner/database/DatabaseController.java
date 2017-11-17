@@ -235,7 +235,7 @@ public class DatabaseController implements DatabaseContract.Controller {
     public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean useFahrenheit, boolean reverseCurrent) {
         DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
         long totalNumberOfRows = databaseModel.addValue(newValue);
-        notifyValueAdded(newValue, totalNumberOfRows, reverseCurrent);
+        notifyValueAdded(newValue, totalNumberOfRows, useFahrenheit, reverseCurrent);
         Log.d(TAG, "Value added: " + newValue);
     }
 
@@ -276,7 +276,7 @@ public class DatabaseController implements DatabaseContract.Controller {
         }
     }
 
-    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent) {
+    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean useFahrenheit, boolean reverseCurrent) {
         if (databaseValue == null || listeners.isEmpty()) {
             return;
         }
@@ -290,6 +290,9 @@ public class DatabaseController implements DatabaseContract.Controller {
                 switch (i) {
                     case GRAPH_INDEX_TEMPERATURE:
                         value /= 10;
+                        if (useFahrenheit) {
+                            value = TemperatureConverter.convertCelsiusToFahrenheit(value);
+                        }
                         break;
                     case GRAPH_INDEX_VOLTAGE:
                         value /= 1000;
