@@ -120,7 +120,7 @@ public class DatabaseController implements DatabaseContract.Controller {
 
     @Override
     public LineGraphSeries[] getAllGraphs(File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
-        return new LineGraphSeries[0];
+        return getAllGraphs(databaseModel.readData(databaseFile), useFahrenheit, reverseCurrent);
     }
 
     @Override
@@ -311,7 +311,7 @@ public class DatabaseController implements DatabaseContract.Controller {
         }
     }
 
-    LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
+    private LineGraphSeries[] getAllGraphs(DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
         if (databaseValues == null || databaseValues[0] == null) {
             return null;
         }
