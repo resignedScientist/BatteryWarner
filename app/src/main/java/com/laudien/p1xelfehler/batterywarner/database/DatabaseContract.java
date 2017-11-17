@@ -65,15 +65,13 @@ public class DatabaseContract {
 
         void unregisterListener(DatabaseContract.DatabaseListener listener);
 
-        void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean reverseCurrent);
+        void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean useFahrenheit, boolean reverseCurrent);
 
         void notifyTransitionsFinished();
 
         void notifyTransitionsFinished(File file);
 
         void upgradeAllSavedDatabases(Context context);
-
-        void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent);
     }
 
     /**

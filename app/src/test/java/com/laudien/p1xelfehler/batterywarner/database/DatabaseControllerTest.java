@@ -23,7 +23,6 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class DatabaseControllerTest {
@@ -148,21 +147,23 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void notifyValueAdded() {
+    public void addValue() {
         // wrong inputs -> method should not be called!
-        databaseController.notifyValueAdded(null, 10, false);
-        verify(databaseListener, never()).onValueAdded(Mockito.any(DataPoint[].class), Mockito.anyLong());
-        databaseController.notifyValueAdded(getRandomDatabaseValue(), 0, false);
-        verify(databaseListener, never()).onValueAdded(Mockito.any(DataPoint[].class), Mockito.anyLong());
-        databaseController.notifyValueAdded(getRandomDatabaseValue(), -1, false);
-        verify(databaseListener, never()).onValueAdded(Mockito.any(DataPoint[].class), Mockito.anyLong());
+
     }
 
     @Test
-    public void notifyValueAdded1() {
+    public void addValue1() {
         // add a valid value -> method should be called!
-        DatabaseValue databaseValue = new DatabaseValue(80, 205, 3500, -2100, 60000);
-        databaseController.notifyValueAdded(databaseValue, 1, false);
+        databaseController.addValue(
+                80,
+                205,
+                3500,
+                -2100,
+                60000,
+                false,
+                false
+        );
         verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
 
         // check the DataPoints
@@ -181,12 +182,19 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void notifyValueAdded2() {
+    public void addValue2() {
         /* add all 0 values
         -> the method should be called
         -> each DataPoint (except batteryLevel and temperature) in the array should be null! */
-        DatabaseValue databaseValue = new DatabaseValue(0, 0, 0, 0, 0);
-        databaseController.notifyValueAdded(databaseValue, 1, false);
+        databaseController.addValue(
+                0,
+                0,
+                0,
+                0,
+                0,
+                false,
+                false
+        );
         verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
         DataPoint[] receivedDataPoints = captor.getValue();
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
@@ -199,10 +207,17 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void notifyValueAdded3() {
+    public void addValue3() {
         // test if the current is reversed correctly
-        DatabaseValue databaseValue = new DatabaseValue(80, 205, 3500, -2100, 60000);
-        databaseController.notifyValueAdded(databaseValue, 1, true);
+        databaseController.addValue(
+                80,
+                205,
+                3500,
+                -2100,
+                60000,
+                false,
+                true
+        );
         verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
 
         // check the DataPoints
@@ -212,7 +227,7 @@ public class DatabaseControllerTest {
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
         assertEquals(20.5, receivedDataPoints[GRAPH_INDEX_TEMPERATURE].getY(), 0d);
         assertEquals(3.5, receivedDataPoints[GRAPH_INDEX_VOLTAGE].getY(), 0d);
-        assertEquals(-2.1, receivedDataPoints[GRAPH_INDEX_CURRENT].getY(), 0d);
+        assertEquals("reverseCurrent is not working correctly!", -2.1, receivedDataPoints[GRAPH_INDEX_CURRENT].getY(), 0d);
 
         // time (= x value) must be 0
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
@@ -272,10 +287,6 @@ public class DatabaseControllerTest {
 
     @Test
     public void unregisterListener() throws Exception {
-    }
-
-    @Test
-    public void addValue() throws Exception {
     }
 
     @Test

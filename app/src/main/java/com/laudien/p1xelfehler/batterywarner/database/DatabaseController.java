@@ -232,7 +232,7 @@ public class DatabaseController implements DatabaseContract.Controller {
     }
 
     @Override
-    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean reverseCurrent) {
+    public void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean useFahrenheit, boolean reverseCurrent) {
         DatabaseValue newValue = new DatabaseValue(batteryLevel, temperature, voltage, current, utcTimeInMillis);
         long totalNumberOfRows = databaseModel.addValue(newValue);
         notifyValueAdded(newValue, totalNumberOfRows, reverseCurrent);
@@ -276,36 +276,34 @@ public class DatabaseController implements DatabaseContract.Controller {
         }
     }
 
-    @Override
-    public void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent) {
-        if (databaseValue != null
-                && !listeners.isEmpty()
-                && totalNumberOfRows > 0) {
-            DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
-            long startTime = getStartTime();
-            long time = startTime != 0L ? databaseValue.getUtcTimeInMillis() - startTime : 0L;
-            double timeInMinutes = (double) time / (1000 * 60);
-            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                double value = databaseValue.get(i);
-                if (value != 0d || i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
-                    switch (i) {
-                        case GRAPH_INDEX_TEMPERATURE:
-                            value /= 10;
-                            break;
-                        case GRAPH_INDEX_VOLTAGE:
-                            value /= 1000;
-                            break;
-                        case GRAPH_INDEX_CURRENT:
-                            value /= (reverseCurrent ? 1000 : -1000);
-                            break;
-                    }
-                    dataPoints[i] = new DataPoint(timeInMinutes, value);
+    private void notifyValueAdded(DatabaseValue databaseValue, long totalNumberOfRows, boolean reverseCurrent) {
+        if (databaseValue == null || listeners.isEmpty()) {
+            return;
+        }
+        DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
+        long startTime = getStartTime();
+        long time = startTime != 0L ? databaseValue.getUtcTimeInMillis() - startTime : 0L;
+        double timeInMinutes = (double) time / (1000 * 60);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            double value = databaseValue.get(i);
+            if (value != 0d || i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
+                switch (i) {
+                    case GRAPH_INDEX_TEMPERATURE:
+                        value /= 10;
+                        break;
+                    case GRAPH_INDEX_VOLTAGE:
+                        value /= 1000;
+                        break;
+                    case GRAPH_INDEX_CURRENT:
+                        value /= (reverseCurrent ? 1000 : -1000);
+                        break;
                 }
+                dataPoints[i] = new DataPoint(timeInMinutes, value);
             }
-            // notify the listeners
-            for (DatabaseContract.DatabaseListener listener : listeners) {
-                listener.onValueAdded(dataPoints, totalNumberOfRows);
-            }
+        }
+        // notify the listeners
+        for (DatabaseContract.DatabaseListener listener : listeners) {
+            listener.onValueAdded(dataPoints, totalNumberOfRows);
         }
     }
 
