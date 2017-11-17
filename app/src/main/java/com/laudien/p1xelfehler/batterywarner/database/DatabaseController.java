@@ -66,7 +66,7 @@ public class DatabaseController implements DatabaseContract.Controller {
     private DatabaseContract.Model databaseModel;
     private HashSet<DatabaseContract.DatabaseListener> listeners = new HashSet<>();
 
-    private DatabaseController(DatabaseContract.Model databaseModel) {
+    DatabaseController(DatabaseContract.Model databaseModel) {
         this.databaseModel = databaseModel;
     }
 
@@ -282,7 +282,8 @@ public class DatabaseController implements DatabaseContract.Controller {
                 && !listeners.isEmpty()
                 && totalNumberOfRows > 0) {
             DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
-            long time = databaseValue.getUtcTimeInMillis() - getStartTime();
+            long startTime = getStartTime();
+            long time = startTime != 0L ? databaseValue.getUtcTimeInMillis() - startTime : 0L;
             double timeInMinutes = (double) time / (1000 * 60);
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 double value = databaseValue.get(i);
