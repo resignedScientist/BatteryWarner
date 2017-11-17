@@ -235,6 +235,35 @@ public class DatabaseControllerTest {
         }
     }
 
+    @Test
+    public void addValue4() {
+        // test fahrenheit conversion
+        databaseController.addValue(
+                80,
+                0,
+                3500,
+                -2100,
+                60000,
+                true,
+                false
+        );
+        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+
+        // check the DataPoints
+        DataPoint[] receivedDataPoints = captor.getValue();
+        assertNotNull(receivedDataPoints);
+        assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
+        assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
+        assertEquals("Wrong conversion to Fahrenheit!", 32d, receivedDataPoints[GRAPH_INDEX_TEMPERATURE].getY(), 0d);
+        assertEquals(3.5, receivedDataPoints[GRAPH_INDEX_VOLTAGE].getY(), 0d);
+        assertEquals(2.1, receivedDataPoints[GRAPH_INDEX_CURRENT].getY(), 0d);
+
+        // time (= x value) must be 0
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            assertEquals(0d, receivedDataPoints[i].getX(), 0d);
+        }
+    }
+
     private int getSize(LineGraphSeries graph) {
         Iterator<LineGraphSeries> iterator = graph.getValues(0d, Double.MAX_VALUE);
         int size = 0;
