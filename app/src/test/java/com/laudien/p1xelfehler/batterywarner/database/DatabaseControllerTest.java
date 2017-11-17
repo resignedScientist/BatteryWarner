@@ -51,7 +51,6 @@ public class DatabaseControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         databaseController = new DatabaseController(databaseModel);
-        databaseController.resetTable();
         databaseController.registerDatabaseListener(databaseListener);
     }
 
@@ -148,12 +147,6 @@ public class DatabaseControllerTest {
 
     @Test
     public void addValue() {
-        // wrong inputs -> method should not be called!
-
-    }
-
-    @Test
-    public void addValue1() {
         // add a valid value -> method should be called!
         databaseController.addValue(
                 80,
@@ -182,7 +175,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue2() {
+    public void addValue1() {
         /* add all 0 values
         -> the method should be called
         -> each DataPoint (except batteryLevel and temperature) in the array should be null! */
@@ -207,7 +200,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue3() {
+    public void addValue2() {
         // test if the current is reversed correctly
         databaseController.addValue(
                 80,
@@ -236,7 +229,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue4() {
+    public void addValue3() {
         // test fahrenheit conversion
         databaseController.addValue(
                 80,
@@ -308,6 +301,11 @@ public class DatabaseControllerTest {
 
     @Test
     public void resetTable() throws Exception {
+        databaseController.resetTable();
+        // model method needs to be called
+        verify(databaseModel).resetTable();
+        // listener must be notified
+        verify(databaseListener).onTableReset();
     }
 
     @Test
