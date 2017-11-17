@@ -23,7 +23,6 @@ class DatabaseModel extends SQLiteOpenHelper {
      */
     static final String DATABASE_NAME = "ChargeCurveDB";
     private static final int DATABASE_VERSION = 5; // if the version is changed, a new database will be created!
-    private static final int MAX_DATA_POINTS = 200;
     private HashMap<String, SQLiteDatabase> openedDatabases = new HashMap<>();
 
     DatabaseModel(Context context) {
@@ -145,36 +144,6 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    void shortenGraph(File file) {
-        SQLiteDatabase database = getWritableDatabase(file);
-        if (database == null) {
-            return;
-        }
-        Cursor cursor = getCursor(database);
-        if (cursor == null || cursor.isClosed() || cursor.getCount() <= MAX_DATA_POINTS * 2) {
-            return;
-        }
-        int count = cursor.getCount();
-        int divisor = count / MAX_DATA_POINTS;
-        database.beginTransaction();
-        for (int i = 1; i < count - 1; i++) {
-            if (i % divisor == 0) {
-                continue;
-            }
-            cursor.moveToPosition(i);
-            long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-            database.delete(
-                    DatabaseContract.TABLE_NAME,
-                    DatabaseContract.TABLE_COLUMN_TIME + "=?",
-                    new String[]{String.valueOf(time)}
-            );
-        }
-        database.setTransactionSuccessful();
-        database.endTransaction();
-        cursor.close();
-        close(file);
-    }
-
     // ==== GENERAL STUFF ====
 
     private DatabaseValue[] readData(Cursor cursor) {
@@ -257,7 +226,7 @@ class DatabaseModel extends SQLiteOpenHelper {
         }
     }
 
-    private SQLiteDatabase getWritableDatabase(File databaseFile) {
+    SQLiteDatabase getWritableDatabase(File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }

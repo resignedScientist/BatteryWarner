@@ -61,6 +61,7 @@ public class DatabaseController {
      */
     public static final int NUMBER_OF_GRAPHS = 4;
     private static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
+    private static final int MAX_DATA_POINTS = 200;
     private static DatabaseController instance;
     private final String TAG = getClass().getSimpleName();
     private DatabaseModel databaseModel;
@@ -224,7 +225,7 @@ public class DatabaseController {
                         e.printStackTrace();
                         return false;
                     }
-                    databaseModel.shortenGraph(outputFile);
+                    shortenGraph(outputFile);
                     Log.d("GraphSaver", "Graph saved!");
                     result = true;
                 }
@@ -470,6 +471,36 @@ public class DatabaseController {
         } else {
             Log.d(TAG, "Storage permission not granted!");
         }
+    }
+
+    private void shortenGraph(File file) {
+        SQLiteDatabase database = databaseModel.getWritableDatabase(file);
+        if (database == null) {
+            return;
+        }
+        Cursor cursor = databaseModel.getCursor(database);
+        if (cursor == null || cursor.isClosed() || cursor.getCount() <= MAX_DATA_POINTS * 2) {
+            return;
+        }
+        int count = cursor.getCount();
+        int divisor = count / MAX_DATA_POINTS;
+        database.beginTransaction();
+        for (int i = 1; i < count - 1; i++) {
+            if (i % divisor == 0) {
+                continue;
+            }
+            cursor.moveToPosition(i);
+            long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            database.delete(
+                    DatabaseContract.TABLE_NAME,
+                    DatabaseContract.TABLE_COLUMN_TIME + "=?",
+                    new String[]{String.valueOf(time)}
+            );
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+        cursor.close();
+        databaseModel.close(file);
     }
 
     /**
