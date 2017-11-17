@@ -68,6 +68,7 @@ public class DatabaseController implements DatabaseContract.Controller {
 
     DatabaseController(DatabaseContract.Model databaseModel) {
         this.databaseModel = databaseModel;
+        instance = this;
     }
 
     /**
