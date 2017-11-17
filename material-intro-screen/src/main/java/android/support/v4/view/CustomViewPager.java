@@ -2543,9 +2543,9 @@ public class CustomViewPager extends ViewGroup {
                     break;
                 case KeyEvent.KEYCODE_TAB:
                     // The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
-                    if (KeyEventCompat.hasNoModifiers(event)) {
+                    if (event.hasNoModifiers()) {
                         handled = arrowScroll(FOCUS_FORWARD);
-                    } else if (KeyEventCompat.hasModifiers(event, KeyEvent.META_SHIFT_ON)) {
+                    } else if (event.hasModifiers(KeyEvent.META_SHIFT_ON)) {
                         handled = arrowScroll(FOCUS_BACKWARD);
                     }
                     break;
