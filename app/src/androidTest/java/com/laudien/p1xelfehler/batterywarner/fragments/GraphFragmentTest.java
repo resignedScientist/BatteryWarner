@@ -1,9 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
 import android.support.test.annotation.UiThreadTest;
-import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.laudien.p1xelfehler.batterywarner.FragmentUtilActivity;
@@ -11,7 +9,6 @@ import com.laudien.p1xelfehler.batterywarner.FragmentUtilActivity;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Random;
 
@@ -20,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-@RunWith(AndroidJUnit4.class)
-@LargeTest
 public class GraphFragmentTest {
     @Rule
     public ActivityTestRule<FragmentUtilActivity> mActivityRule = new ActivityTestRule<>(

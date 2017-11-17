@@ -2,15 +2,12 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -26,15 +23,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(AndroidJUnit4.class)
-@LargeTest
 public class DatabaseControllerTest {
     private Context context;
     private DatabaseController databaseController;
     private boolean methodCalled;
     private DataPoint[] receivedDataPoints = null;
 
-    public static DatabaseValue getRandomDatabaseValue() {
+    private static DatabaseValue getRandomDatabaseValue() {
         Random random = new Random();
         int batteryLevel = random.nextInt();
         int temperature = random.nextInt();
