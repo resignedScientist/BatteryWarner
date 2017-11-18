@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DatabaseControllerTest {
+public class DatabaseIntegrationTests {
     @Before
     public void setUp() throws Exception {
         // TODO: (1) delete all files
