@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerPlugin;
@@ -50,6 +48,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     private View layouts[] = new View[NUMBER_OF_LAYOUTS];
     private TextView textView_setValue;
     private RadioGroup radioGroup_action;
+    private boolean rootAvailable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,16 +74,6 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
                 enableCorrectLayout(radioButtonId);
             }
         });
-        // make a root check
-        final Context context = getApplicationContext();
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (!RootHelper.isRootAvailable()) {
-                    NotificationHelper.showNotification(context, NotificationHelper.ID_NOT_ROOTED);
-                }
-            }
-        });
         // configure the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         try {
@@ -99,6 +88,12 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         toolbar.setSubtitle(getString(R.string.tasker_plugin_name));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkForRoot();
     }
 
     @Override
@@ -205,12 +200,28 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (checkBundle()) {
+            super.onBackPressed();
+        }
+    }
+
     private boolean checkBundle() {
         Bundle resultBundle = getResultBundle();
         if (resultBundle == null || !isBundleValid(resultBundle)) {
             new AlertDialog.Builder(this)
                     .setTitle("Wrong input")
                     .setMessage("The given value is not valid!")
+                    .setPositiveButton("Close", null)
+                    .create()
+                    .show();
+            return false;
+        }
+        if (!rootAvailable && TaskerHelper.checkForRootDependencies(resultBundle)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("No root available")
+                    .setMessage("You have chosen a root dependency but no root is available!")
                     .setPositiveButton("Close", null)
                     .create()
                     .show();
@@ -304,5 +315,14 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
             default:
                 throw new RuntimeException("Unknown action!");
         }
+    }
+
+    private void checkForRoot() {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                rootAvailable = RootHelper.isRootAvailable();
+            }
+        });
     }
 }

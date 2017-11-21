@@ -39,6 +39,13 @@ public class TaskerHelper {
             ACTION_SAVE_GRAPH,
             ACTION_RESET_GRAPH
     };
+    static final String[] ROOT_ACTIONS = new String[]{
+            ACTION_TOGGLE_CHARGING,
+            ACTION_TOGGLE_STOP_CHARGING,
+            ACTION_TOGGLE_SMART_CHARGING,
+            ACTION_SET_SMART_CHARGING_LIMIT,
+            ACTION_SET_SMART_CHARGING_TIME
+    };
 
     public static boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
         if (bundle.isEmpty()
@@ -81,6 +88,22 @@ public class TaskerHelper {
             }
         }
         return true;
+    }
+
+    /**
+     * Checks if any root dependency is in the bundle
+     *
+     * @param bundle The bundle to check.
+     * @return True = there are root dependencies in the bundle,
+     * False = there are no root dependencies in the bundle.
+     */
+    public static boolean checkForRootDependencies(@NonNull Bundle bundle) {
+        for (String action : ROOT_ACTIONS) {
+            if (bundle.containsKey(action)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Bundle buildBundle(String action, long value) {

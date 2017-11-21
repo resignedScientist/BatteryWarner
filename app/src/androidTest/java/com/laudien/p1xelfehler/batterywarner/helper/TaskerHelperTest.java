@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.TreeSet;
 
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_RESET_GRAPH;
@@ -26,6 +27,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ALL_ACTIONS;
+import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ROOT_ACTIONS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +43,7 @@ public class TaskerHelperTest {
     private TreeSet<String> longKeys;
     private TreeSet<String> actionKeys;
     private TreeSet<String> noDependencyKeys;
+    private TreeSet<String> rootKeys;
 
     @Before
     public void setUp() throws Exception {
@@ -79,6 +82,10 @@ public class TaskerHelperTest {
         noDependencyKeys.add(ACTION_TOGGLE_CHARGING);
         noDependencyKeys.add(ACTION_TOGGLE_WARNING_HIGH);
         noDependencyKeys.add(ACTION_TOGGLE_WARNING_LOW);
+
+        // keys that require root
+        rootKeys = new TreeSet<>();
+        rootKeys.addAll(Arrays.asList(ROOT_ACTIONS));
     }
 
     @After
@@ -840,6 +847,21 @@ public class TaskerHelperTest {
         bundle = new Bundle();
         bundle.putInt("UnknownAction", 42);
         assertTrue(TaskerHelper.checkDependencies(context, bundle));
+    }
+
+    @Test
+    public void checkForRootDependencies() throws Exception {
+        Bundle bundle = new Bundle();
+        assertFalse(TaskerHelper.checkForRootDependencies(bundle));
+        for (String key : ALL_ACTIONS) {
+            bundle = new Bundle();
+            bundle.putString(key, "test");
+            if (rootKeys.contains(key)) {
+                assertTrue(key, TaskerHelper.checkForRootDependencies(bundle));
+            } else {
+                assertFalse(key, TaskerHelper.checkForRootDependencies(bundle));
+            }
+        }
     }
 
     private void testBundleValidValueEdgeCases(int min, int max, String action) {
