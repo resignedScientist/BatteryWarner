@@ -1,7 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,8 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Iterator;
-import java.util.Random;
+import java.io.File;
+import java.util.ArrayList;
 
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
@@ -35,23 +34,12 @@ public class DatabaseControllerTest {
     private DatabaseContract.DatabaseListener databaseListener;
 
     @Captor
-    private ArgumentCaptor<DataPoint[]> captor;
-
-    private static DatabaseValue getRandomDatabaseValue() {
-        Random random = new Random();
-        int batteryLevel = random.nextInt();
-        int temperature = random.nextInt();
-        int voltage = random.nextInt();
-        int current = random.nextInt();
-        long time = System.currentTimeMillis();
-        return new DatabaseValue(batteryLevel, temperature, voltage, current, time);
-    }
+    private ArgumentCaptor<DataPoint[]> dataPointArrayCaptor;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         databaseController = new DatabaseController(databaseModel);
-        databaseController.resetTable();
         databaseController.registerDatabaseListener(databaseListener);
     }
 
@@ -59,13 +47,13 @@ public class DatabaseControllerTest {
     public void tearDown() throws Exception {
     }
 
-    @Test
+    /*@Test
     public void getAllGraphs1() throws Exception {
         // databaseValue == null -> should return null
         assertNull(databaseController.getAllGraphs((DatabaseValue[]) null, false, false));
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void getAllGraphs2() {
         // 2. create 2 dummy databaseValues, the second one is null
         int batteryLevel = 60;
@@ -90,9 +78,9 @@ public class DatabaseControllerTest {
         assertEquals((double) voltage / 1000, lineGraphSeries[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
         assertEquals((double) current / -1000, lineGraphSeries[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
         assertEquals(0d, lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(), 0d);
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void getAllGraphs3() {
         // 4. create 1 dummy databaseValue, all values are 0
         DatabaseValue[] databaseValues = new DatabaseValue[1];
@@ -108,9 +96,9 @@ public class DatabaseControllerTest {
                 assertNull(lineGraphSeries[i]);
             }
         }
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void getAllGraphs4() {
         // Adding lots of the same values
         DatabaseValue[] databaseValues = new DatabaseValue[20];
@@ -144,16 +132,10 @@ public class DatabaseControllerTest {
         // check x axis
         double expectedTimeInMinutes = (double) (lastTime - time) / (1000 * 60);
         assertEquals(expectedTimeInMinutes, lineGraphSeries[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX(), 0d);
-    }
+    }*/
 
     @Test
     public void addValue() {
-        // wrong inputs -> method should not be called!
-
-    }
-
-    @Test
-    public void addValue1() {
         // add a valid value -> method should be called!
         databaseController.addValue(
                 80,
@@ -164,10 +146,10 @@ public class DatabaseControllerTest {
                 false,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -182,7 +164,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue2() {
+    public void addValue1() {
         /* add all 0 values
         -> the method should be called
         -> each DataPoint (except batteryLevel and temperature) in the array should be null! */
@@ -195,8 +177,8 @@ public class DatabaseControllerTest {
                 false,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
-        DataPoint[] receivedDataPoints = captor.getValue();
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
             if (i != GRAPH_INDEX_BATTERY_LEVEL && i != GRAPH_INDEX_TEMPERATURE) {
                 assertNull("Graph should be null: " + i, receivedDataPoints[i]);
@@ -207,7 +189,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue3() {
+    public void addValue2() {
         // test if the current is reversed correctly
         databaseController.addValue(
                 80,
@@ -218,10 +200,10 @@ public class DatabaseControllerTest {
                 false,
                 true
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -236,7 +218,7 @@ public class DatabaseControllerTest {
     }
 
     @Test
-    public void addValue4() {
+    public void addValue3() {
         // test fahrenheit conversion
         databaseController.addValue(
                 80,
@@ -247,10 +229,10 @@ public class DatabaseControllerTest {
                 true,
                 false
         );
-        verify(databaseListener).onValueAdded(captor.capture(), Mockito.anyLong());
+        verify(databaseListener).onValueAdded(dataPointArrayCaptor.capture(), Mockito.anyLong());
 
         // check the DataPoints
-        DataPoint[] receivedDataPoints = captor.getValue();
+        DataPoint[] receivedDataPoints = dataPointArrayCaptor.getValue();
         assertNotNull(receivedDataPoints);
         assertEquals(NUMBER_OF_GRAPHS, receivedDataPoints.length);
         assertEquals(80d, receivedDataPoints[GRAPH_INDEX_BATTERY_LEVEL].getY(), 0d);
@@ -264,7 +246,39 @@ public class DatabaseControllerTest {
         }
     }
 
-    private int getSize(LineGraphSeries graph) {
+    @Test
+    public void getInstance() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            DatabaseController controller = DatabaseController.getInstance(null);
+            assertEquals(databaseController, controller);
+        }
+    }
+
+    @Test
+    public void getFileList() throws Exception {
+        ArrayList<File> files = databaseController.getFileList();
+        assertNotNull(files); // more we cannot check here!
+    }
+
+    @Test
+    public void resetTable() throws Exception {
+        databaseController.resetTable();
+        // model method needs to be called
+        verify(databaseModel).resetTable();
+        // listener must be notified
+        verify(databaseListener).onTableReset();
+    }
+
+    @Test
+    public void unregisterListener() throws Exception {
+        databaseController.unregisterListener(databaseListener);
+        databaseController.addValue(0, 0, 0, 0, 0, false, false);
+        databaseController.resetTable();
+        verify(databaseListener, Mockito.never()).onTableReset();
+        verify(databaseListener, Mockito.never()).onValueAdded(Mockito.any(DataPoint[].class), Mockito.anyLong());
+    }
+
+    /*private int getSize(LineGraphSeries graph) {
         Iterator<LineGraphSeries> iterator = graph.getValues(0d, Double.MAX_VALUE);
         int size = 0;
         while (iterator.hasNext()) {
@@ -272,61 +286,5 @@ public class DatabaseControllerTest {
             size++;
         }
         return size;
-    }
-
-    @Test
-    public void getInstance() throws Exception {
-    }
-
-    @Test
-    public void getFileList() throws Exception {
-    }
-
-    @Test
-    public void getAllGraphs() throws Exception {
-    }
-
-    @Test
-    public void getEndTime() throws Exception {
-    }
-
-    @Test
-    public void getEndTime1() throws Exception {
-    }
-
-    @Test
-    public void getStartTime() throws Exception {
-    }
-
-    @Test
-    public void getStartTime1() throws Exception {
-    }
-
-    @Test
-    public void saveGraph() throws Exception {
-    }
-
-    @Test
-    public void resetTable() throws Exception {
-    }
-
-    @Test
-    public void registerDatabaseListener() throws Exception {
-    }
-
-    @Test
-    public void unregisterListener() throws Exception {
-    }
-
-    @Test
-    public void notifyTransitionsFinished() throws Exception {
-    }
-
-    @Test
-    public void notifyTransitionsFinished1() throws Exception {
-    }
-
-    @Test
-    public void upgradeAllSavedDatabases() throws Exception {
-    }
+    }*/
 }
