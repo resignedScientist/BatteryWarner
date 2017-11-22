@@ -291,14 +291,14 @@ public class TaskerHelperTest {
             }
         }
 
-        // valid keys with variable instead of integers
+        // valid keys with local variable instead of integers
         for (String key : intKeys) {
             bundle = new Bundle();
             bundle.putString(key, "%test");
             assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
 
-        // global variables
+        // valid keys with global variable instead of integers
         for (String key: intKeys) {
             bundle = new Bundle();
             bundle.putString(key, "%TESTING");
