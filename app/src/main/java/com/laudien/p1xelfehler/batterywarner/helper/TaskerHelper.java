@@ -13,6 +13,7 @@ import com.twofortyfouram.log.Lumberjack;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class TaskerHelper {
     public static final String ACTION_TOGGLE_CHARGING = "com.laudien.p1xelfehler.batterywarner.toggle_charging";
@@ -72,7 +73,7 @@ public class TaskerHelper {
             }
             String value = bundle.getString(action);
             if (value == null && !isValueValid(context, action, bundle)
-                    || value != null && !TaskerPlugin.variableNameValid(value)) {
+                    || value != null && !variableNameValid(value)) {
                 return false;
             }
         }
@@ -304,5 +305,10 @@ public class TaskerHelper {
             default:
                 return true;
         }
+    }
+
+    private static boolean variableNameValid(@NonNull String varName) {
+        Pattern pattern = Pattern.compile(TaskerPlugin.VARIABLE_NAME_MATCH_EXPRESSION, 0);
+        return pattern.matcher(varName).matches();
     }
 }
