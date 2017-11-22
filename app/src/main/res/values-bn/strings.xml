@@ -2,8 +2,12 @@
 <resources>
     <string name="channel_description_battery_info">সকল ব্যাটারির তথ্যসহ স্থায়ী নোটিফিকেশন \'Charging Service\'</string>
     <string name="channel_description_other_warnings">অন্যান্য সতর্ক সংকেত, যেমন রুট অনুমতি না পেলে!</string>
+    <string name="channel_description_warning_high">\'ব্যাটারি সীমা  x%\ এর উপরে!' সতর্কবার্তা</string>
+    <string name="channel_description_warning_low">\'ব্যাটারি সীমা x%\ এর নিচে! 'সতর্কবার্তা </string>
     <string name="channel_title_battery_info">ব্যাটারি তথ্য</string>
     <string name="channel_title_other_warnings">অন্যান্য সতর্কবার্তাসমূহ</string>
+    <string name="channel_title_warning_high">সর্বোচ্চ ব্যাটারি সতর্কবার্তা</string>
+    <string name="channel_title_warning_low">সর্বনিম্ন ব্যাটারি সতর্কবার্তা</string>
 
     <string name="charging">চার্জিং</string>
 
@@ -86,6 +90,7 @@
     <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_power_saving_mode">নির্ধারিত নিম্ন সীমায় পৌঁছলে ব্যাটারি সেভিং চালু হবে</string>
     <string name="summary_reset_battery_stats">ব্যাটারির সর্বোচ্চ সীমা সর্তক চালু হলে ব্যাটারির তথ্য পুনঃস্থাপিত হবে</string>
+    <string name="summary_reverse_current">এটা নির্ধারোন করে দিন যদি ভুল বিদ্যুৎ প্রবাহ নির্দেশ করে।</string>
     <string name="summary_smart_charging_auto_resume">প্রথম নির্ধারিত মান থেকে X% কম হলে চার্জিং আবার শুরু হবে। আবার প্রথম মান পর্যন্ত চার্জ হবে। </string>
     <string name="summary_stop_charging">চার্জের সর্বোচ্চ সীমাতে পৌঁছালে চার্জিং স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে। আপাতত সব মোবাইলে এটা কাজ করবে না! আপাতত সব মোবাইলে এটা কাজ করবে না!</string>
     <string name="summary_usb_charging_disabled">পিসিতে ইউএসবি সংযোগ করলেও চার্জ হবে না, চার্জিং বন্ধ করবে।</string>
@@ -110,6 +115,8 @@
     <string name="tasker_set_smart_charging_limit">স্মার্ট চার্জিং এর লিমিট নির্ধারণ</string>
     <string name="tasker_set_smart_charging_time">স্মার্ট চার্জিং এর সময় নির্ধারণ</string>
     <string name="tasker_set_value">নির্ধারিত মান:</string>
+    <string name="tasker_set_warning_high">সর্বোচ্চ ব্যাটারি সতর্কবার্তা নির্ধারণ</string>
+    <string name="tasker_set_warning_low">সর্বনিম্ন ব্যাটারি সতর্কবার্তা নির্ধারণ</string>
     <string name="tasker_subtitle">তোমাকে এখানে দেখতে পেয়ে আমি আনন্দিত :)</string>
     <string name="tasker_to">প্রতি</string>
     <string name="tasker_toggle_charging">চার্জিং চালু</string>
@@ -117,6 +124,9 @@
     <string name="tasker_toggle_stop_charging">চার্জিং বন্ধ</string>
     <string name="tasker_toggle_warning_high">উচ্চ ব্যাটারি সংকেত চালু</string>
     <string name="tasker_toggle_warning_low">নিম্ন ব্যাটারি সংকেত চালু</string>
+
+    <string name="temperature_unit_celsius">সেলসিয়াস (°সে.)</string>
+    <string name="temperature_unit_fahrenheit">ফারেনহাইট (°ফা.)</string>
 
     <string name="tile_stop_charging">চার্জিং বন্ধ</string>
     <string name="tile_warning_high">উচ্চ ব্যাটারি সতর্ক সংকেত</string>
@@ -151,6 +161,7 @@
     <string name="title_power_saving_mode">পাওয়ার সেভিং মোড চালু</string>
     <string name="title_preferences">ব্যবস্থাপনা</string>
     <string name="title_reset_battery_stats">ব্যাটারি তথ্য পুনঃস্থাপন</string>
+    <string name="title_reverse_current">বিপরীত বিদ্যুৎ</string>
     <string name="title_smart_charging">স্মার্ট চার্জিং [রুট]</string>
     <string name="title_smart_charging_auto_resume">স্বয়ংক্রিয়ভাবে চালু</string>
     <string name="title_smart_charging_auto_resume_percentage">স্বয়ংক্রিয়ভাবে চার্জিং চালুর শতকরা হার:</string>
@@ -160,6 +171,7 @@
     <string name="title_sound_uri">নোটিফিকেশন শব্দ সংকেত বাছাই</string>
     <string name="title_stats">পরিসংখ্যান</string>
     <string name="title_stop_charging">স্বয়ংক্রিয়ভাবে চার্জিং বন্ধ [রুট]</string>
+    <string name="title_temp_unit">তাপমাত্রার একক</string>
     <string name="title_theming">থিম ব্যবস্থাপনা</string>
     <string name="title_time_format">সময়ের ধরণ</string>
     <string name="title_usb_charging_disabled"> ইউএসবি চার্জিং বন্ধ [রুট]</string>
@@ -169,12 +181,14 @@
 
     <string name="toast_charging_type_disabled">বর্তমান চার্জের ধরণ সেটিংসে বন্ধ করা রয়েছে!</string>
     <string name="toast_click_to_exit">অ্যাপ থেকে বের হবার জন্য পুনরায় ট্যাপ করুন!</string>
+    <string name="toast_dependencies_not_fulfilled">কিছু ব্যাপার এ অ্যাকশানের জন্য কার্যকর নয়!</string>
     <string name="toast_disabled_in_settings">সেটিংসে বন্ধ আছে!</string>
     <string name="toast_error_deleting">বাতিল করা সম্ভব হচ্ছে না!</string>
     <string name="toast_error_renaming">পুনরায় নামকরণ ব্যর্থ হয়েছে!</string>
     <string name="toast_error_renaming_wrong_characters">অব্যবহার্য অক্ষর! নামকরণ ব্যর্থ!</string>
     <string name="toast_error_saving">সংরক্ষণ করতে ব্যর্থ!</string>
     <string name="toast_graph_name_already_exists">লেখ-চিত্রের নামকরণ করা হয়ে গেছে!</string>
+    <string name="toast_invalid_tasker_settings">অকার্যকর সেটিংস!</string>
     <string name="toast_no_alarm_time_found">কোন  অ্যালার্মের নির্ধারিত সময় পাওয়া যায়নি! স্মার্ট চার্জিং ব্যবহারের জন্য অ্যালার্ম নির্ধারণ করতে হবে অথবা অ্যাপ থেকে চার্জের সময় নির্ধারণ করে দিতে হবে।</string>
     <string name="toast_no_data">এখনো কোন উপাত্ত নেই!</string>
     <string name="toast_no_graphs_saved">কোন লেখ-চিত্র সংরক্ষিত নেই!</string>
@@ -182,6 +196,7 @@
     <string name="toast_not_rooted">এর জন্য মোবাইল রুটেড হতে হবে!</string>
     <string name="toast_nothing_to_delete">বাতিল করার মত কিছুই নেই!</string>
     <string name="toast_nothing_to_save">সংরক্ষণ করার মত কিছুই নেই!</string>
+    <string name="toast_preference_changed">সেটিংস পরিবর্তন হয়েছে\ </string>
     <string name="toast_root_denied">রুট সুবিধা বাতিল করা হয়েছে। সব রুট সম্পর্কিত সুবিধাসমূহ বন্ধ হয়ে যাবে।</string>
     <string name="toast_stop_charging_not_enabled">চার্জ বন্ধ করার সুবিধা চালু থাকতে হবে!</string>
     <string name="toast_success_delete_all_graphs">সকল গ্রাফ মুছে ফেলা হয়েছে!</string>
@@ -193,18 +208,4 @@
     <string name="unit_days">\ দিন</string>
 
     <!-- new strings -->
-    <string name="tasker_set_warning_high">Set high battery warning</string>
-    <string name="tasker_set_warning_low">Set low battery warning</string>
-    <string name="temperature_unit_celsius">Celsius (°C)</string>
-    <string name="temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="title_temp_unit">Temperature unit</string>
-    <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
-    <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
-    <string name="channel_title_warning_high">High battery warning</string>
-    <string name="channel_title_warning_low">Low battery warning</string>
-    <string name="toast_preference_changed">Preference changed to\ </string>
-    <string name="toast_invalid_tasker_settings">Invalid settings!</string>
-    <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
-    <string name="title_reverse_current">Reverse Current</string>
-    <string name="toast_dependencies_not_fulfilled">Some dependencies are not fulfilled for that action!</string>
 </resources>
