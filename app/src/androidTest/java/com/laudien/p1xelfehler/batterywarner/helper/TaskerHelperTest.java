@@ -298,6 +298,13 @@ public class TaskerHelperTest {
             assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
         }
 
+        // global variables
+        for (String key: intKeys) {
+            bundle = new Bundle();
+            bundle.putString(key, "%TESTING");
+            assertTrue(key, TaskerHelper.isVariableBundleValid(context, bundle));
+        }
+
         // valid keys with wrong variable format instead of integers
         for (String key : intKeys) {
             bundle = new Bundle();
