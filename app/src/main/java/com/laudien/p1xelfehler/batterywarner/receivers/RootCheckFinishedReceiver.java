@@ -28,24 +28,26 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_ROOT_CHECK_FINISHED)) {
-            if (intent.hasExtra(EXTRA_ROOT_ALLOWED) && intent.hasExtra(EXTRA_PREFERENCE)) {
-                boolean rootAllowed = intent.getBooleanExtra(EXTRA_ROOT_ALLOWED, false);
-                final String preferenceKey = intent.getStringExtra(EXTRA_PREFERENCE);
-                if (!rootAllowed) { // root access was not granted
-                    ToastHelper.sendToast(context, R.string.toast_not_rooted, LENGTH_SHORT);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            disablePreferences(preferenceKey);
-                        }
-                    }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
-                } else { // root access was granted
-                    ServiceHelper.restartService(context.getApplicationContext());
+        if (intent == null
+                || intent.getAction() == null
+                || !intent.getAction().equals(ACTION_ROOT_CHECK_FINISHED)) {
+            return;
+        }
+        if (!intent.hasExtra(EXTRA_ROOT_ALLOWED) || !intent.hasExtra(EXTRA_PREFERENCE)) {
+            throw new RuntimeException("The Intent does not contain all extras!");
+        }
+        boolean rootAllowed = intent.getBooleanExtra(EXTRA_ROOT_ALLOWED, false);
+        final String preferenceKey = intent.getStringExtra(EXTRA_PREFERENCE);
+        if (!rootAllowed) { // root access was not granted
+            ToastHelper.sendToast(context, R.string.toast_not_rooted, LENGTH_SHORT);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    disablePreferences(preferenceKey);
                 }
-            } else {
-                throw new RuntimeException("The Intent does not contain all extras!");
-            }
+            }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
+        } else { // root access was granted
+            ServiceHelper.restartService(context.getApplicationContext());
         }
     }
 
