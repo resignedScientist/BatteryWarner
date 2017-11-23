@@ -76,12 +76,11 @@ dependencies {
     testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockito"
     testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockito"
 
-
     compile 'com.jjoe64:graphview:4.2.1'
     compile 'eu.chainfire:libsuperuser:1.0.0.201608240809'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile project(path: ':material-intro-screen')
-    compile 'com.android.support:appcompat-v7:27.0.0'
-    compile 'com.android.support:design:27.0.0'
+    compile 'com.android.support:appcompat-v7:27.0.1'
+    compile 'com.android.support:design:27.0.1'
     compile 'com.twofortyfouram:android-plugin-client-sdk-for-locale:4.0.3' // Tasker
 }
