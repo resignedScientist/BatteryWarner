@@ -34,4 +34,10 @@
     <bool name="switch_percentage_default">true</bool>
     <bool name="switch_temperature_default">true</bool>
     <bool name="switch_voltage_default">false</bool>
+    <!-- Reverse Current Switch -->
+    <bool name="pref_reverse_current_default">false</bool>
+    <!-- alarm clock switch default in Smart Charging preferences -->
+    <bool name="pref_smart_charging_use_alarm_clock_time_default">false</bool>
+    <!-- graph auto delete -->
+    <bool name="pref_graph_auto_delete_default">false</bool>
 </resources>
