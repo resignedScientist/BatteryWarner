@@ -47,7 +47,7 @@ public abstract class RootCheckFinishedReceiver extends BroadcastReceiver {
                 }
             }, context.getResources().getInteger(R.integer.pref_switch_back_delay));
         } else { // root access was granted
-            ServiceHelper.restartService(context.getApplicationContext());
+            ServiceHelper.resetService(context.getApplicationContext());
         }
     }
 

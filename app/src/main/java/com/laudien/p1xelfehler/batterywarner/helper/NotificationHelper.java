@@ -261,12 +261,12 @@ public final class NotificationHelper {
         channel = new NotificationChannel(
                 context.getString(R.string.channel_battery_info),
                 context.getString(R.string.channel_title_battery_info),
-                NotificationManager.IMPORTANCE_MIN
+                NotificationManager.IMPORTANCE_LOW
         );
         channel.setDescription(context.getString(R.string.channel_description_battery_info));
         channel.enableLights(false);
         channel.enableVibration(false);
-        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         channel.setShowBadge(false);
         notificationManager.createNotificationChannel(channel);
         // other warnings

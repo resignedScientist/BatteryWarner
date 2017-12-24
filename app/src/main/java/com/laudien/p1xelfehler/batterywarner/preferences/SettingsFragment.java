@@ -203,7 +203,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
             if (context != null) {
-                ServiceHelper.restartService(getContext());
+                ServiceHelper.resetService(getContext());
             }
         } else if (preference == pref_infoTextSize) {
             Context context = getContext();

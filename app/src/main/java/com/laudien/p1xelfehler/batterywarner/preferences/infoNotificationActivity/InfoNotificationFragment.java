@@ -27,7 +27,7 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         Context context = getActivity();
         if (context != null) {
-            ServiceHelper.restartService(context);
+            ServiceHelper.resetService(context);
         }
     }
 }
