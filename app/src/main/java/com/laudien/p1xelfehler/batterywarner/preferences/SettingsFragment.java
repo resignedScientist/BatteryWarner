@@ -15,6 +15,7 @@ import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 
@@ -46,24 +47,30 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private static final int REQUEST_AUTO_SAVE = 70;
     private TwoStatePreference pref_autoSave;
     private TwoStatePreference pref_warningHighEnabled;
-    private TwoStatePreference pref_usb;
     private TwoStatePreference pref_graphEnabled;
     private TwoStatePreference switch_darkTheme;
     private TwoStatePreference pref_infoNotificationEnabled;
-    private TwoStatePreference pref_usb_disabled;
-    private TwoStatePreference pref_stopCharging;
-    private TwoStatePreference pref_power_saving_mode;
-    private TwoStatePreference pref_reset_battery_stats;
     private TwoStatePreference pref_darkInfoNotification;
+    private RingtonePreference ringtonePreference_high, ringtonePreference_low;
+    private Preference pref_info_notification_items;
     @RequiresApi(LOLLIPOP)
     private SwitchPreference pref_graphAutoDelete;
-    private RingtonePreference ringtonePreference_high, ringtonePreference_low;
-    private Preference pref_smart_charging, pref_info_notification_items, pref_infoTextSize;
-    private boolean easyMode;
+    @Nullable
+    private TwoStatePreference pref_usb;
+    @Nullable
+    private TwoStatePreference pref_usb_disabled;
+    @Nullable
+    private TwoStatePreference pref_stopCharging;
+    @Nullable
+    private TwoStatePreference pref_power_saving_mode;
+    @Nullable
+    private TwoStatePreference pref_reset_battery_stats;
+    @Nullable
+    private Preference pref_smart_charging, pref_infoTextSize;
     private final RootCheckFinishedReceiver rootCheckFinishedReceiver = new RootCheckFinishedReceiver() {
         @Override
         protected void disablePreferences(String preferenceKey) {
-            if (preferenceKey.equals(getString(R.string.pref_stop_charging))) {
+            if (preferenceKey.equals(getString(R.string.pref_stop_charging)) && pref_stopCharging != null) {
                 pref_stopCharging.setChecked(false);
             } else if (preferenceKey.equals(getString(R.string.pref_smart_charging_enabled))) {
                 SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -71,15 +78,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                         .putBoolean(getString(R.string.pref_smart_charging_enabled), false)
                         .apply();
                 setSmartChargingSummary(sharedPreferences);
-            } else if (preferenceKey.equals(getString(R.string.pref_usb_charging_disabled))) {
+            } else if (preferenceKey.equals(getString(R.string.pref_usb_charging_disabled)) && pref_usb_disabled != null) {
                 pref_usb_disabled.setChecked(false);
-            } else if (preferenceKey.equals(getString(R.string.pref_power_saving_mode))) {
+            } else if (preferenceKey.equals(getString(R.string.pref_power_saving_mode)) && pref_power_saving_mode != null) {
                 pref_power_saving_mode.setChecked(false);
-            } else if (preferenceKey.equals(getString(R.string.pref_reset_battery_stats))) {
+            } else if (preferenceKey.equals(getString(R.string.pref_reset_battery_stats)) && pref_reset_battery_stats != null) {
                 pref_reset_battery_stats.setChecked(false);
             }
         }
     };
+    private boolean easyMode;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,9 +139,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onResume() {
         super.onResume();
-        if (!easyMode) {
+        if (pref_smart_charging != null && pref_stopCharging != null) {
             pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
-            pref_usb.setEnabled(!pref_usb_disabled.isChecked());
         }
         pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         Context context = getContext();
@@ -183,9 +190,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } else if (preference == pref_warningHighEnabled) {
             boolean highChecked = pref_warningHighEnabled.isChecked();
             if (!highChecked) {
-                pref_stopCharging.setChecked(false);
+                if (pref_stopCharging != null) {
+                    pref_stopCharging.setChecked(false);
+                }
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
-                pref_smart_charging.setSummary(getString(R.string.summary_disabled));
+                if (pref_smart_charging != null) {
+                    pref_smart_charging.setSummary(getString(R.string.summary_disabled));
+                }
             }
             if (highChecked) {
                 Context context = getContext();
@@ -209,13 +220,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (twoStatePreference != null && twoStatePreference.isChecked()) {
                 RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
             }
-            if (preference == pref_stopCharging) {
-                pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
+            if (preference == pref_stopCharging && pref_stopCharging != null) {
+                if (pref_smart_charging != null) {
+                    pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
+                }
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
                 pref_smart_charging.setSummary(getString(R.string.summary_disabled));
             } else if (preference == pref_usb_disabled) {
                 boolean checked = pref_usb_disabled.isChecked();
-                pref_usb.setEnabled(!checked);
+                if (pref_usb != null) {
+                    pref_usb.setEnabled(!checked);
+                }
             }
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
             Context context = getContext();
@@ -270,7 +285,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setSmartChargingSummary(SharedPreferences sharedPreferences) {
-        if (!easyMode) {
+        if (pref_smart_charging != null) {
             boolean smartChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_enabled), getResources().getBoolean(R.bool.pref_smart_charging_enabled_default));
             pref_smart_charging.setSummary(smartChargingEnabled ? R.string.title_enabled : R.string.summary_disabled);
         }
