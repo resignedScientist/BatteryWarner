@@ -417,7 +417,8 @@ public class BackgroundService extends Service {
             builder.setChannelId(getString(R.string.channel_warning_high));
         } else { // API lower than 26 (Android Oreo)
             builder.setPriority(PRIORITY_LOW);
-            if (enableSound) {
+            boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_sound_enabled), getResources().getBoolean(R.bool.pref_waring_high_sound_enabled_default));
+            if (enableSound && soundEnabled) {
                 builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
             }
         }
@@ -443,13 +444,16 @@ public class BackgroundService extends Service {
                 .setStyle(NotificationHelper.getBigTextStyle(messageText))
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(this))
                 .setAutoCancel(true)
-                .setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true))
                 .setLights(Color.GREEN, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_warning_high));
         } else {
             builder.setPriority(PRIORITY_HIGH);
+            boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_sound_enabled), getResources().getBoolean(R.bool.pref_waring_high_sound_enabled_default));
+            if (soundEnabled) {
+                builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
+            }
         }
         return builder.build();
     }

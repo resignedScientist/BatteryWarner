@@ -208,4 +208,5 @@
     <string name="unit_days">\ দিন</string>
 
     <!-- new strings -->
+    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
 </resources>
