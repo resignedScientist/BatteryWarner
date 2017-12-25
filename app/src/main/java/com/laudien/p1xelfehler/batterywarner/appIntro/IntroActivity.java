@@ -24,7 +24,9 @@ import static android.widget.Toast.LENGTH_SHORT;
  * After it finished, it starts the {@link com.laudien.p1xelfehler.batterywarner.services.BackgroundService}
  * and the {@link com.laudien.p1xelfehler.batterywarner.MainActivity}.
  */
-public class IntroActivity extends MaterialIntroActivity {
+public class IntroActivity extends MaterialIntroActivity implements EasyModeSlide.EaseModeSlideDelegate {
+    @Nullable
+    public PreferencesSlide preferencesSlide;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,8 +63,13 @@ public class IntroActivity extends MaterialIntroActivity {
                 .description(getString(R.string.intro_slide_3_description))
                 .build()
         );
+        // easy mode selection slide
+        EasyModeSlide easyModeSlide = new EasyModeSlide();
+        easyModeSlide.delegate = this;
+        addSlide(easyModeSlide);
         // preference slide
-        addSlide(new PreferencesSlide());
+        preferencesSlide = new PreferencesSlide();
+        addSlide(preferencesSlide);
     }
 
     @Override
@@ -76,5 +83,16 @@ public class IntroActivity extends MaterialIntroActivity {
         ToastHelper.sendToast(getApplicationContext(), R.string.intro_finish_toast, LENGTH_SHORT);
         // start MainActivity
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @Override
+    public void onModeSelected(boolean easyMode) {
+        if (preferencesSlide != null) {
+            preferencesSlide.loadPreferences(easyMode);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit()
+                    .putBoolean(getString(R.string.pref_easy_mode), easyMode)
+                    .apply();
+        }
     }
 }

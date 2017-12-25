@@ -65,6 +65,11 @@
     <string name="info_temperature">Temperature</string>
     <string name="info_voltage">Voltage</string>
 
+    <string name="intro_advanced_mode">Advanced mode</string>
+    <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
+    <string name="intro_easy_mode">Easy mode</string>
+    <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
+    <string name="intro_easy_mode_title">Select mode</string>
     <!-- intro -->
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
     <string name="intro_slide_1_description">It will help your battery to live longer!</string>
@@ -107,6 +112,7 @@
     <string name="pref_checkBox_voltage" translatable="false">checkBoxVoltage</string>
     <string name="pref_dark_info_notification" translatable="false">infoDarkTheme</string>
     <string name="pref_dark_theme_enabled" translatable="false">darkThemeEnabled</string>
+    <string name="pref_easy_mode" translatable="false">easyMode</string>
     <string name="pref_first_start" translatable="false">firstStart</string>
     <string name="pref_graph_auto_delete" translatable="false">graphAutoDelete</string>
     <string name="pref_graph_auto_delete_time" translatable="false">graphAutoDeleteTime</string>
