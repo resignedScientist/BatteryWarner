@@ -7,7 +7,6 @@ import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.O;
-import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.ACTION_RESET_ALL;
 
 public class ServiceHelper {
     public static void startService(Context context) {
@@ -20,12 +19,6 @@ public class ServiceHelper {
         } else {
             context.startService(intent);
         }
-    }
-
-    public static void resetService(Context context) {
-        Intent intent = getIntent(context);
-        intent.setAction(ACTION_RESET_ALL);
-        startService(context, intent);
     }
 
     public static void restartService(Context context) {
