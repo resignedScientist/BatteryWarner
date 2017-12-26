@@ -25,8 +25,9 @@ import static android.widget.Toast.LENGTH_SHORT;
  * and the {@link com.laudien.p1xelfehler.batterywarner.MainActivity}.
  */
 public class IntroActivity extends MaterialIntroActivity implements EasyModeSlide.EaseModeSlideDelegate {
-    @Nullable
-    public PreferencesSlide preferencesSlide;
+
+    private PreferencesSlide preferencesSlide;
+    private EasyModeSlide easyModeSlide;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
                 .build()
         );
         // easy mode selection slide
-        EasyModeSlide easyModeSlide = new EasyModeSlide();
+        easyModeSlide = new EasyModeSlide();
         easyModeSlide.delegate = this;
         addSlide(easyModeSlide);
         // preference slide
@@ -76,7 +77,10 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
     public void onFinish() {
         super.onFinish();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.edit().putBoolean(getString(R.string.pref_first_start), false).apply();
+        sharedPreferences.edit()
+                .putBoolean(getString(R.string.pref_first_start), false)
+                .putBoolean(getString(R.string.pref_easy_mode), easyModeSlide.easyMode)
+                .apply();
         // start services
         ServiceHelper.startService(this);
         // send toast
@@ -89,10 +93,6 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
     public void onModeSelected(boolean easyMode) {
         if (preferencesSlide != null) {
             preferencesSlide.loadPreferences(easyMode);
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            sharedPreferences.edit()
-                    .putBoolean(getString(R.string.pref_easy_mode), easyMode)
-                    .apply();
         }
     }
 }
