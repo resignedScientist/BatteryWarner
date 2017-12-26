@@ -1,8 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
@@ -126,6 +128,17 @@ public abstract class BasicGraphFragment extends Fragment {
     public void onStart() {
         super.onStart();
         loadSeries();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String chosenUnit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default));
+        String baseString = getString(R.string.checkbox_temperature_celsius);
+        switch (chosenUnit) {
+            case "0":
+                switches[GRAPH_INDEX_TEMPERATURE].setText(R.string.checkbox_temperature_celsius);
+                break;
+            case "1":
+                switches[GRAPH_INDEX_TEMPERATURE].setText(R.string.checkbox_temperature_fahrenheit);
+                break;
+        }
     }
 
     @Override

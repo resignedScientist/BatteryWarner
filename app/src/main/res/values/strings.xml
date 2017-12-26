@@ -19,7 +19,8 @@
 
     <!-- check boxes -->
     <string name="checkbox_battery_level">Battery level (%)</string>
-    <string name="checkbox_temperature">Temperature (°C)</string>
+    <string name="checkbox_temperature_celsius">Temperature (°C)</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 
     <!-- my mail address -->
     <string name="developer_mail" translatable="false">kontakt@norman-laudien.de</string>

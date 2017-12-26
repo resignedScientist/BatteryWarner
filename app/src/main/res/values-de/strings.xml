@@ -12,7 +12,8 @@
     <string name="charging">Lade</string>
 
     <string name="checkbox_battery_level">Akkustand (%)</string>
-    <string name="checkbox_temperature">Temperatur (°C)</string>
+    <string name="checkbox_temperature_celsius">Temperatur (°C)</string>
+    <string name="checkbox_temperature_fahrenheit">Temperatur (°F)</string>
 
     <string name="dialog_button_cancel">Abbrechen</string>
     <string name="dialog_button_close">Schließen</string>
@@ -49,6 +50,11 @@
     <string name="info_temperature">Temperatur</string>
     <string name="info_voltage">Spannung</string>
 
+    <string name="intro_advanced_mode">Erweiterter Modus</string>
+    <string name="intro_advanced_mode_description">Der erweiterte Modus macht Root-Einstellungen und mehr verfügbar - alles was die App zu bieten hat.</string>
+    <string name="intro_easy_mode">Einfacher Modus</string>
+    <string name="intro_easy_mode_description">Der einfache Modus wird für die meisten Nutzer empfohlen. Nur die wichtigsten Funktionen sind verfügbar.</string>
+    <string name="intro_easy_mode_title">Modus auswählen</string>
     <string name="intro_finish_toast">Auf dass dein Akku länger lebt!</string>
     <string name="intro_slide_1_description">Diese App hilft deinem Akku, länger zu leben!</string>
     <string name="intro_slide_1_title">Willkommen beim BatteryWarner!</string>
@@ -207,9 +213,4 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
-    <string name="intro_advanced_mode">Erweiterter Modus</string>
-    <string name="intro_advanced_mode_description">Der erweiterte Modus macht Root-Einstellungen und mehr verfügbar - alles was die App zu bieten hat.</string>
-    <string name="intro_easy_mode">Einfacher Modus</string>
-    <string name="intro_easy_mode_description">Der einfache Modus wird für die meisten Nutzer empfohlen. Nur die wichtigsten Funktionen sind verfügbar.</string>
-    <string name="intro_easy_mode_title">Modus auswählen</string>
 </resources>

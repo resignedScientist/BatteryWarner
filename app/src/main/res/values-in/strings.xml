@@ -12,7 +12,7 @@
     <string name="charging">Mengisi</string>
 
     <string name="checkbox_battery_level">Daya baterai (%)</string>
-    <string name="checkbox_temperature">Suhu (°C)</string>
+    <string name="checkbox_temperature_celsius">Suhu (°C)</string>
 
     <string name="dialog_button_cancel">Batal</string>
     <string name="dialog_button_close">Tutup</string>
@@ -216,4 +216,5 @@
     <string name="intro_easy_mode">Easy mode</string>
     <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
     <string name="intro_easy_mode_title">Select mode</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 </resources>

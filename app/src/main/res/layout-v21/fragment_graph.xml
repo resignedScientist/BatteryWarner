@@ -70,7 +70,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
         android:checked="@bool/switch_temperature_default"
-        android:text="@string/checkbox_temperature"
+        android:text="@string/checkbox_temperature_celsius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent" />

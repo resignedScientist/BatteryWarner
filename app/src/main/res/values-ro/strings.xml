@@ -8,7 +8,7 @@
     <string name="charging">Se încarcă</string>
 
     <string name="checkbox_battery_level">Procent baterie (%)</string>
-    <string name="checkbox_temperature">Temperatura (°C)</string>
+    <string name="checkbox_temperature_celsius">Temperatura (°C)</string>
 
     <string name="dialog_button_cancel">Anulează</string>
     <string name="dialog_button_close">Închide</string>
@@ -212,4 +212,5 @@
     <string name="intro_easy_mode">Easy mode</string>
     <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
     <string name="intro_easy_mode_title">Select mode</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 </resources>

@@ -12,7 +12,7 @@
     <string name="charging">Charging</string>
 
     <string name="checkbox_battery_level">Battery level (%)</string>
-    <string name="checkbox_temperature">Temperature (°C)</string>
+    <string name="checkbox_temperature_celsius">Temperature (°C)</string>
 
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_close">Close</string>
@@ -214,4 +214,5 @@
     <string name="intro_easy_mode">Easy mode</string>
     <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
     <string name="intro_easy_mode_title">Select mode</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 </resources>

@@ -12,7 +12,7 @@
     <string name="charging">চার্জিং</string>
 
     <string name="checkbox_battery_level">ব্যাটারি সীমা (%)</string>
-    <string name="checkbox_temperature">তাপমাত্রা (°সে.)</string>
+    <string name="checkbox_temperature_celsius">তাপমাত্রা (°সে.)</string>
 
     <string name="dialog_button_cancel">বাতিল</string>
     <string name="dialog_button_close">বন্ধ</string>
@@ -214,4 +214,5 @@
     <string name="intro_easy_mode">Easy mode</string>
     <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
     <string name="intro_easy_mode_title">Select mode</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 </resources>
