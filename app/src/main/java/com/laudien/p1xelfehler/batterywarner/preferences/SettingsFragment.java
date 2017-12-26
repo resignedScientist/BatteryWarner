@@ -54,6 +54,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_info_notification_items;
     @RequiresApi(LOLLIPOP)
+    @Nullable
     private SwitchPreference pref_graphAutoDelete;
     @Nullable
     private TwoStatePreference pref_usb;
@@ -93,7 +94,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        easyMode = sharedPreferences.getBoolean(getString(R.string.pref_easy_mode), true);
+        easyMode = sharedPreferences.getBoolean(getString(R.string.pref_easy_mode), getResources().getBoolean(R.bool.pref_easy_mode_default));
 
         // load arguments
         Bundle extras = getArguments();
@@ -242,7 +243,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (context != null) {
                 ServiceHelper.startService(context);
             }
-        } else if (SDK_INT >= LOLLIPOP && preference == pref_graphAutoDelete) {
+        } else if (SDK_INT >= LOLLIPOP && preference == pref_graphAutoDelete && pref_graphAutoDelete != null) {
             if (pref_graphAutoDelete.isChecked()) {
                 JobHelper.schedule(getContext(), JobHelper.ID_AUTO_DELETE_GRAPHS);
             } else {
