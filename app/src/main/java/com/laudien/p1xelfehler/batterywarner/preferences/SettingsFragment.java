@@ -216,7 +216,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled || preference == pref_infoTextSize) {
-            ServiceHelper.restartService(getContext());
+            boolean firstStart = sharedPreferences.getBoolean(getString(R.string.pref_first_start), true);
+            if (!firstStart) {
+                ServiceHelper.restartService(getContext());
+            }
         } else if (SDK_INT >= LOLLIPOP && preference == pref_graphAutoDelete && pref_graphAutoDelete != null) {
             if (pref_graphAutoDelete.isChecked()) {
                 JobHelper.schedule(getContext(), JobHelper.ID_AUTO_DELETE_GRAPHS);
