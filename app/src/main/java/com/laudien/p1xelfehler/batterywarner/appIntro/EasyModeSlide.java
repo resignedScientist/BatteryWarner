@@ -30,7 +30,7 @@ public class EasyModeSlide extends SlideFragment {
 
     @Override
     public int backgroundColor() {
-        return R.color.colorPreferencesSlide;
+        return R.color.colorIntro4;
     }
 
     @Override
