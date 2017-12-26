@@ -18,14 +18,18 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) { // correct intent action
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            if (!sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true)) { // intro was finished
-                // start services/receivers
-                Intent backgroundServiceResetIntent = new Intent(context.getApplicationContext(), BackgroundService.class);
-                backgroundServiceResetIntent.setAction(BackgroundService.ACTION_RESET_ALL);
-                ServiceHelper.startService(context.getApplicationContext(), backgroundServiceResetIntent);
-            }
+        String action = intent.getAction();
+        if (action == null || !action.equals("android.intent.action.BOOT_COMPLETED")) {
+            return;
         }
+        // check if intro was finished
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true)) {
+            return;
+        }
+        // start services/receivers
+        Intent backgroundServiceResetIntent = new Intent(context.getApplicationContext(), BackgroundService.class);
+        backgroundServiceResetIntent.setAction(BackgroundService.ACTION_RESET_ALL);
+        ServiceHelper.startService(context.getApplicationContext(), backgroundServiceResetIntent);
     }
 }

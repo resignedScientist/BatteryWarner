@@ -46,9 +46,9 @@ public class GrantRootService extends IntentService {
                     }
                 }
             }
-            ServiceHelper.startService(getApplicationContext());
         } else { // user is stupid and keeps root disabled -> disable all root features
             startService(new Intent(GrantRootService.this, DisableRootFeaturesService.class));
         }
+        ServiceHelper.startService(getApplicationContext());
     }
 }

@@ -93,7 +93,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Context context = getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         easyMode = sharedPreferences.getBoolean(getString(R.string.pref_easy_mode), getResources().getBoolean(R.bool.pref_easy_mode_default));
 
         // load arguments
@@ -127,14 +128,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_graphAutoDelete = (SwitchPreference) findPreference(getString(R.string.pref_graph_auto_delete));
         }
 
-        Context context = getContext();
-        if (context != null) {
-            setRingtoneSummary(true); // warning high sound
-            setRingtoneSummary(false); // warning low sound
-            // register receivers
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-            context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
-        }
+        setRingtoneSummary(true); // warning high sound
+        setRingtoneSummary(false); // warning low sound
+        // register receivers
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
     }
 
     @Override
@@ -144,22 +142,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
         }
         pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
-        Context context = getContext();
-        if (context != null) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            setInfoNotificationSubtitle(sharedPreferences);
-            setSmartChargingSummary(sharedPreferences);
-        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        setInfoNotificationSubtitle(sharedPreferences);
+        setSmartChargingSummary(sharedPreferences);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Context context = getContext();
-        if (context != null) {
-            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-            context.unregisterReceiver(rootCheckFinishedReceiver);
-        }
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        getContext().unregisterReceiver(rootCheckFinishedReceiver);
     }
 
     @Override
@@ -175,7 +167,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         Preference preference = findPreference(key);
         if (preference == switch_darkTheme) {
             Context context = getContext();
-            if (context != null && context instanceof SettingsActivity) {
+            if (context instanceof SettingsActivity) {
                 ToastHelper.sendToast(context, R.string.toast_theme_changed, LENGTH_SHORT);
             }
         } else if (preference == ringtonePreference_high) {
@@ -199,19 +191,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     pref_smart_charging.setSummary(getString(R.string.summary_disabled));
                 }
             }
-            if (highChecked) {
-                Context context = getContext();
-                if (context != null) {
-                    ServiceHelper.startService(context);
-                }
-            }
         } else if (preference == pref_graphEnabled) {
             boolean checked = pref_graphEnabled.isChecked();
             pref_autoSave.setEnabled(checked);
-            Context context = getContext();
-            if (context != null && checked) {
-                ServiceHelper.startService(context);
-            }
         } else if (!easyMode
                 && (preference == pref_stopCharging
                 || preference == pref_usb_disabled
@@ -233,16 +215,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     pref_usb.setEnabled(!checked);
                 }
             }
-        } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled) {
-            Context context = getContext();
-            if (context != null) {
-                ServiceHelper.restartService(getContext());
-            }
-        } else if (preference == pref_infoTextSize) {
-            Context context = getContext();
-            if (context != null) {
-                ServiceHelper.startService(context);
-            }
+        } else if (preference == pref_darkInfoNotification || preference == pref_infoNotificationEnabled || preference == pref_infoTextSize) {
+            ServiceHelper.restartService(getContext());
         } else if (SDK_INT >= LOLLIPOP && preference == pref_graphAutoDelete && pref_graphAutoDelete != null) {
             if (pref_graphAutoDelete.isChecked()) {
                 JobHelper.schedule(getContext(), JobHelper.ID_AUTO_DELETE_GRAPHS);
@@ -253,6 +227,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     @Override
+    @NonNull
     public Context getContext() {
         return SDK_INT >= M ? super.getContext() : getActivity();
     }
