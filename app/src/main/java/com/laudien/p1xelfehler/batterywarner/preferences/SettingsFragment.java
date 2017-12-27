@@ -140,8 +140,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onResume() {
         super.onResume();
-        if (pref_smart_charging != null && pref_stopCharging != null) {
-            pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
+        if (pref_stopCharging != null) {
+            if (pref_smart_charging != null) {
+                pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
+            }
+            pref_repeatWarning.setEnabled(!pref_stopCharging.isChecked());
         }
         pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
