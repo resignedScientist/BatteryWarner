@@ -470,12 +470,12 @@ public class BackgroundService extends Service {
                 .setContentIntent(NotificationHelper.getDefaultClickIntent(BackgroundService.this))
                 .setAutoCancel(true)
                 .setLights(Color.RED, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
-                .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false))
                 .setVibrate(NotificationHelper.VIBRATE_PATTERN);
         if (Build.VERSION.SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_warning_low));
         } else {
-            builder.setPriority(PRIORITY_HIGH);
+            builder.setPriority(PRIORITY_HIGH)
+                    .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false));
         }
         if (showPowerSaving) {
             Intent exitPowerSaveIntent = new Intent(this, TogglePowerSavingService.class);
@@ -618,13 +618,6 @@ public class BackgroundService extends Service {
                             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
                             if (!alreadyNotified) {
                                 alreadyNotified = true;
-                                // reset alreadyNotified after 1 minute
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        alreadyNotified = false;
-                                    }
-                                }, 60 * 1000);
                                 boolean warningEnabled = isWarningSoundEnabled(intent);
                                 boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
                                 // reset android battery stats
@@ -641,6 +634,13 @@ public class BackgroundService extends Service {
                                     chargingResumedByAutoResume = false;
                                 } else if (warningEnabled) { // stop charging is disabled
                                     showWarningHighNotification();
+                                    // reset alreadyNotified after 1 minute
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            alreadyNotified = false;
+                                        }
+                                    }, 60 * 1000);
                                 }
                             }
                         }
