@@ -215,4 +215,6 @@
     <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
     <string name="intro_easy_mode_title">Select mode</string>
     <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
+    <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
+    <string name="title_repeat_warning">Repeat the warning</string>
 </resources>

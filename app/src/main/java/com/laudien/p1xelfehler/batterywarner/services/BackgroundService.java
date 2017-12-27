@@ -634,13 +634,16 @@ public class BackgroundService extends Service {
                                     chargingResumedByAutoResume = false;
                                 } else if (warningEnabled) { // stop charging is disabled
                                     showWarningHighNotification();
-                                    // reset alreadyNotified after 1 minute
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            alreadyNotified = false;
-                                        }
-                                    }, 60 * 1000);
+                                    // repeat warning roughly every 60 seconds
+                                    boolean repeatWarning = sharedPreferences.getBoolean(getString(R.string.pref_repeat_warning), getResources().getBoolean(R.bool.pref_repeat_warning_default));
+                                    if (repeatWarning) {
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                alreadyNotified = false;
+                                            }
+                                        }, 60 * 1000);
+                                    }
                                 }
                             }
                         }

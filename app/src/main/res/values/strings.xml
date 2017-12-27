@@ -154,6 +154,7 @@
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
+    <string name="pref_repeat_warning" translatable="false">repeatWarning</string>
 
     <!-- names of SharedPrefs files -->
     <string name="prefs_background_service" translatable="false">BackgroundServicePrefs</string>
@@ -176,6 +177,7 @@
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
+    <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
 
     <!-- tasker -->
     <string name="tasker_choose_action">Choose your action:</string>
@@ -265,6 +267,7 @@
     <string name="title_warning_high_sound_enabled">Enable notification sound</string>
     <string name="title_warning_percentage">Warning percentage:</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
+    <string name="title_repeat_warning">Repeat the warning</string>
 
     <!-- toasts -->
     <string name="toast_charging_type_disabled">The current charging type is disabled in settings!</string>

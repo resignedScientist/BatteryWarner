@@ -213,4 +213,6 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
+    <string name="summary_repeat_warning">Die Warnung ungefähr alle 60 Sekunden wiederholen.</string>
+    <string name="title_repeat_warning">Warnung wiederholen</string>
 </resources>

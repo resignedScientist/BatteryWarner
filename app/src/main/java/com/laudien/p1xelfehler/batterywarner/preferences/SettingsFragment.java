@@ -51,6 +51,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private TwoStatePreference switch_darkTheme;
     private TwoStatePreference pref_infoNotificationEnabled;
     private TwoStatePreference pref_darkInfoNotification;
+    private TwoStatePreference pref_repeatWarning;
     private RingtonePreference ringtonePreference_high, ringtonePreference_low;
     private Preference pref_info_notification_items;
     @RequiresApi(LOLLIPOP)
@@ -124,6 +125,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         pref_darkInfoNotification = (TwoStatePreference) findPreference(getString(R.string.pref_dark_info_notification));
         pref_infoNotificationEnabled = (TwoStatePreference) findPreference(getString(R.string.pref_info_notification_enabled));
         pref_infoTextSize = findPreference(getString(R.string.pref_info_text_size));
+        pref_repeatWarning = (TwoStatePreference) findPreference(getString(R.string.pref_repeat_warning));
         if (SDK_INT >= LOLLIPOP) {
             pref_graphAutoDelete = (SwitchPreference) findPreference(getString(R.string.pref_graph_auto_delete));
         }
@@ -207,6 +209,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 if (pref_smart_charging != null) {
                     pref_smart_charging.setEnabled(pref_stopCharging.isChecked());
                 }
+                pref_repeatWarning.setEnabled(!pref_stopCharging.isChecked());
                 sharedPreferences.edit().putBoolean(getString(R.string.pref_smart_charging_enabled), false).apply();
                 pref_smart_charging.setSummary(getString(R.string.summary_disabled));
             } else if (preference == pref_usb_disabled) {

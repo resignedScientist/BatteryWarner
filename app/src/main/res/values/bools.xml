@@ -21,6 +21,7 @@
     <bool name="pref_usb_charging_disabled_default">false</bool>
     <bool name="pref_warning_high_enabled_default">true</bool>
     <bool name="pref_waring_high_sound_enabled_default">true</bool>
+    <bool name="pref_repeat_warning_default">true</bool>
     <!-- 'Discharging Service' section in preferences -->
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_warning_low_enabled_default">true</bool>

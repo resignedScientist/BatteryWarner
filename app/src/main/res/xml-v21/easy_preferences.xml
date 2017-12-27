@@ -27,6 +27,12 @@
             app:slider_max="@integer/pref_warning_high_max"
             app:slider_min="@integer/pref_warning_high_min"
             app:unit="%" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_repeat_warning_default"
+            android:dependency="@string/pref_warning_high_enabled"
+            android:key="@string/pref_repeat_warning"
+            android:summary="@string/summary_repeat_warning"
+            android:title="@string/title_repeat_warning" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_discharging_service">
         <SwitchPreference

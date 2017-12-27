@@ -28,6 +28,12 @@
             app:slider_min="@integer/pref_warning_high_min"
             app:unit="%" />
         <SwitchPreference
+            android:defaultValue="@bool/pref_repeat_warning_default"
+            android:dependency="@string/pref_warning_high_enabled"
+            android:key="@string/pref_repeat_warning"
+            android:summary="@string/summary_repeat_warning"
+            android:title="@string/title_repeat_warning" />
+        <SwitchPreference
             android:defaultValue="@bool/pref_stop_charging_default"
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_stop_charging"
