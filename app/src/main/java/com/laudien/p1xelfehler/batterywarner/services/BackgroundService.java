@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -490,7 +491,7 @@ public class BackgroundService extends Service {
         int smartChargingMinutes = sharedPreferences.getInt(getString(R.string.pref_smart_charging_time_before), getResources().getInteger(R.integer.pref_smart_charging_time_before_default));
         if (SDK_INT >= LOLLIPOP && smartChargingUseClock) { // use alarm clock
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager != null ? alarmManager.getNextAlarmClock() : null;
             if (alarmClockInfo != null) {
                 alarmTime = alarmClockInfo.getTriggerTime();
             } else { // no alarm time is set in the alarm app
@@ -521,37 +522,39 @@ public class BackgroundService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
-                // check if charging changed
-                int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
-                boolean isCharging = chargingType != 0;
-                // stop charging if it is not allowed to charge
-                if (!chargingPausedByIllegalUsbCharging && isCharging && !isChargingAllowed(chargingType)) {
-                    chargingPausedByIllegalUsbCharging = true;
-                    stopCharging(false);
-                    return;
+            String action = intent.getAction();
+            if (action == null || !intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+                return;
+            }
+            // check if charging changed
+            int chargingType = intent.getIntExtra(EXTRA_PLUGGED, 0);
+            boolean isCharging = chargingType != 0;
+            // stop charging if it is not allowed to charge
+            if (!chargingPausedByIllegalUsbCharging && isCharging && !isChargingAllowed(chargingType)) {
+                chargingPausedByIllegalUsbCharging = true;
+                stopCharging(false);
+                return;
+            }
+            // handle change in charging state
+            if (charging != isCharging) {
+                charging = isCharging;
+                onChargingStateChanged();
+                if (charging) { // started charging
+                    onPowerConnected();
+                } else if (!chargingPausedByIllegalUsbCharging) { // started discharging
+                    onPowerDisconnected();
                 }
-                // handle change in charging state
-                if (charging != isCharging) {
-                    charging = isCharging;
-                    onChargingStateChanged();
-                    if (charging) { // started charging
-                        onPowerConnected();
-                    } else if (!chargingPausedByIllegalUsbCharging) { // started discharging
-                        onPowerDisconnected();
-                    }
-                }
-                // handle charging/discharging
-                boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
-                if (isCharging || chargingDisabledInFile && (chargingPausedBySmartCharging || graphEnabled)) {
-                    handleCharging(intent, graphEnabled);
-                } else if (!chargingPausedByIllegalUsbCharging) { // discharging
-                    handleDischarging(intent);
-                }
-                // refresh batteryData and info notification
-                if (screenOn) {
-                    refreshInfoNotification(intent);
-                }
+            }
+            // handle charging/discharging
+            boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
+            if (isCharging || chargingDisabledInFile && (chargingPausedBySmartCharging || graphEnabled)) {
+                handleCharging(intent, graphEnabled);
+            } else if (!chargingPausedByIllegalUsbCharging) { // discharging
+                handleDischarging(intent);
+            }
+            // refresh batteryData and info notification
+            if (screenOn) {
+                refreshInfoNotification(intent);
             }
         }
 
@@ -615,6 +618,13 @@ public class BackgroundService extends Service {
                             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
                             if (!alreadyNotified) {
                                 alreadyNotified = true;
+                                // reset alreadyNotified after 1 minute
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alreadyNotified = false;
+                                    }
+                                }, 60 * 1000);
                                 boolean warningEnabled = isWarningSoundEnabled(intent);
                                 boolean shouldResetBatteryStats = sharedPreferences.getBoolean(getString(R.string.pref_reset_battery_stats), getResources().getBoolean(R.bool.pref_reset_battery_stats_default));
                                 // reset android battery stats
@@ -783,9 +793,13 @@ public class BackgroundService extends Service {
     private class ScreenOnOffReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            String action = intent.getAction();
+            if (action == null) {
+                return;
+            }
+            if (action.equals(Intent.ACTION_SCREEN_ON)) {
                 onScreenTurnedOn();
-            } else { // screen turned off
+            } else if (action.equals(Intent.ACTION_SCREEN_OFF)) { // screen turned off
                 onScreenTurnedOff();
             }
         }
