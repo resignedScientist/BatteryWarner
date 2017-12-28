@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:gravity="center_horizontal"
         android:text="@string/intro_easy_mode_title"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -40,11 +41,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/intro_easy_mode_description" />
+        android:text="@string/intro_easy_mode_description"
+        android:textSize="16sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/intro_advanced_mode_description" />
+        android:text="@string/intro_advanced_mode_description"
+        android:textSize="16sp" />
 </agency.tango.materialintroscreen.parallax.ParallaxLinearLayout>
