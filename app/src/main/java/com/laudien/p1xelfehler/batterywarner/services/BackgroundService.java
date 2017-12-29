@@ -202,7 +202,7 @@ public class BackgroundService extends Service {
      * @param intent The intent containing one of the actions or none. A RuntimeException will be thrown for an unknown action.
      * @param flags Some flags that will not be used by this class but may be from any super class.
      * @param startId The start id that will not be used by this class but may be from any super class.
-     * @return
+     * @return Returns START_STICKY, that means that the service restarts automatically if it was stopped.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
