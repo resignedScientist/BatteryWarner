@@ -87,6 +87,15 @@ public class BackgroundService extends Service {
     private BatteryHelper.BatteryData batteryData;
     private DatabaseContract.Controller databaseController;
 
+    /**
+     * Checks if the given charging method is enabled in preferences.
+     *
+     * @param context           The app context.
+     * @param chargingType      The extra EXTRA_PLUGGED from the intent with the action ACTION_BATTERY_CHANGED.
+     * @param sharedPreferences The shared preferences containing this preference.
+     *                          If it is null, the default shared preferences are loaded using the context.
+     * @return Returns true if the charging method is enabled in preferences, false if not.
+     */
     public static boolean isChargingTypeEnabled(Context context, int chargingType, @Nullable SharedPreferences sharedPreferences) {
         if (sharedPreferences == null) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -103,12 +112,26 @@ public class BackgroundService extends Service {
         }
     }
 
+    /**
+     * Not used by this class but has to be there.
+     *
+     * @param intent The intent containing one of the actions used or none.
+     * @return Returns always null.
+     */
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    /**
+     * Executed every time the service was started and not already running.
+     *
+     * It initializes some instance variables and registers all used receivers.
+     *
+     * Also, it checks if the charging has been stopped and shows the stop charging notification if it is.
+     * That causes the first root check of the app.
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -157,8 +180,33 @@ public class BackgroundService extends Service {
         });
     }
 
+    /**
+     * Executed every time when the Context.startService() method was called (if the service is already running or not).
+     *
+     * It can work with the following actions:
+     * - ACTION_ENABLE_USB_CHARGING to enable usb charging in preferences
+     * - ACTION_ENABLE_CHARGING to enable charging
+     * - ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH to enable charging and save the charging graph
+     * - ACTION_DISABLE_CHARGING to disable charging
+     * - ACTION_RESET_ALL to just reset the service
+     * - ACTION_CHANGE_PREFERENCE to change any preference in the default shared preferences.
+     *
+     * Every time such an action is triggered, the service will reset to the starting state without
+     * loading the last state.
+     *
+     * If an action is given or not - it will build a battery info notification if enabled
+     * (it has to be there on android Oreo) and start the service in the foreground.
+     *
+     * If the battery info notification is disabled, the service will not start in the foreground.
+     *
+     * @param intent The intent containing one of the actions or none. A RuntimeException will be thrown for an unknown action.
+     * @param flags Some flags that will not be used by this class but may be from any super class.
+     * @param startId The start id that will not be used by this class but may be from any super class.
+     * @return
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
         if (intent != null && intent.getAction() != null) {
             resetService(); // reset service on any valid action
             switch (intent.getAction()) {
@@ -203,6 +251,10 @@ public class BackgroundService extends Service {
         return START_STICKY;
     }
 
+    /**
+     * Executed every time the service will be stopped. It unregisters all receivers
+     * and saves the service state to shared preferences with the file name @string/prefs_background_service.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -211,6 +263,15 @@ public class BackgroundService extends Service {
         onSaveState();
     }
 
+    /**
+     * Method that is triggered from outside the service using ACTION_CHANGE_PREFERENCE
+     * to change a preference inside the default shared preferences.
+     * It is useful for Tasker especially and can work with Boolean, Integer and Long values.
+     * Keep attention that the value has the correct type before using this method!
+     *
+     * @param key The preference key.
+     * @param value The value where to set the preference.
+     */
     private void changePreference(String key, Object value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (value instanceof Boolean) {
@@ -225,6 +286,9 @@ public class BackgroundService extends Service {
         Toast.makeText(this, getString(R.string.toast_preference_changed) + value + " !", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Saves the service state using shared preferences with the file name @string/prefs_background_service.
+     */
     private void onSaveState() {
         SharedPreferences backgroundServicePrefs = getSharedPreferences(getString(R.string.prefs_background_service), MODE_PRIVATE);
         backgroundServicePrefs.edit()
@@ -238,6 +302,9 @@ public class BackgroundService extends Service {
                 .apply();
     }
 
+    /**
+     * Restores the saved service state using shared preferences with the file name @string/prefs_background_service.
+     */
     private void onRestoreState() {
         SharedPreferences backgroundServicePrefs = getSharedPreferences(getString(R.string.prefs_background_service), MODE_PRIVATE);
         chargingPausedBySmartCharging = backgroundServicePrefs.getBoolean("chargingPausedBySmartCharging", chargingPausedBySmartCharging);
@@ -249,6 +316,9 @@ public class BackgroundService extends Service {
         lastBatteryLevel = backgroundServicePrefs.getInt("lastBatteryLevel", lastBatteryLevel);
     }
 
+    /**
+     * Resets the service to the first start state.
+     */
     private void resetService() {
         chargingPausedBySmartCharging = false;
         chargingResumedBySmartCharging = false;
@@ -258,6 +328,11 @@ public class BackgroundService extends Service {
         lastBatteryLevel = -1;
     }
 
+    /**
+     * Stops the charging or shows a notification if it did not work.
+     *
+     * @param enableSound Determines if the sound should be enabled (true) or not (false).
+     */
     private void stopCharging(final boolean enableSound) {
         chargingDisabledInFile = true;
         AsyncTask.execute(new Runnable() {
@@ -280,6 +355,9 @@ public class BackgroundService extends Service {
         });
     }
 
+    /**
+     * Resumes the charging or shows a notification if it did not work.
+     */
     private void resumeCharging() {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -299,6 +377,9 @@ public class BackgroundService extends Service {
         });
     }
 
+    /**
+     * Saves the graph into the database if graph recording and auto save are enabled in preferences.
+     */
     private void saveGraph() {
         boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
@@ -312,11 +393,22 @@ public class BackgroundService extends Service {
         }
     }
 
+    /**
+     * Builds and shows the high battery warning notification.
+     */
     private void showWarningHighNotification() {
         Notification notification = buildWarningHighNotification();
         notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
     }
 
+    /**
+     * Builds the battery info notification and returns it.
+     *
+     * @param content The big notification content that is shown if there is enough room for it.
+     * @param message The notification message that is shown if there is not enough room
+     *                for the big notification content.
+     * @return The battery info notification.
+     */
     private Notification buildInfoNotification(RemoteViews content, String message) {
         Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
         PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
@@ -334,6 +426,12 @@ public class BackgroundService extends Service {
         return infoNotificationBuilder.build();
     }
 
+    /**
+     * Builds the notification content that is shown if there is enough room for it.
+     *
+     * @param data An array of localised strings that should be shown in the notification.
+     * @return RemoteViews object that represents the content of the battery info notification.
+     */
     private RemoteViews buildInfoNotificationContent(String[] data) {
         if (infoNotificationContent == null) {
             boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_info_notification), getResources().getBoolean(R.bool.pref_dark_info_notification_default));
@@ -380,6 +478,13 @@ public class BackgroundService extends Service {
         return infoNotificationContent;
     }
 
+    /**
+     * Builds the message text of the battery info notification that is shown
+     * if the notification is folded and there is not enough room for the regular notification.
+     *
+     * @param data An array of localised strings that should be shown in the notification.
+     * @return The notification message.
+     */
     private String buildInfoNotificationMessage(String[] data) {
         if (data != null && data.length > 0) {
             infoNotificationMessage = data[0];
@@ -396,6 +501,14 @@ public class BackgroundService extends Service {
         }
     }
 
+    /**
+     * Builds the stop charging notification and returns it.
+     * It does only play a sound if it is enabled in preferences below android Oreo
+     * and uses the @strings/channel_warning_high notification channel with android Oreo and above.
+     *
+     * @param enableSound True if the sound should be enabled (below Oreo only), false if not.
+     * @return The stop charging notification.
+     */
     private Notification buildStopChargingNotification(boolean enableSound) {
         String messageText = getString(R.string.notification_charging_disabled);
         Intent enableChargingIntent = new Intent(this, BackgroundService.class);
@@ -434,6 +547,16 @@ public class BackgroundService extends Service {
         return builder.build();
     }
 
+    /**
+     * Builds the high battery warning notification and returns it.
+     * It does only play a sound if it is enabled in preferences below android Oreo
+     * and uses the @strings/channel_warning_high notification channel with android Oreo and above.
+     * <p>
+     * Only used if stop charging is disabled!
+     * If the charging has been stopped, use the buildStopChargingNotification() method instead.
+     *
+     * @return The low battery warning notification.
+     */
     private Notification buildWarningHighNotification() {
         int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_high), warningHigh);
@@ -459,6 +582,15 @@ public class BackgroundService extends Service {
         return builder.build();
     }
 
+    /**
+     * Builds the low battery warning notification and returns it.
+     * It uses the @strings/channel_warning_low notification channel with android Oreo and above.
+     *
+     * @param warningLow      The percentage at which the low battery warning triggers.
+     *                        This is the percentage that is actually shown in the notification.
+     * @param showPowerSaving Determines if the "Toggle power saving" button should be shown (true) or not (false).
+     * @return The low battery warning notification.
+     */
     private Notification buildWarningLowNotification(int warningLow, boolean showPowerSaving) {
         String messageText = String.format(Locale.getDefault(), "%s %d%%!", getString(R.string.notification_warning_low), warningLow);
         Notification.Builder builder = new Notification.Builder(BackgroundService.this)
@@ -485,6 +617,13 @@ public class BackgroundService extends Service {
         return builder.build();
     }
 
+    /**
+     * Reads the time when smart charging should have finished (the alarm time),
+     * calculates the time when the charging should resume (using the minutes before preference)
+     * and returns it in milliseconds (UTC unix time).
+     *
+     * @return The time the charging should resume using smart charging in milliseconds (UTC unix time)
+     */
     private long getSmartChargingResumeTime() {
         long alarmTime; // the target time the device should be charged to the defined maximum
         boolean smartChargingUseClock = SDK_INT >= LOLLIPOP && sharedPreferences.getBoolean(getString(R.string.pref_smart_charging_use_alarm_clock_time), getResources().getBoolean(R.bool.pref_smart_charging_use_alarm_clock_time_default));
@@ -518,8 +657,18 @@ public class BackgroundService extends Service {
         return resumeTime;
     }
 
+    /**
+     * A broadcast receiver that handles all charging and discharging functionalities of the app.
+     * It uses the ACTION_BATTERY_CHANGED intent action.
+     */
     private class BatteryChangedReceiver extends BroadcastReceiver {
 
+        /**
+         * This method receives the ACTION_BATTERY_CHANGED action and triggers the correct methods.
+         *
+         * @param context An app context.
+         * @param intent  An intent with ACTION_BATTERY_CHANGED.
+         */
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -582,8 +731,7 @@ public class BackgroundService extends Service {
         }
 
         /**
-         * Method to prevent duplicate code for things that would be written in
-         * onPowerConnected() AND onPowerDisconnected() otherwise.
+         * Executed every time the charging starts or stops.
          */
         private void onChargingStateChanged() {
             if (!chargingDisabledInFile) {
@@ -592,6 +740,12 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * Handles graph recording, the high battery warning, stop charging, smart charging and more.
+         *
+         * @param intent       The intent received with ACTION_BATTERY_CHANGED.
+         * @param graphEnabled True if charging graph recording is enabled in preferences, false if not.
+         */
         private void handleCharging(Intent intent, boolean graphEnabled) {
             boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
             boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
@@ -684,6 +838,11 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * Handles the low battery warning.
+         *
+         * @param intent The intent received with ACTION_BATTERY_CHANGED.
+         */
         private void handleDischarging(Intent intent) {
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             if (batteryLevel != lastBatteryLevel) {
@@ -702,7 +861,7 @@ public class BackgroundService extends Service {
         /**
          * Method which returns if the current charging type is allowed.
          *
-         * @param chargingType The extra EXTRA_PLUGGED in the battery intent.
+         * @param chargingType The extra EXTRA_PLUGGED from the intent with the action ACTION_BATTERY_CHANGED.
          * @return Returns true, if the charging is allowed and false if not.
          */
         private boolean isChargingAllowed(int chargingType) {
@@ -711,6 +870,11 @@ public class BackgroundService extends Service {
             return !(usbCharging && usbChargingDisabled);
         }
 
+        /**
+         * Updates the battery info notification and the BatteryData instance with new data.
+         *
+         * @param intent The intent received with ACTION_BATTERY_CHANGED.
+         */
         private void refreshInfoNotification(Intent intent) {
             batteryData.update(intent, BackgroundService.this);
             if (infoNotificationBuilder != null) {
@@ -732,6 +896,9 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * Resets the android os battery stats.
+         */
         private void resetBatteryStats() {
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -745,6 +912,10 @@ public class BackgroundService extends Service {
             });
         }
 
+        /**
+         * Clears the app internal database to make room for a new charging graph.
+         * Only does that, if the charging graph is enabled in preferences.
+         */
         private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
@@ -752,6 +923,12 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * Shows the low battery warning.
+         *
+         * @param warningLow The percentage at which the low battery warning triggers.
+         *                   This is the percentage that is actually shown in the notification.
+         */
         private void showWarningLowNotification(final int warningLow) {
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -773,27 +950,45 @@ public class BackgroundService extends Service {
             });
         }
 
+        /**
+         * Checks if the warning sound is enabled with the current charging method.
+         *
+         * @param batteryIntent The intent received with ACTION_BATTERY_CHANGED.
+         * @return True if the warning sound is enabled, false if not. Returns false if the device is discharging.
+         */
         private boolean isWarningSoundEnabled(Intent batteryIntent) {
             boolean warningHighEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_enabled), getResources().getBoolean(R.bool.pref_warning_high_enabled_default));
             if (!warningHighEnabled) {
                 return false;
-            } else {
-                int chargingType = batteryIntent.getIntExtra(EXTRA_PLUGGED, -1);
-                switch (chargingType) {
-                    case BatteryManager.BATTERY_PLUGGED_AC:
-                        return sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
-                    case BatteryManager.BATTERY_PLUGGED_USB:
-                        return sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
-                    case BatteryManager.BATTERY_PLUGGED_WIRELESS:
-                        return sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
-                    default: // discharging or unknown charging type
-                        return false;
-                }
+            }
+            int chargingType = batteryIntent.getIntExtra(EXTRA_PLUGGED, -1);
+            switch (chargingType) {
+                case BatteryManager.BATTERY_PLUGGED_AC:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_ac_enabled), getResources().getBoolean(R.bool.pref_ac_enabled_default));
+                case BatteryManager.BATTERY_PLUGGED_USB:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_usb_enabled), getResources().getBoolean(R.bool.pref_usb_enabled_default));
+                case BatteryManager.BATTERY_PLUGGED_WIRELESS:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_wireless_enabled), getResources().getBoolean(R.bool.pref_wireless_enabled_default));
+                default: // discharging or unknown charging type
+                    return false;
             }
         }
     }
 
+    /**
+     * Receiver that is responsible for screen on and screen off actions.
+     * It just updates the screenOn variable that is responsible
+     * for updating the info notification only if the screen is on.
+     */
     private class ScreenOnOffReceiver extends BroadcastReceiver {
+
+        /**
+         * Listens for the actions ACTION_SCREEN_ON and ACTION_SCREEN_OFF
+         * and executes the onScreenTurnedOn() and onScreenTurnedOff() methods.
+         *
+         * @param context The BackgroundService context.
+         * @param intent  An intent with either ACTION_SCREEN_ON or ACTION_SCREEN_OFF.
+         */
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -807,10 +1002,16 @@ public class BackgroundService extends Service {
             }
         }
 
+        /**
+         * The screen has been turned on.
+         */
         private void onScreenTurnedOn() {
             screenOn = true;
         }
 
+        /**
+         * The screen has been turned off.
+         */
         private void onScreenTurnedOff() {
             screenOn = false;
         }
