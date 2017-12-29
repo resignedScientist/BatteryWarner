@@ -50,6 +50,11 @@
     <string name="info_temperature">Suhu</string>
     <string name="info_voltage">Tegangan</string>
 
+    <string name="intro_advanced_mode">Mode tingkat lanjut</string>
+    <string name="intro_advanced_mode_description">Mode tingkat lanjut membuat setelan root dan lainnya tersedia - semua yang aplikasi ini tawarkan.</string>
+    <string name="intro_easy_mode">Mode Gampang</string>
+    <string name="intro_easy_mode_description">Mode gampang direkomendasikan untuk sebagian besar pengguna. Hanya setelan terpenting yang tersedia.</string>
+    <string name="intro_easy_mode_title">Pilih mode</string>
     <string name="intro_finish_toast">Mari buat baterai anda bertahan lebih lama!</string>
     <string name="intro_slide_1_description">Aplikasi ini akan membantu memperpanjang umur baterai anda!</string>
     <string name="intro_slide_1_title">Selamat datang di Battery Warner!</string>
@@ -90,6 +95,7 @@
     <string name="summary_info_dark_theme">Gunakan tema gelap untuk pemberitahuan info baterai.</string>
     <string name="summary_notification_sound">Sejak android O anda harus mengatur suara dalam pengaturan pemberitahuan android. Klik disini untuk membuka!</string>
     <string name="summary_power_saving_mode">Aktifkan mode hemat daya ketika peringatan daya rendah terpicu.</string>
+    <string name="summary_repeat_warning">Ulang peringatan tiap menit.</string>
     <string name="summary_reset_battery_stats">Atur ulang statistik baterai setelah peringatan daya tinggi.</string>
     <string name="summary_reverse_current">Centang ini jika arus yang ditampilkan salah.</string>
     <string name="summary_smart_charging_auto_resume">Melanjutkan pengisian daya setelah persentase turun X% di bawah batas pertama. Kemudian pengisian akan dilanjutkan kembali hingga batas pertama tercapai lagi.</string>
@@ -163,6 +169,7 @@
     <string name="title_minutes_before">Waktu sebelum:</string>
     <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
     <string name="title_preferences">Pengaturan</string>
+    <string name="title_repeat_warning">Ulangi peringatan</string>
     <string name="title_reset_battery_stats">Atur ulang statistik baterai</string>
     <string name="title_reverse_current">Arus Terbalik</string>
     <string name="title_smart_charging">Pengisian Pintar [Root]</string>
@@ -179,6 +186,7 @@
     <string name="title_time_format">Format waktu</string>
     <string name="title_usb_charging_disabled">Nonaktifkan pengisian USB [Root]</string>
     <string name="title_usb_enabled">Peringatan pada pengisian USB</string>
+    <string name="title_warning_high_sound_enabled">Aktifkan suara pemberitahuan</string>
     <string name="title_warning_percentage">Persentase peringatan:</string>
     <string name="title_wireless_enabled">Peringatan pada pengisian nirkabel</string>
 
@@ -211,12 +219,4 @@
     <string name="unit_days">\ hari</string>
 
     <!-- new strings -->
-    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
-    <string name="intro_advanced_mode">Advanced mode</string>
-    <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
-    <string name="intro_easy_mode">Easy mode</string>
-    <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
-    <string name="intro_easy_mode_title">Select mode</string>
-    <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
-    <string name="title_repeat_warning">Repeat the warning</string>
 </resources>
