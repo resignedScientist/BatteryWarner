@@ -116,7 +116,6 @@
     <string name="tasker_enable_stop_charging">Aktifkan "Stop Charging"</string>
     <string name="tasker_enable_warning_high">Aktifkan peringatan daya baterai tinggi</string>
     <string name="tasker_enable_warning_low">Aktifkan peringatan daya baterai rendah</string>
-    <!-- Just write something funny in your language here :) -->
     <string name="tasker_headline">Halo bray!</string>
     <string name="tasker_reset_graph">Atur ulang grafik yang terekam</string>
     <string name="tasker_save_graph">Simpan grafik yang terekam</string>
@@ -125,7 +124,6 @@
     <string name="tasker_set_value">Atur nilai anda:</string>
     <string name="tasker_set_warning_high">Atur peringatan daya baterai tinggi</string>
     <string name="tasker_set_warning_low">Atur peringatan daya baterai rendah</string>
-    <!-- Just write something funny in your language here :) -->
     <string name="tasker_subtitle">Saya bangga kalian berada disini! :)</string>
     <string name="tasker_to">untuk</string>
     <string name="tasker_toggle_charging">Aktifkan/Nonaktifkan pengisian daya</string>
