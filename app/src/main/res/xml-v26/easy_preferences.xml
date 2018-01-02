@@ -41,7 +41,11 @@
         <Preference
             android:summary="@string/summary_android_notification_settings"
             android:title="@string/title_android_notification_settings">
-            <intent android:action="android.settings.CHANNEL_NOTIFICATION_SETTINGS" />
+            <intent android:action="android.settings.APP_NOTIFICATION_SETTINGS">
+                <extra
+                    android:name="android.provider.extra.APP_PACKAGE"
+                    android:value="@string/package_name" />
+            </intent>
         </Preference>
         <Preference
             android:key="@string/pref_info_notification_items"
