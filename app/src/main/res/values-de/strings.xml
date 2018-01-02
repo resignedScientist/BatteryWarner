@@ -145,6 +145,7 @@
 
     <string name="title_ac_enabled">Warnung beim normalen Laden</string>
     <string name="title_advanced_features">Erweiterte Einstellungen</string>
+    <string name="title_android_notification_settings">Benachrigungs-Einstellungen öffnen</string>
     <string name="title_charging_curve">Ladekurve</string>
     <string name="title_charging_limit">Ladelimit:</string>
     <string name="title_charging_notification">Aktiviere Lade-Benachrichtigung</string>
@@ -163,6 +164,7 @@
     <string name="title_info_text_size">Textgröße der Info-Benachrichtigung:</string>
     <string name="title_main_page">Hauptseite</string>
     <string name="title_minutes_before">Minuten vorher:</string>
+    <string name="title_notification_settings">Benachrichtigungs-Einstellungen</string>
     <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
     <string name="title_preferences">Einstellungen</string>
     <string name="title_repeat_warning">Warnung wiederholen</string>

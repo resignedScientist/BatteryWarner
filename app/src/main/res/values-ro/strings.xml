@@ -212,6 +212,8 @@
     <string name="intro_easy_mode_title">Select mode</string>
     <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
     <string name="title_repeat_warning">Repeat the warning</string>
+    <string name="title_android_notification_settings">Open notification settings</string>
+    <string name="title_notification_settings">Notification settings</string>
 
     <!-- Changes -->
     <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->

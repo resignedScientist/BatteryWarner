@@ -13,6 +13,7 @@
 
     <string name="checkbox_battery_level">Battery level (%)</string>
     <string name="checkbox_temperature_celsius">Temperature (°C)</string>
+    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
 
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_close">Close</string>
@@ -49,6 +50,11 @@
     <string name="info_temperature">Temperature</string>
     <string name="info_voltage">Voltage</string>
 
+    <string name="intro_advanced_mode">Advanced mode</string>
+    <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
+    <string name="intro_easy_mode">Easy mode</string>
+    <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
+    <string name="intro_easy_mode_title">Select mode</string>
     <string name="intro_finish_toast">Let\'s make your battery last longer!</string>
     <string name="intro_slide_1_description">It will help your battery to live longer!</string>
     <string name="intro_slide_1_title">Welcome to Battery Warner!</string>
@@ -82,12 +88,14 @@
 
     <string name="smart_charging_explanation">That\'s for the people who want to charge full over night without damaging the battery with letting it on 100% too long. It will be charged to the charging limit that is set in the other settings menu. Then the charging will be paused and X minutes before the time you set here charging will be resumed. After reaching the limit in this menu, the charging will be stopped again.</string>
 
+    <string name="summary_android_notification_settings">Click here to open the notification settings of android to change notification sounds and more.</string>
     <string name="summary_disabled">Disabled</string>
     <string name="summary_graph_auto_delete">Automatically delete older graphs.</string>
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_info_dark_theme">Use the dark theme for the battery info notification.</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
+    <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
@@ -139,13 +147,12 @@
 
     <string name="title_ac_enabled">Warning on AC charging</string>
     <string name="title_advanced_features">Advanced features</string>
+    <string name="title_android_notification_settings">Open notification settings</string>
     <string name="title_charging_curve">Charging graph</string>
     <string name="title_charging_limit">Charging limit:</string>
     <string name="title_charging_notification">Enable charging notification</string>
-    <string name="title_warning_high">Charging Service</string>
     <string name="title_dark_theme_enabled">Enable Dark Theme</string>
     <string name="title_discharging_notification">Enable discharging notification</string>
-    <string name="title_warning_low">Discharging Service</string>
     <string name="title_enabled">Enabled</string>
     <string name="title_graph_auto_delete">Auto Delete</string>
     <string name="title_graph_auto_delete_time">Delete graphs older than:</string>
@@ -159,8 +166,10 @@
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="title_main_page">Main page</string>
     <string name="title_minutes_before">Minutes before:</string>
+    <string name="title_notification_settings">Notification settings</string>
     <string name="title_power_saving_mode">Enable power saving mode</string>
     <string name="title_preferences">Settings</string>
+    <string name="title_repeat_warning">Repeat the warning</string>
     <string name="title_reset_battery_stats">Reset battery stats</string>
     <string name="title_reverse_current">Reverse Current</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
@@ -177,7 +186,9 @@
     <string name="title_time_format">Time format</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
     <string name="title_usb_enabled">Warning on USB charging</string>
+    <string name="title_warning_high">Charging Service</string>
     <string name="title_warning_high_sound_enabled">Enable notification sound</string>
+    <string name="title_warning_low">Discharging Service</string>
     <string name="title_warning_percentage">Warning percentage:</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
 
@@ -208,12 +219,4 @@
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
 
     <string name="unit_days">\ days</string>
-    <string name="intro_advanced_mode">Advanced mode</string>
-    <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
-    <string name="intro_easy_mode">Easy mode</string>
-    <string name="intro_easy_mode_description">The easy mode is recommended for most users. Only the most important settings are available.</string>
-    <string name="intro_easy_mode_title">Select mode</string>
-    <string name="checkbox_temperature_fahrenheit">Temperature (°F)</string>
-    <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
-    <string name="title_repeat_warning">Repeat the warning</string>
 </resources>
