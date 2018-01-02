@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="@string/title_charging_service">
+    <PreferenceCategory android:title="@string/title_warning_high">
         <CheckBoxPreference
             android:defaultValue="@bool/pref_warning_high_enabled_default"
             android:key="@string/pref_warning_high_enabled"
@@ -56,7 +56,7 @@
             android:summary="@string/summary_usb_charging_disabled"
             android:title="@string/title_usb_charging_disabled" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/title_discharging_service">
+    <PreferenceCategory android:title="@string/title_warning_low">
         <CheckBoxPreference
             android:defaultValue="@bool/pref_warning_low_enabled_default"
             android:key="@string/pref_warning_low_enabled"
@@ -83,6 +83,8 @@
             android:key="@string/pref_power_saving_mode"
             android:summary="@string/summary_power_saving_mode"
             android:title="@string/title_power_saving_mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_notification_settings">
         <CheckBoxPreference
             android:defaultValue="@bool/pref_info_notification_enabled_default"
             android:key="@string/pref_info_notification_enabled"

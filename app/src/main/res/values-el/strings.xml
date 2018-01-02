@@ -87,7 +87,6 @@
     <string name="summary_graph_autosave">Save the recorded graph automatically to the history when the device is fully charged or you unplug the charger.</string>
     <string name="summary_graph_enabled">Record a graph while charging.</string>
     <string name="summary_info_dark_theme">Use the dark theme for the battery info notification.</string>
-    <string name="summary_notification_sound">Since android O you have to set the sound in the notification settings of android. Click here to open it!</string>
     <string name="summary_power_saving_mode">Enables the power saving mode when the battery low warning was triggered.</string>
     <string name="summary_reset_battery_stats">Reset the battery stats after the battery high warning was triggered.</string>
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
@@ -143,10 +142,10 @@
     <string name="title_charging_curve">Charging graph</string>
     <string name="title_charging_limit">Charging limit:</string>
     <string name="title_charging_notification">Enable charging notification</string>
-    <string name="title_charging_service">Charging Service</string>
+    <string name="title_warning_high">Charging Service</string>
     <string name="title_dark_theme_enabled">Enable Dark Theme</string>
     <string name="title_discharging_notification">Enable discharging notification</string>
-    <string name="title_discharging_service">Discharging Service</string>
+    <string name="title_warning_low">Discharging Service</string>
     <string name="title_enabled">Enabled</string>
     <string name="title_graph_auto_delete">Auto Delete</string>
     <string name="title_graph_auto_delete_time">Delete graphs older than:</string>

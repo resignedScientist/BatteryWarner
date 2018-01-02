@@ -77,7 +77,6 @@
     <string name="summary_graph_autosave">Salvează graficul înregistrat automat către istoric când dispozitivul este complet încărcat sau deconectaţi încărcătorul.</string>
     <string name="summary_graph_enabled">Înregistrează un grafic în timpul încărcării.</string>
     <string name="summary_info_dark_theme">Foloseşte tema neagră pentru notificarea cu informaţiile bateriei.</string>
-    <string name="summary_notification_sound">De la Android O trebuie să setezi sunetul în setările de notificare ale Android. Apasă aici ca să îl deschizi!</string>
     <string name="summary_power_saving_mode">Activează modul salvare energie când a fost declanșată avertizarea privind descărcarea bateriei.</string>
     <string name="summary_reset_battery_stats">Resetează statusul bateriei dupa ce a fost declanșată avertizarea privind încărcarea bateriei.</string>
     <string name="summary_stop_charging">Opreşte încărcarea după ce procentajul maxim a fost atins. Nu funcţionează cu toate dispozitivele!</string>
@@ -94,10 +93,8 @@
     <string name="title_charging_curve">Grafic încărcare</string>
     <string name="title_charging_limit">Limită încărcare:</string>
     <string name="title_charging_notification">Activează notificările pentru încărcare</string>
-    <string name="title_charging_service">Serviciu Încărcare</string>
     <string name="title_dark_theme_enabled">Activează Tema Neagră</string>
     <string name="title_discharging_notification">Activează notificările pentru descărcare</string>
-    <string name="title_discharging_service">Serviciu Descărcare</string>
     <string name="title_enabled">Activat</string>
     <string name="title_graph_autosave">Salvează automat</string>
     <string name="title_graph_enabled">Activează grafic încărcare</string>
@@ -215,4 +212,12 @@
     <string name="intro_easy_mode_title">Select mode</string>
     <string name="summary_repeat_warning">Repeat the warning roughly every minute.</string>
     <string name="title_repeat_warning">Repeat the warning</string>
+
+    <!-- Changes -->
+    <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
+    <string name="summary_android_notification_settings">De la Android O trebuie să setezi sunetul în setările de notificare ale Android. Apasă aici ca să îl deschizi!</string>
+    <!-- Please write the translation to 'high battery warning' here instead -->
+    <string name="title_warning_high">Serviciu Încărcare</string>
+    <!-- Please write the translation to 'Low battery warning' here instead -->
+    <string name="title_warning_low">Serviciu Descărcare</string>
 </resources>

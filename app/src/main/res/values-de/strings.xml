@@ -88,13 +88,14 @@
 
     <string name="smart_charging_explanation">Dies ist für Leute gedacht, die über Nacht voll laden, aber den Akku, um ihn nicht zu sehr zu belasten, nicht zu lange auf 100% lassen wollen. Es wird also bis zum im anderen Menü eingestellten Limit geladen. Dann wird das Laden pausiert und X Minuten vor der eingestellten Zeit wieder fortgesetzt. Nachdem das hier eingestellte Limit erreicht wurde, wird das Laden wieder gestoppt.</string>
 
+    <string name="summary_android_notification_settings">Hier klicken, um die Benachrichtigungs-Einstellungen von Android zu öffnen, um Töne und mehr zu ändern.</string>
     <string name="summary_disabled">Deaktiviert</string>
     <string name="summary_graph_auto_delete">Ältere Graphen automatisch löschen.</string>
     <string name="summary_graph_autosave">Den Graphen automatisch speichern, sobald das Gerät vollständig geladen oder das Ladekabel entfernt wurde.</string>
     <string name="summary_graph_enabled">Beim Laden eine Ladekurve aufzeichnen.</string>
     <string name="summary_info_dark_theme">Nutze das dunkle Thema bei der Info-Benachrichtigung.</string>
-    <string name="summary_notification_sound">Ab Android O muss der Benachrichtigungston in den Android-Einstellungen eingestellt werden. Hier klicken, um die Einstellungen zu öffnen!</string>
     <string name="summary_power_saving_mode">Aktiviert den Energiesparmodus, sobald die Batterie-niedrig Warnung erscheint.</string>
+    <string name="summary_repeat_warning">Die Warnung ungefähr alle 60 Sekunden wiederholen.</string>
     <string name="summary_reset_battery_stats">Zurücksetzen der Android-Akkustatistik sobald die Batterie-Warnung beim Laden erscheint.</string>
     <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
     <string name="summary_smart_charging_auto_resume">"Laden fortsetzen, sobald der Akkustand um X% gesunken ist. Es wird dann bis zum ersten Limit weiter geladen."</string>
@@ -147,10 +148,8 @@
     <string name="title_charging_curve">Ladekurve</string>
     <string name="title_charging_limit">Ladelimit:</string>
     <string name="title_charging_notification">Aktiviere Lade-Benachrichtigung</string>
-    <string name="title_charging_service">Lade-Service</string>
     <string name="title_dark_theme_enabled">Aktiviere dunkles Thema</string>
     <string name="title_discharging_notification">Aktiviere Entlade-Benachrichtigung</string>
-    <string name="title_discharging_service">Entlade-Service</string>
     <string name="title_enabled">Aktiviert</string>
     <string name="title_graph_auto_delete">Automatisch löschen</string>
     <string name="title_graph_auto_delete_time">Graphen löschen, welche älter sind als:</string>
@@ -166,6 +165,7 @@
     <string name="title_minutes_before">Minuten vorher:</string>
     <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
     <string name="title_preferences">Einstellungen</string>
+    <string name="title_repeat_warning">Warnung wiederholen</string>
     <string name="title_reset_battery_stats">Akkustatistik zurücksetzen</string>
     <string name="title_reverse_current">Stromstärke korrigieren</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
@@ -182,7 +182,9 @@
     <string name="title_time_format">Zeit-Format</string>
     <string name="title_usb_charging_disabled">USB-Laden deaktivieren [Root]</string>
     <string name="title_usb_enabled">Warnung beim USB-Laden</string>
+    <string name="title_warning_high">Akkustand hoch Warnung</string>
     <string name="title_warning_high_sound_enabled">Benachrichtigungston aktivieren</string>
+    <string name="title_warning_low">Akkustand niedrig Warnung</string>
     <string name="title_warning_percentage">Batterie-Warnung bei:</string>
     <string name="title_wireless_enabled">Warnung beim kabellosen Laden</string>
 
@@ -213,6 +215,4 @@
     <string name="toast_theme_changed">Das Thema wird erst aktiviert, wenn die Einstellungen geschlossen werden!</string>
 
     <string name="unit_days">\ Tage</string>
-    <string name="summary_repeat_warning">Die Warnung ungefähr alle 60 Sekunden wiederholen.</string>
-    <string name="title_repeat_warning">Warnung wiederholen</string>
 </resources>
