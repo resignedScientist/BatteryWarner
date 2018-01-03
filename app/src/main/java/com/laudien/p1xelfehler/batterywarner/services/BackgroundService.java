@@ -31,7 +31,6 @@ import android.widget.Toast;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
-import com.laudien.p1xelfehler.batterywarner.helper.BatteryHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
@@ -41,6 +40,12 @@ import java.util.Locale;
 
 import static android.app.Notification.PRIORITY_HIGH;
 import static android.app.Notification.PRIORITY_LOW;
+import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
+import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
+import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
+import static android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT;
+import static android.os.BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE;
+import static android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE;
 import static android.os.BatteryManager.EXTRA_HEALTH;
 import static android.os.BatteryManager.EXTRA_LEVEL;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
@@ -1052,7 +1057,6 @@ public class BackgroundService extends Service {
      * that notifies when the data was changed with one of the setters. It will only be called
      * if the new data is actually different from the old data. The data can be updated with the
      * update() method.
-     * This class is a singleton and is provided by the BatteryHelper class only.
      */
     public class BatteryData {
 
@@ -1081,10 +1085,10 @@ public class BackgroundService extends Service {
          */
         public void update(Intent batteryStatus, Context context) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
-            setTemperature(BatteryHelper.getTemperature(batteryStatus), context);
+            setTemperature((double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10, context);
             setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1), context);
             setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1), context);
-            setVoltage(BatteryHelper.getVoltage(batteryStatus), context);
+            setVoltage((double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000, context);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
@@ -1185,7 +1189,7 @@ public class BackgroundService extends Service {
         private void setHealth(int health, Context context) {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
-                values[INDEX_HEALTH] = context.getString(R.string.info_health) + ": " + BatteryHelper.getHealthString(context, health);
+                values[INDEX_HEALTH] = context.getString(R.string.info_health) + ": " + getHealthString(health);
                 notifyListener(INDEX_HEALTH);
             }
         }
@@ -1226,6 +1230,26 @@ public class BackgroundService extends Service {
                 this.voltage = voltage;
                 values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.info_voltage) + ": %.3f V", voltage);
                 notifyListener(INDEX_VOLTAGE);
+            }
+        }
+
+        private String getHealthString(int health) {
+            Context context = BackgroundService.this;
+            switch (health) {
+                case BATTERY_HEALTH_COLD:
+                    return context.getString(R.string.health_cold);
+                case BATTERY_HEALTH_DEAD:
+                    return context.getString(R.string.health_dead);
+                case BATTERY_HEALTH_GOOD:
+                    return context.getString(R.string.health_good);
+                case BATTERY_HEALTH_OVER_VOLTAGE:
+                    return context.getString(R.string.health_overvoltage);
+                case BATTERY_HEALTH_OVERHEAT:
+                    return context.getString(R.string.health_overheat);
+                case BATTERY_HEALTH_UNSPECIFIED_FAILURE:
+                    return context.getString(R.string.health_unspecified_failure);
+                default:
+                    return context.getString(R.string.health_unknown);
             }
         }
 
