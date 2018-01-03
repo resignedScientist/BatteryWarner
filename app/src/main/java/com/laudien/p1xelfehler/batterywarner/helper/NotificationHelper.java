@@ -70,7 +70,7 @@ public final class NotificationHelper {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         switch (notificationID) {
             case ID_STOP_CHARGING_NOT_WORKING:
-                showStopChargingNotWorkingNotification(context, sharedPreferences);
+                showStopChargingNotWorkingNotification(context);
                 break;
             case ID_GRANT_ROOT:
                 showGrantRootNotification(context, sharedPreferences);
@@ -99,7 +99,12 @@ public final class NotificationHelper {
         }
     }
 
-    private static void showStopChargingNotWorkingNotification(Context context, SharedPreferences sharedPreferences) {
+    private static void showStopChargingNotWorkingNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
         String messageText = context.getString(R.string.notification_stop_charging_not_working);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                 new Intent(context, SettingsActivity.class), FLAG_UPDATE_CURRENT);
@@ -118,12 +123,15 @@ public final class NotificationHelper {
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_STOP_CHARGING_NOT_WORKING, builder.build());
     }
 
     private static void showGrantRootNotification(Context context, SharedPreferences sharedPreferences) {
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
         // check if one of the root preferences is enabled
         boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
         // send the grant root notification only if one of the root preferences is enabled
@@ -147,13 +155,16 @@ public final class NotificationHelper {
             } else {
                 builder.setPriority(PRIORITY_HIGH);
             }
-            NotificationManager notificationManager = (NotificationManager)
-                    context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(ID_GRANT_ROOT, builder.build());
         }
     }
 
     private static void showNotRootedNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
         String messageText = context.getString(R.string.notification_not_rooted);
         PendingIntent clickIntent = PendingIntent.getService(context, 0, new Intent(context, GrantRootService.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
@@ -173,12 +184,15 @@ public final class NotificationHelper {
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_NOT_ROOTED, builder.build());
     }
 
     private static void showNoAlarmTimeFoundNotification(Context context) {
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return;
+        }
         String messageText = context.getString(R.string.toast_no_alarm_time_found);
         PendingIntent clickIntent = PendingIntent.getActivity(context, 0, new Intent(context, SmartChargingActivity.class), FLAG_UPDATE_CURRENT);
         Notification.Builder builder = new Notification.Builder(context)
@@ -196,8 +210,6 @@ public final class NotificationHelper {
         } else {
             builder.setPriority(PRIORITY_HIGH);
         }
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
