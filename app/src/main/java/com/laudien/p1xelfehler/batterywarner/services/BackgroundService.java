@@ -98,6 +98,18 @@ public class BackgroundService extends Service {
     private BatteryValueChangedListener listener;
     private DatabaseContract.Controller databaseController;
     private BackgroundServiceBinder binder = new BackgroundServiceBinder();
+    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals(getString(R.string.pref_smart_charging_time_before))
+                    || key.equals(getString(R.string.pref_smart_charging_time))
+                    || key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
+                smartChargingResumeTime = getSmartChargingResumeTime();
+            } else if (batteryData != null && key.equals(getString(R.string.pref_temp_unit))) {
+                batteryData.onTemperatureUnitChanged();
+            }
+        }
+    };
 
     /**
      * Checks if the given charging method is enabled in preferences.
@@ -149,16 +161,7 @@ public class BackgroundService extends Service {
         super.onCreate();
         onRestoreState();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-                if (s.equals(getString(R.string.pref_smart_charging_time_before))
-                        || s.equals(getString(R.string.pref_smart_charging_time))
-                        || s.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
-                    smartChargingResumeTime = getSmartChargingResumeTime();
-                }
-            }
-        });
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (SDK_INT >= LOLLIPOP) {
             batteryManager = (BatteryManager) getSystemService(BATTERY_SERVICE);
@@ -270,6 +273,7 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
         onSaveState();
@@ -891,23 +895,20 @@ public class BackgroundService extends Service {
          *
          * @param intent The intent received with ACTION_BATTERY_CHANGED.
          */
-        private void refreshInfoNotification(Intent intent) {
-            batteryData.update(intent, BackgroundService.this);
+        private void refreshInfoNotification(@Nullable Intent intent) {
+            if (intent != null) {
+                batteryData.update(intent, BackgroundService.this);
+            }
             if (infoNotificationBuilder != null) {
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
-                            infoNotificationContent = buildInfoNotificationContent(data);
-                            infoNotificationMessage = buildInfoNotificationMessage(data);
-                            infoNotificationBuilder.setContentText(infoNotificationMessage);
-                            notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                try {
+                    String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
+                    infoNotificationContent = buildInfoNotificationContent(data);
+                    infoNotificationMessage = buildInfoNotificationMessage(data);
+                    infoNotificationBuilder.setContentText(infoNotificationMessage);
+                    notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         }
@@ -1053,7 +1054,7 @@ public class BackgroundService extends Service {
 
     /**
      * This class holds all the data that can be shown in the MainPageFragment or the info
-     * notification (or else where if needed). You can set an OnBatteryValueChangedListener
+     * notification (or else where if needed). You can set an BatteryValueChangedListener
      * that notifies when the data was changed with one of the setters. It will only be called
      * if the new data is actually different from the old data. The data can be updated with the
      * update() method.
@@ -1073,7 +1074,7 @@ public class BackgroundService extends Service {
         private int current;
         private double temperature, voltage;
 
-        public BatteryData(Intent batteryStatus, Context context) {
+        private BatteryData(Intent batteryStatus, Context context) {
             update(batteryStatus, context);
         }
 
@@ -1083,26 +1084,18 @@ public class BackgroundService extends Service {
          * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
          * @param context       An instance of the Context class.
          */
-        public void update(Intent batteryStatus, Context context) {
-            setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY), context);
-            setTemperature((double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10, context);
-            setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1), context);
-            setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1), context);
-            setVoltage((double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000, context);
+        void update(Intent batteryStatus, Context context) {
+            setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
+            setTemperature((double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10, false);
+            setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1));
+            setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1));
+            setVoltage((double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000);
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
-                setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW), context);
+                if (batteryManager != null) {
+                    setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
+                }
             }
-        }
-
-        /**
-         * Get all the data as String array with correct formats to show to the user.
-         * Use the INDEX constants to determine which String is which.
-         *
-         * @return Returns all data as String array with correct formats to show to the user.
-         */
-        public String[] getAsArray() {
-            return values;
         }
 
         /**
@@ -1114,7 +1107,7 @@ public class BackgroundService extends Service {
          * @param sharedPreferences An instance of the SharedPreferences class.
          * @return Returns enabled data as String array with correct formats to show to the user.
          */
-        public String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
+        private String[] getEnabledOnly(Context context, SharedPreferences sharedPreferences) {
             boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
             enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_technology), context.getResources().getBoolean(R.bool.pref_info_technology_default));
             enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(context.getString(R.string.pref_info_temperature), context.getResources().getBoolean(R.bool.pref_info_temperature_default));
@@ -1178,57 +1171,57 @@ public class BackgroundService extends Service {
             }
         }
 
-        private void setTechnology(String technology, Context context) {
+        private void setTechnology(String technology) {
             if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
-                values[INDEX_TECHNOLOGY] = context.getString(R.string.info_technology) + ": " + technology;
+                values[INDEX_TECHNOLOGY] = getString(R.string.info_technology) + ": " + technology;
                 notifyListener(INDEX_TECHNOLOGY);
             }
         }
 
-        private void setHealth(int health, Context context) {
+        private void setHealth(int health) {
             if (this.health != health || values[INDEX_HEALTH] == null) {
                 this.health = health;
-                values[INDEX_HEALTH] = context.getString(R.string.info_health) + ": " + getHealthString(health);
+                values[INDEX_HEALTH] = getString(R.string.info_health) + ": " + getHealthString(health);
                 notifyListener(INDEX_HEALTH);
             }
         }
 
-        private void setBatteryLevel(int batteryLevel, Context context) {
+        private void setBatteryLevel(int batteryLevel) {
             if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
                 this.batteryLevel = batteryLevel;
-                values[INDEX_BATTERY_LEVEL] = String.format(context.getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
+                values[INDEX_BATTERY_LEVEL] = String.format(getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
                 notifyListener(INDEX_BATTERY_LEVEL);
             }
         }
 
         @RequiresApi(api = LOLLIPOP)
-        private void setCurrent(int current, Context context) {
+        private void setCurrent(int current) {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
-                boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.pref_reverse_current), context.getResources().getBoolean(R.bool.pref_reverse_current_default));
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", context.getString(R.string.info_current), current / (reverseCurrent ? 1000 : -1000));
+                boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", getString(R.string.info_current), current / (reverseCurrent ? 1000 : -1000));
                 notifyListener(INDEX_CURRENT);
             }
         }
 
-        private void setTemperature(double temperature, Context context) {
-            if (this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
+        private void setTemperature(double temperature, boolean forceUpdate) {
+            if (forceUpdate || this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
                 values[INDEX_TEMPERATURE] = String.format(
                         Locale.getDefault(),
                         "%s: %s",
-                        context.getString(R.string.info_temperature),
-                        TemperatureConverter.getCorrectTemperatureString(context, temperature)
+                        getString(R.string.info_temperature),
+                        TemperatureConverter.getCorrectTemperatureString(BackgroundService.this, temperature)
                 );
                 notifyListener(INDEX_TEMPERATURE);
             }
         }
 
-        private void setVoltage(double voltage, Context context) {
+        private void setVoltage(double voltage) {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
-                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), context.getString(R.string.info_voltage) + ": %.3f V", voltage);
+                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), getString(R.string.info_voltage) + ": %.3f V", voltage);
                 notifyListener(INDEX_VOLTAGE);
             }
         }
@@ -1251,6 +1244,11 @@ public class BackgroundService extends Service {
                 default:
                     return context.getString(R.string.health_unknown);
             }
+        }
+
+        private void onTemperatureUnitChanged() {
+            setTemperature(temperature, true);
+            batteryChangedReceiver.refreshInfoNotification(null);
         }
 
         private void notifyListener(int index) {
