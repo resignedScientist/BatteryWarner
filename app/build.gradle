@@ -53,7 +53,7 @@ android {
             dimension "default"
         }
         experimental {
-            applicationId "com.laudien.p1xelfehler.batterywarner_pro"
+            applicationId "com.laudien.p1xelfehler.batterywarner_experimental"
             resValue 'string', 'package_name', applicationId
             resValue 'string', 'app_name', 'Battery Warner Experimental'
             versionNameSuffix "-experimental"
