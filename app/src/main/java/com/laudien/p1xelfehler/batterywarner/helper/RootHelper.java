@@ -214,7 +214,7 @@ public final class RootHelper {
                 new ToggleChargingFile("/sys/class/power_supply/ac/charging_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/charge_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/device/Charging_Enable", "1", "0"),
-                new ToggleChargingFile("/sys/devices/platform/7000c400.i2c/i2c-1/1-006b/charging_state", "enabled", "disabled"),
+                new ToggleChargingFile("/sys/devices/platform/7000c400.i2c/i2c-1/1-006b/charging_state", "enabled", "disabled")
                 /*new ToggleChargingFile("/sys/class/power_supply/battery/charger_control", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/class/power_supply/bq2589x_charger/enable_charging", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/class/power_supply/chargalg/disable_charging", "0", "1"), // experimental
@@ -225,8 +225,6 @@ public final class RootHelper {
                 new ToggleChargingFile("/sys/devices/platform/mt-battery/disable_charger", "0", "1"), // experimental
                 new ToggleChargingFile("/sys/devices/platform/tegra12-i2c.0/i2c-0/0-006b/charging_state", "enabled", "disabled"), // experimental
                 new ToggleChargingFile("/sys/devices/virtual/power_supply/manta-battery/charge_enabled", "1", "0")*/ // experimental
-
-
         };
         for (ToggleChargingFile file : files) {
             if (new File(file.path).exists()) {
