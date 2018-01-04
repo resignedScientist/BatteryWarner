@@ -673,10 +673,13 @@ public class BackgroundService extends Service {
         long timeBefore = smartChargingMinutes * 60 * 1000;
         long timeNow = System.currentTimeMillis();
         long resumeTime = alarmTime - timeBefore;
+        boolean shouldSaveNewTimeToPreferences = alarmTime <= timeNow;
         while (alarmTime <= timeNow) {
             alarmTime += 1000 * 60 * 60 * 24; // add a day if time is in the past
             resumeTime = alarmTime - timeBefore;
-            // save the new time in the shared preferences
+        }
+        // save the new time in the shared preferences
+        if (shouldSaveNewTimeToPreferences) {
             sharedPreferences.edit().putLong(getString(R.string.pref_smart_charging_time), alarmTime).apply();
         }
         return resumeTime;
