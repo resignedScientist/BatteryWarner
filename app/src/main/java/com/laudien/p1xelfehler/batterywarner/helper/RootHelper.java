@@ -214,12 +214,12 @@ public final class RootHelper {
                 new ToggleChargingFile("/sys/class/power_supply/ac/charging_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/charge_enabled", "1", "0"),
                 new ToggleChargingFile("/sys/class/power_supply/battery/device/Charging_Enable", "1", "0"),
-                new ToggleChargingFile("/sys/devices/platform/7000c400.i2c/i2c-1/1-006b/charging_state", "enabled", "disabled")
+                new ToggleChargingFile("/sys/devices/platform/7000c400.i2c/i2c-1/1-006b/charging_state", "enabled", "disabled"),
+                new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1")
                 /*new ToggleChargingFile("/sys/class/power_supply/battery/charger_control", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/class/power_supply/bq2589x_charger/enable_charging", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/class/power_supply/chargalg/disable_charging", "0", "1"), // experimental
                 new ToggleChargingFile("/sys/class/power_supply/dollar_cove_charger/present", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1"), // experimental
                 new ToggleChargingFile("/sys/devices/platform/battery/ChargerEnable", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/devices/platform/huawei_charger/enable_charger", "1", "0"), // experimental
                 new ToggleChargingFile("/sys/devices/platform/mt-battery/disable_charger", "0", "1"), // experimental
