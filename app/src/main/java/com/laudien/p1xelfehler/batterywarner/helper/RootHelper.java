@@ -193,7 +193,10 @@ public final class RootHelper {
     private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
         ToggleChargingFile toggleChargingFile = null;
         if (MODEL.contains("Pixel")) {
-            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
+            if (PRODUCT.equals("walleye")) // Pixel 2
+                toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1");
+            else
+                toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
         } else if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
             toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
         } else if (BRAND.equals("samsung")) {
