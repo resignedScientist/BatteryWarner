@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -40,6 +41,21 @@ import java.util.*
 class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     private val PERMISSION_REQUEST_CODE = 60
     private val adapter = HistoryPagerAdapter(supportFragmentManager)
+    private val handleButtonsHandler = Handler()
+    private val handleButtonsRunnable = Runnable {
+        val pos = viewPager.currentItem
+        if (adapter.count - 1 <= pos) {
+            slideOut(btn_next)
+        } else {
+            slideIn(btn_next)
+        }
+        if (pos <= 0) {
+            slideOut(btn_prev)
+        } else {
+            slideIn(btn_prev)
+        }
+    }
+    private var lastPage = 0
 
     companion object {
         val DATABASE_HISTORY_PATH = "${Environment.getExternalStorageDirectory()}/BatteryWarner"
@@ -110,15 +126,12 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             slideOut(btn_prev)
             return
         }
-        if (adapter.count - 1 <= position) {
-            slideOut(btn_next)
+        handleButtonsHandler.removeCallbacks(handleButtonsRunnable)
+        if (position != lastPage) {
+            lastPage = position
+            handleButtonsRunnable.run()
         } else {
-            slideIn(btn_next)
-        }
-        if (position <= 0) {
-            slideOut(btn_prev)
-        } else {
-            slideIn(btn_prev)
+            handleButtonsHandler.postDelayed(handleButtonsRunnable, 1000)
         }
     }
 
