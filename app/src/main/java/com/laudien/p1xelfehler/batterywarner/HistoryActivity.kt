@@ -261,7 +261,6 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
      * A FragmentStatePagerAdapter that loads HistoryPageFragments into the ViewPager.
      */
     private inner class HistoryPagerAdapter (fm: FragmentManager) : FragmentStatePagerAdapter(fm), HistoryPageFragmentDataSource {
-        //var currentFragment: HistoryPageFragment? = null // the current item
         private var files: ArrayList<File>? = null
 
         override fun getItem(position: Int): Fragment {
@@ -310,6 +309,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             if (count > 0) {
                 for (f in files!!) {
                     if (!f.delete()) {
+                        loadGraphs()
                         return false
                     }
                 }
