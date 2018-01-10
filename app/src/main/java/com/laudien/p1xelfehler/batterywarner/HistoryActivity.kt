@@ -1,6 +1,5 @@
 package com.laudien.p1xelfehler.batterywarner
 
-import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Dialog
@@ -68,7 +67,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             return
         }
         // permissions are granted at this point
-        loadGraphs(-1)
+        loadGraphs()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -81,7 +80,6 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             R.id.menu_rename -> showRenameDialog()
             R.id.menu_delete -> showDeleteDialog()
             R.id.menu_delete_all -> showDeleteAllDialog()
-            R.id.menu_info -> showGraphInfo()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
@@ -105,14 +103,14 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     }
 
     override fun onPageSelected(position: Int) {
-        val file = adapter?.getFile(position)
+        val file = adapter.getFile(position)
         textView_fileName.text = file?.name
-        if (adapter!!.count == 0) {
+        if (adapter.count == 0) {
             slideOut(btn_next)
             slideOut(btn_prev)
             return
         }
-        if (adapter!!.count - 1 <= position) {
+        if (adapter.count - 1 <= position) {
             slideOut(btn_next)
         } else {
             slideIn(btn_next)
@@ -128,7 +126,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
 
     }
 
-    private fun loadGraphs(moveToPos: Int) {
+    private fun loadGraphs() {
         val databaseController = DatabaseController.getInstance(this)
         val fileList = databaseController.fileList
         adapter.loadFiles(fileList)
@@ -136,25 +134,19 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             textView_nothingSaved.visibility = VISIBLE
             textView_fileName.visibility = INVISIBLE
         }
-        if (moveToPos != -1) {
-            viewPager.currentItem = moveToPos
-            onPageSelected(moveToPos)
-        } else {
-            onPageSelected(viewPager.currentItem)
-        }
     }
 
     private fun showDeleteDialog() {
-        if (adapter!!.count != 0) {
+        if (adapter.count != 0) {
             AlertDialog.Builder(this).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_graph)
                     .setIcon(R.mipmap.ic_launcher)
                     .setPositiveButton(getString(R.string.dialog_button_yes)) { dialogInterface, i ->
                         val currentPosition = viewPager.currentItem
-                        if (adapter!!.deleteFile(currentPosition)) {
+                        if (adapter.deleteFile(currentPosition)) {
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_delete_graph, LENGTH_SHORT)
-                            if (adapter!!.count == 0) {
+                            if (adapter.count == 0) {
                                 textView_nothingSaved.visibility = VISIBLE
                             }
                         } else {
@@ -168,13 +160,13 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     }
 
     private fun showDeleteAllDialog() {
-        if (adapter!!.count != 0) {
+        if (adapter.count != 0) {
             AlertDialog.Builder(this).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_all_graphs)
                     .setIcon(R.mipmap.ic_launcher)
                     .setPositiveButton(getString(R.string.dialog_button_yes)) { dialogInterface, i ->
-                        if (adapter!!.deleteAllFiles()) {
+                        if (adapter.deleteAllFiles()) {
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_delete_all_graphs, LENGTH_SHORT)
                             textView_nothingSaved.visibility = VISIBLE
                         } else {
@@ -187,17 +179,9 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         }
     }
 
-    private fun showGraphInfo() {
-        if (adapter!!.count != 0) {
-            //adapter!!.currentFragment!!.showInfo()
-        } else {
-            ToastHelper.sendToast(this, R.string.toast_no_graphs_saved, LENGTH_SHORT)
-        }
-    }
-
     private fun showRenameDialog() {
-        if (adapter!!.count > 0) {
-            val oldName = adapter!!.getFile(viewPager.currentItem)?.name
+        if (adapter.count > 0) {
+            val oldName = adapter.getFile(viewPager.currentItem)?.name
             val dialog = Dialog(this)
             dialog.setContentView(R.layout.dialog_rename)
             val editText = dialog.findViewById<EditText>(R.id.editText)
@@ -213,7 +197,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                         if (newFile.exists()) {
                             ToastHelper.sendToast(this@HistoryActivity, String.format(Locale.getDefault(), "%s '%s'!",
                                     getString(R.string.toast_graph_name_already_exists), newName))
-                        } else if (adapter!!.renameFile(viewPager.currentItem, newFile)) {
+                        } else if (adapter.renameFile(viewPager.currentItem, newFile)) {
                             textView_fileName.text = newName
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_renaming, LENGTH_SHORT)
                         } else {
@@ -283,6 +267,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         override fun getItem(position: Int): Fragment {
             val fragment = HistoryPageFragment()
             fragment.dataSource = this
+            fragment.index = position
             return fragment
         }
 
@@ -299,6 +284,10 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             onPageSelected(viewPager.currentItem)
         }
 
+        override fun isCurrentItem(index: Int): Boolean {
+            return index == viewPager.currentItem
+        }
+
         /**
          * Removes the database file of the fragment at the given position.
          *
@@ -308,7 +297,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         internal fun deleteFile(position: Int): Boolean {
             if (position <= count) {
                 val file = files?.get(position)
-                if (file?.delete() ?: false) {
+                if (file?.delete() == true) {
                     files?.removeAt(position)
                     notifyDataSetChanged()
                     return true
