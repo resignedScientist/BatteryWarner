@@ -21,41 +21,15 @@ import java.io.File;
  * Provides some functionality to change or remove the file.
  */
 public class HistoryPageFragment extends BasicGraphFragment {
-    /**
-     * The key for the file path in the argument bundle.
-     */
-    public static final String EXTRA_FILE_PATH = "filePath";
-    private File file;
+    public int index;
+    public HistoryPageFragmentDataSource dataSource;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.containsKey(EXTRA_FILE_PATH)) {
-                String filePath = bundle.getString(EXTRA_FILE_PATH);
-                if (filePath != null) {
-                    file = new File(filePath);
-                }
-            }
-        }
         textView_title.setVisibility(View.GONE);
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(EXTRA_FILE_PATH)) {
-                String filePath = savedInstanceState.getString(EXTRA_FILE_PATH);
-                if (filePath != null && !filePath.equals("")) {
-                    file = new File(filePath);
-                }
-            }
-        }
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_FILE_PATH, file.getPath());
     }
 
     /**
@@ -67,6 +41,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     @Override
     protected LineGraphSeries[] getGraphs() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            File file = getFile();
             if (file != null && file.exists()) {
                 boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
                 boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
@@ -83,16 +58,36 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     @Override
     protected long getEndTime() {
+        File file = getFile();
+        if (file == null) {
+            return 0;
+        }
         return databaseController.getEndTime(file);
     }
 
     @Override
     protected long getStartTime() {
+        File file = getFile();
+        if (file == null) {
+            return 0;
+        }
         return databaseController.getStartTime(file);
     }
 
     @Override
     protected void notifyTransitionsFinished() {
-        databaseController.notifyTransitionsFinished(file);
+        File file = getFile();
+        if (file != null) {
+            databaseController.notifyTransactionsFinished(file);
+        }
+    }
+
+    @Nullable
+    private File getFile() {
+        if (dataSource == null) {
+            return null;
+        }
+        return dataSource.getFile(index);
     }
 }
+

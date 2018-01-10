@@ -184,7 +184,7 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     protected void notifyTransitionsFinished() {
-        databaseController.notifyTransitionsFinished();
+        databaseController.notifyTransactionsFinished();
     }
 
     protected void enableOrDisableSwitches() {

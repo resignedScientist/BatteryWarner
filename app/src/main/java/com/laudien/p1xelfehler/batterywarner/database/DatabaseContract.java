@@ -67,9 +67,9 @@ public class DatabaseContract {
 
         void addValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, boolean useFahrenheit, boolean reverseCurrent);
 
-        void notifyTransitionsFinished();
+        void notifyTransactionsFinished();
 
-        void notifyTransitionsFinished(File file);
+        void notifyTransactionsFinished(File file);
 
         void upgradeAllSavedDatabases(Context context);
     }

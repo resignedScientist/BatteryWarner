@@ -241,12 +241,12 @@ public class DatabaseController implements DatabaseContract.Controller {
     }
 
     @Override
-    public void notifyTransitionsFinished() {
+    public void notifyTransactionsFinished() {
         databaseModel.closeLocalFile();
     }
 
     @Override
-    public void notifyTransitionsFinished(File file) {
+    public void notifyTransactionsFinished(File file) {
         databaseModel.close(file);
     }
 

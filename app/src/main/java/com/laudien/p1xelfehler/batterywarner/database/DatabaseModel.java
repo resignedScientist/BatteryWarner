@@ -8,6 +8,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -96,36 +98,39 @@ class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.Model {
     }
 
     @Override
-    public Cursor getCursor(File databaseFile) {
-        return getCursor(getReadableDatabase(databaseFile));
-    }
-
-    @Override
-    public Cursor getCursor(SQLiteDatabase database) {
-        if (database != null) {
-            String[] columns = {
-                    DatabaseContract.TABLE_COLUMN_TIME,
-                    DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
-                    DatabaseContract.TABLE_COLUMN_TEMPERATURE,
-                    DatabaseContract.TABLE_COLUMN_VOLTAGE,
-                    DatabaseContract.TABLE_COLUMN_CURRENT
-            };
-            return database.query(
-                    DatabaseContract.TABLE_NAME,
-                    columns,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME
-            );
-        } else {
+    @Nullable
+    public Cursor getCursor(@NonNull File databaseFile) {
+        SQLiteDatabase database = getReadableDatabase(databaseFile);
+        if (database == null) {
             return null;
         }
+        return getCursor(database);
     }
 
     @Override
-    public SQLiteDatabase getReadableDatabase(File databaseFile) {
+    @Nullable
+    public Cursor getCursor(@NonNull SQLiteDatabase database) {
+        String[] columns = {
+                DatabaseContract.TABLE_COLUMN_TIME,
+                DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                DatabaseContract.TABLE_COLUMN_CURRENT
+        };
+        return database.query(
+                DatabaseContract.TABLE_NAME,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                "length(" + DatabaseContract.TABLE_COLUMN_TIME + "), " + DatabaseContract.TABLE_COLUMN_TIME
+        );
+    }
+
+    @Override
+    @Nullable
+    public SQLiteDatabase getReadableDatabase(@NonNull File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }
@@ -163,7 +168,7 @@ class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.Model {
     }
 
     @Override
-    public SQLiteDatabase getWritableDatabase(File databaseFile) {
+    public SQLiteDatabase getWritableDatabase(@NonNull File databaseFile) {
         if (openedDatabases.containsKey(databaseFile.getPath())) {
             return openedDatabases.get(databaseFile.getPath());
         }
@@ -182,7 +187,7 @@ class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.Model {
     }
 
     @Override
-    public long addValue(DatabaseValue value) {
+    public long addValue(@NonNull DatabaseValue value) {
         SQLiteDatabase database = getWritableDatabase();
         long totalNumberOfRows = 0;
         if (database != null) {
@@ -214,7 +219,7 @@ class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.Model {
     }
 
     @Override
-    public void close(File file) {
+    public void close(@NonNull File file) {
         SQLiteDatabase database = openedDatabases.get(file.getPath());
         if (database != null) {
             database.close();
