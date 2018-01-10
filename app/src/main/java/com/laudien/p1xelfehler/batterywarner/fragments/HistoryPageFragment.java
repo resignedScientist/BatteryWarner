@@ -24,13 +24,18 @@ import java.io.File;
  * Provides some functionality to change or remove the file.
  */
 public class HistoryPageFragment extends BasicGraphFragment {
+    private static final String Key_FILE_PATH = "filePath";
     public int index;
     public HistoryPageFragmentDataSource dataSource;
+    private String filePath;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (savedInstanceState != null) {
+            filePath = savedInstanceState.getString(Key_FILE_PATH);
+        }
     }
 
     @Nullable
@@ -45,6 +50,14 @@ public class HistoryPageFragment extends BasicGraphFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.history_page_menu, menu);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (filePath != null) {
+            outState.putString(Key_FILE_PATH, filePath);
+        }
     }
 
     @Override
@@ -108,9 +121,14 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     @Nullable
     private File getFile() {
-        if (dataSource == null) {
+        if (dataSource == null && filePath == null) {
             return null;
         }
+        if (dataSource == null) {
+            return new File(filePath);
+        }
+        File file = dataSource.getFile(index);
+        filePath = file != null ? file.getPath() : null;
         return dataSource.getFile(index);
     }
 }
