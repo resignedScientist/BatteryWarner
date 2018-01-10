@@ -194,7 +194,7 @@ public final class RootHelper {
         ToggleChargingFile toggleChargingFile = null;
         if (MODEL.contains("Pixel")) {
             if (PRODUCT.equals("walleye")) // Pixel 2
-                toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1");
+                toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/input_suspend", "0", "1");
             else
                 toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
         } else if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
