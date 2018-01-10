@@ -40,9 +40,9 @@ class MainActivity : BaseActivity() {
                 viewPager?.adapter = adapter
                 tab_layout?.setupWithViewPager(viewPager)
             }
+            // start services just in case
+            ServiceHelper.startService(this)
         }
-        // start services just in case
-        ServiceHelper.startService(this)
     }
 
     override fun onBackPressed() {
