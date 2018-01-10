@@ -73,6 +73,9 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         }
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(this)
+        if (savedInstanceState == null) {
+            lastPage = -1
+        }
         // check for permission
         if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
