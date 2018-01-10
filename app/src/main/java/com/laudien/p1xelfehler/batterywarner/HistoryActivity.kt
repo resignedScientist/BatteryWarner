@@ -94,7 +94,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                     return
                 }
             }
-            recreate()
+            loadGraphs()
         }
     }
 
