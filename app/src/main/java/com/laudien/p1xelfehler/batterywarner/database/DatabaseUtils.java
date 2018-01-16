@@ -45,73 +45,28 @@ public final class DatabaseUtils {
         new GenerateGraphsTask(databaseValues, useFahrenheit, reverseCurrent, receiver).execute();
     }
 
-    public static boolean saveGraph(@NonNull Context context) {
+    public static void saveGraph(@NonNull Context context, @Nullable GraphSavedListener graphSavedListener) {
         // permission check
         if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(context.getString(R.string.pref_graph_autosave), false)
                     .apply();
-            return false;
+            if (graphSavedListener != null) {
+                graphSavedListener.onFinishedSaving(false);
+            }
+            return;
         }
-        boolean result = false;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean graphEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_graph_enabled), context.getResources().getBoolean(R.bool.pref_graph_enabled_default));
-        // return if graph disabled in settings or the database has not enough data
-        if (graphEnabled) {
-            Cursor cursor = DatabaseModel.getInstance(context).getCursor();
-            if (cursor != null && !cursor.isClosed()) {
-                if (cursor.getCount() > 1) { // check if there is enough data
-                    cursor.moveToLast();
-                    long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-                    cursor.close();
-                    String outputFileDir = String.format(
-                            Locale.getDefault(),
-                            "%s/%s",
-                            DATABASE_HISTORY_PATH,
-                            DateFormat.getDateInstance(SHORT)
-                                    .format(endTime)
-                                    .replace("/", "_")
-                    );
-                    // rename the file if it already exists
-                    File outputFile = new File(outputFileDir);
-                    String baseFileDir = outputFileDir;
-                    for (byte i = 1; outputFile.exists() && i < 127; i++) {
-                        outputFileDir = baseFileDir + " (" + i + ")";
-                        outputFile = new File(outputFileDir);
-                    }
-                    File inputFile = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
-                    try {
-                        File directory = new File(DATABASE_HISTORY_PATH);
-                        if (!directory.exists()) {
-                            if (!directory.mkdirs()) {
-                                return false;
-                            }
-                        }
-                        FileInputStream inputStream = new FileInputStream(inputFile);
-                        FileOutputStream outputStream = new FileOutputStream(outputFile, false);
-                        byte[] buffer = new byte[1024];
-                        while (inputStream.read(buffer) != -1) {
-                            outputStream.write(buffer);
-                        }
-                        outputStream.flush();
-                        outputStream.close();
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                    // TODO: shortenGraph(outputFile);
-                    result = true;
-                }
-                cursor.close();
+        if (!graphEnabled) {
+            if (graphSavedListener != null) {
+                graphSavedListener.onFinishedSaving(false);
             }
+            return;
         }
-        if (result) {
-            Log.d("DatabaseUtils", "Graph Saving successful!");
-        } else {
-            Log.d("DatabaseUtils", "Graph Saving failed!");
-        }
-        return result;
+        File databasePath = context.getDatabasePath(DatabaseModel.DATABASE_NAME);
+        DatabaseModel databaseModel = DatabaseModel.getInstance(context);
+        new SaveGraphTask(databasePath, databaseModel, graphSavedListener).execute();
     }
 
     @NonNull
@@ -197,6 +152,10 @@ public final class DatabaseUtils {
         void generatingFinished(@Nullable LineGraphSeries<DataPoint>[] graphs);
     }
 
+    public interface GraphSavedListener {
+        void onFinishedSaving(boolean success);
+    }
+
     private static class GenerateGraphsTask extends AsyncTask<Void, Void, LineGraphSeries<DataPoint>[]> {
         private DatabaseValue[] databaseValues;
         private boolean useFahrenheit;
@@ -237,6 +196,87 @@ public final class DatabaseUtils {
         protected void onPostExecute(LineGraphSeries<DataPoint>[] graphs) {
             super.onPostExecute(graphs);
             receiver.generatingFinished(graphs);
+        }
+    }
+
+    private static class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
+        private File databasePath;
+        private DatabaseModel databaseModel;
+        @Nullable
+        private GraphSavedListener graphSavedListener;
+
+        private SaveGraphTask(@NonNull File databasePath, @NonNull DatabaseModel databaseModel, @Nullable GraphSavedListener graphSavedListener) {
+            this.databasePath = databasePath;
+            this.databaseModel = databaseModel;
+            this.graphSavedListener = graphSavedListener;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            boolean result = false;
+            // return if graph disabled in settings or the database has not enough data
+            Cursor cursor = databaseModel.getCursor();
+            if (cursor != null && !cursor.isClosed()) {
+                if (cursor.getCount() > 1) { // check if there is enough data
+                    cursor.moveToLast();
+                    long endTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                    cursor.close();
+                    String outputFileDir = String.format(
+                            Locale.getDefault(),
+                            "%s/%s",
+                            DATABASE_HISTORY_PATH,
+                            DateFormat.getDateInstance(SHORT)
+                                    .format(endTime)
+                                    .replace("/", "_")
+                    );
+                    // rename the file if it already exists
+                    File outputFile = new File(outputFileDir);
+                    String baseFileDir = outputFileDir;
+                    for (byte i = 1; outputFile.exists() && i < 127; i++) {
+                        outputFileDir = baseFileDir + " (" + i + ")";
+                        outputFile = new File(outputFileDir);
+                    }
+                    File inputFile = databasePath;
+                    try {
+                        File directory = new File(DATABASE_HISTORY_PATH);
+                        if (!directory.exists()) {
+                            if (!directory.mkdirs()) {
+                                return false;
+                            }
+                        }
+                        FileInputStream inputStream = new FileInputStream(inputFile);
+                        FileOutputStream outputStream = new FileOutputStream(outputFile, false);
+                        byte[] buffer = new byte[1024];
+                        while (inputStream.read(buffer) != -1) {
+                            outputStream.write(buffer);
+                        }
+                        outputStream.flush();
+                        outputStream.close();
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                    // TODO: shortenGraph(outputFile);
+                    result = true;
+                }
+                cursor.close();
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(@Nullable Boolean bool) {
+            super.onPostExecute(bool);
+            boolean success = bool != null ? bool : false;
+            if (success) {
+                Log.d("DatabaseUtils", "Graph Saving successful!");
+            } else {
+                Log.d("DatabaseUtils", "Graph Saving failed!");
+            }
+            if (graphSavedListener != null) {
+                graphSavedListener.onFinishedSaving(success);
+            }
         }
     }
 }

@@ -305,8 +305,12 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
-                boolean success = DatabaseUtils.saveGraph(getContext());
-                ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
+                DatabaseUtils.saveGraph(getContext(), new DatabaseUtils.GraphSavedListener() {
+                    @Override
+                    public void onFinishedSaving(boolean success) {
+                        ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
+                    }
+                });
             } else { // permission not granted -> ask for permission
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
             }

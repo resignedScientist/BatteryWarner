@@ -401,15 +401,9 @@ public class BackgroundService extends Service {
      * Saves the graph into the database if graph recording and auto save are enabled in preferences.
      */
     private void saveGraph() {
-        boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         boolean autoSaveGraphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_autosave), getResources().getBoolean(R.bool.pref_graph_autosave_default));
-        if (graphEnabled && autoSaveGraphEnabled) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    DatabaseUtils.saveGraph(BackgroundService.this);
-                }
-            });
+        if (autoSaveGraphEnabled) {
+            DatabaseUtils.saveGraph(BackgroundService.this, null);
         }
     }
 

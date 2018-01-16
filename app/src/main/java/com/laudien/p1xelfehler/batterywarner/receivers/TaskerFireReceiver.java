@@ -84,12 +84,17 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         ServiceHelper.startService(context.getApplicationContext(), intent);
     }
 
-    private void saveGraph(Context context) {
-        if (DatabaseUtils.saveGraph(context)) {
-            Toast.makeText(context, R.string.toast_success_saving, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, R.string.toast_error_saving, Toast.LENGTH_SHORT).show();
-        }
+    private void saveGraph(final Context context) {
+        DatabaseUtils.saveGraph(context, new DatabaseUtils.GraphSavedListener() {
+            @Override
+            public void onFinishedSaving(boolean success) {
+                if (success) {
+                    Toast.makeText(context, R.string.toast_success_saving, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, R.string.toast_error_saving, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void resetGraph(Context context) {
