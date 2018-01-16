@@ -25,7 +25,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
@@ -165,21 +164,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      * @return Returns an array of the graphs in the database.
      */
     @Override
-    @Nullable
-    protected LineGraphSeries[] getGraphs() {
-        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
-        boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-        Data data = DatabaseModel.getInstance(getContext()).readData(useFahrenheit, reverseCurrent);
-        if (data == null) {
-            return null;
-        }
-        this.graphInfo = data.getGraphInfo();
-        DatabaseValue[] values = data.getDatabaseValues();
-        LineGraphSeries[] graphs = values != null ? DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent) : null;
-        if (graphs != null) {
-            styleGraphs(graphs);
-        }
-        return graphs;
+    protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
+        DatabaseModel.getInstance(getContext()).readData(useFahrenheit, reverseCurrent, dataReceiver);
     }
 
     /**

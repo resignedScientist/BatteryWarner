@@ -95,13 +95,13 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
-    public Data readData(boolean useFahrenheit, boolean reverseCurrent) {
-        return readData(getCursor(), useFahrenheit, reverseCurrent);
+    public void readData(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
+        new ReadDataTask(null, useFahrenheit, reverseCurrent, dataReceiver).execute();
     }
 
     @Override
-    public Data readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
-        return readData(getCursor(databaseFile), useFahrenheit, reverseCurrent);
+    public void readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
+        new ReadDataTask(databaseFile, useFahrenheit, reverseCurrent, dataReceiver).execute();
     }
 
     @Override
@@ -319,6 +319,38 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         );
 
         return new Data(databaseValues, graphInfo);
+    }
+
+    private class ReadDataTask extends AsyncTask<Void, Void, Data> {
+        private DatabaseContract.DataReceiver dataReceiver;
+        private boolean useFahrenheit, reverseCurrent;
+        private File file;
+
+        private ReadDataTask(@Nullable File file, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
+            this.file = file;
+            this.useFahrenheit = useFahrenheit;
+            this.reverseCurrent = reverseCurrent;
+            this.dataReceiver = dataReceiver;
+        }
+
+        @Override
+        protected Data doInBackground(Void... voids) {
+            Cursor cursor;
+            if (file == null) {
+                cursor = getCursor();
+            } else {
+                cursor = getCursor(file);
+            }
+            return readData(cursor, useFahrenheit, reverseCurrent);
+        }
+
+        @Override
+        protected void onPostExecute(Data data) {
+            super.onPostExecute(data);
+            if (data != null) {
+                dataReceiver.onDataRead(data);
+            }
+        }
     }
 
     private class AddValueTask extends AsyncTask<DatabaseValue, Void, Long> {

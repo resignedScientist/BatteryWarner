@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
@@ -23,8 +24,11 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
@@ -153,25 +157,36 @@ public abstract class BasicGraphFragment extends Fragment {
      *
      * @return Returns an array of graphs.
      */
-    @Nullable
-    protected abstract LineGraphSeries<DataPoint>[] getGraphs();
+    protected abstract void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
 
     /**
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
      * You can override it to only do it under some conditions.
      */
     void loadSeries() {
-        graphs = getGraphs();
-        if (graphs != null) {
-            for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (switches[i].isChecked() && graphs[i] != null) {
-                    graphView.addSeries(graphs[i]);
+        final boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        final boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+        readGraphs(useFahrenheit, reverseCurrent, new DatabaseContract.DataReceiver() {
+            @Override
+            public void onDataRead(@NonNull Data data) {
+                graphInfo = data.getGraphInfo();
+                DatabaseValue[] values = data.getDatabaseValues();
+                graphs = values != null ? DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent) : null;
+                if (graphs != null) {
+                    styleGraphs(graphs);
                 }
+                if (graphs != null) {
+                    for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                        if (switches[i].isChecked() && graphs[i] != null) {
+                            graphView.addSeries(graphs[i]);
+                        }
+                    }
+                    applyGraphScale();
+                    enableOrDisableSwitches();
+                }
+                setTimeText();
             }
-            applyGraphScale();
-            enableOrDisableSwitches();
-        }
-        setTimeText();
+        });
     }
 
     protected void enableOrDisableSwitches() {

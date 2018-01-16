@@ -3,7 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -13,13 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.Data;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.io.File;
 
@@ -80,25 +76,15 @@ public class HistoryPageFragment extends BasicGraphFragment {
      * given in the arguments.
      */
     @Override
-    protected LineGraphSeries[] getGraphs() {
+    protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return null;
+            return;
         }
         File file = getFile();
         if (file == null || !file.exists()) {
-            return null;
+            return;
         }
-        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
-        boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-        Data data = DatabaseModel.getInstance(getContext()).readData(file, useFahrenheit, reverseCurrent);
-        if (data == null) {
-            return null;
-        }
-        this.graphInfo = data.getGraphInfo();
-        DatabaseValue[] values = data.getDatabaseValues();
-        LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
-        styleGraphs(graphs);
-        return graphs;
+        DatabaseModel.getInstance(getContext()).readData(file, useFahrenheit, reverseCurrent, dataReceiver);
     }
 
     @Nullable

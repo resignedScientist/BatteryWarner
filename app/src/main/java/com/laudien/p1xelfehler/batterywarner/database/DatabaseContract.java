@@ -3,7 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
@@ -17,12 +17,9 @@ public class DatabaseContract {
     static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
 
     public interface Model {
+        void readData(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
 
-        @Nullable
-        Data readData(boolean useFahrenheit, boolean reverseCurrent);
-
-        @Nullable
-        Data readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent);
+        void readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
 
         Cursor getCursor();
 
@@ -67,5 +64,9 @@ public class DatabaseContract {
          * Called when the app directory database has been cleared.
          */
         void onTableReset();
+    }
+
+    public interface DataReceiver {
+        void onDataRead(@NonNull Data data);
     }
 }
