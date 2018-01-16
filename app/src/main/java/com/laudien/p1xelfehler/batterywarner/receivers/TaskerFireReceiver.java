@@ -8,8 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
@@ -85,8 +85,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     }
 
     private void saveGraph(Context context) {
-        DatabaseContract.Controller databaseController = DatabaseController.getInstance(context);
-        if (databaseController.saveGraph(context)) {
+        if (DatabaseUtils.saveGraph(context)) {
             Toast.makeText(context, R.string.toast_success_saving, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, R.string.toast_error_saving, Toast.LENGTH_SHORT).show();
@@ -94,8 +93,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
     }
 
     private void resetGraph(Context context) {
-        DatabaseContract.Controller databaseController = DatabaseController.getInstance(context);
-        databaseController.resetTable();
+        DatabaseModel.getInstance(context).resetTable();
         Toast.makeText(context, R.string.toast_success_delete_graph, Toast.LENGTH_SHORT).show();
     }
 

@@ -28,8 +28,9 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
@@ -85,6 +86,7 @@ public class BackgroundService extends Service {
     private boolean charging = false;
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
+    private long graphCreationTime = 0;
     private String infoNotificationMessage;
     private Notification.Builder infoNotificationBuilder;
     private BroadcastReceiver screenOnOffReceiver;
@@ -96,7 +98,7 @@ public class BackgroundService extends Service {
     private RemoteViews infoNotificationContent;
     private BatteryData batteryData;
     private BatteryValueChangedListener listener;
-    private DatabaseContract.Controller databaseController;
+    private DatabaseModel databaseModel;
     private BackgroundServiceBinder binder = new BackgroundServiceBinder();
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -168,7 +170,7 @@ public class BackgroundService extends Service {
         }
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
-        databaseController = DatabaseController.getInstance(this);
+        databaseModel = DatabaseModel.getInstance(this);
         final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         batteryData = new BatteryData(batteryChangedIntent, this);
         // screen on/off receiver
@@ -403,7 +405,7 @@ public class BackgroundService extends Service {
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
-                    databaseController.saveGraph(BackgroundService.this);
+                    DatabaseUtils.saveGraph(BackgroundService.this);
                 }
             });
         }
@@ -777,18 +779,23 @@ public class BackgroundService extends Service {
          * @param graphEnabled True if charging graph recording is enabled in preferences, false if not.
          */
         private void handleCharging(Intent intent, boolean graphEnabled) {
-            boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-            boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
             long timeNow = System.currentTimeMillis();
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
             int voltage = intent.getIntExtra(EXTRA_VOLTAGE, 0);
             int current = SDK_INT >= LOLLIPOP ? batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) : 0;
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+            if (graphCreationTime == 0) {
+                graphCreationTime = databaseModel.getCreationTime();
+                if (graphCreationTime == 0) {
+                    graphCreationTime = timeNow;
+                }
+            }
+            DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, timeNow, graphCreationTime);
 
             // add a value to the database
             if (graphEnabled) {
-                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, useFahrenheit, reverseCurrent);
+                databaseModel.addValue(databaseValue);
             }
 
             // handle warnings, Stop Charging and Smart Charging
@@ -842,7 +849,7 @@ public class BackgroundService extends Service {
                         if (timeNow >= smartChargingResumeTime) {
                             // add a graph point for optics/correctness
                             if (graphEnabled) {
-                                databaseController.addValue(batteryLevel, temperature, voltage, current, timeNow, useFahrenheit, reverseCurrent);
+                                databaseModel.addValue(databaseValue);
                             }
                             chargingResumedBySmartCharging = true;
                             resumeCharging();
@@ -946,7 +953,8 @@ public class BackgroundService extends Service {
         private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
-                databaseController.resetTable();
+                graphCreationTime = 0;
+                databaseModel.resetTable();
             }
         }
 

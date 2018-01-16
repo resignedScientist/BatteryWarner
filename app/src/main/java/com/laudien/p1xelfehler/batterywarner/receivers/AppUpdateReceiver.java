@@ -10,8 +10,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
@@ -47,8 +46,7 @@ public class AppUpdateReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 try {
-                    DatabaseContract.Controller databaseController = DatabaseController.getInstance(context);
-                    databaseController.upgradeAllSavedDatabases(context);
+                    DatabaseUtils.upgradeAllSavedDatabases(context);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

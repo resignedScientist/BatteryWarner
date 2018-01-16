@@ -13,8 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,10 +48,13 @@ public class GraphAutoDeleteService extends JobService {
         if (graphEnabled && autoDeleteEnabled) { // enabled in settings
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (permissionCheck == PackageManager.PERMISSION_GRANTED) { // storage permission granted
-                DatabaseContract.Controller databaseController = DatabaseController.getInstance(this);
                 int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
                 long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
-                ArrayList<File> files = databaseController.getFileList();
+                ArrayList<File> files = DatabaseUtils.getBatteryFiles();
+                if (files == null) {
+                    jobFinished(jobParameters, false);
+                    return;
+                }
                 for (File file : files) {
                     if (canceled) {
                         canceled = false;

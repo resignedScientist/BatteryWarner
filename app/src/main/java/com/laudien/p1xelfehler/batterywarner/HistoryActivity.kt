@@ -26,7 +26,8 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast.LENGTH_SHORT
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils
 import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragment
 import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragmentDataSource
 import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper
@@ -104,6 +105,11 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        DatabaseModel.getInstance(this).closeAllExternalFiles()
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -143,10 +149,9 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
     }
 
     private fun loadGraphs() {
-        val databaseController = DatabaseController.getInstance(this)
-        val fileList = databaseController.fileList
+        val fileList = DatabaseUtils.getBatteryFiles()
         adapter.loadFiles(fileList)
-        if (fileList == null || fileList.isEmpty()) {
+        if (fileList.isEmpty()) {
             textView_nothingSaved.visibility = VISIBLE
             textView_fileName.visibility = INVISIBLE
         }
@@ -158,7 +163,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_graph)
                     .setIcon(R.mipmap.ic_launcher)
-                    .setPositiveButton(getString(R.string.dialog_button_yes)) { dialogInterface, i ->
+                    .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                         val currentPosition = viewPager.currentItem
                         if (adapter.deleteFile(currentPosition)) {
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_delete_graph, LENGTH_SHORT)
@@ -181,7 +186,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_all_graphs)
                     .setIcon(R.mipmap.ic_launcher)
-                    .setPositiveButton(getString(R.string.dialog_button_yes)) { dialogInterface, i ->
+                    .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                         if (adapter.deleteAllFiles()) {
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_delete_all_graphs, LENGTH_SHORT)
                             textView_nothingSaved.visibility = VISIBLE
@@ -363,7 +368,6 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                 if (oldFile.renameTo(newFile)) {
                     textView_fileName.text = newFile.name
                     files!![position] = newFile
-                    DatabaseController.getInstance(this@HistoryActivity).notifyTransactionsFinished(oldFile)
                     return true
                 }
             }

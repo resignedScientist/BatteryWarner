@@ -1,11 +1,16 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
+import com.jjoe64.graphview.series.DataPoint;
+import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
+
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBER_OF_GRAPHS;
 
 /**
  * A class that contains all the data of one point in a graph database.
@@ -13,7 +18,7 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.
  */
 public class DatabaseValue {
     private int batteryLevel, current, temperature, voltage;
-    private long utcTimeInMillis;
+    private long utcTimeInMillis, graphCreationTime;
 
     /**
      * The one and only constructor.
@@ -21,13 +26,15 @@ public class DatabaseValue {
      * @param batteryLevel    The battery level in percent.
      * @param temperature     The temperature in degrees celsius.
      * @param utcTimeInMillis The UTC time in milliseconds.
+     * @param graphCreationTime The UTC time in milliseconds of the first point of the graph.
      */
-    DatabaseValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis) {
+    public DatabaseValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, long graphCreationTime) {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
         this.voltage = voltage;
         this.current = current;
+        this.graphCreationTime = graphCreationTime;
     }
 
     @SuppressLint("DefaultLocale")
@@ -85,6 +92,14 @@ public class DatabaseValue {
         return temperature;
     }
 
+    double getTemperatureInCelsius() {
+        return (double) temperature / 10.0;
+    }
+
+    double getTemperatureInFahrenheit() {
+        return TemperatureConverter.convertCelsiusToFahrenheit(getTemperatureInCelsius());
+    }
+
     /**
      * Get the voltage saved in this instance.
      *
@@ -97,7 +112,7 @@ public class DatabaseValue {
     /**
      * Get the current saved in this instance.
      *
-     * @return The current in mA * currentDivisor (depends on the device; get it from SharedPrefs).
+     * @return The current in mA * -1000.
      */
     int getCurrent() {
         return current;
@@ -110,5 +125,24 @@ public class DatabaseValue {
      */
     long getUtcTimeInMillis() {
         return utcTimeInMillis;
+    }
+
+    double getTimeFromStartInMinutes() {
+        return (double) (utcTimeInMillis - graphCreationTime) / (double) (1000 * 60);
+    }
+
+    public DataPoint[] toDataPoints(boolean useFahrenheit, boolean reverseCurrent) {
+        DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
+        double timeInMinutes = getTimeFromStartInMinutes();
+        double temperature = useFahrenheit ? getTemperatureInFahrenheit() : getTemperatureInCelsius();
+        double voltage = getVoltage() / 1000;
+        double current = getCurrent() / (reverseCurrent ? 1000 : -1000);
+        dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
+        dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+        dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+        }
+        return dataPoints;
     }
 }

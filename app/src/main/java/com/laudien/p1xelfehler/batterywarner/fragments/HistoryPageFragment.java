@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.io.File;
@@ -82,7 +85,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
             if (file != null && file.exists()) {
                 boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
                 boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-                LineGraphSeries[] graphs = databaseController.getAllGraphs(file, useFahrenheit, reverseCurrent);
+                DatabaseValue[] values = DatabaseModel.getInstance(getContext()).readData(file);
+                LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
                 styleGraphs(graphs);
                 return graphs;
             } else {
@@ -99,7 +103,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
         if (file == null) {
             return 0;
         }
-        return databaseController.getEndTime(file);
+        // TODO: implementation
+        return 0;
     }
 
     @Override
@@ -108,15 +113,8 @@ public class HistoryPageFragment extends BasicGraphFragment {
         if (file == null) {
             return 0;
         }
-        return databaseController.getStartTime(file);
-    }
-
-    @Override
-    protected void notifyTransitionsFinished() {
-        File file = getFile();
-        if (file != null) {
-            databaseController.notifyTransactionsFinished(file);
-        }
+        // TODO: implementation
+        return 0;
     }
 
     @Nullable

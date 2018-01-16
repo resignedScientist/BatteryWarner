@@ -24,18 +24,18 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseController;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBER_OF_GRAPHS;
 
 /**
  * Super class of all Fragments that are using the charging curve.
@@ -63,7 +63,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * TextView that contains the charging time.
      */
     protected TextView textView_chargingTime;
-    protected DatabaseContract.Controller databaseController;
+    protected DatabaseContract.Model databaseModel;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
@@ -101,7 +101,7 @@ public abstract class BasicGraphFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseController = DatabaseController.getInstance(getContext());
+        databaseModel = DatabaseModel.getInstance(getContext());
     }
 
     @Nullable
@@ -130,7 +130,6 @@ public abstract class BasicGraphFragment extends Fragment {
         loadSeries();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String chosenUnit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default));
-        String baseString = getString(R.string.checkbox_temperature_celsius);
         switch (chosenUnit) {
             case "0":
                 switches[GRAPH_INDEX_TEMPERATURE].setText(R.string.checkbox_temperature_celsius);
@@ -180,11 +179,6 @@ public abstract class BasicGraphFragment extends Fragment {
             enableOrDisableSwitches();
         }
         setTimeText();
-        notifyTransitionsFinished();
-    }
-
-    protected void notifyTransitionsFinished() {
-        databaseController.notifyTransactionsFinished();
     }
 
     protected void enableOrDisableSwitches() {

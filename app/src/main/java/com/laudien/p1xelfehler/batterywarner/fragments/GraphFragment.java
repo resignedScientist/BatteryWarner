@@ -26,6 +26,9 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
@@ -37,11 +40,11 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_BATTERY_LEVEL;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.GRAPH_INDEX_VOLTAGE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseController.NUMBER_OF_GRAPHS;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBER_OF_GRAPHS;
 
 /**
  * A Fragment that shows the latest charging curve.
@@ -92,7 +95,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         if (graphEnabled) {
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
-            databaseController.registerDatabaseListener(this);
+            DatabaseModel.getInstance(getContext()).registerDatabaseListener(this);
         }
     }
 
@@ -106,7 +109,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                     .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked())
                     .putBoolean(getString(R.string.pref_checkBox_voltage), switches[GRAPH_INDEX_VOLTAGE].isChecked())
                     .apply();
-            databaseController.unregisterListener(this);
+            DatabaseModel.getInstance(getContext()).unregisterDatabaseListener(this);
             getContext().unregisterReceiver(chargingStateChangedReceiver);
         }
     }
@@ -163,7 +166,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     protected LineGraphSeries[] getGraphs() {
         boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
         boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-        LineGraphSeries[] graphs = databaseController.getAllGraphs(useFahrenheit, reverseCurrent);
+        DatabaseValue[] values = DatabaseModel.getInstance(getContext()).readData();
+        LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
         if (graphs != null) {
             styleGraphs(graphs);
         }
@@ -177,12 +181,14 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      */
     @Override
     protected long getEndTime() {
-        return databaseController.getEndTime();
+        // TODO: implementation
+        return 0;
     }
 
     @Override
     protected long getStartTime() {
-        return databaseController.getStartTime();
+        // TODO: implementation
+        return 0;
     }
 
     /**
@@ -222,11 +228,17 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     }
 
     @Override
-    public void onValueAdded(@NonNull DataPoint[] dataPoints, long totalNumberOfRows) {
+    public void onValueAdded(DatabaseValue value, long totalNumberOfRows) {
+        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+        DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
+        if (dataPoints == null) {
+            return;
+        }
         if (graphs == null) { // first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (dataPoints[i] != null) {
-                    if (graphs == null){ // only initialize graphs if any DataPoint is not null
+                    if (graphs == null) { // only initialize graphs if any DataPoint is not null
                         graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
                     }
                     graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
@@ -247,7 +259,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         applyGraphScale();
         enableOrDisableSwitches();
         setTimeText();
-        notifyTransitionsFinished();
     }
 
     @Override
@@ -312,7 +323,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             // check for permission
             if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
-                boolean success = databaseController.saveGraph(getContext());
+                boolean success = DatabaseUtils.saveGraph(getContext());
                 ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
             } else { // permission not granted -> ask for permission
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
@@ -336,7 +347,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                 .setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        databaseController.resetTable();
+                        DatabaseModel.getInstance(getContext()).resetTable();
                         ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
                 }).create().show();
