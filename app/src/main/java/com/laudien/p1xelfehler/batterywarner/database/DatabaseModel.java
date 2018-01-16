@@ -250,6 +250,9 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     @Override
     public void unregisterDatabaseListener(DatabaseContract.DatabaseListener listener) {
         listeners.remove(listener);
+        if (listeners.isEmpty()) {
+            close();
+        }
     }
 
     @Nullable
