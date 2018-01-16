@@ -54,21 +54,25 @@ public class GraphInfo {
     }
 
     public GraphInfo(@NonNull DatabaseValue value, boolean useFahrenheit, boolean reverseCurrent) {
-        this(value.getGraphCreationTime(),
-                value.getUtcTimeInMillis(),
-                value.getTimeFromStartInMinutes(),
-                useFahrenheit ? value.getTemperatureInFahrenheit() : value.getTemperatureInCelsius(),
-                useFahrenheit ? value.getTemperatureInFahrenheit() : value.getTemperatureInCelsius(),
-                Double.NaN,
-                value.getCurrentInMilliAmperes(reverseCurrent),
-                value.getCurrentInMilliAmperes(reverseCurrent),
-                value.getVoltageInVolts(),
-                value.getVoltageInVolts(),
-                value.getBatteryLevel(),
-                value.getBatteryLevel(),
-                useFahrenheit,
-                reverseCurrent
-        );
+        double temperature = useFahrenheit ? value.getTemperatureInFahrenheit() : value.getTemperatureInCelsius();
+        double current = value.getCurrentInMilliAmperes(reverseCurrent);
+        double voltage = value.getVoltageInVolts();
+        int batteryLevel = value.getBatteryLevel();
+
+        this.startTime = value.getGraphCreationTime();
+        this.endTime = value.getUtcTimeInMillis();
+        this.timeInMinutes = value.getTimeFromStartInMinutes();
+        this.maxTemp = temperature;
+        this.minTemp = temperature;
+        this.chargingSpeed = Double.NaN;
+        this.minCurrent = current;
+        this.maxCurrent = current;
+        this.minVoltage = voltage;
+        this.maxVoltage = voltage;
+        this.maxBatteryLvl = batteryLevel;
+        this.firstBatteryLvl = batteryLevel;
+        this.useFahrenheit = useFahrenheit;
+        this.reverseCurrent = reverseCurrent;
     }
 
     private static String[] getTimeFormats(Context context) {
