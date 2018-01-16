@@ -28,6 +28,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
@@ -86,7 +87,6 @@ public class BackgroundService extends Service {
     private boolean charging = false;
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
-    private long graphCreationTime = 0;
     private String infoNotificationMessage;
     private Notification.Builder infoNotificationBuilder;
     private BroadcastReceiver screenOnOffReceiver;
@@ -171,6 +171,7 @@ public class BackgroundService extends Service {
         // battery changed receiver
         batteryChangedReceiver = new BatteryChangedReceiver();
         databaseModel = DatabaseModel.getInstance(this);
+        databaseModel.registerDatabaseListener(batteryChangedReceiver);
         final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         batteryData = new BatteryData(batteryChangedIntent, this);
         // screen on/off receiver
@@ -278,6 +279,7 @@ public class BackgroundService extends Service {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
         unregisterReceiver(batteryChangedReceiver);
         unregisterReceiver(screenOnOffReceiver);
+        databaseModel.unregisterDatabaseListener(batteryChangedReceiver);
         onSaveState();
     }
 
@@ -693,7 +695,8 @@ public class BackgroundService extends Service {
      * A broadcast receiver that handles all charging and discharging functionalities of the app.
      * It uses the ACTION_BATTERY_CHANGED intent action.
      */
-    private class BatteryChangedReceiver extends BroadcastReceiver {
+    private class BatteryChangedReceiver extends BroadcastReceiver implements DatabaseContract.DatabaseListener {
+        private long graphCreationTime = 0;
 
         /**
          * This method receives the ACTION_BATTERY_CHANGED action and triggers the correct methods.
@@ -953,7 +956,6 @@ public class BackgroundService extends Service {
         private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
-                graphCreationTime = 0;
                 databaseModel.resetTable();
             }
         }
@@ -1007,6 +1009,16 @@ public class BackgroundService extends Service {
                 default: // discharging or unknown charging type
                     return false;
             }
+        }
+
+        @Override
+        public void onValueAdded(DatabaseValue value, long totalNumberOfRows) {
+
+        }
+
+        @Override
+        public void onTableReset() {
+            graphCreationTime = 0;
         }
     }
 
