@@ -109,7 +109,7 @@ public class DatabaseValue {
         return voltage;
     }
 
-    double getVoltageInVolts() {
+    public double getVoltageInVolts() {
         return getVoltage() / 1000;
     }
 
@@ -135,7 +135,7 @@ public class DatabaseValue {
         return utcTimeInMillis;
     }
 
-    double getTimeFromStartInMinutes() {
+    public double getTimeFromStartInMinutes() {
         return (double) (utcTimeInMillis - graphCreationTime) / (double) (1000 * 60);
     }
 

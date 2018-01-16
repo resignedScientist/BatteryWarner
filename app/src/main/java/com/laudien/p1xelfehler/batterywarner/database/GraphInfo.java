@@ -34,9 +34,9 @@ public class GraphInfo {
      * @param minTemp       The minimal battery temperature while charging.
      * @param chargingSpeed The charging speed in percent per hour.
      */
-    GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
-              double chargingSpeed, double minCurrent, double maxCurrent, double minVoltage,
-              double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
+    public GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
+                     double chargingSpeed, double minCurrent, double maxCurrent, double minVoltage,
+                     double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.timeInMinutes = timeInMinutes;
