@@ -34,9 +34,9 @@ public class GraphInfo {
      * @param minTemp       The minimal battery temperature while charging.
      * @param chargingSpeed The charging speed in percent per hour.
      */
-    public GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
-                     double chargingSpeed, double minCurrent, double maxCurrent, double minVoltage,
-                     double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
+    GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
+              double chargingSpeed, double minCurrent, double maxCurrent, double minVoltage,
+              double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.timeInMinutes = timeInMinutes;
@@ -51,6 +51,24 @@ public class GraphInfo {
         this.firstBatteryLvl = firstBatteryLvl;
         this.useFahrenheit = useFahrenheit;
         this.reverseCurrent = reverseCurrent;
+    }
+
+    public GraphInfo(@NonNull DatabaseValue value, boolean useFahrenheit, boolean reverseCurrent) {
+        this(value.getGraphCreationTime(),
+                value.getUtcTimeInMillis(),
+                value.getTimeFromStartInMinutes(),
+                value.getTemperature(),
+                value.getTemperature(),
+                Double.NaN,
+                value.getCurrentInMilliAmperes(reverseCurrent),
+                value.getCurrentInMilliAmperes(reverseCurrent),
+                value.getVoltageInVolts(),
+                value.getVoltageInVolts(),
+                value.getBatteryLevel(),
+                value.getBatteryLevel(),
+                useFahrenheit,
+                reverseCurrent
+        );
     }
 
     private static String[] getTimeFormats(Context context) {

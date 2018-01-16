@@ -239,23 +239,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                 }
             }
             styleGraphs(graphs);
-            // create graph info
-            graphInfo = new GraphInfo(
-                    value.getGraphCreationTime(),
-                    value.getUtcTimeInMillis(),
-                    value.getTimeFromStartInMinutes(),
-                    value.getTemperature(),
-                    value.getTemperature(),
-                    Double.NaN,
-                    value.getCurrentInMilliAmperes(reverseCurrent),
-                    value.getCurrentInMilliAmperes(reverseCurrent),
-                    value.getVoltageInVolts(),
-                    value.getVoltageInVolts(),
-                    value.getBatteryLevel(),
-                    value.getBatteryLevel(),
-                    useFahrenheit,
-                    reverseCurrent
-            );
+            graphInfo = new GraphInfo(value, useFahrenheit, reverseCurrent);
         } else { // not the first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (graphs[i] != null && dataPoints[i] != null) {
