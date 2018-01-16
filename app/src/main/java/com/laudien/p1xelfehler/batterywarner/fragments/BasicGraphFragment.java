@@ -25,6 +25,7 @@ import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
@@ -50,6 +51,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * An instance of the {@link GraphInfo} holding information about the charging curve.
      */
+    @Nullable
     protected GraphInfo graphInfo;
     /**
      * The GraphView where the graphs are shown
@@ -151,16 +153,8 @@ public abstract class BasicGraphFragment extends Fragment {
      *
      * @return Returns an array of graphs.
      */
+    @Nullable
     protected abstract LineGraphSeries<DataPoint>[] getGraphs();
-
-    /**
-     * Method that provides the time the graph was created.
-     *
-     * @return Returns time the graph was created in milliseconds.
-     */
-    protected abstract long getEndTime();
-
-    protected abstract long getStartTime();
 
     /**
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
@@ -175,7 +169,6 @@ public abstract class BasicGraphFragment extends Fragment {
                 }
             }
             applyGraphScale();
-            createOrUpdateInfoObject();
             enableOrDisableSwitches();
         }
         setTimeText();
@@ -234,46 +227,6 @@ public abstract class BasicGraphFragment extends Fragment {
         viewport.setMaxX(maxX);
         viewport.setMaxY(maxY);
         viewport.setMinY(minY);
-    }
-
-    /**
-     * Creates a new or updates the existing instance of the
-     * {@link GraphInfo}.
-     */
-    protected void createOrUpdateInfoObject() {
-        if (graphs != null) {
-            if (graphInfo == null) {
-                graphInfo = new GraphInfo(
-                        getContext(),
-                        getStartTime(),
-                        getEndTime(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
-                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN
-                );
-            } else {
-                graphInfo.updateValues(
-                        getContext(),
-                        getStartTime(),
-                        getEndTime(),
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() : Double.NaN,
-                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_TEMPERATURE] != null ? graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_BATTERY_LEVEL] != null ? graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY() - graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_CURRENT] != null ? graphs[GRAPH_INDEX_CURRENT].getHighestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY() : Double.NaN,
-                        graphs[GRAPH_INDEX_VOLTAGE] != null ? graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY() : Double.NaN
-                );
-            }
-        } else { // there are no graphs
-            graphInfo = null;
-        }
     }
 
     /**

@@ -25,10 +25,12 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
+import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
@@ -163,32 +165,21 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      * @return Returns an array of the graphs in the database.
      */
     @Override
+    @Nullable
     protected LineGraphSeries[] getGraphs() {
         boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
         boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-        DatabaseValue[] values = DatabaseModel.getInstance(getContext()).readData();
-        LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
+        Data data = DatabaseModel.getInstance(getContext()).readData(useFahrenheit, reverseCurrent);
+        if (data == null) {
+            return null;
+        }
+        this.graphInfo = data.getGraphInfo();
+        DatabaseValue[] values = data.getDatabaseValues();
+        LineGraphSeries[] graphs = values != null ? DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent) : null;
         if (graphs != null) {
             styleGraphs(graphs);
         }
         return graphs;
-    }
-
-    /**
-     * Returns the date the graph was created in milliseconds.
-     *
-     * @return Returns the date the graph was created in milliseconds.
-     */
-    @Override
-    protected long getEndTime() {
-        // TODO: implementation
-        return 0;
-    }
-
-    @Override
-    protected long getStartTime() {
-        // TODO: implementation
-        return 0;
     }
 
     /**
@@ -254,8 +245,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                     graphs[i].appendData(dataPoints[i], false, (int) totalNumberOfRows);
                 }
             }
+            // update graph info
+            if (graphInfo != null) {
+                graphInfo.notifyValueAdded(value, getContext());
+            }
         }
-        createOrUpdateInfoObject();
         applyGraphScale();
         enableOrDisableSwitches();
         setTimeText();
@@ -265,6 +259,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     public void onTableReset() {
         if (graphInfo != null) {
             graphInfo.dismissDialog();
+            graphInfo = null;
         }
         if (graphs != null) {
             graphView.removeAllSeries();

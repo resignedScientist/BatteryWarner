@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 
@@ -16,9 +17,12 @@ public class DatabaseContract {
     static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
 
     public interface Model {
-        DatabaseValue[] readData();
 
-        DatabaseValue[] readData(File databaseFile);
+        @Nullable
+        Data readData(boolean useFahrenheit, boolean reverseCurrent);
+
+        @Nullable
+        Data readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent);
 
         Cursor getCursor();
 
@@ -54,7 +58,7 @@ public class DatabaseContract {
         /**
          * Called when a graph point was added to the app directory database.
          *
-         * @param value The value that has been added to the database.
+         * @param value             The value that has been added to the database.
          * @param totalNumberOfRows The total length (rows) of the database.
          */
         void onValueAdded(DatabaseValue value, long totalNumberOfRows);

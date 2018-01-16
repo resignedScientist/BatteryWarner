@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
@@ -80,41 +81,24 @@ public class HistoryPageFragment extends BasicGraphFragment {
      */
     @Override
     protected LineGraphSeries[] getGraphs() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            File file = getFile();
-            if (file != null && file.exists()) {
-                boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
-                boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-                DatabaseValue[] values = DatabaseModel.getInstance(getContext()).readData(file);
-                LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
-                styleGraphs(graphs);
-                return graphs;
-            } else {
-                return null;
-            }
-        } else {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return null;
         }
-    }
-
-    @Override
-    protected long getEndTime() {
         File file = getFile();
-        if (file == null) {
-            return 0;
+        if (file == null || !file.exists()) {
+            return null;
         }
-        // TODO: implementation
-        return 0;
-    }
-
-    @Override
-    protected long getStartTime() {
-        File file = getFile();
-        if (file == null) {
-            return 0;
+        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+        Data data = DatabaseModel.getInstance(getContext()).readData(file, useFahrenheit, reverseCurrent);
+        if (data == null) {
+            return null;
         }
-        // TODO: implementation
-        return 0;
+        this.graphInfo = data.getGraphInfo();
+        DatabaseValue[] values = data.getDatabaseValues();
+        LineGraphSeries[] graphs = DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent);
+        styleGraphs(graphs);
+        return graphs;
     }
 
     @Nullable

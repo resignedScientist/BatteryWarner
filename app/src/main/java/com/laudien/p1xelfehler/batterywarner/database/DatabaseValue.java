@@ -78,7 +78,7 @@ public class DatabaseValue {
      *
      * @return The battery level in percent.
      */
-    int getBatteryLevel() {
+    public int getBatteryLevel() {
         return batteryLevel;
     }
 
@@ -88,7 +88,7 @@ public class DatabaseValue {
      *
      * @return The temperature in degrees celsius * 10.
      */
-    int getTemperature() {
+    public int getTemperature() {
         return temperature;
     }
 
@@ -109,6 +109,10 @@ public class DatabaseValue {
         return voltage;
     }
 
+    double getVoltageInVolts() {
+        return getVoltage() / 1000;
+    }
+
     /**
      * Get the current saved in this instance.
      *
@@ -118,12 +122,16 @@ public class DatabaseValue {
         return current;
     }
 
+    public double getCurrentInMilliAmperes(boolean reverseCurrent) {
+        return getCurrent() / (reverseCurrent ? 1000 : -1000);
+    }
+
     /**
      * Get the time saved in this instance.
      *
      * @return The UTC time in milliseconds.
      */
-    long getUtcTimeInMillis() {
+    public long getUtcTimeInMillis() {
         return utcTimeInMillis;
     }
 
@@ -131,12 +139,16 @@ public class DatabaseValue {
         return (double) (utcTimeInMillis - graphCreationTime) / (double) (1000 * 60);
     }
 
+    public long getGraphCreationTime() {
+        return graphCreationTime;
+    }
+
     public DataPoint[] toDataPoints(boolean useFahrenheit, boolean reverseCurrent) {
         DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
         double timeInMinutes = getTimeFromStartInMinutes();
         double temperature = useFahrenheit ? getTemperatureInFahrenheit() : getTemperatureInCelsius();
-        double voltage = getVoltage() / 1000;
-        double current = getCurrent() / (reverseCurrent ? 1000 : -1000);
+        double voltage = getVoltageInVolts();
+        double current = getCurrentInMilliAmperes(reverseCurrent);
         dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
         dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
         dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);

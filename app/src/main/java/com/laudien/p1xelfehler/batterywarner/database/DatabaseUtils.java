@@ -12,7 +12,6 @@ import android.util.Log;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -190,27 +189,6 @@ public final class DatabaseUtils {
             Log.d("DatabaseUtils", "Upgrade finished!");
         } else {
             Log.d("DatabaseUtils", "Storage permission not granted!");
-        }
-    }
-
-    private static void appendValue(@Nullable LineGraphSeries graph, DatabaseValue databaseValue, int index, double timeInMinutes, int maxDataPoints, boolean useFahrenheit, boolean reverseCurrent) {
-        if (graph != null) {
-            double value = databaseValue.get(index);
-            switch (index) {
-                case GRAPH_INDEX_TEMPERATURE:
-                    value /= 10;
-                    if (useFahrenheit) {
-                        value = TemperatureConverter.convertCelsiusToFahrenheit(value);
-                    }
-                    break;
-                case GRAPH_INDEX_VOLTAGE:
-                    value /= 1000;
-                    break;
-                case GRAPH_INDEX_CURRENT:
-                    value /= (reverseCurrent ? 1000 : -1000);
-                    break;
-            }
-            graph.appendData(new DataPoint(timeInMinutes, value), false, maxDataPoints);
         }
     }
 
