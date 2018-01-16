@@ -3,6 +3,7 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,27 +41,8 @@ public final class DatabaseUtils {
     public static final int GRAPH_INDEX_CURRENT = 3;
     public static final int NUMBER_OF_GRAPHS = 4;
 
-    @Nullable
-    public static LineGraphSeries<DataPoint>[] generateLineGraphSeries(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
-        if (databaseValues[0] == null) {
-            return null;
-        }
-        LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
-        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
-        if (databaseValues[0].getVoltage() != 0)
-            graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
-        if (databaseValues[0].getCurrent() != 0)
-            graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
-        for (DatabaseValue value : databaseValues) {
-            DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
-            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (graphs[i] != null && dataPoints[i] != null) {
-                    graphs[i].appendData(dataPoints[i], false, databaseValues.length);
-                }
-            }
-        }
-        return graphs;
+    public static void generateLineGraphSeries(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent, @NonNull LineGraphSeriesReceiver receiver) {
+        new GenerateGraphsTask(databaseValues, useFahrenheit, reverseCurrent, receiver).execute();
     }
 
     public static boolean saveGraph(@NonNull Context context) {
@@ -208,6 +190,53 @@ public final class DatabaseUtils {
             return string.equals("SQLite format 3\u0000");
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public interface LineGraphSeriesReceiver {
+        void generatingFinished(@Nullable LineGraphSeries<DataPoint>[] graphs);
+    }
+
+    private static class GenerateGraphsTask extends AsyncTask<Void, Void, LineGraphSeries<DataPoint>[]> {
+        private DatabaseValue[] databaseValues;
+        private boolean useFahrenheit;
+        private boolean reverseCurrent;
+        private LineGraphSeriesReceiver receiver;
+
+        private GenerateGraphsTask(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent, @NonNull LineGraphSeriesReceiver receiver) {
+            this.databaseValues = databaseValues;
+            this.useFahrenheit = useFahrenheit;
+            this.reverseCurrent = reverseCurrent;
+            this.receiver = receiver;
+        }
+
+        @Override
+        protected LineGraphSeries<DataPoint>[] doInBackground(Void... voids) {
+            if (databaseValues[0] == null) {
+                return null;
+            }
+            LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+            graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
+            graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+            if (databaseValues[0].getVoltage() != 0)
+                graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
+            if (databaseValues[0].getCurrent() != 0)
+                graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
+            for (DatabaseValue value : databaseValues) {
+                DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
+                for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                    if (graphs[i] != null && dataPoints[i] != null) {
+                        graphs[i].appendData(dataPoints[i], false, databaseValues.length);
+                    }
+                }
+            }
+            return graphs;
+        }
+
+        @Override
+        protected void onPostExecute(LineGraphSeries<DataPoint>[] graphs) {
+            super.onPostExecute(graphs);
+            receiver.generatingFinished(graphs);
         }
     }
 }

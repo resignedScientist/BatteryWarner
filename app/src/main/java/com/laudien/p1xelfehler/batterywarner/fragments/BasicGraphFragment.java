@@ -171,20 +171,23 @@ public abstract class BasicGraphFragment extends Fragment {
             public void onDataRead(@NonNull Data data) {
                 graphInfo = data.getGraphInfo();
                 DatabaseValue[] values = data.getDatabaseValues();
-                graphs = values != null ? DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent) : null;
-                if (graphs != null) {
-                    styleGraphs(graphs);
-                }
-                if (graphs != null) {
-                    for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                        if (switches[i].isChecked() && graphs[i] != null) {
-                            graphView.addSeries(graphs[i]);
+                DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent, new DatabaseUtils.LineGraphSeriesReceiver() {
+                    @Override
+                    public void generatingFinished(@Nullable LineGraphSeries<DataPoint>[] graphs) {
+                        BasicGraphFragment.this.graphs = graphs;
+                        if (graphs != null) {
+                            styleGraphs(graphs);
+                            for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                                if (switches[i].isChecked() && graphs[i] != null) {
+                                    graphView.addSeries(graphs[i]);
+                                }
+                            }
+                            applyGraphScale();
                         }
+                        enableOrDisableSwitches();
+                        setTimeText();
                     }
-                    applyGraphScale();
-                    enableOrDisableSwitches();
-                }
-                setTimeText();
+                });
             }
         });
     }
