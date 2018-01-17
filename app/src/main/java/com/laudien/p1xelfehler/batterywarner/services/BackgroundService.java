@@ -1223,7 +1223,7 @@ public class BackgroundService extends Service {
                 this.current = current;
                 boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
                 double convertedCurrent = DatabaseValue.convertToMilliAmperes(current, reverseCurrent);
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", getString(R.string.info_current), convertedCurrent);
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %.0f mA", getString(R.string.info_current), convertedCurrent);
                 notifyListener(INDEX_CURRENT);
             }
         }
