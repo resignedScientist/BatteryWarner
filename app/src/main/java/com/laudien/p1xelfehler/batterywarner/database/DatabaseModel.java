@@ -203,14 +203,13 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Override
     public long getCreationTime() {
-        long creationTime = 0;
         Cursor cursor = getCursor();
         if (cursor != null) {
             if (cursor.moveToFirst()) {
-                creationTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+                return cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
             }
         }
-        return creationTime;
+        return 0;
     }
 
     @Override
