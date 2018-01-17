@@ -30,7 +30,6 @@ import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
@@ -206,7 +205,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
 
     @Override
     public void onValueAdded(DatabaseValue value, long totalNumberOfRows) {
-        boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
         boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
         DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
         if (dataPoints == null) {

@@ -34,7 +34,6 @@ import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 
 import java.util.Locale;
@@ -1095,8 +1094,7 @@ public class BackgroundService extends Service {
         private final String[] values = new String[NUMBER_OF_ITEMS];
         private String technology;
         private int health, batteryLevel;
-        private int current;
-        private double temperature, voltage;
+        private int current, temperature, voltage;
 
         private BatteryData(Intent batteryStatus, Context context) {
             update(batteryStatus, context);
@@ -1110,10 +1108,10 @@ public class BackgroundService extends Service {
          */
         void update(Intent batteryStatus, Context context) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
-            setTemperature((double) batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1) / 10, false);
+            setTemperature(batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1), false);
             setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1));
             setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1));
-            setVoltage((double) batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1) / 1000);
+            setVoltage(batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1));
             if (SDK_INT >= LOLLIPOP) {
                 BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
                 if (batteryManager != null) {
@@ -1224,28 +1222,31 @@ public class BackgroundService extends Service {
             if (this.current != current || values[INDEX_CURRENT] == null) {
                 this.current = current;
                 boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", getString(R.string.info_current), current / (reverseCurrent ? 1000 : -1000));
+                double convertedCurrent = DatabaseValue.convertToMilliAmperes(current, reverseCurrent);
+                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %d mA", getString(R.string.info_current), convertedCurrent);
                 notifyListener(INDEX_CURRENT);
             }
         }
 
-        private void setTemperature(double temperature, boolean forceUpdate) {
+        private void setTemperature(int temperature, boolean forceUpdate) {
             if (forceUpdate || this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
                 this.temperature = temperature;
+                boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
                 values[INDEX_TEMPERATURE] = String.format(
                         Locale.getDefault(),
                         "%s: %s",
                         getString(R.string.info_temperature),
-                        TemperatureConverter.getCorrectTemperatureString(BackgroundService.this, temperature)
+                        DatabaseValue.getTemperatureString(temperature, useFahrenheit)
                 );
                 notifyListener(INDEX_TEMPERATURE);
             }
         }
 
-        private void setVoltage(double voltage) {
+        private void setVoltage(int voltage) {
             if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
                 this.voltage = voltage;
-                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), getString(R.string.info_voltage) + ": %.3f V", voltage);
+                double convertedVoltage = DatabaseValue.convertToVolts(voltage);
+                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), getString(R.string.info_voltage) + ": %.3f V", convertedVoltage);
                 notifyListener(INDEX_VOLTAGE);
             }
         }

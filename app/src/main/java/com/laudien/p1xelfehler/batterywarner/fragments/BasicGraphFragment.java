@@ -30,7 +30,6 @@ import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
@@ -164,7 +163,8 @@ public abstract class BasicGraphFragment extends Fragment {
      * You can override it to only do it under some conditions.
      */
     void loadSeries() {
-        final boolean useFahrenheit = TemperatureConverter.useFahrenheit(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
         final boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
         readGraphs(useFahrenheit, reverseCurrent, new DatabaseContract.DataReceiver() {
             @Override
@@ -293,13 +293,15 @@ public abstract class BasicGraphFragment extends Fragment {
                         }
                     }
                     if (checkedSwitches == 1) { // only one switch is checked
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
                         String suffix;
                         switch (checkedSwitchId) {
                             case GRAPH_INDEX_BATTERY_LEVEL:
                                 suffix = "%";
                                 break;
                             case GRAPH_INDEX_TEMPERATURE:
-                                suffix = TemperatureConverter.useFahrenheit(getContext()) ? "°F" : "°C";
+                                suffix = useFahrenheit ? "°F" : "°C";
                                 break;
                             case GRAPH_INDEX_CURRENT:
                                 suffix = "mA";

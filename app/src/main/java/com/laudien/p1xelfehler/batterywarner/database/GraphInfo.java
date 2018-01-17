@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import java.text.DateFormat;
 import java.util.Locale;
@@ -200,30 +199,20 @@ public class GraphInfo {
         ));
         // min temperature
         textView = dialog.findViewById(R.id.textView_minTemp);
-        double minTempDouble = useFahrenheit ? DatabaseValue.convertToFahrenheit(minTemp) : DatabaseValue.convertToCelsius(minTemp);
-        if (!Double.isNaN(minTempDouble)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %s",
-                    context.getString(R.string.info_min_temp),
-                    TemperatureConverter.getCorrectTemperatureString(context, minTempDouble))
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
+        textView.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                context.getString(R.string.info_min_temp),
+                DatabaseValue.getTemperatureString(minTemp, useFahrenheit))
+        );
         // max temperature
         textView = dialog.findViewById(R.id.textView_maxTemp);
-        double maxTempDouble = useFahrenheit ? DatabaseValue.convertToFahrenheit(maxTemp) : DatabaseValue.convertToCelsius(maxTemp);
-        if (!Double.isNaN(maxTempDouble)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %s",
-                    context.getString(R.string.info_max_temp),
-                    TemperatureConverter.getCorrectTemperatureString(context, maxTempDouble))
-            );
-        } else {
-            textView.setVisibility(View.GONE);
-        }
+        textView.setText(String.format(
+                Locale.getDefault(),
+                "%s: %s",
+                context.getString(R.string.info_max_temp),
+                DatabaseValue.getTemperatureString(maxTemp, useFahrenheit))
+        );
         // min current
         textView = dialog.findViewById(R.id.textView_minCurrent);
         double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);

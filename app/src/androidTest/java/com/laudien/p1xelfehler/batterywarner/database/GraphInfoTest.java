@@ -7,7 +7,6 @@ import android.support.test.annotation.UiThreadTest;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -82,12 +81,12 @@ public class GraphInfoTest {
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_min_temp),
-                TemperatureConverter.getCorrectTemperatureString(context, minTemp));
+                DatabaseValue.getTemperatureString(graphInfo.minTemp, false));
         String expectedMaxTemp = String.format(
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_max_temp),
-                TemperatureConverter.getCorrectTemperatureString(context, maxTemp));
+                DatabaseValue.getTemperatureString(graphInfo.maxTemp, false));
         String expectedMinCurrent = String.format(
                 Locale.getDefault(),
                 "%s: %.1f mAh",
@@ -169,12 +168,12 @@ public class GraphInfoTest {
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_min_temp),
-                TemperatureConverter.getCorrectTemperatureString(context, minTemp));
+                DatabaseValue.getTemperatureString(graphInfo.minTemp, true));
         String expectedMaxTemp = String.format(
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_max_temp),
-                TemperatureConverter.getCorrectTemperatureString(context, maxTemp));
+                DatabaseValue.getTemperatureString(graphInfo.maxTemp, true));
 
         // test data
         assertEquals(expectedMinTemp, minTempText.getText().toString());

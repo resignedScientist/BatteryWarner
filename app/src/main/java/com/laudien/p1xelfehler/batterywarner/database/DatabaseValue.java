@@ -5,6 +5,8 @@ import android.os.Build;
 
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.util.Locale;
+
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
@@ -22,9 +24,9 @@ public class DatabaseValue {
     /**
      * The one and only constructor.
      *
-     * @param batteryLevel    The battery level in percent.
-     * @param temperature     The temperature in degrees celsius.
-     * @param utcTimeInMillis The UTC time in milliseconds.
+     * @param batteryLevel      The battery level in percent.
+     * @param temperature       The temperature in degrees celsius.
+     * @param utcTimeInMillis   The UTC time in milliseconds.
      * @param graphCreationTime The UTC time in milliseconds of the first point of the graph.
      */
     public DatabaseValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, long graphCreationTime) {
@@ -46,6 +48,32 @@ public class DatabaseValue {
 
     public static double convertToMilliAmperes(int current, boolean reverseCurrent) {
         return current / (reverseCurrent ? 1000 : -1000);
+    }
+
+    public static double convertToVolts(int voltage) {
+        return voltage / 1000;
+    }
+
+    public static String getTemperatureString(int temperature, boolean useFahrenheit) {
+        double convertedTemp;
+        String unit;
+        if (useFahrenheit) {
+            convertedTemp = convertToFahrenheit(temperature);
+            unit = "°F";
+        } else {
+            convertedTemp = convertToCelsius(temperature);
+            unit = "°C";
+        }
+        return String.format(
+                Locale.getDefault(),
+                "%.1f %s",
+                convertedTemp,
+                unit
+        );
+    }
+
+    String getTemperatureString(boolean useFahrenheit) {
+        return getTemperatureString(temperature, useFahrenheit);
     }
 
     @SuppressLint("DefaultLocale")
@@ -121,7 +149,7 @@ public class DatabaseValue {
     }
 
     public double getVoltageInVolts() {
-        return getVoltage() / 1000;
+        return convertToVolts(voltage);
     }
 
     /**
