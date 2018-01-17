@@ -19,11 +19,11 @@ import java.util.Locale;
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
 public class GraphInfo {
-    private boolean useFahrenheit, reverseCurrent;
-    private int maxBatteryLvl, firstBatteryLvl;
-    private double timeInMinutes, maxTemp, minTemp, minCurrent, maxCurrent, minVoltage, maxVoltage, chargingSpeed;
-    private long startTime, endTime;
-    private Dialog dialog;
+    boolean useFahrenheit, reverseCurrent;
+    int maxBatteryLvl, firstBatteryLvl, maxTemp, minTemp, minCurrent, maxCurrent;
+    double timeInMinutes, minVoltage, maxVoltage, chargingSpeed;
+    long startTime, endTime;
+    Dialog dialog;
 
     /**
      * Constructor of the GraphInfo. All values must be provided.
@@ -34,8 +34,8 @@ public class GraphInfo {
      * @param minTemp       The minimal battery temperature while charging.
      * @param chargingSpeed The charging speed in percent per hour.
      */
-    GraphInfo(long startTime, long endTime, double timeInMinutes, double maxTemp, double minTemp,
-              double chargingSpeed, double minCurrent, double maxCurrent, double minVoltage,
+    GraphInfo(long startTime, long endTime, double timeInMinutes, int maxTemp, int minTemp,
+              double chargingSpeed, int minCurrent, int maxCurrent, double minVoltage,
               double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
         this.startTime = startTime;
         this.endTime = endTime;
@@ -54,10 +54,10 @@ public class GraphInfo {
     }
 
     public GraphInfo(@NonNull DatabaseValue value, boolean useFahrenheit, boolean reverseCurrent) {
-        double temperature = useFahrenheit ? value.getTemperatureInFahrenheit() : value.getTemperatureInCelsius();
-        double current = value.getCurrentInMilliAmperes(reverseCurrent);
+        int current = value.getCurrent();
         double voltage = value.getVoltageInVolts();
         int batteryLevel = value.getBatteryLevel();
+        int temperature = value.getTemperature();
 
         this.startTime = value.getGraphCreationTime();
         this.endTime = value.getUtcTimeInMillis();
@@ -114,7 +114,7 @@ public class GraphInfo {
     }
 
     public void notifyValueAdded(@NonNull DatabaseValue value, @NonNull Context context) {
-        double temp = useFahrenheit ? value.getTemperatureInFahrenheit() : value.getTemperatureInCelsius();
+        int temp = value.getTemperature();
         if (temp > maxTemp) {
             maxTemp = temp;
         }
@@ -128,14 +128,15 @@ public class GraphInfo {
             int percentageDiff = maxBatteryLvl - firstBatteryLvl;
             chargingSpeed = percentageDiff / timeInHours;
         }
-        double current = value.getCurrentInMilliAmperes(reverseCurrent);
-        if (current > maxCurrent) {
+        int current = value.getCurrent();
+        int currentToCompare = current * (reverseCurrent ? 1 : -1);
+        if (currentToCompare > maxCurrent) {
             maxCurrent = current;
         }
-        if (current < minCurrent) {
+        if (currentToCompare < minCurrent) {
             minCurrent = current;
         }
-        double voltage = value.getCurrentInMilliAmperes(reverseCurrent);
+        double voltage = value.getVoltageInVolts();
         if (voltage > maxVoltage) {
             maxVoltage = voltage;
         }
@@ -152,8 +153,16 @@ public class GraphInfo {
      *
      * @param context An instance of the Context class.
      */
-    public void showDialog(Context context) {
-        dialog = new Dialog(context);
+    public void showDialog(@NonNull Context context) {
+        if (dialog == null) {
+            dialog = buildDialog(context);
+        }
+        updateDialog(context);
+        dialog.show();
+    }
+
+    Dialog buildDialog(@NonNull Context context) {
+        final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_graph_info);
         // close button
         Button btn_close = dialog.findViewById(R.id.btn_close);
@@ -161,15 +170,13 @@ public class GraphInfo {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                dialog = null; // make the dialog object ready for garbage collection
+                GraphInfo.this.dialog = null; // make the dialog object ready for garbage collection
             }
         });
-        updateDialog(context);
-        // show dialog
-        dialog.show();
+        return dialog;
     }
 
-    private void updateDialog(Context context) {
+    void updateDialog(@NonNull Context context) {
         if (dialog == null) {
             return;
         }
@@ -193,48 +200,52 @@ public class GraphInfo {
         ));
         // min temperature
         textView = dialog.findViewById(R.id.textView_minTemp);
-        if (minTemp != Double.NaN) {
+        double minTempDouble = useFahrenheit ? DatabaseValue.convertToFahrenheit(minTemp) : DatabaseValue.convertToCelsius(minTemp);
+        if (!Double.isNaN(minTempDouble)) {
             textView.setText(String.format(
                     Locale.getDefault(),
                     "%s: %s",
                     context.getString(R.string.info_min_temp),
-                    TemperatureConverter.getCorrectTemperatureString(context, minTemp))
+                    TemperatureConverter.getCorrectTemperatureString(context, minTempDouble))
             );
         } else {
             textView.setVisibility(View.GONE);
         }
         // max temperature
         textView = dialog.findViewById(R.id.textView_maxTemp);
-        if (!Double.isNaN(maxTemp)) {
+        double maxTempDouble = useFahrenheit ? DatabaseValue.convertToFahrenheit(maxTemp) : DatabaseValue.convertToCelsius(maxTemp);
+        if (!Double.isNaN(maxTempDouble)) {
             textView.setText(String.format(
                     Locale.getDefault(),
                     "%s: %s",
                     context.getString(R.string.info_max_temp),
-                    TemperatureConverter.getCorrectTemperatureString(context, maxTemp))
+                    TemperatureConverter.getCorrectTemperatureString(context, maxTempDouble))
             );
         } else {
             textView.setVisibility(View.GONE);
         }
         // min current
         textView = dialog.findViewById(R.id.textView_minCurrent);
-        if (!Double.isNaN(minCurrent)) {
+        double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
+        if (!Double.isNaN(minCurrentMilliAmperes)) {
             textView.setText(String.format(
                     Locale.getDefault(),
                     "%s: %.1f mAh",
                     context.getString(R.string.info_min_current),
-                    minCurrent)
+                    minCurrentMilliAmperes)
             );
         } else {
             textView.setVisibility(View.GONE);
         }
         // max current
         textView = dialog.findViewById(R.id.textView_maxCurrent);
-        if (!Double.isNaN(maxCurrent)) {
+        double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
+        if (!Double.isNaN(maxCurrentMilliAmperes)) {
             textView.setText(String.format(
                     Locale.getDefault(),
                     "%s: %.1f mAh",
                     context.getString(R.string.info_max_current),
-                    maxCurrent)
+                    maxCurrentMilliAmperes)
             );
         } else {
             textView.setVisibility(View.GONE);
@@ -265,13 +276,12 @@ public class GraphInfo {
         }
         // charging speed
         textView = dialog.findViewById(R.id.textView_speed);
-        double speed = chargingSpeed;
-        if (!Double.isNaN(speed)) {
+        if (!Double.isNaN(chargingSpeed)) {
             textView.setText(String.format(
                     Locale.getDefault(),
                     "%s: %.2f %%/h",
                     context.getString(R.string.info_charging_speed),
-                    speed)
+                    chargingSpeed)
             );
         } else {
             textView.setVisibility(View.GONE);

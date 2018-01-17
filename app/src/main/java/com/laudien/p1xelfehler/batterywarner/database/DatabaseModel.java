@@ -256,7 +256,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Nullable
-    private Data readData(Cursor cursor, boolean useFahrenheit, boolean reverseCurrent) {
+    Data readData(Cursor cursor, boolean useFahrenheit, boolean reverseCurrent) {
         if (cursor == null || cursor.isClosed() || cursor.getCount() <= 0) {
             return null;
         }
@@ -308,11 +308,11 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 startTime,
                 databaseValues[databaseValues.length - 1].getUtcTimeInMillis(),
                 databaseValues[databaseValues.length - 1].getTimeFromStartInMinutes(),
-                useFahrenheit ? valueWithHighestTemp.getTemperatureInFahrenheit() : valueWithHighestTemp.getTemperatureInCelsius(),
-                useFahrenheit ? valueWithLowestTemp.getTemperatureInFahrenheit() : valueWithLowestTemp.getTemperatureInCelsius(),
+                valueWithHighestTemp.getTemperature(),
+                valueWithLowestTemp.getTemperature(),
                 percentageDiff / timeInHours,
-                valueWithLowestCurrent.getCurrentInMilliAmperes(reverseCurrent),
-                valueWithHighestCurrent.getCurrentInMilliAmperes(reverseCurrent),
+                valueWithLowestCurrent.getCurrent(),
+                valueWithHighestCurrent.getCurrent(),
                 valueWithLowestVoltage.getVoltageInVolts(),
                 valueWithHighestVoltage.getVoltageInVolts(),
                 valueWithHighestBatteryLevel.getBatteryLevel(),
@@ -322,6 +322,32 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         );
 
         return new Data(databaseValues, graphInfo);
+    }
+
+    boolean resetTableTask() {
+        SQLiteDatabase database = getWritableDatabase();
+        if (database == null) {
+            return false;
+        }
+        database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        return true;
+    }
+
+    long addValueTask(DatabaseValue value) {
+        SQLiteDatabase database = getWritableDatabase();
+        long totalNumberOfRows = 0;
+        if (database != null) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+            database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+            totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
+            Log.d("DatabaseModel", "value added: " + value);
+        }
+        return totalNumberOfRows;
     }
 
     private class ReadDataTask extends AsyncTask<Void, Void, Data> {
@@ -362,20 +388,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         @Override
         protected Long doInBackground(DatabaseValue... databaseValues) {
             value = databaseValues[0];
-            SQLiteDatabase database = getWritableDatabase();
-            long totalNumberOfRows = 0;
-            if (database != null) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-                contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
-                contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
-                contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
-                contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
-                database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
-                totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
-                Log.d("DatabaseModel", "value added: " + value);
-            }
-            return totalNumberOfRows;
+            return addValueTask(value);
         }
 
         @Override
@@ -389,12 +402,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            SQLiteDatabase database = getWritableDatabase();
-            if (database == null) {
-                return false;
-            }
-            database.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-            return true;
+            return resetTableTask();
         }
 
         @Override

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 
 import com.jjoe64.graphview.series.DataPoint;
-import com.laudien.p1xelfehler.batterywarner.helper.TemperatureConverter;
 
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
@@ -35,6 +34,18 @@ public class DatabaseValue {
         this.voltage = voltage;
         this.current = current;
         this.graphCreationTime = graphCreationTime;
+    }
+
+    public static double convertToCelsius(int temperature) {
+        return (double) temperature / 10.0;
+    }
+
+    public static double convertToFahrenheit(int temperature) {
+        return (((double) temperature * 0.18)) + 32;
+    }
+
+    public static double convertToMilliAmperes(int current, boolean reverseCurrent) {
+        return current / (reverseCurrent ? 1000 : -1000);
     }
 
     @SuppressLint("DefaultLocale")
@@ -93,11 +104,11 @@ public class DatabaseValue {
     }
 
     double getTemperatureInCelsius() {
-        return (double) temperature / 10.0;
+        return convertToCelsius(temperature);
     }
 
     double getTemperatureInFahrenheit() {
-        return TemperatureConverter.convertCelsiusToFahrenheit(getTemperatureInCelsius());
+        return convertToFahrenheit(temperature);
     }
 
     /**
@@ -123,7 +134,7 @@ public class DatabaseValue {
     }
 
     public double getCurrentInMilliAmperes(boolean reverseCurrent) {
-        return getCurrent() / (reverseCurrent ? 1000 : -1000);
+        return convertToMilliAmperes(current, reverseCurrent);
     }
 
     /**
