@@ -72,10 +72,6 @@ public class DatabaseValue {
         );
     }
 
-    String getTemperatureString(boolean useFahrenheit) {
-        return getTemperatureString(temperature, useFahrenheit);
-    }
-
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
