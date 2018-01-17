@@ -13,9 +13,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_VOLTAGE;
+import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBER_OF_GRAPHS;
 
 /**
  * The Model for the charging graph databases. Only the DatabaseController should communicate to
@@ -259,7 +268,9 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         if (cursor == null || cursor.isClosed() || cursor.getCount() <= 0) {
             return null;
         }
-        DatabaseValue[] databaseValues = new DatabaseValue[cursor.getCount()];
+        LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
+        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
+        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
         int firstBatteryLvl = 0;
         int maxBatteryLvl = 0;
         int minTemp = 0;
@@ -270,19 +281,17 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         int maxCurrent = 0;
         long startTime = 0;
         long time = 0;
-        double timeOfValueWithMaxBatteryLvlInMinutes = 0d;
-        for (int i = 0; i < cursor.getCount(); i++) {
-            cursor.moveToPosition(i);
+        long timeOfValueWithMaxBatteryLvl = 0;
+        DatabaseValue lastValue = null;
+
+        for (int valueIndex = 0; valueIndex < cursor.getCount(); valueIndex++) {
+            cursor.moveToPosition(valueIndex);
             int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
             int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
             int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
             int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
             time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
-            if (i == 0) {
-                startTime = time;
-            }
-            databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
-            if (i == 0) {
+            if (valueIndex == 0) {
                 firstBatteryLvl = batteryLevel;
                 maxBatteryLvl = batteryLevel;
                 minTemp = temperature;
@@ -291,41 +300,64 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 maxVoltage = voltage;
                 minCurrent = current;
                 maxCurrent = current;
-                continue;
+                startTime = time;
+                if (voltage != 0)
+                    graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries<>();
+                if (current != 0)
+                    graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries<>();
             }
+
+            DatabaseValue value = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
+            DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
+            for (int graphIndex = 0; graphIndex < NUMBER_OF_GRAPHS; graphIndex++) {
+                if (graphs[graphIndex] == null || dataPoints[graphIndex] == null) {
+                    continue;
+                }
+                if (lastValue == null || lastValue.get(graphIndex) != value.get(graphIndex) || valueIndex == cursor.getCount() - 1) {
+                    graphs[graphIndex].appendData(dataPoints[graphIndex], false, valueIndex + 1);
+                }
+            }
+            lastValue = value;
+
+            if (valueIndex == 0)
+                continue;
+
             if (temperature > maxTemp) {
-                maxTemp = databaseValues[i].getTemperature();
+                maxTemp = temperature;
             }
             if (temperature < minTemp) {
-                minTemp = databaseValues[i].getTemperature();
+                minTemp = temperature;
             }
             if (batteryLevel > maxBatteryLvl) {
-                maxBatteryLvl = databaseValues[i].getBatteryLevel();
-                timeOfValueWithMaxBatteryLvlInMinutes = databaseValues[i].getTimeFromStartInMinutes();
+                maxBatteryLvl = batteryLevel;
+                timeOfValueWithMaxBatteryLvl = time;
             }
             if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent)) {
-                maxCurrent = databaseValues[i].getCurrent();
+                maxCurrent = current;
             }
             if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent)) {
-                minCurrent = databaseValues[i].getCurrent();
+                minCurrent = current;
             }
             if (voltage > maxVoltage) {
-                maxVoltage = databaseValues[i].getVoltage();
+                maxVoltage = voltage;
             }
             if (voltage < minVoltage) {
-                minVoltage = databaseValues[i].getVoltage();
+                minVoltage = voltage;
             }
         }
-        double timeToMaxBatteryLvlInHours = timeOfValueWithMaxBatteryLvlInMinutes / 60.0;
+
+        double timeInMinutes = (time - startTime) / 60000.0;
+        double timeToMaxBatteryLvlInHours = timeOfValueWithMaxBatteryLvl / 3600000.0;
         int percentageDiff = maxBatteryLvl - firstBatteryLvl;
+        double chargingSpeed = percentageDiff / timeToMaxBatteryLvlInHours;
 
         GraphInfo graphInfo = new GraphInfo(
                 startTime,
                 time,
-                (time - startTime) / 60000.0,
+                timeInMinutes,
                 maxTemp,
                 minTemp,
-                percentageDiff / timeToMaxBatteryLvlInHours,
+                chargingSpeed,
                 minCurrent,
                 maxCurrent,
                 DatabaseValue.convertToVolts(minVoltage),
@@ -336,7 +368,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 reverseCurrent
         );
 
-        return new Data(databaseValues, graphInfo);
+        return new Data(graphs, graphInfo);
     }
 
     boolean resetTableTask() {

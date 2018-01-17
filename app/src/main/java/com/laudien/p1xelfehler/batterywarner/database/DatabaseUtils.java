@@ -10,8 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.laudien.p1xelfehler.batterywarner.R;
 
 import java.io.File;
@@ -40,10 +38,6 @@ public final class DatabaseUtils {
     public static final int GRAPH_INDEX_VOLTAGE = 2;
     public static final int GRAPH_INDEX_CURRENT = 3;
     public static final int NUMBER_OF_GRAPHS = 4;
-
-    public static void generateLineGraphSeries(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent, @NonNull LineGraphSeriesReceiver receiver) {
-        new GenerateGraphsTask(databaseValues, useFahrenheit, reverseCurrent, receiver).execute();
-    }
 
     public static void saveGraph(@NonNull Context context, @Nullable GraphSavedListener graphSavedListener) {
         // permission check
@@ -148,36 +142,6 @@ public final class DatabaseUtils {
         }
     }
 
-    @Nullable
-    static LineGraphSeries<DataPoint>[] generateLineGraphSeriesTask(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
-        if (databaseValues.length == 0) {
-            return null;
-        }
-        LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
-        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
-        if (databaseValues[0].getVoltage() != 0)
-            graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
-        if (databaseValues[0].getCurrent() != 0)
-            graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
-
-        DatabaseValue lastValue = null;
-        for (int j = 0; j < databaseValues.length; j++) {
-            DatabaseValue value = databaseValues[j];
-            DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
-            for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (graphs[i] == null || dataPoints[i] == null) {
-                    continue;
-                }
-                if (lastValue == null || lastValue.get(i) != value.get(i) || j == databaseValues.length - 1) {
-                    graphs[i].appendData(dataPoints[i], false, databaseValues.length);
-                }
-            }
-            lastValue = value;
-        }
-        return graphs;
-    }
-
     static boolean saveGraphTask(@NonNull File databasePath, @NonNull DatabaseModel databaseModel) {
         boolean result = false;
         // return if graph disabled in settings or the database has not enough data
@@ -230,37 +194,8 @@ public final class DatabaseUtils {
         return result;
     }
 
-    public interface LineGraphSeriesReceiver {
-        void generatingFinished(@Nullable LineGraphSeries<DataPoint>[] graphs);
-    }
-
     public interface GraphSavedListener {
         void onFinishedSaving(boolean success);
-    }
-
-    private static class GenerateGraphsTask extends AsyncTask<Void, Void, LineGraphSeries<DataPoint>[]> {
-        private DatabaseValue[] databaseValues;
-        private boolean useFahrenheit;
-        private boolean reverseCurrent;
-        private LineGraphSeriesReceiver receiver;
-
-        private GenerateGraphsTask(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent, @NonNull LineGraphSeriesReceiver receiver) {
-            this.databaseValues = databaseValues;
-            this.useFahrenheit = useFahrenheit;
-            this.reverseCurrent = reverseCurrent;
-            this.receiver = receiver;
-        }
-
-        @Override
-        protected LineGraphSeries<DataPoint>[] doInBackground(Void... voids) {
-            return generateLineGraphSeriesTask(databaseValues, useFahrenheit, reverseCurrent);
-        }
-
-        @Override
-        protected void onPostExecute(LineGraphSeries<DataPoint>[] graphs) {
-            super.onPostExecute(graphs);
-            receiver.generatingFinished(graphs);
-        }
     }
 
     private static class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {

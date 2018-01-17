@@ -27,8 +27,6 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
@@ -169,24 +167,18 @@ public abstract class BasicGraphFragment extends Fragment {
             @Override
             public void onDataRead(@NonNull Data data) {
                 graphInfo = data.getGraphInfo();
-                DatabaseValue[] values = data.getDatabaseValues();
-                DatabaseUtils.generateLineGraphSeries(values, useFahrenheit, reverseCurrent, new DatabaseUtils.LineGraphSeriesReceiver() {
-                    @Override
-                    public void generatingFinished(@Nullable LineGraphSeries<DataPoint>[] graphs) {
-                        BasicGraphFragment.this.graphs = graphs;
-                        if (graphs != null) {
-                            styleGraphs(graphs);
-                            for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                                if (switches[i].isChecked() && graphs[i] != null) {
-                                    graphView.addSeries(graphs[i]);
-                                }
-                            }
-                            applyGraphScale();
+                graphs = data.getGraphs();
+                if (graphs != null) {
+                    styleGraphs(graphs);
+                    for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                        if (switches[i].isChecked() && graphs[i] != null) {
+                            graphView.addSeries(graphs[i]);
                         }
-                        enableOrDisableSwitches();
-                        setTimeText();
                     }
-                });
+                    applyGraphScale();
+                }
+                enableOrDisableSwitches();
+                setTimeText();
             }
         });
     }

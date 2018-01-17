@@ -1,16 +1,19 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 public class Data {
-    private DatabaseValue[] databaseValues;
+    private LineGraphSeries<DataPoint>[] graphs;
     private GraphInfo graphInfo;
 
-    Data(DatabaseValue[] databaseValues, GraphInfo graphInfo) {
-        this.databaseValues = databaseValues;
+    Data(LineGraphSeries<DataPoint>[] graphs, GraphInfo graphInfo) {
+        this.graphs = graphs;
         this.graphInfo = graphInfo;
     }
 
-    public DatabaseValue[] getDatabaseValues() {
-        return databaseValues;
+    public LineGraphSeries<DataPoint>[] getGraphs() {
+        return graphs;
     }
 
     public GraphInfo getGraphInfo() {
