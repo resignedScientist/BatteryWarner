@@ -299,8 +299,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 valueWithLowestVoltage = databaseValues[i];
             }
         }
-        long timeToMaxBatteryLvl = valueWithHighestBatteryLevel.getUtcTimeInMillis() - databaseValues[0].getUtcTimeInMillis();
-        double timeInHours = (double) timeToMaxBatteryLvl / (double) (1000 * 60 * 60);
+        double timeToMaxBatteryLvlInHours = valueWithHighestBatteryLevel.getTimeFromStartInMinutes() / 60.0;
         int percentageDiff = valueWithHighestBatteryLevel.getBatteryLevel() - databaseValues[0].getBatteryLevel();
 
         GraphInfo graphInfo = new GraphInfo(
@@ -309,7 +308,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 databaseValues[databaseValues.length - 1].getTimeFromStartInMinutes(),
                 valueWithHighestTemp.getTemperature(),
                 valueWithLowestTemp.getTemperature(),
-                percentageDiff / timeInHours,
+                percentageDiff / timeToMaxBatteryLvlInHours,
                 valueWithLowestCurrent.getCurrent(),
                 valueWithHighestCurrent.getCurrent(),
                 valueWithLowestVoltage.getVoltageInVolts(),
