@@ -949,6 +949,7 @@ public class BackgroundService extends Service {
         private void resetGraph() {
             boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (graphEnabled) {
+                graphCreationTime = 0;
                 databaseModel.resetTable();
             }
         }
