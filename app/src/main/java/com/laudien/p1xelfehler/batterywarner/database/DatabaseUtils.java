@@ -149,8 +149,8 @@ public final class DatabaseUtils {
     }
 
     @Nullable
-    static LineGraphSeries<DataPoint>[] generateGraphsTask(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
-        if (databaseValues[0] == null) {
+    static LineGraphSeries<DataPoint>[] generateLineGraphSeriesTask(@NonNull DatabaseValue[] databaseValues, boolean useFahrenheit, boolean reverseCurrent) {
+        if (databaseValues.length == 0) {
             return null;
         }
         LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
@@ -160,13 +160,20 @@ public final class DatabaseUtils {
             graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries();
         if (databaseValues[0].getCurrent() != 0)
             graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries();
-        for (DatabaseValue value : databaseValues) {
+
+        DatabaseValue lastValue = null;
+        for (int j = 0; j < databaseValues.length; j++) {
+            DatabaseValue value = databaseValues[j];
             DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (graphs[i] != null && dataPoints[i] != null) {
+                if (graphs[i] == null || dataPoints[i] == null) {
+                    continue;
+                }
+                if (lastValue == null || lastValue.get(i) != value.get(i) || j == databaseValues.length - 1) {
                     graphs[i].appendData(dataPoints[i], false, databaseValues.length);
                 }
             }
+            lastValue = value;
         }
         return graphs;
     }
@@ -246,7 +253,7 @@ public final class DatabaseUtils {
 
         @Override
         protected LineGraphSeries<DataPoint>[] doInBackground(Void... voids) {
-            return generateGraphsTask(databaseValues, useFahrenheit, reverseCurrent);
+            return generateLineGraphSeriesTask(databaseValues, useFahrenheit, reverseCurrent);
         }
 
         @Override
