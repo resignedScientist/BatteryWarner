@@ -218,7 +218,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                     if (graphs == null) { // only initialize graphs if any DataPoint is not null
                         graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
                     }
-                    graphs[i] = new LineGraphSeries<>(new DataPoint[]{dataPoints[i]});
+                    graphs[i] = new LineGraphSeries<>(new DataPoint[]{new DataPoint(0d, dataPoints[i].getY())});
                     if (switches[i].isChecked()) {
                         graphView.addSeries(graphs[i]);
                     }
