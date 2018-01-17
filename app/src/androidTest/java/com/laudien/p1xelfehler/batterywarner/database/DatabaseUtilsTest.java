@@ -136,6 +136,26 @@ public class DatabaseUtilsTest {
         }
     }
 
+    @Test
+    public void generateLineGraphSeriesTest6() {
+        // create 1 dummy databaseValue, all values are 0
+        DatabaseValue[] databaseValues = new DatabaseValue[1];
+        long timeNow = System.currentTimeMillis();
+        databaseValues[0] = new DatabaseValue(0, 0, 0, 0, timeNow, timeNow);
+        LineGraphSeries[] output = DatabaseUtils.generateLineGraphSeriesTask(databaseValues, false, false);
+
+        // check graphs -> every graph except batteryLevel and temperature needs to be null!
+        assertNotNull(output);
+        assertEquals(NUMBER_OF_GRAPHS, output.length);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
+                assertNotNull(output[i]);
+            } else {
+                assertNull(output[i]);
+            }
+        }
+    }
+
     private int getSize(LineGraphSeries<DataPoint> graph) {
         Iterator<DataPoint> iterator = graph.getValues(0d, Double.MAX_VALUE);
         int size = 0;
