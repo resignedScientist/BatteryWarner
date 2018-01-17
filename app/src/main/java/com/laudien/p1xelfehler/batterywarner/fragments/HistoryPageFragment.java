@@ -43,6 +43,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         textView_title.setVisibility(View.GONE);
+        loadSeries();
         return view;
     }
 

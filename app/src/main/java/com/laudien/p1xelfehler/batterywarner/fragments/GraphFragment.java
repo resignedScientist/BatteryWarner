@@ -90,6 +90,12 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        loadSeries();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (graphEnabled) {

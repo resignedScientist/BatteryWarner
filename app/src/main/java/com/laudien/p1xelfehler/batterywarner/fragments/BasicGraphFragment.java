@@ -132,7 +132,6 @@ public abstract class BasicGraphFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        loadSeries();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String chosenUnit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default));
         switch (chosenUnit) {
