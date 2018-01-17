@@ -223,6 +223,7 @@ public class GraphInfo {
                     context.getString(R.string.info_min_current),
                     minCurrentMilliAmperes)
             );
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
@@ -236,6 +237,7 @@ public class GraphInfo {
                     context.getString(R.string.info_max_current),
                     maxCurrentMilliAmperes)
             );
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
@@ -248,6 +250,7 @@ public class GraphInfo {
                     context.getString(R.string.info_min_voltage),
                     minVoltage)
             );
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
@@ -260,6 +263,7 @@ public class GraphInfo {
                     context.getString(R.string.info_max_voltage),
                     maxVoltage)
             );
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
@@ -272,6 +276,7 @@ public class GraphInfo {
                     context.getString(R.string.info_charging_speed),
                     chargingSpeed)
             );
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setVisibility(View.GONE);
         }
