@@ -260,61 +260,78 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             return null;
         }
         DatabaseValue[] databaseValues = new DatabaseValue[cursor.getCount()];
-        DatabaseValue valueWithHighestTemp = null;
-        DatabaseValue valueWithLowestTemp = null;
-        DatabaseValue valueWithHighestBatteryLevel = null;
-        DatabaseValue valueWithHighestCurrent = null;
-        DatabaseValue valueWithLowestCurrent = null;
-        DatabaseValue valueWithHighestVoltage = null;
-        DatabaseValue valueWithLowestVoltage = null;
-        cursor.moveToPosition(0);
-        long startTime = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+        int firstBatteryLvl = 0;
+        int maxBatteryLvl = 0;
+        int minTemp = 0;
+        int maxTemp = 0;
+        int minVoltage = 0;
+        int maxVoltage = 0;
+        int minCurrent = 0;
+        int maxCurrent = 0;
+        long startTime = 0;
+        long time = 0;
+        double timeOfValueWithMaxBatteryLvlInMinutes = 0d;
         for (int i = 0; i < cursor.getCount(); i++) {
             cursor.moveToPosition(i);
             int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
             int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
             int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
             int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
-            long time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            if (i == 0) {
+                startTime = time;
+            }
             databaseValues[i] = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
-            if (valueWithHighestTemp == null || databaseValues[i].getTemperature() > valueWithHighestTemp.getTemperature()) {
-                valueWithHighestTemp = databaseValues[i];
+            if (i == 0) {
+                firstBatteryLvl = batteryLevel;
+                maxBatteryLvl = batteryLevel;
+                minTemp = temperature;
+                maxTemp = temperature;
+                minVoltage = voltage;
+                maxVoltage = voltage;
+                minCurrent = current;
+                maxCurrent = current;
+                continue;
             }
-            if (valueWithLowestTemp == null || databaseValues[i].getTemperature() < valueWithLowestTemp.getTemperature()) {
-                valueWithLowestTemp = databaseValues[i];
+            if (temperature > maxTemp) {
+                maxTemp = databaseValues[i].getTemperature();
             }
-            if (valueWithHighestBatteryLevel == null || databaseValues[i].getBatteryLevel() > valueWithHighestBatteryLevel.getBatteryLevel()) {
-                valueWithHighestBatteryLevel = databaseValues[i];
+            if (temperature < minTemp) {
+                minTemp = databaseValues[i].getTemperature();
             }
-            if (valueWithHighestCurrent == null || databaseValues[i].getCurrentInMilliAmperes(reverseCurrent) > valueWithHighestCurrent.getCurrentInMilliAmperes(reverseCurrent)) {
-                valueWithHighestCurrent = databaseValues[i];
+            if (batteryLevel > maxBatteryLvl) {
+                maxBatteryLvl = databaseValues[i].getBatteryLevel();
+                timeOfValueWithMaxBatteryLvlInMinutes = databaseValues[i].getTimeFromStartInMinutes();
             }
-            if (valueWithLowestCurrent == null || databaseValues[i].getCurrentInMilliAmperes(reverseCurrent) < valueWithLowestCurrent.getCurrentInMilliAmperes(reverseCurrent)) {
-                valueWithLowestCurrent = databaseValues[i];
+            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent)) {
+                maxCurrent = databaseValues[i].getCurrent();
             }
-            if (valueWithHighestVoltage == null || databaseValues[i].getVoltage() > valueWithHighestVoltage.getVoltage()) {
-                valueWithHighestVoltage = databaseValues[i];
+            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent)) {
+                minCurrent = databaseValues[i].getCurrent();
             }
-            if (valueWithLowestVoltage == null || databaseValues[i].getVoltage() < valueWithLowestVoltage.getVoltage()) {
-                valueWithLowestVoltage = databaseValues[i];
+            if (voltage > maxVoltage) {
+                maxVoltage = databaseValues[i].getVoltage();
+            }
+            if (voltage < minVoltage) {
+                minVoltage = databaseValues[i].getVoltage();
             }
         }
-        double timeToMaxBatteryLvlInHours = valueWithHighestBatteryLevel.getTimeFromStartInMinutes() / 60.0;
-        int percentageDiff = valueWithHighestBatteryLevel.getBatteryLevel() - databaseValues[0].getBatteryLevel();
+        double timeToMaxBatteryLvlInHours = timeOfValueWithMaxBatteryLvlInMinutes / 60.0;
+        int percentageDiff = maxBatteryLvl - firstBatteryLvl;
 
         GraphInfo graphInfo = new GraphInfo(
                 startTime,
-                databaseValues[databaseValues.length - 1].getUtcTimeInMillis(),
-                databaseValues[databaseValues.length - 1].getTimeFromStartInMinutes(),
-                valueWithHighestTemp.getTemperature(),
-                valueWithLowestTemp.getTemperature(),
+                time,
+                (time - startTime) / 60000.0,
+                maxTemp,
+                minTemp,
                 percentageDiff / timeToMaxBatteryLvlInHours,
-                valueWithLowestCurrent.getCurrent(),
-                valueWithHighestCurrent.getCurrent(),
-                valueWithLowestVoltage.getVoltageInVolts(),
-                valueWithHighestVoltage.getVoltageInVolts(),
-                valueWithHighestBatteryLevel.getBatteryLevel(),
-                databaseValues[0].getBatteryLevel(),
+                minCurrent,
+                maxCurrent,
+                DatabaseValue.convertToVolts(minVoltage),
+                DatabaseValue.convertToVolts(maxVoltage),
+                maxBatteryLvl,
+                firstBatteryLvl,
                 useFahrenheit,
                 reverseCurrent
         );
