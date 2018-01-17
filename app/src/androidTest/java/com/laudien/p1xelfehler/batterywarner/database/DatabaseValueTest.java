@@ -20,4 +20,21 @@ public class DatabaseValueTest {
         double actualOutput = DatabaseValue.convertToFahrenheit(inputValue);
         assertEquals(expectedOutput, actualOutput, 0d);
     }
+
+    @Test
+    public void getTimeFromStartInMinutesTest() {
+        // time = creation time
+        long timeNow = System.currentTimeMillis();
+        DatabaseValue databaseValue = new DatabaseValue(20, 200, 3500, -1500000, timeNow, timeNow);
+        assertEquals(0d, databaseValue.getTimeFromStartInMinutes(), 0d);
+    }
+
+    @Test
+    public void getTimeFromStartInMinutesTest2() {
+        // time != creation time
+        long timeNow = System.currentTimeMillis();
+        long timeValue = timeNow + 120000;
+        DatabaseValue databaseValue = new DatabaseValue(20, 200, 3500, -1500000, timeValue, timeNow);
+        assertEquals(2d, databaseValue.getTimeFromStartInMinutes(), 0d);
+    }
 }
