@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DatabaseValueTest {
     @Test
-    public void convertToCelsius() throws Exception {
+    public void convertToCelsiusTest() throws Exception {
         int inputValue = 300;
         double expectedOutput = 30.0;
         double actualOutput = DatabaseValue.convertToCelsius(inputValue);
@@ -14,11 +14,29 @@ public class DatabaseValueTest {
     }
 
     @Test
-    public void convertToFahrenheit() throws Exception {
+    public void convertToFahrenheitTest() throws Exception {
         int inputValue = 300;
         double expectedOutput = 86.0;
         double actualOutput = DatabaseValue.convertToFahrenheit(inputValue);
         assertEquals(expectedOutput, actualOutput, 0d);
+    }
+
+    @Test
+    public void convertToVoltsTest() {
+        int input = 4125;
+        double output = DatabaseValue.convertToVolts(input);
+        assertEquals(4.125, output, 0d);
+    }
+
+    @Test
+    public void convertToMilliAmperesTest() {
+        int input = -1234567;
+        double output = DatabaseValue.convertToMilliAmperes(input, false);
+        assertEquals(1234.567, output, 0d);
+
+        int input2 = 1234567;
+        double output2 = DatabaseValue.convertToMilliAmperes(input2, true);
+        assertEquals(1234.567, output2, 0d);
     }
 
     @Test

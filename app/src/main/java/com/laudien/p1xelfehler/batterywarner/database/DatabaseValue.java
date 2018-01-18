@@ -47,11 +47,11 @@ public class DatabaseValue {
     }
 
     public static double convertToMilliAmperes(int current, boolean reverseCurrent) {
-        return current / (reverseCurrent ? 1000 : -1000);
+        return (double) current / (reverseCurrent ? 1000.0 : -1000.0);
     }
 
     public static double convertToVolts(int voltage) {
-        return voltage / 1000;
+        return (double) voltage / 1000;
     }
 
     public static String getTemperatureString(int temperature, boolean useFahrenheit) {

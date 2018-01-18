@@ -218,6 +218,43 @@ public class DatabaseModelTest {
         }
     }
 
+    @Test
+    public void readDataTest7() {
+        // test for exact values
+        long timeNow = System.currentTimeMillis();
+        DatabaseValue inputValue = new DatabaseValue(23, 234, 4125, -1234567, timeNow, timeNow);
+        databaseModel.addValueTask(inputValue);
+        Data outputData = databaseModel.readData(databaseModel.getCursor(), false, false);
+        assertNotNull(outputData);
+        LineGraphSeries<DataPoint>[] graphs = outputData.getGraphs();
+        GraphInfo graphInfo = outputData.getGraphInfo();
+
+        // test graphs
+        assertEquals(23d, graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY(), 0d);
+        assertEquals(23d, graphs[GRAPH_INDEX_BATTERY_LEVEL].getLowestValueY(), 0d);
+        assertEquals(23.4, graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(), 0d);
+        assertEquals(23.4, graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(), 0d);
+        assertEquals(4.125, graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
+        assertEquals(4.125, graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY(), 0d);
+        assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+        assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+
+        // test graph info
+        assertEquals(timeNow, graphInfo.startTime);
+        assertEquals(timeNow, graphInfo.endTime);
+        assertEquals(23, graphInfo.firstBatteryLvl);
+        assertEquals(23, graphInfo.maxBatteryLvl);
+        assertEquals(0d, graphInfo.timeInMinutes, 0d);
+        assertEquals(234, graphInfo.maxTemp);
+        assertEquals(234, graphInfo.minTemp);
+        assertEquals(-1234567, graphInfo.minCurrent);
+        assertEquals(-1234567, graphInfo.maxCurrent);
+        assertEquals(0d, graphInfo.timeInMinutes, 0d);
+        assertEquals(4.125, graphInfo.minVoltage, 0d);
+        assertEquals(4.125, graphInfo.maxVoltage, 0d);
+
+    }
+
     private int getSize(LineGraphSeries<DataPoint> graph) {
         Iterator<DataPoint> iterator = graph.getValues(0d, Double.MAX_VALUE);
         int size = 0;
