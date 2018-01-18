@@ -27,7 +27,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class IntroActivity extends MaterialIntroActivity implements EasyModeSlide.EaseModeSlideDelegate {
 
     private PreferencesSlide preferencesSlide;
-    private EasyModeSlide easyModeSlide;
+    private boolean easyMode = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
                 .build()
         );
         // easy mode selection slide
-        easyModeSlide = new EasyModeSlide();
+        EasyModeSlide easyModeSlide = new EasyModeSlide();
         easyModeSlide.delegate = this;
         addSlide(easyModeSlide);
         // preference slide
@@ -79,7 +79,7 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.edit()
                 .putBoolean(getString(R.string.pref_first_start), false)
-                .putBoolean(getString(R.string.pref_easy_mode), easyModeSlide.easyMode)
+                .putBoolean(getString(R.string.pref_easy_mode), easyMode)
                 .apply();
         // start services
         ServiceHelper.startService(this);
@@ -91,6 +91,7 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
 
     @Override
     public void onModeSelected(boolean easyMode) {
+        this.easyMode = easyMode;
         if (preferencesSlide != null) {
             preferencesSlide.loadPreferences(easyMode);
         }

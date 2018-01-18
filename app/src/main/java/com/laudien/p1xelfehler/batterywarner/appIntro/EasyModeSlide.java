@@ -13,7 +13,6 @@ import agency.tango.materialintroscreen.SlideFragment;
 
 public class EasyModeSlide extends SlideFragment {
     public EaseModeSlideDelegate delegate;
-    public boolean easyMode = true;
 
     @Nullable
     @Override
@@ -23,8 +22,10 @@ public class EasyModeSlide extends SlideFragment {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                easyMode = i == R.id.btn_easy;
-                delegate.onModeSelected(easyMode);
+                if (delegate != null) {
+                    boolean easyMode = i == R.id.btn_easy;
+                    delegate.onModeSelected(easyMode);
+                }
             }
         });
         return view;
