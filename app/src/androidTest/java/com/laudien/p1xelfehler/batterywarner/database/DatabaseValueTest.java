@@ -2,6 +2,8 @@ package com.laudien.p1xelfehler.batterywarner.database;
 
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
 
 public class DatabaseValueTest {
@@ -54,5 +56,17 @@ public class DatabaseValueTest {
         long timeValue = timeNow + 120000;
         DatabaseValue databaseValue = new DatabaseValue(20, 200, 3500, -1500000, timeValue, timeNow);
         assertEquals(2d, databaseValue.getTimeFromStartInMinutes(), 0d);
+    }
+
+    @Test
+    public void getTemperatureStringTest() {
+        int temp = 281;
+        String expectedOutput = String.format(Locale.getDefault(), "%.1f °C", 28.1);
+        String output = DatabaseValue.getTemperatureString(temp, false);
+        assertEquals(expectedOutput, output);
+
+        String expectedOutput2 = String.format(Locale.getDefault(), "%.1f °F", 82.58);
+        String output2 = DatabaseValue.getTemperatureString(temp, true);
+        assertEquals(expectedOutput2, output2);
     }
 }
