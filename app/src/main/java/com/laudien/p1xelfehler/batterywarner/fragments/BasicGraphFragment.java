@@ -159,7 +159,7 @@ public abstract class BasicGraphFragment extends Fragment {
      * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
      * You can override it to only do it under some conditions.
      */
-    void loadSeries() {
+    void loadGraphs() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         final boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
         final boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
