@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_battery_status_full_green_48dp"
-        android:drawableStart="@mipmap/ic_launcher"
+        android:drawableStart="@drawable/ic_battery_status_full_green_48dp"
         android:gravity="center_vertical"
         android:text="@string/dialog_title_graph_info"
         android:textAppearance="@android:style/TextAppearance.DialogWindowTitle"
@@ -122,9 +122,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/dialog_button_close"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_totalTime" />
 </android.support.constraint.ConstraintLayout>
