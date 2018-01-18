@@ -83,16 +83,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             switches[GRAPH_INDEX_VOLTAGE].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
             );
+            loadGraphs();
         } else {
             setBigText(getString(R.string.toast_disabled_in_settings), true);
         }
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        loadGraphs();
     }
 
     @Override
