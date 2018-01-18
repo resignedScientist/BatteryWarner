@@ -142,12 +142,6 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        graphView.removeAllSeries();
-    }
-
     /**
      * Method that provides an array of the graphs that should be displayed.
      *
