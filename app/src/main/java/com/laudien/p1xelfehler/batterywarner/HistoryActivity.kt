@@ -72,6 +72,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
         btn_prev.setOnClickListener {
             viewPager.setCurrentItem(viewPager.currentItem - 1, true)
         }
+        viewPager.offscreenPageLimit = 2
         viewPager.adapter = adapter
         viewPager.addOnPageChangeListener(this)
         if (savedInstanceState == null) {
