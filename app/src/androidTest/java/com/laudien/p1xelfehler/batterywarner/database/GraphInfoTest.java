@@ -161,19 +161,16 @@ public class GraphInfoTest {
         TextView minTempText = dialog.findViewById(R.id.textView_minTemp);
         TextView maxTempText = dialog.findViewById(R.id.textView_maxTemp);
 
-        double minTemp = DatabaseValue.convertToFahrenheit(graphInfo.minTemp);
-        double maxTemp = DatabaseValue.convertToFahrenheit(graphInfo.maxTemp);
-
         String expectedMinTemp = String.format(
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_min_temp),
-                DatabaseValue.getTemperatureString(graphInfo.minTemp, true));
+                DatabaseValue.getTemperatureString(210, true));
         String expectedMaxTemp = String.format(
                 Locale.getDefault(),
                 "%s: %s",
                 context.getString(R.string.info_max_temp),
-                DatabaseValue.getTemperatureString(graphInfo.maxTemp, true));
+                DatabaseValue.getTemperatureString(243, true));
 
         // test data
         assertEquals(expectedMinTemp, minTempText.getText().toString());
