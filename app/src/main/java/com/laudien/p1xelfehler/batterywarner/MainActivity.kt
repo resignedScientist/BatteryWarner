@@ -46,7 +46,6 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         if (backPressed) {
             finishAffinity()
         } else {
