@@ -71,6 +71,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (graphEnabled) {
+            loadGraphs();
             switches[GRAPH_INDEX_BATTERY_LEVEL].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_percent), getResources().getBoolean(R.bool.switch_percentage_default))
             );
@@ -83,7 +84,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             switches[GRAPH_INDEX_VOLTAGE].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
             );
-            loadGraphs();
         } else {
             setBigText(getString(R.string.toast_disabled_in_settings), true);
         }
