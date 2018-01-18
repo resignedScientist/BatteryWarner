@@ -329,13 +329,4 @@ public class GraphInfo {
             return String.format(Locale.getDefault(), formats[2], timeInMinutes);
         }
     }
-
-    /**
-     * Returns the time of charging in minutes.
-     *
-     * @return Returns the time of charging in minutes.
-     */
-    public double getTimeInMinutes() {
-        return timeInMinutes;
-    }
 }

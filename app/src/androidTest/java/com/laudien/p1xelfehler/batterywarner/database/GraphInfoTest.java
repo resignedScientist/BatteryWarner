@@ -288,7 +288,7 @@ public class GraphInfoTest {
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
         assertEquals(firstValue.getCurrent(), graphInfo.minCurrent);
         assertEquals(firstValue.getCurrent(), graphInfo.maxCurrent);
-        assertEquals(firstValue.getTimeFromStartInMinutes(), graphInfo.getTimeInMinutes(), 0d);
+        assertEquals(firstValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.endTime);
 
@@ -302,7 +302,7 @@ public class GraphInfoTest {
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
         assertEquals(firstValue.getCurrent(), graphInfo.minCurrent);
         assertEquals(values[0].getCurrent(), graphInfo.maxCurrent);
-        assertEquals(values[0].getTimeFromStartInMinutes(), graphInfo.getTimeInMinutes(), 0d);
+        assertEquals(values[0].getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(values[0].getUtcTimeInMillis(), graphInfo.endTime);
     }

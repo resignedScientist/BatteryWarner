@@ -340,15 +340,13 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             }
         }
 
-        double timeInMinutes = (time - startTime) / 60000.0;
-        double timeToMaxBatteryLvlInHours = timeOfValueWithMaxBatteryLvl / 3600000.0;
-        int percentageDiff = maxBatteryLvl - firstBatteryLvl;
-        double chargingSpeed = percentageDiff / timeToMaxBatteryLvlInHours;
+        double chargingSpeed = cursor.getCount() < 2 ? Double.NaN :
+                3600000.0 * ((double) (maxBatteryLvl - firstBatteryLvl) / (double) (timeOfValueWithMaxBatteryLvl - startTime));
 
         GraphInfo graphInfo = new GraphInfo(
                 startTime,
                 time,
-                timeInMinutes,
+                lastValue.getTimeFromStartInMinutes(),
                 maxTemp,
                 minTemp,
                 chargingSpeed,

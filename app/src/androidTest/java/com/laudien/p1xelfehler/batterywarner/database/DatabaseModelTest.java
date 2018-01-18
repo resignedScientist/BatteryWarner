@@ -92,8 +92,8 @@ public class DatabaseModelTest {
         boolean reverseCurrent = false;
         DatabaseValue[] values = new DatabaseValue[]{
                 new DatabaseValue(20, 234, 5000, -1200000, timeNow, timeNow),
-                new DatabaseValue(50, 300, 5100, -1210000, timeNow + 1000000, timeNow),
-                new DatabaseValue(30, 250, 4900, -1000000, timeNow + 2000000, timeNow)
+                new DatabaseValue(50, 300, 5100, -1210000, timeNow + 90000000, timeNow),
+                new DatabaseValue(30, 250, 4900, -1000000, timeNow + 92000000, timeNow)
         };
         for (DatabaseValue value : values) {
             databaseModel.addValueTask(value);
@@ -108,9 +108,10 @@ public class DatabaseModelTest {
         assertEquals(values[1].getVoltageInVolts(), graphInfo.maxVoltage, 0d);
         assertEquals(values[2].getCurrent(), graphInfo.minCurrent);
         assertEquals(values[1].getCurrent(), graphInfo.maxCurrent);
-        assertEquals(values[2].getTimeFromStartInMinutes(), graphInfo.getTimeInMinutes(), 0d);
+        assertEquals(values[2].getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(values[0].getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(values[2].getUtcTimeInMillis(), graphInfo.endTime);
+        assertEquals(1.2, graphInfo.chargingSpeed, 0.001d);
     }
 
     @Test

@@ -56,6 +56,10 @@ public class DatabaseValueTest {
         long timeValue = timeNow + 120000;
         DatabaseValue databaseValue = new DatabaseValue(20, 200, 3500, -1500000, timeValue, timeNow);
         assertEquals(2d, databaseValue.getTimeFromStartInMinutes(), 0d);
+
+        long timeValue2 = timeNow + 90000000;
+        DatabaseValue databaseValue2 = new DatabaseValue(20, 200, 3500, -1500000, timeValue2, timeNow);
+        assertEquals(1500.0, databaseValue2.getTimeFromStartInMinutes(), 0d);
     }
 
     @Test
