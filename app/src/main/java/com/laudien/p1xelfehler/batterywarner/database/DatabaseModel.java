@@ -322,27 +322,21 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             if (valueIndex == 0)
                 continue;
 
-            if (temperature > maxTemp) {
+            if (temperature > maxTemp)
                 maxTemp = temperature;
-            }
-            if (temperature < minTemp) {
+            if (temperature < minTemp)
                 minTemp = temperature;
-            }
+            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent))
+                maxCurrent = current;
+            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent))
+                minCurrent = current;
+            if (voltage > maxVoltage)
+                maxVoltage = voltage;
+            if (voltage < minVoltage)
+                minVoltage = voltage;
             if (batteryLevel > maxBatteryLvl) {
                 maxBatteryLvl = batteryLevel;
                 timeOfValueWithMaxBatteryLvl = time;
-            }
-            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent)) {
-                maxCurrent = current;
-            }
-            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent)) {
-                minCurrent = current;
-            }
-            if (voltage > maxVoltage) {
-                maxVoltage = voltage;
-            }
-            if (voltage < minVoltage) {
-                minVoltage = voltage;
             }
         }
 
