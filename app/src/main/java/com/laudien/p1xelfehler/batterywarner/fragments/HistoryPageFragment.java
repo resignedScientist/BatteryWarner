@@ -32,7 +32,6 @@ public class HistoryPageFragment extends BasicGraphFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         if (savedInstanceState != null) {
             filePath = savedInstanceState.getString(Key_FILE_PATH);
         }
@@ -42,6 +41,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        setHasOptionsMenu(true);
         textView_title.setVisibility(View.GONE);
         loadSeries();
         return view;
