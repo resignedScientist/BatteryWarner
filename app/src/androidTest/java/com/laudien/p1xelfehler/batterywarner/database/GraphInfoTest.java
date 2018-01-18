@@ -47,8 +47,6 @@ public class GraphInfoTest {
         );
 
         // prepare data
-        double minTemp = DatabaseValue.convertToCelsius(graphInfo.minTemp);
-        double maxTemp = DatabaseValue.convertToCelsius(graphInfo.maxTemp);
         double minCurrent = DatabaseValue.convertToMilliAmperes(graphInfo.minCurrent, false);
         double maxCurrent = DatabaseValue.convertToMilliAmperes(graphInfo.maxCurrent, false);
 
