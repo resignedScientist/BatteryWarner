@@ -163,7 +163,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             AlertDialog.Builder(this).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_graph)
-                    .setIcon(R.mipmap.ic_launcher)
+                    .setIcon(R.drawable.ic_battery_status_full_green_48dp)
                     .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                         val currentPosition = viewPager.currentItem
                         if (adapter.deleteFile(currentPosition)) {
@@ -186,7 +186,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             AlertDialog.Builder(this).setCancelable(true)
                     .setTitle(R.string.dialog_title_are_you_sure)
                     .setMessage(R.string.dialog_message_delete_all_graphs)
-                    .setIcon(R.mipmap.ic_launcher)
+                    .setIcon(R.drawable.ic_battery_status_full_green_48dp)
                     .setPositiveButton(getString(R.string.dialog_button_yes)) { _, _ ->
                         if (adapter.deleteAllFiles()) {
                             ToastHelper.sendToast(this@HistoryActivity, R.string.toast_success_delete_all_graphs, LENGTH_SHORT)

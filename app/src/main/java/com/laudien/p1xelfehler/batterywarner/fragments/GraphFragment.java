@@ -342,7 +342,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     private void showResetDialog() {
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
-                .setIcon(R.mipmap.ic_launcher)
+                .setIcon(R.drawable.ic_battery_status_full_green_48dp)
                 .setTitle(R.string.dialog_title_are_you_sure)
                 .setMessage(R.string.dialog_message_delete_graph)
                 .setNegativeButton(R.string.dialog_button_cancel, null)
