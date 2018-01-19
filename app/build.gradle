@@ -84,8 +84,8 @@ dependencies {
     compile project(path: ':material-intro-screen')
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.ext.supportLibraryVersion"
-    compile "com.twofortyfouram:android-plugin-client-sdk-for-locale:$rootProject.ext.taskerVersion"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version" // Tasker
+    compile "com.twofortyfouram:android-plugin-client-sdk-for-locale:$rootProject.ext.taskerVersion" // Tasker
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
