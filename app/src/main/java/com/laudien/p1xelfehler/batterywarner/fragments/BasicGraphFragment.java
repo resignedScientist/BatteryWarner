@@ -206,7 +206,9 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         } else { // graph array is null
             for (CompoundButton s : switches) {
-                s.setEnabled(false);
+                if (s != null) {
+                    s.setEnabled(false);
+                }
             }
         }
     }

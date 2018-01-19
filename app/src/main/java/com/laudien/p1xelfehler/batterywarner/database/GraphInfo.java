@@ -242,8 +242,8 @@ public class GraphInfo {
                 DatabaseValue.getTemperatureString(maxTemp, useFahrenheit))
         );
         // min current
-        textView = dialog.findViewById(R.id.textView_minCurrent);
         if (SDK_INT >= LOLLIPOP) {
+            textView = dialog.findViewById(R.id.textView_minCurrent);
             double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
             if (!Double.isNaN(minCurrentMilliAmperes)) {
                 textView.setText(String.format(
@@ -256,12 +256,8 @@ public class GraphInfo {
             } else {
                 textView.setVisibility(View.GONE);
             }
-        } else { // API < LOLLIPOP
-            textView.setVisibility(View.GONE);
-        }
-        // max current
-        textView = dialog.findViewById(R.id.textView_maxCurrent);
-        if (SDK_INT >= LOLLIPOP) {
+            // max current
+            textView = dialog.findViewById(R.id.textView_maxCurrent);
             double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
             if (!Double.isNaN(maxCurrentMilliAmperes)) {
                 textView.setText(String.format(
@@ -274,8 +270,6 @@ public class GraphInfo {
             } else {
                 textView.setVisibility(View.GONE);
             }
-        } else { // API < LOLLIPOP
-            textView.setVisibility(View.GONE);
         }
         // min voltage
         textView = dialog.findViewById(R.id.textView_minVoltage);

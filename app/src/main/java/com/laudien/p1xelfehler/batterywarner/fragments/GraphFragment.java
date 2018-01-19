@@ -238,6 +238,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         }
         if (graphs == null) { // first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+                if (SDK_INT < LOLLIPOP && i == GRAPH_INDEX_CURRENT) {
+                    continue;
+                }
                 if (dataPoints[i] != null) {
                     if (graphs == null) { // only initialize graphs if any DataPoint is not null
                         graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
