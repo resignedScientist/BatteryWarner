@@ -1,7 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 
 import com.jjoe64.graphview.series.DataPoint;
 
@@ -187,9 +186,7 @@ public class DatabaseValue {
         dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
         dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
         dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
-        }
+        dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
         return dataPoints;
     }
 }

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,10 +21,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
-import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_VOLTAGE;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBER_OF_GRAPHS;
 
 /**
@@ -54,16 +54,28 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(
-                String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
-                        DatabaseContract.TABLE_NAME,
-                        DatabaseContract.TABLE_COLUMN_TIME,
-                        DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
-                        DatabaseContract.TABLE_COLUMN_TEMPERATURE,
-                        DatabaseContract.TABLE_COLUMN_VOLTAGE,
-                        DatabaseContract.TABLE_COLUMN_CURRENT
-                )
-        );
+        if (SDK_INT >= LOLLIPOP) {
+            sqLiteDatabase.execSQL(
+                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
+                            DatabaseContract.TABLE_NAME,
+                            DatabaseContract.TABLE_COLUMN_TIME,
+                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                            DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                            DatabaseContract.TABLE_COLUMN_CURRENT
+                    )
+            );
+        } else {
+            sqLiteDatabase.execSQL(
+                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER);",
+                            DatabaseContract.TABLE_NAME,
+                            DatabaseContract.TABLE_COLUMN_TIME,
+                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                            DatabaseContract.TABLE_COLUMN_VOLTAGE
+                    )
+            );
+        }
     }
 
     @Override
@@ -131,13 +143,23 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     @Override
     @Nullable
     public Cursor getCursor(@NonNull SQLiteDatabase database) {
-        String[] columns = {
-                DatabaseContract.TABLE_COLUMN_TIME,
-                DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
-                DatabaseContract.TABLE_COLUMN_TEMPERATURE,
-                DatabaseContract.TABLE_COLUMN_VOLTAGE,
-                DatabaseContract.TABLE_COLUMN_CURRENT
-        };
+        String[] columns;
+        if (SDK_INT >= LOLLIPOP) {
+            columns = new String[]{
+                    DatabaseContract.TABLE_COLUMN_TIME,
+                    DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                    DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                    DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                    DatabaseContract.TABLE_COLUMN_CURRENT
+            };
+        } else {
+            columns = new String[]{
+                    DatabaseContract.TABLE_COLUMN_TIME,
+                    DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                    DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                    DatabaseContract.TABLE_COLUMN_VOLTAGE
+            };
+        }
         return database.query(
                 DatabaseContract.TABLE_NAME,
                 columns,
@@ -269,8 +291,12 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             return null;
         }
         LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-        graphs[GRAPH_INDEX_BATTERY_LEVEL] = new LineGraphSeries();
-        graphs[GRAPH_INDEX_TEMPERATURE] = new LineGraphSeries();
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (i == GRAPH_INDEX_CURRENT && SDK_INT < LOLLIPOP) {
+                continue;
+            }
+            graphs[i] = new LineGraphSeries<>();
+        }
         int firstBatteryLvl = 0;
         int maxBatteryLvl = 0;
         int minTemp = 0;
@@ -289,7 +315,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
             int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
             int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
-            int current = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT));
+            int current = SDK_INT >= LOLLIPOP ? cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT)) : 0;
             time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
             if (valueIndex == 0) {
                 firstBatteryLvl = batteryLevel;
@@ -301,10 +327,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 minCurrent = current;
                 maxCurrent = current;
                 startTime = time;
-                if (voltage != 0)
-                    graphs[GRAPH_INDEX_VOLTAGE] = new LineGraphSeries<>();
-                if (current != 0)
-                    graphs[GRAPH_INDEX_CURRENT] = new LineGraphSeries<>();
             }
 
             DatabaseValue value = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
@@ -343,22 +365,40 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         double chargingSpeed = cursor.getCount() < 2 ? Double.NaN :
                 3600000.0 * ((double) (maxBatteryLvl - firstBatteryLvl) / (double) (timeOfValueWithMaxBatteryLvl - startTime));
 
-        GraphInfo graphInfo = new GraphInfo(
-                startTime,
-                time,
-                lastValue.getTimeFromStartInMinutes(),
-                maxTemp,
-                minTemp,
-                chargingSpeed,
-                minCurrent,
-                maxCurrent,
-                DatabaseValue.convertToVolts(minVoltage),
-                DatabaseValue.convertToVolts(maxVoltage),
-                maxBatteryLvl,
-                firstBatteryLvl,
-                useFahrenheit,
-                reverseCurrent
-        );
+        GraphInfo graphInfo;
+        if (SDK_INT >= LOLLIPOP) {
+            graphInfo = new GraphInfo(
+                    startTime,
+                    time,
+                    lastValue.getTimeFromStartInMinutes(),
+                    maxTemp,
+                    minTemp,
+                    chargingSpeed,
+                    minCurrent,
+                    maxCurrent,
+                    DatabaseValue.convertToVolts(minVoltage),
+                    DatabaseValue.convertToVolts(maxVoltage),
+                    maxBatteryLvl,
+                    firstBatteryLvl,
+                    useFahrenheit,
+                    reverseCurrent
+            );
+        } else {
+            graphInfo = new GraphInfo(
+                    startTime,
+                    time,
+                    lastValue.getTimeFromStartInMinutes(),
+                    maxTemp,
+                    minTemp,
+                    chargingSpeed,
+                    DatabaseValue.convertToVolts(minVoltage),
+                    DatabaseValue.convertToVolts(maxVoltage),
+                    maxBatteryLvl,
+                    firstBatteryLvl,
+                    useFahrenheit,
+                    reverseCurrent
+            );
+        }
 
         return new Data(graphs, graphInfo);
     }
@@ -381,7 +421,9 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
             contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
             contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
-            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+            }
             database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
             totalNumberOfRows = DatabaseUtils.queryNumEntries(database, DatabaseContract.TABLE_NAME);
             Log.d("DatabaseModel", "value added: " + value);

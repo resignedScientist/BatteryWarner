@@ -204,18 +204,14 @@ public class DatabaseModelTest {
         DatabaseValue value = new DatabaseValue(0, 0, 0, 0, timeNow, timeNow);
         databaseModel.addValueTask(value);
 
-        // check graphs -> every graph except batteryLevel and temperature needs to be null!
+        // check graphs -> no graph should be null
         Data data = databaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(data);
         LineGraphSeries[] output = data.getGraphs();
         assertNotNull(output);
         assertEquals(NUMBER_OF_GRAPHS, output.length);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            if (i == GRAPH_INDEX_BATTERY_LEVEL || i == GRAPH_INDEX_TEMPERATURE) {
-                assertNotNull(output[i]);
-            } else {
-                assertNull(output[i]);
-            }
+            assertNotNull(output[i]);
         }
     }
 

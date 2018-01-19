@@ -38,6 +38,8 @@ import java.util.Locale;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.BatteryManager.EXTRA_PLUGGED;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.support.annotation.Dimension.SP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
@@ -77,9 +79,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             switches[GRAPH_INDEX_TEMPERATURE].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_temperature), getResources().getBoolean(R.bool.switch_temperature_default))
             );
-            switches[GRAPH_INDEX_CURRENT].setChecked(
-                    sharedPreferences.getBoolean(getString(R.string.pref_checkBox_current), getResources().getBoolean(R.bool.switch_current_default))
-            );
+            if (SDK_INT >= LOLLIPOP) {
+                switches[GRAPH_INDEX_CURRENT].setChecked(
+                        sharedPreferences.getBoolean(getString(R.string.pref_checkBox_current), getResources().getBoolean(R.bool.switch_current_default))
+                );
+            }
             switches[GRAPH_INDEX_VOLTAGE].setChecked(
                     sharedPreferences.getBoolean(getString(R.string.pref_checkBox_voltage), getResources().getBoolean(R.bool.switch_voltage_default))
             );
@@ -119,12 +123,16 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     public void onPause() {
         super.onPause();
         if (graphEnabled) {
-            sharedPreferences.edit()
+            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+            sharedPreferencesEditor
                     .putBoolean(getString(R.string.pref_checkBox_percent), switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked())
                     .putBoolean(getString(R.string.pref_checkBox_temperature), switches[GRAPH_INDEX_TEMPERATURE].isChecked())
-                    .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked())
-                    .putBoolean(getString(R.string.pref_checkBox_voltage), switches[GRAPH_INDEX_VOLTAGE].isChecked())
-                    .apply();
+                    .putBoolean(getString(R.string.pref_checkBox_voltage), switches[GRAPH_INDEX_VOLTAGE].isChecked());
+            if (SDK_INT >= LOLLIPOP) {
+                sharedPreferencesEditor
+                        .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked());
+            }
+            sharedPreferencesEditor.apply();
             DatabaseModel.getInstance(getContext()).unregisterDatabaseListener(this);
             getContext().unregisterReceiver(chargingStateChangedReceiver);
         }

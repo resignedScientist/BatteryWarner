@@ -32,6 +32,8 @@ import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
@@ -114,11 +116,16 @@ public abstract class BasicGraphFragment extends Fragment {
         graphView = view.findViewById(R.id.graphView);
         switches[GRAPH_INDEX_BATTERY_LEVEL] = view.findViewById(R.id.switch_percentage);
         switches[GRAPH_INDEX_TEMPERATURE] = view.findViewById(R.id.switch_temp);
-        switches[GRAPH_INDEX_CURRENT] = view.findViewById(R.id.switch_current);
         switches[GRAPH_INDEX_VOLTAGE] = view.findViewById(R.id.switch_voltage);
+        if (SDK_INT >= LOLLIPOP) {
+            switches[GRAPH_INDEX_CURRENT] = view.findViewById(R.id.switch_current);
+        }
         // set the listener for each switch
-        for (CompoundButton s : switches) {
-            s.setOnCheckedChangeListener(onSwitchChangedListener);
+        for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (i == GRAPH_INDEX_CURRENT && SDK_INT < LOLLIPOP) {
+                continue;
+            }
+            switches[i].setOnCheckedChangeListener(onSwitchChangedListener);
         }
         textView_title = view.findViewById(R.id.textView_title);
         textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
@@ -165,7 +172,7 @@ public abstract class BasicGraphFragment extends Fragment {
                 if (graphs != null) {
                     styleGraphs(graphs);
                     for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                        if (switches[i].isChecked() && graphs[i] != null) {
+                        if (switches[i] != null && switches[i].isChecked() && graphs[i] != null) {
                             graphView.addSeries(graphs[i]);
                         }
                     }
@@ -185,6 +192,9 @@ public abstract class BasicGraphFragment extends Fragment {
     protected void enableOrDisableSwitches() {
         if (graphs != null) {
             for (byte i = 0; i < graphs.length; i++) {
+                if (switches[i] == null) {
+                    continue;
+                }
                 if (graphs[i] != null && graphs[i].getHighestValueX() > 0) {
                     switches[i].setEnabled(true);
                 } else { // the graph with the id i is null or has not enough data points
@@ -277,7 +287,7 @@ public abstract class BasicGraphFragment extends Fragment {
                     byte checkedSwitches = 0;
                     byte checkedSwitchId = -1;
                     for (byte i = 0; i < switches.length; i++) {
-                        if (switches[i].isChecked()) {
+                        if (switches[i] != null && switches[i].isChecked()) {
                             checkedSwitches++;
                             checkedSwitchId = i;
                         }
@@ -347,7 +357,9 @@ public abstract class BasicGraphFragment extends Fragment {
             int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
             colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
             colors[GRAPH_INDEX_TEMPERATURE] = Color.argb(255, 104, 159, 56);
-            colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
+            if (SDK_INT >= LOLLIPOP) {
+                colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
+            }
             // set colors
             for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (graphs[i] != null) {

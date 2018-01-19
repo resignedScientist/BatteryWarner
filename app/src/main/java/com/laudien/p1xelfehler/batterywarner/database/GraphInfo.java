@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,12 +15,17 @@ import com.laudien.p1xelfehler.batterywarner.R;
 import java.text.DateFormat;
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+
 /**
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
 public class GraphInfo {
     boolean useFahrenheit, reverseCurrent;
-    int maxBatteryLvl, firstBatteryLvl, maxTemp, minTemp, minCurrent, maxCurrent;
+    int maxBatteryLvl, firstBatteryLvl, maxTemp, minTemp;
+    @RequiresApi(LOLLIPOP)
+    int minCurrent, maxCurrent;
     double timeInMinutes, minVoltage, maxVoltage, chargingSpeed;
     long startTime, endTime;
     Dialog dialog;
@@ -33,6 +39,7 @@ public class GraphInfo {
      * @param minTemp       The minimal battery temperature while charging.
      * @param chargingSpeed The charging speed in percent per hour.
      */
+    @RequiresApi(LOLLIPOP)
     GraphInfo(long startTime, long endTime, double timeInMinutes, int maxTemp, int minTemp,
               double chargingSpeed, int minCurrent, int maxCurrent, double minVoltage,
               double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
@@ -44,6 +51,23 @@ public class GraphInfo {
         this.chargingSpeed = chargingSpeed;
         this.minCurrent = minCurrent;
         this.maxCurrent = maxCurrent;
+        this.minVoltage = minVoltage;
+        this.maxVoltage = maxVoltage;
+        this.maxBatteryLvl = maxBatteryLvl;
+        this.firstBatteryLvl = firstBatteryLvl;
+        this.useFahrenheit = useFahrenheit;
+        this.reverseCurrent = reverseCurrent;
+    }
+
+    GraphInfo(long startTime, long endTime, double timeInMinutes, int maxTemp, int minTemp,
+              double chargingSpeed, double minVoltage,
+              double maxVoltage, int maxBatteryLvl, int firstBatteryLvl, boolean useFahrenheit, boolean reverseCurrent) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.timeInMinutes = timeInMinutes;
+        this.maxTemp = maxTemp;
+        this.minTemp = minTemp;
+        this.chargingSpeed = chargingSpeed;
         this.minVoltage = minVoltage;
         this.maxVoltage = maxVoltage;
         this.maxBatteryLvl = maxBatteryLvl;
@@ -64,8 +88,10 @@ public class GraphInfo {
         this.maxTemp = temperature;
         this.minTemp = temperature;
         this.chargingSpeed = Double.NaN;
-        this.minCurrent = current;
-        this.maxCurrent = current;
+        if (SDK_INT >= LOLLIPOP) {
+            this.minCurrent = current;
+            this.maxCurrent = current;
+        }
         this.minVoltage = voltage;
         this.maxVoltage = voltage;
         this.maxBatteryLvl = batteryLevel;
@@ -127,13 +153,15 @@ public class GraphInfo {
             int percentageDiff = maxBatteryLvl - firstBatteryLvl;
             chargingSpeed = percentageDiff / timeInHours;
         }
-        int current = value.getCurrent();
-        int currentToCompare = current * (reverseCurrent ? 1 : -1);
-        if (currentToCompare > maxCurrent) {
-            maxCurrent = current;
-        }
-        if (currentToCompare < minCurrent) {
-            minCurrent = current;
+        if (SDK_INT >= LOLLIPOP) {
+            int current = value.getCurrent();
+            int currentToCompare = current * (reverseCurrent ? 1 : -1);
+            if (currentToCompare > maxCurrent) {
+                maxCurrent = current;
+            }
+            if (currentToCompare < minCurrent) {
+                minCurrent = current;
+            }
         }
         double voltage = value.getVoltageInVolts();
         if (voltage > maxVoltage) {
@@ -215,30 +243,38 @@ public class GraphInfo {
         );
         // min current
         textView = dialog.findViewById(R.id.textView_minCurrent);
-        double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
-        if (!Double.isNaN(minCurrentMilliAmperes)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f mAh",
-                    context.getString(R.string.info_min_current),
-                    minCurrentMilliAmperes)
-            );
-            textView.setVisibility(View.VISIBLE);
-        } else {
+        if (SDK_INT >= LOLLIPOP) {
+            double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
+            if (!Double.isNaN(minCurrentMilliAmperes)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f mAh",
+                        context.getString(R.string.info_min_current),
+                        minCurrentMilliAmperes)
+                );
+                textView.setVisibility(View.VISIBLE);
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+        } else { // API < LOLLIPOP
             textView.setVisibility(View.GONE);
         }
         // max current
         textView = dialog.findViewById(R.id.textView_maxCurrent);
-        double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
-        if (!Double.isNaN(maxCurrentMilliAmperes)) {
-            textView.setText(String.format(
-                    Locale.getDefault(),
-                    "%s: %.1f mAh",
-                    context.getString(R.string.info_max_current),
-                    maxCurrentMilliAmperes)
-            );
-            textView.setVisibility(View.VISIBLE);
-        } else {
+        if (SDK_INT >= LOLLIPOP) {
+            double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
+            if (!Double.isNaN(maxCurrentMilliAmperes)) {
+                textView.setText(String.format(
+                        Locale.getDefault(),
+                        "%s: %.1f mAh",
+                        context.getString(R.string.info_max_current),
+                        maxCurrentMilliAmperes)
+                );
+                textView.setVisibility(View.VISIBLE);
+            } else {
+                textView.setVisibility(View.GONE);
+            }
+        } else { // API < LOLLIPOP
             textView.setVisibility(View.GONE);
         }
         // min voltage
