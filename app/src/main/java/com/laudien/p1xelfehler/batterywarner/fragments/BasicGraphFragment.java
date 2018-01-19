@@ -177,6 +177,11 @@ public abstract class BasicGraphFragment extends Fragment {
         });
     }
 
+    protected void removeAllGraphs() {
+        graphView.removeAllSeries();
+        graphs = null;
+    }
+
     protected void enableOrDisableSwitches() {
         if (graphs != null) {
             for (byte i = 0; i < graphs.length; i++) {
