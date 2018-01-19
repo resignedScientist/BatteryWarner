@@ -14,7 +14,10 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class GraphInfoTest {
     Context context;
@@ -121,8 +124,13 @@ public class GraphInfoTest {
         assertEquals(expectedEndTime, endTimeText.getText().toString());
         assertEquals(expectedMinTemp, minTempText.getText().toString());
         assertEquals(expectedMaxTemp, maxTempText.getText().toString());
-        assertEquals(expectedMinCurrent, minCurrentText.getText().toString());
-        assertEquals(expectedMaxCurrent, maxCurrentText.getText().toString());
+        if (SDK_INT >= LOLLIPOP) {
+            assertEquals(expectedMinCurrent, minCurrentText.getText().toString());
+            assertEquals(expectedMaxCurrent, maxCurrentText.getText().toString());
+        } else {
+            assertNull(minCurrentText);
+            assertNull(maxCurrentText);
+        }
         assertEquals(expectedMinVoltage, minVoltageText.getText().toString());
         assertEquals(expectedMaxVoltage, maxVoltageText.getText().toString());
         assertEquals(expectedChargingSpeed, chargingSpeedText.getText().toString());
@@ -220,8 +228,13 @@ public class GraphInfoTest {
                 maxCurrent);
 
         // test data
-        assertEquals(expectedMinCurrent, minCurrentText.getText().toString());
-        assertEquals(expectedMaxCurrent, maxCurrentText.getText().toString());
+        if (SDK_INT >= LOLLIPOP) {
+            assertEquals(expectedMinCurrent, minCurrentText.getText().toString());
+            assertEquals(expectedMaxCurrent, maxCurrentText.getText().toString());
+        } else {
+            assertNull(minCurrentText);
+            assertNull(maxCurrentText);
+        }
     }
 
     @Test
@@ -243,8 +256,9 @@ public class GraphInfoTest {
         assertEquals(inputValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(inputValue.getTemperature(), graphInfo.maxTemp);
         assertEquals(inputValue.getTemperature(), graphInfo.minTemp);
-        assertEquals(inputValue.getCurrent(), graphInfo.minCurrent);
-        assertEquals(inputValue.getCurrent(), graphInfo.maxCurrent);
+        int expectedCurrent = SDK_INT >= LOLLIPOP ? inputValue.getCurrent() : 0;
+        assertEquals(expectedCurrent, graphInfo.minCurrent);
+        assertEquals(expectedCurrent, graphInfo.maxCurrent);
         assertEquals(inputValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(inputValue.getVoltageInVolts(), graphInfo.minVoltage, 0d);
         assertEquals(inputValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
@@ -286,8 +300,9 @@ public class GraphInfoTest {
         assertEquals(firstValue.getTemperature(), graphInfo.maxTemp);
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.minVoltage, 0d);
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
-        assertEquals(firstValue.getCurrent(), graphInfo.minCurrent);
-        assertEquals(firstValue.getCurrent(), graphInfo.maxCurrent);
+        int expectedCurrent = SDK_INT >= LOLLIPOP ? firstValue.getCurrent() : 0;
+        assertEquals(expectedCurrent, graphInfo.minCurrent);
+        assertEquals(expectedCurrent, graphInfo.maxCurrent);
         assertEquals(firstValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.endTime);
@@ -300,8 +315,10 @@ public class GraphInfoTest {
         assertEquals(firstValue.getTemperature(), graphInfo.maxTemp);
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.minVoltage, 0d);
         assertEquals(firstValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
-        assertEquals(firstValue.getCurrent(), graphInfo.minCurrent);
-        assertEquals(values[0].getCurrent(), graphInfo.maxCurrent);
+        int expectedMinCurrent = SDK_INT >= LOLLIPOP ? firstValue.getCurrent() : 0;
+        int expectedMaxCurrent = SDK_INT >= LOLLIPOP ? values[0].getCurrent() : 0;
+        assertEquals(expectedMinCurrent, graphInfo.minCurrent);
+        assertEquals(expectedMaxCurrent, graphInfo.maxCurrent);
         assertEquals(values[0].getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(firstValue.getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(values[0].getUtcTimeInMillis(), graphInfo.endTime);

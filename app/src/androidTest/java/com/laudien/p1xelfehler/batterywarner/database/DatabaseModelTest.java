@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import java.util.Iterator;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
@@ -59,9 +61,16 @@ public class DatabaseModelTest {
         assertEquals(inputValue.getBatteryLevel(), graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueY(), 0d);
         assertEquals(inputValue.getTemperatureInCelsius(), graphs[GRAPH_INDEX_TEMPERATURE].getHighestValueY(), 0d);
         assertEquals(inputValue.getVoltageInVolts(), graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
-        assertEquals(inputValue.getCurrentInMilliAmperes(false), graphs[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+        if (SDK_INT > LOLLIPOP) {
+            assertEquals(inputValue.getCurrentInMilliAmperes(false), graphs[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+        } else {
+            assertNull(graphs[GRAPH_INDEX_CURRENT]);
+        }
 
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (SDK_INT < LOLLIPOP && i == GRAPH_INDEX_CURRENT) {
+                continue;
+            }
             assertEquals(0d, graphs[i].getHighestValueX(), 0d);
             assertEquals(0d, graphs[i].getLowestValueX(), 0d);
         }
@@ -76,8 +85,9 @@ public class DatabaseModelTest {
         assertEquals(inputValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(inputValue.getTemperature(), graphInfo.maxTemp);
         assertEquals(inputValue.getTemperature(), graphInfo.minTemp);
-        assertEquals(inputValue.getCurrent(), graphInfo.minCurrent);
-        assertEquals(inputValue.getCurrent(), graphInfo.maxCurrent);
+        int expectedCurrent = SDK_INT >= LOLLIPOP ? inputValue.getCurrent() : 0;
+        assertEquals(expectedCurrent, graphInfo.minCurrent);
+        assertEquals(expectedCurrent, graphInfo.maxCurrent);
         assertEquals(inputValue.getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(inputValue.getVoltageInVolts(), graphInfo.minVoltage, 0d);
         assertEquals(inputValue.getVoltageInVolts(), graphInfo.maxVoltage, 0d);
@@ -106,8 +116,10 @@ public class DatabaseModelTest {
         assertEquals(values[1].getTemperature(), graphInfo.maxTemp);
         assertEquals(values[2].getVoltageInVolts(), graphInfo.minVoltage, 0d);
         assertEquals(values[1].getVoltageInVolts(), graphInfo.maxVoltage, 0d);
-        assertEquals(values[2].getCurrent(), graphInfo.minCurrent);
-        assertEquals(values[1].getCurrent(), graphInfo.maxCurrent);
+        int expectedMinCurrent = SDK_INT >= LOLLIPOP ? values[2].getCurrent() : 0;
+        int expectedMaxCurrent = SDK_INT >= LOLLIPOP ? values[1].getCurrent() : 0;
+        assertEquals(expectedMinCurrent, graphInfo.minCurrent);
+        assertEquals(expectedMaxCurrent, graphInfo.maxCurrent);
         assertEquals(values[2].getTimeFromStartInMinutes(), graphInfo.timeInMinutes, 0d);
         assertEquals(values[0].getUtcTimeInMillis(), graphInfo.startTime);
         assertEquals(values[2].getUtcTimeInMillis(), graphInfo.endTime);
@@ -140,8 +152,12 @@ public class DatabaseModelTest {
         assertEquals(values[2].getTemperatureInCelsius(), output[GRAPH_INDEX_TEMPERATURE].getLowestValueY(), 0d);
         assertEquals(values[2].getVoltageInVolts(), output[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
         assertEquals(values[0].getVoltageInVolts(), output[GRAPH_INDEX_VOLTAGE].getLowestValueY(), 0d);
-        assertEquals(values[0].getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
-        assertEquals(values[2].getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        if (SDK_INT < LOLLIPOP) {
+            assertNull(output[GRAPH_INDEX_CURRENT]);
+        } else {
+            assertEquals(values[0].getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+            assertEquals(values[2].getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        }
 
         // check x axis
         assertEquals(0d, output[0].getLowestValueX(), 0d);
@@ -175,6 +191,10 @@ public class DatabaseModelTest {
         assertNotNull(data);
         LineGraphSeries[] output = data.getGraphs();
         for (LineGraphSeries graph : output) {
+            if (SDK_INT < LOLLIPOP && graph == output[GRAPH_INDEX_CURRENT]) {
+                assertNull(graph);
+                continue;
+            }
             int size = getSize(graph);
             assertEquals(2, size);
         }
@@ -186,12 +206,17 @@ public class DatabaseModelTest {
         assertEquals(value.getTemperatureInCelsius(), output[GRAPH_INDEX_TEMPERATURE].getLowestValueY(), 0d);
         assertEquals(value.getVoltageInVolts(), output[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
         assertEquals(value.getVoltageInVolts(), output[GRAPH_INDEX_VOLTAGE].getLowestValueY(), 0d);
-        assertEquals(value.getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
-        assertEquals(value.getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        if (SDK_INT >= LOLLIPOP) {
+            assertEquals(value.getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+            assertEquals(value.getCurrentInMilliAmperes(false), output[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        }
 
         // check x axis
         assertEquals(0d, output[0].getLowestValueX(), 0d);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (SDK_INT < LOLLIPOP && i == GRAPH_INDEX_CURRENT) {
+                continue;
+            }
             assertEquals(databaseValues[databaseValues.length - 1].getTimeFromStartInMinutes(), output[i].getHighestValueX(), 0d);
         }
     }
@@ -211,7 +236,10 @@ public class DatabaseModelTest {
         assertNotNull(output);
         assertEquals(NUMBER_OF_GRAPHS, output.length);
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            assertNotNull(output[i]);
+            if (SDK_INT < LOLLIPOP && i == GRAPH_INDEX_CURRENT)
+                assertNull(output[i]);
+            else
+                assertNotNull(output[i]);
         }
     }
 
@@ -233,8 +261,10 @@ public class DatabaseModelTest {
         assertEquals(23.4, graphs[GRAPH_INDEX_TEMPERATURE].getLowestValueY(), 0d);
         assertEquals(4.125, graphs[GRAPH_INDEX_VOLTAGE].getHighestValueY(), 0d);
         assertEquals(4.125, graphs[GRAPH_INDEX_VOLTAGE].getLowestValueY(), 0d);
-        assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
-        assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        if (SDK_INT >= LOLLIPOP) {
+            assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getHighestValueY(), 0d);
+            assertEquals(1234.567, graphs[GRAPH_INDEX_CURRENT].getLowestValueY(), 0d);
+        }
 
         // test graph info
         assertEquals(timeNow, graphInfo.startTime);
@@ -244,8 +274,9 @@ public class DatabaseModelTest {
         assertEquals(0d, graphInfo.timeInMinutes, 0d);
         assertEquals(234, graphInfo.maxTemp);
         assertEquals(234, graphInfo.minTemp);
-        assertEquals(-1234567, graphInfo.minCurrent);
-        assertEquals(-1234567, graphInfo.maxCurrent);
+        int expectedCurrent = SDK_INT >= LOLLIPOP ? -1234567 : 0;
+        assertEquals(expectedCurrent, graphInfo.minCurrent);
+        assertEquals(expectedCurrent, graphInfo.maxCurrent);
         assertEquals(0d, graphInfo.timeInMinutes, 0d);
         assertEquals(4.125, graphInfo.minVoltage, 0d);
         assertEquals(4.125, graphInfo.maxVoltage, 0d);
