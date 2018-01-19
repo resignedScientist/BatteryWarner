@@ -43,5 +43,12 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/info_fragment_text_size"
             tools:text="Spannung: 3,5V" />
+
+        <TextView
+            android:id="@+id/textView_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/info_fragment_text_size"
+            tools:text="Stromstärke: 1500mAh" />
     </LinearLayout>
 </ScrollView>

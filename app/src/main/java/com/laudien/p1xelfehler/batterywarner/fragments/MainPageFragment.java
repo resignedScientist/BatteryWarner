@@ -21,7 +21,6 @@ import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.INDEX_HEALTH;
@@ -67,10 +66,6 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
         textView_batteryLevel = view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = view.findViewById(R.id.textView_voltage);
         textView_current = view.findViewById(R.id.textView_current);
-        // hide current on not supported devices
-        if (SDK_INT < LOLLIPOP) {
-            textView_current.setVisibility(GONE);
-        }
         return view;
     }
 
@@ -118,7 +113,9 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
                 textView_voltage.setText(batteryData.getValueString(index));
                 break;
             case INDEX_CURRENT:
-                textView_current.setText(batteryData.getValueString(index));
+                if (SDK_INT >= LOLLIPOP) {
+                    textView_current.setText(batteryData.getValueString(index));
+                }
                 break;
         }
     }

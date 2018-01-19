@@ -1067,6 +1067,9 @@ public class BackgroundService extends Service {
             BackgroundService.this.listener = listener;
             // trigger listener for all values for initialization
             for (byte i = 0; i < BatteryData.NUMBER_OF_ITEMS; i++) {
+                if (i == BatteryData.INDEX_CURRENT && SDK_INT < LOLLIPOP) {
+                    continue;
+                }
                 listener.onBatteryValueChanged(batteryData, i);
             }
         }
