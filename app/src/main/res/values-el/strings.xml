@@ -222,4 +222,5 @@
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
 
     <string name="unit_days">\ days</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>

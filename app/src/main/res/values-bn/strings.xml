@@ -226,4 +226,5 @@
     <!-- Please write the translation to 'Low battery warning' here instead -->
     <string name="title_warning_low">ব্যবহৃত চার্জের সার্ভিস</string>
     <string name="toast_error_unknown">Unknown error!</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>

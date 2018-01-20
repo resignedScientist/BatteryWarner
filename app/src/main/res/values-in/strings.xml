@@ -227,4 +227,5 @@
     <string name="title_warning_high">Layanan pengisian</string>
     <!-- Please write the translation to 'Low battery warning' here instead -->
     <string name="title_warning_low">Layanan Pemakaian</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>

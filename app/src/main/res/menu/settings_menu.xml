@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_faq"
+        android:title="FAQ (frequently asked questions)"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_contact_developer"
         android:title="@string/menu_contact_developer"
         app:showAsAction="never" />

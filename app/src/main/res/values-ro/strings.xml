@@ -225,4 +225,5 @@
     <string name="title_warning_high">Serviciu Încărcare</string>
     <!-- Please write the translation to 'Low battery warning' here instead -->
     <string name="title_warning_low">Serviciu Descărcare</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>

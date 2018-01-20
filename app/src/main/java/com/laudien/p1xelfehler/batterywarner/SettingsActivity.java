@@ -54,8 +54,11 @@ public class SettingsActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_faq:
+                openLink(getString(R.string.link_faq));
+                return true;
             case R.id.menu_donate:
-                donate();
+                openLink(getString(R.string.link_donation));
                 return true;
             case R.id.menu_contact_developer:
                 contactDeveloper();
@@ -82,9 +85,9 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    private void donate() {
-        Uri webpage = Uri.parse(getString(R.string.link_donation));
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+    private void openLink(String url) {
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
