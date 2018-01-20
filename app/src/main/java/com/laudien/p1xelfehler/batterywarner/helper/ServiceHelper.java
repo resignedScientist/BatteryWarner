@@ -2,7 +2,10 @@ package com.laudien.p1xelfehler.batterywarner.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -22,6 +25,11 @@ public class ServiceHelper {
     }
 
     public static void restartService(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean firstStart = sharedPreferences.getBoolean(context.getString(R.string.pref_first_start), true);
+        if (firstStart) {
+            return;
+        }
         Intent intent = getIntent(context);
         context.stopService(intent);
         startService(context, intent);
