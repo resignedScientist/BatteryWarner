@@ -65,6 +65,8 @@
     <string name="intro_slide_prefs_description">Choose your settings right here!</string>
     <string name="intro_slide_prefs_title">Let\'s get started!</string>
 
+    <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-en/</string>
+
     <string name="menu_contact_developer">Contact the developer</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_all">Delete all</string>
@@ -200,6 +202,7 @@
     <string name="toast_error_renaming">Renaming failed!</string>
     <string name="toast_error_renaming_wrong_characters">Not allowed character(s) used! Renaming failed!</string>
     <string name="toast_error_saving">Saving failed!</string>
+    <string name="toast_error_unknown">Unknown error!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
     <string name="toast_invalid_tasker_settings">Invalid settings!</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
@@ -219,5 +222,4 @@
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
 
     <string name="unit_days">\ days</string>
-    <string name="toast_error_unknown">Unknown error!</string>
 </resources>

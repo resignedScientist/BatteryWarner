@@ -59,6 +59,8 @@
     <string name="intro_slide_prefs_description">প্রয়োজনমত অ্যাপ ব্যবস্থাপনা এখান থেকে করুন!</string>
     <string name="intro_slide_prefs_title">তাহলে শুরু করা যাক!</string>
 
+    <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-de/</string>
+
     <string name="menu_contact_developer">ডেভেলপারের সাথে যোগাযোগ</string>
     <string name="menu_delete">বাতিল</string>
     <string name="menu_delete_all">সবগুলো বাগিল</string>

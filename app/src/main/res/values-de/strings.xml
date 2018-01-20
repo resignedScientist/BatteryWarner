@@ -65,6 +65,8 @@
     <string name="intro_slide_prefs_description">Stelle hier direkt alles ein!</string>
     <string name="intro_slide_prefs_title">Und los geht\'s!</string>
 
+    <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-en/</string>
+
     <string name="menu_contact_developer">Entwickler kontaktieren</string>
     <string name="menu_delete">Löschen</string>
     <string name="menu_delete_all">Alle löschen</string>

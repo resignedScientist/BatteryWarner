@@ -65,6 +65,8 @@
     <string name="intro_slide_prefs_description">Pilih pengsturan anda disini!</string>
     <string name="intro_slide_prefs_title"> Mari mulai!</string>
 
+    <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-en/</string>
+
     <string name="menu_contact_developer">Hubungi Pengembang</string>
     <string name="menu_delete">Hapus</string>
     <string name="menu_delete_all">Hapus semua</string>

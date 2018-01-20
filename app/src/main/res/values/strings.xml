@@ -36,9 +36,6 @@
     <string name="dialog_title_graph_info">Graph information</string>
     <string name="dialog_title_information">Information</string>
 
-    <!-- the donation link -->
-    <string name="donation_link" translatable="false">https://www.paypal.me/p1xelfehler</string>
-
     <!-- battery health -->
     <string name="health_cold">Cold</string>
     <string name="health_dead">Dead</string>
@@ -81,6 +78,10 @@
     <string name="intro_slide_3_title">For the longest life, you have to charge \"flat\"!</string>
     <string name="intro_slide_prefs_description">Choose your settings right here!</string>
     <string name="intro_slide_prefs_title">Let\'s get started!</string>
+
+    <!-- Links -->
+    <string name="link_donation" translatable="false">https://www.paypal.me/p1xelfehler</string>
+    <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-en/</string>
 
     <!-- menu items -->
     <string name="menu_contact_developer">Contact the developer</string>

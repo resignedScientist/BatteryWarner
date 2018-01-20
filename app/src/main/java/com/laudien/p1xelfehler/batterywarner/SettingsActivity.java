@@ -83,7 +83,7 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void donate() {
-        Uri webpage = Uri.parse(getString(R.string.donation_link));
+        Uri webpage = Uri.parse(getString(R.string.link_donation));
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
