@@ -198,6 +198,7 @@
     <string name="toast_error_renaming">Umbenennen fehlgeschlagen!</string>
     <string name="toast_error_renaming_wrong_characters">Nicht erlaube Zeichen verwendet! Umbenennung fehlgeschlagen!</string>
     <string name="toast_error_saving">Speichern fehlgeschlagen!</string>
+    <string name="toast_error_unknown">Unbekannter Fehler!</string>
     <string name="toast_graph_name_already_exists">Es gibt bereits einen Graphen mit dem Namen</string>
     <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
     <string name="toast_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>

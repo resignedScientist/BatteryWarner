@@ -216,6 +216,7 @@
     <!-- new strings -->
     <string name="title_android_notification_settings">Open notification settings</string>
     <string name="title_notification_settings">Notification settings</string>
+    <string name="toast_error_unknown">Unknown error!</string>
 
     <!-- Changes -->
     <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
