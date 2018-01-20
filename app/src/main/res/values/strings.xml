@@ -280,6 +280,7 @@
     <string name="toast_error_renaming">Renaming failed!</string>
     <string name="toast_error_renaming_wrong_characters">Not allowed character(s) used! Renaming failed!</string>
     <string name="toast_error_saving">Saving failed!</string>
+    <string name="toast_error_unknown">Unknown error!</string>
     <string name="toast_graph_name_already_exists">There already is a graph named</string>
     <string name="toast_invalid_tasker_settings">Invalid settings!</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>

@@ -15,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
@@ -26,7 +25,8 @@ import com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver
 import static android.content.Context.ALARM_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.widget.Toast.LENGTH_SHORT;
+import static android.os.Build.VERSION_CODES.M;
+import static android.widget.Toast.LENGTH_LONG;
 import static com.laudien.p1xelfehler.batterywarner.receivers.RootCheckFinishedReceiver.ACTION_ROOT_CHECK_FINISHED;
 
 public class SmartChargingFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -97,43 +97,46 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Context context = SDK_INT >= M ? getContext() : getActivity();
+        if (context == null) {
+            return;
+        }
         if (key.equals(getString(R.string.pref_smart_charging_enabled))) {
             final TwoStatePreference preference = (TwoStatePreference) findPreference(key);
             boolean stopChargingEnabled = sharedPreferences.getBoolean(getString(R.string.pref_stop_charging), getResources().getBoolean(R.bool.pref_stop_charging_default));
-            if (getActivity() != null) {
-                if (!stopChargingEnabled) {
-                    ToastHelper.sendToast(getActivity(), R.string.toast_stop_charging_not_enabled, LENGTH_SHORT);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            preference.setChecked(false);
-                        }
-                    }, getResources().getInteger(R.integer.pref_switch_back_delay));
-                } else {
-                    RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
-                }
+            if (!stopChargingEnabled) {
+                moveBackSwitch(preference, R.string.toast_stop_charging_not_enabled);
+            } else {
+                RootHelper.handleRootDependingPreference(getActivity(), preference.getKey());
             }
         } else if (SDK_INT >= LOLLIPOP && key.equals(getString(R.string.pref_smart_charging_use_alarm_clock_time))) {
             if (alarmTimeSwitch.isChecked()) { // remove preference key if checked to force the preference to always load the default alarm time
-                Context context = getActivity().getApplicationContext();
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                if (alarmManager == null) {
+                    moveBackSwitch(alarmTimeSwitch, R.string.toast_error_unknown);
+                    return;
+                }
                 AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
                 if (alarmClockInfo != null) {
                     sharedPreferences.edit().remove(timePickerPreference.getKey()).apply();
                 } else {
-                    ToastHelper.sendToast(context, R.string.toast_no_alarm_time_found, Toast.LENGTH_LONG);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            alarmTimeSwitch.setChecked(false);
-                        }
-                    }, getResources().getInteger(R.integer.pref_switch_back_delay));
+                    moveBackSwitch(alarmTimeSwitch, R.string.toast_no_alarm_time_found);
                 }
             } else { // if unchecked, save the time string to shared preferences
                 sharedPreferences.edit().putLong(timePickerPreference.getKey(), timePickerPreference.getTime()).apply();
             }
             timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
         }
+    }
+
+    private void moveBackSwitch(final TwoStatePreference preference, int messageRes) {
+        ToastHelper.sendToast(getActivity(), messageRes, LENGTH_LONG);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                preference.setChecked(false);
+            }
+        }, getResources().getInteger(R.integer.pref_switch_back_delay));
     }
 
     private void openInfoDialog() {
