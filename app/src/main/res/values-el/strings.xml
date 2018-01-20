@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
+    <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
+
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
     <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
@@ -71,6 +73,7 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_delete_all">Delete all</string>
     <string name="menu_donate">Donate</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
     <string name="menu_open_history">Open history</string>
     <string name="menu_rename">Rename</string>
     <string name="menu_rename_graph">Rename graph</string>
@@ -222,5 +225,4 @@
     <string name="toast_theme_changed">The theme will be enabled when you close the settings!</string>
 
     <string name="unit_days">\ days</string>
-    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>

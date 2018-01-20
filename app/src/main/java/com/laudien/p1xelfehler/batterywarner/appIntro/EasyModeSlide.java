@@ -1,5 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.appIntro;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -25,6 +27,16 @@ public class EasyModeSlide extends SlideFragment {
                 if (delegate != null) {
                     boolean easyMode = i == R.id.btn_easy;
                     delegate.onModeSelected(easyMode);
+                }
+            }
+        });
+        view.findViewById(R.id.btn_faq).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse(getString(R.string.link_faq));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
+                    startActivity(intent);
                 }
             }
         });

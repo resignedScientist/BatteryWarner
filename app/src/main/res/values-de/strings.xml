@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+    <string name="button_open_faq">FAQ öffnen (häufig gestellte Fragen)</string>
+
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
     <string name="channel_description_warning_high">Die \'Der Akkustand ist höher als x%\' Warnung.</string>

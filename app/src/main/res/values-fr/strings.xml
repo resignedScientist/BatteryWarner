@@ -217,6 +217,8 @@
     <string name="title_android_notification_settings">Open notification settings</string>
     <string name="title_notification_settings">Notification settings</string>
     <string name="toast_error_unknown">Unknown error!</string>
+    <string name="menu_faq">FAQ (frequently asked questions)</string>
+    <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
 
     <!-- Changes -->
     <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
@@ -225,5 +227,4 @@
     <string name="title_warning_high">Service pour la charge</string>
     <!-- Please write the translation to 'Low battery warning' here instead -->
     <string name="title_warning_low">Service pour la décharge</string>
-    <string name="menu_faq">FAQ (frequently asked questions)</string>
 </resources>
