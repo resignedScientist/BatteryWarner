@@ -35,7 +35,7 @@
     <!-- default switch states -->
     <bool name="switch_current_default">false</bool>
     <bool name="switch_percentage_default">true</bool>
-    <bool name="switch_temperature_default">true</bool>
+    <bool name="switch_temperature_default">false</bool>
     <bool name="switch_voltage_default">false</bool>
     <!-- Reverse Current Switch -->
     <bool name="pref_reverse_current_default">false</bool>
