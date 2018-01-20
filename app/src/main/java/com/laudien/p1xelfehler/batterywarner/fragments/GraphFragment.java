@@ -229,44 +229,45 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
 
     @Override
     public void onValueAdded(DatabaseValue value, long totalNumberOfRows) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
         boolean reverseCurrent = sharedPreferences.getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
         DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
         if (dataPoints == null) {
             return;
         }
+        setTimeText();
         if (graphs == null) { // first point
+            graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (SDK_INT < LOLLIPOP && i == GRAPH_INDEX_CURRENT) {
+                if (dataPoints[i] == null || switches[i] == null) {
                     continue;
                 }
-                if (dataPoints[i] != null) {
-                    if (graphs == null) { // only initialize graphs if any DataPoint is not null
-                        graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
-                    }
-                    graphs[i] = new LineGraphSeries<>(new DataPoint[]{new DataPoint(0d, dataPoints[i].getY())});
-                    if (switches[i].isChecked()) {
-                        graphView.addSeries(graphs[i]);
-                    }
+                graphs[i] = new LineGraphSeries<>(new DataPoint[]{new DataPoint(0d, dataPoints[i].getY())});
+                styleGraph(i);
+                if (switches[i].isChecked()) {
+                    graphView.addSeries(graphs[i]);
                 }
+                enableOrDisableSwitch(i);
             }
-            styleGraphs(graphs);
             graphInfo = new GraphInfo(value, useFahrenheit, reverseCurrent);
         } else { // not the first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
                 if (graphs[i] != null && dataPoints[i] != null) {
                     graphs[i].appendData(dataPoints[i], false, (int) totalNumberOfRows);
                 }
+                enableOrDisableSwitch(i);
             }
             // update graph info
             if (graphInfo != null) {
-                graphInfo.notifyValueAdded(value, getContext());
+                graphInfo.notifyValueAdded(value, context);
             }
         }
         applyGraphScale();
-        enableOrDisableSwitches();
-        setTimeText();
     }
 
     @Override
@@ -303,7 +304,9 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_big));
         if (disableCheckBoxes) {
             for (CompoundButton s : switches) {
-                s.setEnabled(false);
+                if (s != null) {
+                    s.setEnabled(false);
+                }
             }
         }
     }
@@ -311,7 +314,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     private void setNormalText(String enableText) {
         textView_chargingTime.setTextSize(SP, getResources().getInteger(R.integer.text_size_charging_text_normal));
         textView_chargingTime.setText(enableText);
-        enableOrDisableSwitches();
     }
 
     private LineGraphSeries getFirstAvailableGraph() {

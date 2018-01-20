@@ -123,10 +123,9 @@ public abstract class BasicGraphFragment extends Fragment {
         }
         // set the listener for each switch
         for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            if (i == GRAPH_INDEX_CURRENT && SDK_INT < LOLLIPOP) {
-                continue;
+            if (switches[i] != null) {
+                switches[i].setOnCheckedChangeListener(onSwitchChangedListener);
             }
-            switches[i].setOnCheckedChangeListener(onSwitchChangedListener);
         }
         textView_title = view.findViewById(R.id.textView_title);
         textView_chargingTime = view.findViewById(R.id.textView_chargingTime);
@@ -169,49 +168,57 @@ public abstract class BasicGraphFragment extends Fragment {
             @Override
             public void onDataRead(@NonNull Data data) {
                 graphInfo = data.getGraphInfo();
-                graphs = data.getGraphs();
-                if (graphs != null) {
-                    styleGraphs(graphs);
-                    for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                        if (switches[i] != null && switches[i].isChecked() && graphs[i] != null) {
-                            graphView.addSeries(graphs[i]);
-                        }
-                    }
-                    applyGraphScale();
-                }
-                enableOrDisableSwitches();
-                setTimeText();
+                LineGraphSeries<DataPoint>[] graphs = data.getGraphs();
+                loadGraphs(graphs);
             }
         });
     }
 
-    protected void removeAllGraphs() {
-        graphView.removeAllSeries();
-        graphs = null;
-    }
-
-    protected void enableOrDisableSwitches() {
-        if (graphs != null) {
-            for (byte i = 0; i < graphs.length; i++) {
-                if (switches[i] == null) {
-                    continue;
-                }
-                if (graphs[i] != null && graphs[i].getHighestValueX() > 0) {
-                    switches[i].setEnabled(true);
-                } else { // the graph with the id i is null or has not enough data points
-                    switches[i].setEnabled(false);
-                    if (graphs[i] == null) {
-                        switches[i].setChecked(false);
-                    }
-                }
-            }
-        } else { // graph array is null
+    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
+        this.graphs = graphs;
+        setTimeText();
+        if (graphs == null) {
+            graphView.removeAllSeries();
             for (CompoundButton s : switches) {
                 if (s != null) {
                     s.setEnabled(false);
                 }
             }
+            return;
         }
+        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (switches[i] == null) {
+                continue;
+            }
+            enableOrDisableSwitch(i);
+            if (graphs[i] == null) {
+                continue;
+            }
+            styleGraph(i);
+            if (switches[i].isChecked()) {
+                graphView.addSeries(graphs[i]);
+            }
+        }
+        applyGraphScale();
+    }
+
+    protected void enableOrDisableSwitch(int index) {
+        if (switches[index] == null || graphs == null) {
+            return;
+        }
+        if (graphs[index] != null && graphs[index].getHighestValueX() > 0) {
+            switches[index].setEnabled(true);
+        } else { // the graph with the index is null or has not enough data points
+            switches[index].setEnabled(false);
+            if (graphs[index] == null) {
+                switches[index].setChecked(false);
+            }
+        }
+    }
+
+    protected void removeAllGraphs() {
+        graphView.removeAllSeries();
+        graphs = null;
     }
 
     /**
@@ -222,16 +229,17 @@ public abstract class BasicGraphFragment extends Fragment {
         double maxY = 0;
         double minY = 0;
         for (Series graph : graphView.getSeries()) {
-            if (graph != null) {
-                if (graph.getHighestValueX() > maxX) {
-                    maxX = graph.getHighestValueX();
-                }
-                if (graph.getHighestValueY() > maxY) {
-                    maxY = graph.getHighestValueY() * 1.2;
-                }
-                if (graph.getLowestValueY() < minY) {
-                    minY = graph.getLowestValueY();
-                }
+            if (graph == null) {
+                continue;
+            }
+            if (graph.getHighestValueX() > maxX) {
+                maxX = graph.getHighestValueX();
+            }
+            if (graph.getHighestValueY() > maxY) {
+                maxY = graph.getHighestValueY() * 1.2;
+            }
+            if (graph.getLowestValueY() < minY) {
+                minY = graph.getLowestValueY();
             }
         }
         if (maxX == 0) {
@@ -350,33 +358,35 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
-    protected void styleGraphs(LineGraphSeries[] graphs) {
+    protected void styleGraph(int index) {
         Context context = getContext();
-        if (graphs == null || context == null) {
+        if (graphs == null || graphs[index] == null || switches[index] == null || context == null) {
             return;
         }
-        int[] colors = new int[NUMBER_OF_GRAPHS];
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = context.getTheme();
-        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-        colors[GRAPH_INDEX_BATTERY_LEVEL] = typedValue.data;
-        int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
-        colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
-        colors[GRAPH_INDEX_TEMPERATURE] = Color.argb(255, 104, 159, 56);
-        if (SDK_INT >= LOLLIPOP) {
-            colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
+        int color;
+        switch (index) {
+            case GRAPH_INDEX_BATTERY_LEVEL:
+                graphs[index].setDrawBackground(true);
+                TypedValue typedValue = new TypedValue();
+                Resources.Theme theme = context.getTheme();
+                theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+                color = typedValue.data;
+                int backgroundColor = ColorUtils.setAlphaComponent(color, 64);
+                graphs[index].setBackgroundColor(backgroundColor);
+                break;
+            case GRAPH_INDEX_TEMPERATURE:
+                color = Color.argb(255, 104, 159, 56);
+                break;
+            case GRAPH_INDEX_CURRENT:
+                color = Color.argb(255, 63, 81, 181);
+                break;
+            case GRAPH_INDEX_VOLTAGE:
+                color = Color.argb(255, 255, 165, 0);
+                break;
+            default:
+                return;
         }
-        // set colors
-        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            if (graphs[i] == null || colors[i] == 0 || switches[i] == null) {
-                continue;
-            }
-            graphs[i].setColor(colors[i]);
-            switches[i].setTextColor(colors[i]);
-            if (i == GRAPH_INDEX_BATTERY_LEVEL) {
-                graphs[i].setDrawBackground(true);
-                graphs[i].setBackgroundColor(color_percentageBackground);
-            }
-        }
+        graphs[index].setColor(color);
+        switches[index].setTextColor(color);
     }
 }
