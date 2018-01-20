@@ -11,7 +11,6 @@ import android.view.WindowManager;
 
 import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
@@ -81,11 +80,7 @@ public class IntroActivity extends MaterialIntroActivity implements EasyModeSlid
                 .putBoolean(getString(R.string.pref_first_start), false)
                 .putBoolean(getString(R.string.pref_easy_mode), easyMode)
                 .apply();
-        // start services
-        ServiceHelper.startService(this);
-        // send toast
         ToastHelper.sendToast(getApplicationContext(), R.string.intro_finish_toast, LENGTH_SHORT);
-        // start MainActivity
         startActivity(new Intent(this, MainActivity.class));
     }
 
