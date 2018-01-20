@@ -1,5 +1,6 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -350,28 +351,31 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     protected void styleGraphs(LineGraphSeries[] graphs) {
-        if (graphs != null) {
-            int[] colors = new int[NUMBER_OF_GRAPHS];
-            TypedValue typedValue = new TypedValue();
-            Resources.Theme theme = getContext().getTheme();
-            theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-            colors[GRAPH_INDEX_BATTERY_LEVEL] = typedValue.data;
-            int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
-            colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
-            colors[GRAPH_INDEX_TEMPERATURE] = Color.argb(255, 104, 159, 56);
-            if (SDK_INT >= LOLLIPOP) {
-                colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
+        Context context = getContext();
+        if (graphs == null || context == null) {
+            return;
+        }
+        int[] colors = new int[NUMBER_OF_GRAPHS];
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        colors[GRAPH_INDEX_BATTERY_LEVEL] = typedValue.data;
+        int color_percentageBackground = ColorUtils.setAlphaComponent(colors[GRAPH_INDEX_BATTERY_LEVEL], 64);
+        colors[GRAPH_INDEX_VOLTAGE] = Color.argb(255, 255, 165, 0);
+        colors[GRAPH_INDEX_TEMPERATURE] = Color.argb(255, 104, 159, 56);
+        if (SDK_INT >= LOLLIPOP) {
+            colors[GRAPH_INDEX_CURRENT] = Color.argb(255, 63, 81, 181);
+        }
+        // set colors
+        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (graphs[i] == null || colors[i] == 0 || switches[i] == null) {
+                continue;
             }
-            // set colors
-            for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (graphs[i] != null) {
-                    graphs[i].setColor(colors[i]);
-                    switches[i].setTextColor(colors[i]);
-                    if (i == GRAPH_INDEX_BATTERY_LEVEL){
-                        graphs[i].setDrawBackground(true);
-                        graphs[i].setBackgroundColor(color_percentageBackground);
-                    }
-                }
+            graphs[i].setColor(colors[i]);
+            switches[i].setTextColor(colors[i]);
+            if (i == GRAPH_INDEX_BATTERY_LEVEL) {
+                graphs[i].setDrawBackground(true);
+                graphs[i].setBackgroundColor(color_percentageBackground);
             }
         }
     }
