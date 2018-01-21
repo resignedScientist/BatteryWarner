@@ -7,6 +7,10 @@
         android:title="@string/menu_faq"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_xda"
+        android:title="@string/menu_xda_thread"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_contact_developer"
         android:title="@string/menu_contact_developer"
         app:showAsAction="never" />

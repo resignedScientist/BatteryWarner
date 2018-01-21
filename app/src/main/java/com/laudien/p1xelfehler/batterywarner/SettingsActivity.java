@@ -57,6 +57,9 @@ public class SettingsActivity extends BaseActivity {
             case R.id.menu_faq:
                 openLink(getString(R.string.link_faq));
                 return true;
+            case R.id.menu_xda:
+                openLink(getString(R.string.link_xda_thread));
+                return true;
             case R.id.menu_donate:
                 openLink(getString(R.string.link_donation));
                 return true;

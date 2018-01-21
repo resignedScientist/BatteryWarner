@@ -84,6 +84,7 @@
 
     <!-- Links -->
     <string name="link_donation" translatable="false">https://www.paypal.me/p1xelfehler</string>
+    <string name="link_xda_thread" translatable="false">https://forum.xda-developers.com/android/apps-games/app-battery-warner-t3560920</string>
     <string name="link_faq">http://norman-laudien.de/batterie-warner-faq-en/</string>
 
     <!-- menu items -->
@@ -96,6 +97,7 @@
     <string name="menu_rename">Rename</string>
     <string name="menu_rename_graph">Rename graph</string>
     <string name="menu_save_to_history">Save to history</string>
+    <string name="menu_xda_thread">XDA Thread</string>
 
     <!-- notifications -->
     <string name="notification_button_enable_charging">Enable charging</string>

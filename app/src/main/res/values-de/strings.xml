@@ -78,6 +78,7 @@
     <string name="menu_rename">Umbenennen</string>
     <string name="menu_rename_graph">Graphen umbenennen</string>
     <string name="menu_save_to_history">Graph speichern</string>
+    <string name="menu_xda_thread">XDA Thread</string>
 
     <string name="notification_button_enable_charging">Laden aktivieren</string>
     <string name="notification_button_enable_usb_charging">USB-Laden aktivieren</string>

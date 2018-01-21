@@ -221,6 +221,7 @@
     <string name="toast_error_unknown">Unknown error!</string>
     <string name="menu_faq">FAQ (frequently asked questions)</string>
     <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
+    <string name="menu_xda_thread">XDA Thread</string>
 
     <!-- changes -->
     <string name="summary_android_notification_settings">Click here to open the notification settings of android to change notification sounds and more.</string>
