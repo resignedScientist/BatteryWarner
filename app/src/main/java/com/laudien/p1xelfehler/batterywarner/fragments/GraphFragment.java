@@ -96,17 +96,23 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     @Override
     public void onStart() {
         super.onStart();
-        if (graphEnabled) {
-            loadGraphs();
+        Context context = getContext();
+        if (!graphEnabled || context == null) {
+            return;
         }
+        DatabaseModel.getInstance(context).registerDatabaseListener(this);
+        loadGraphs();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (graphEnabled) {
-            removeAllGraphs();
+        Context context = getContext();
+        if (!graphEnabled || context == null) {
+            return;
         }
+        DatabaseModel.getInstance(context).unregisterDatabaseListener(this);
+        removeAllGraphs();
     }
 
     @Override
@@ -119,7 +125,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             }
             context.registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
             context.registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
-            DatabaseModel.getInstance(context).registerDatabaseListener(this);
         }
     }
 
@@ -141,7 +146,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                         .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked());
             }
             sharedPreferencesEditor.apply();
-            DatabaseModel.getInstance(context).unregisterDatabaseListener(this);
             context.unregisterReceiver(chargingStateChangedReceiver);
         }
     }
