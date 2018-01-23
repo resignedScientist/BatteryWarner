@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="16dp"
@@ -15,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:drawableLeft="@drawable/ic_battery_status_full_green_48dp"
         android:drawableStart="@drawable/ic_battery_status_full_green_48dp"
         android:gravity="center_vertical"
         android:text="@string/dialog_title_graph_info"
@@ -74,24 +74,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 tools:text="Minimale Temperatur: 20°C" />
-
-            <TextView
-                android:id="@+id/textView_minCurrent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/textView_maxTemp"
-                app:layout_constraintTop_toBottomOf="@+id/textView_maxTemp"
-                tools:text="Min. Stromstärke: 1100 mAh" />
-
-            <TextView
-                android:id="@+id/textView_maxCurrent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/textView_minCurrent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_minCurrent"
-                tools:text="Max. Stromstärke: 1500 mAh" />
 
             <TextView
                 android:id="@+id/textView_minVoltage"
