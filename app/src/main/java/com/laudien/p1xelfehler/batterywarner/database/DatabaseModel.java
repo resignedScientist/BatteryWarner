@@ -262,7 +262,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Override
     public void readData(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        new ReadDataTask(null, useFahrenheit, reverseCurrent, dataReceiver).execute();
+        new ReadDataTask(getCursor(), useFahrenheit, reverseCurrent, dataReceiver).execute();
     }
 
     @Override
