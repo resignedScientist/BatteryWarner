@@ -151,6 +151,14 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (graphInfo != null) {
+            graphInfo.dismissDialog();
+        }
+    }
+
     /**
      * Method that provides an array of the graphs that should be displayed.
      *
@@ -221,6 +229,7 @@ public abstract class BasicGraphFragment extends Fragment {
     void removeAllGraphs() {
         graphView.removeAllSeries();
         graphs = null;
+        graphInfo = null;
     }
 
     /**
