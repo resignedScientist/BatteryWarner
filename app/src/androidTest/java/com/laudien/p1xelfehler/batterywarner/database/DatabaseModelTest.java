@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 
 import com.jjoe64.graphview.series.DataPoint;
@@ -23,26 +24,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+@SuppressWarnings("ConstantConditions")
 public class DatabaseModelTest {
-    DatabaseModel databaseModel;
-    Context context;
+    private DatabaseModel databaseModel;
 
     @Before
     public void setUp() throws Exception {
-        context = InstrumentationRegistry.getTargetContext();
+        Context context = InstrumentationRegistry.getTargetContext();
         databaseModel = DatabaseModel.getInstance(context);
-        databaseModel.resetTableTask();
+        DatabaseModel.resetTableTask(databaseModel.getWritableDatabase());
     }
 
     @After
     public void tearDown() throws Exception {
-        databaseModel.resetTableTask();
+        DatabaseModel.resetTableTask(databaseModel.getWritableDatabase());
     }
 
     @Test
     public void readDataTest() throws Exception {
         // empty database should return null
-        Data data = databaseModel.readData(databaseModel.getCursor(), false, false);
+        Data data = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNull(data);
     }
 
@@ -51,8 +52,8 @@ public class DatabaseModelTest {
         // test with one valid data point
         long timeNow = System.currentTimeMillis();
         DatabaseValue inputValue = new DatabaseValue(20, 234, 5000, -1200000, timeNow, timeNow);
-        databaseModel.addValueTask(inputValue);
-        Data outputData = databaseModel.readData(databaseModel.getCursor(), false, false);
+        DatabaseModel.addValueTask(databaseModel.getWritableDatabase(), inputValue);
+        Data outputData = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(outputData);
         LineGraphSeries<DataPoint>[] graphs = outputData.getGraphs();
         GraphInfo graphInfo = outputData.getGraphInfo();
@@ -106,9 +107,9 @@ public class DatabaseModelTest {
                 new DatabaseValue(30, 250, 4900, -1000000, timeNow + 92000000, timeNow)
         };
         for (DatabaseValue value : values) {
-            databaseModel.addValueTask(value);
+            DatabaseModel.addValueTask(databaseModel.getWritableDatabase(), value);
         }
-        GraphInfo graphInfo = databaseModel.readData(databaseModel.getCursor(), useFahrenheit, reverseCurrent).getGraphInfo();
+        GraphInfo graphInfo = DatabaseModel.readData(databaseModel.getCursor(), useFahrenheit, reverseCurrent).getGraphInfo();
 
         assertEquals(values[1].getBatteryLevel(), graphInfo.maxBatteryLvl);
         assertEquals(values[0].getBatteryLevel(), graphInfo.firstBatteryLvl);
@@ -136,9 +137,9 @@ public class DatabaseModelTest {
                 new DatabaseValue(30, 250, 5200, -1000000, timeNow + 2000000, timeNow)
         };
         for (DatabaseValue value : values) {
-            databaseModel.addValueTask(value);
+            DatabaseModel.addValueTask(databaseModel.getWritableDatabase(), value);
         }
-        Data data = databaseModel.readData(databaseModel.getCursor(), false, false);
+        Data data = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(data);
         LineGraphSeries<DataPoint>[] output = data.getGraphs();
 
@@ -184,10 +185,11 @@ public class DatabaseModelTest {
         }
 
         // check the size -> size = 2 is expected!
+        SQLiteDatabase database = databaseModel.getWritableDatabase();
         for (DatabaseValue v : databaseValues) {
-            databaseModel.addValueTask(v);
+            DatabaseModel.addValueTask(database, v);
         }
-        Data data = databaseModel.readData(databaseModel.getCursor(), false, false);
+        Data data = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(data);
         LineGraphSeries[] output = data.getGraphs();
         for (LineGraphSeries graph : output) {
@@ -224,13 +226,12 @@ public class DatabaseModelTest {
     @Test
     public void readDataTest6() {
         // create 1 dummy databaseValue, all values are 0
-        DatabaseValue[] databaseValues = new DatabaseValue[1];
         long timeNow = System.currentTimeMillis();
         DatabaseValue value = new DatabaseValue(0, 0, 0, 0, timeNow, timeNow);
-        databaseModel.addValueTask(value);
+        DatabaseModel.addValueTask(databaseModel.getWritableDatabase(), value);
 
         // check graphs -> no graph should be null
-        Data data = databaseModel.readData(databaseModel.getCursor(), false, false);
+        Data data = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(data);
         LineGraphSeries[] output = data.getGraphs();
         assertNotNull(output);
@@ -248,8 +249,8 @@ public class DatabaseModelTest {
         // test for exact values
         long timeNow = System.currentTimeMillis();
         DatabaseValue inputValue = new DatabaseValue(23, 234, 4125, -1234567, timeNow, timeNow);
-        databaseModel.addValueTask(inputValue);
-        Data outputData = databaseModel.readData(databaseModel.getCursor(), false, false);
+        DatabaseModel.addValueTask(databaseModel.getWritableDatabase(), inputValue);
+        Data outputData = DatabaseModel.readData(databaseModel.getCursor(), false, false);
         assertNotNull(outputData);
         LineGraphSeries<DataPoint>[] graphs = outputData.getGraphs();
         GraphInfo graphInfo = outputData.getGraphInfo();

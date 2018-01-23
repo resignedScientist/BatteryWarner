@@ -51,30 +51,28 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Array of all switches.
      */
-    protected CompoundButton[] switches = new CompoundButton[NUMBER_OF_GRAPHS];
+    final CompoundButton[] switches = new CompoundButton[NUMBER_OF_GRAPHS];
     /**
      * An instance of the {@link GraphInfo} holding information about the charging curve.
      */
     @Nullable
-    protected GraphInfo graphInfo;
+    GraphInfo graphInfo;
     /**
      * The GraphView where the graphs are shown
      */
-    protected GraphView graphView;
+    GraphView graphView;
     /**
      * TextView that contains the title over the GraphView.
      */
-    protected TextView textView_title;
+    TextView textView_title;
     /**
      * TextView that contains the charging time.
      */
-    protected TextView textView_chargingTime;
-    protected DatabaseContract.Model databaseModel;
+    TextView textView_chargingTime;
     /**
      * An array of both graphs that are displayed in the GraphView.
      */
     LineGraphSeries<DataPoint>[] graphs;
-
     /**
      * An {@link android.widget.CompoundButton.OnCheckedChangeListener} managing all switches.
      */
@@ -99,6 +97,7 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         }
     };
+    private DatabaseContract.Model databaseModel;
     /**
      * A byte containing the number of graph labels.
      */
@@ -107,12 +106,15 @@ public abstract class BasicGraphFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseModel = DatabaseModel.getInstance(getContext());
+        Context context = getContext();
+        if (context != null) {
+            databaseModel = DatabaseModel.getInstance(context);
+        }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         graphView = view.findViewById(R.id.graphView);
         switches[GRAPH_INDEX_BATTERY_LEVEL] = view.findViewById(R.id.switch_percentage);
@@ -174,7 +176,7 @@ public abstract class BasicGraphFragment extends Fragment {
         });
     }
 
-    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
+    private void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
         this.graphs = graphs;
         setTimeText();
         if (graphs == null) {
@@ -202,7 +204,7 @@ public abstract class BasicGraphFragment extends Fragment {
         applyGraphScale();
     }
 
-    protected void enableOrDisableSwitch(int index) {
+    void enableOrDisableSwitch(int index) {
         if (switches[index] == null || graphs == null) {
             return;
         }
@@ -216,7 +218,7 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
-    protected void removeAllGraphs() {
+    void removeAllGraphs() {
         graphView.removeAllSeries();
         graphs = null;
     }
@@ -224,7 +226,7 @@ public abstract class BasicGraphFragment extends Fragment {
     /**
      * Dynamically scales the axis of the graphView.
      */
-    protected void applyGraphScale() {
+    void applyGraphScale() {
         double maxX = 0;
         double maxY = 0;
         double minY = 0;
@@ -350,15 +352,19 @@ public abstract class BasicGraphFragment extends Fragment {
      * Shows a toast if there are no graphs or if the
      * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo} is null.
      */
-    public void showInfo() {
+    void showInfo() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
         if (graphs != null && graphInfo != null) {
-            graphInfo.showDialog(getContext());
+            graphInfo.showDialog(context);
         } else {
-            ToastHelper.sendToast(getContext(), R.string.toast_no_data, LENGTH_SHORT);
+            ToastHelper.sendToast(context, R.string.toast_no_data, LENGTH_SHORT);
         }
     }
 
-    protected void styleGraph(int index) {
+    void styleGraph(int index) {
         Context context = getContext();
         if (graphs == null || graphs[index] == null || switches[index] == null || context == null) {
             return;

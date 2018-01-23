@@ -121,7 +121,7 @@ public class TimePickerPreference extends DialogPreference {
         long time;
         if (SDK_INT >= LOLLIPOP) {
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
-            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager.getNextAlarmClock();
+            AlarmManager.AlarmClockInfo alarmClockInfo = alarmManager != null ? alarmManager.getNextAlarmClock() : null;
             if (alarmClockInfo != null) {
                 time = alarmClockInfo.getTriggerTime();
             } else {

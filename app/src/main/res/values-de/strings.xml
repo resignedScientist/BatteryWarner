@@ -123,6 +123,7 @@
     <string name="tasker_enable_warning_high">Akkust.-hoch Warnung aktivieren</string>
     <string name="tasker_enable_warning_low">Akkust.-niedrig Warnung warning</string>
     <string name="tasker_headline">Hallo Sir!</string>
+    <string name="tasker_number_or_variable">Zahl oder Variable</string>
     <string name="tasker_reset_graph">Aufgezeichneten Graphen zurücksetzen</string>
     <string name="tasker_save_graph">Aufgezeichneten Graphen speichern</string>
     <string name="tasker_set_smart_charging_limit">Setze Smart Charging Ladelimit</string>

@@ -64,18 +64,19 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.SM
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
-    public static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
-    public static final String ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH = "enableChargingAndSaveGraph";
     public static final String ACTION_DISABLE_CHARGING = "disableCharging";
     public static final String ACTION_RESET_ALL = "resetService";
     public static final String ACTION_CHANGE_PREFERENCE = "changePreference";
     public static final String EXTRA_PREFERENCE_KEY = "preferenceKey";
     public static final String EXTRA_PREFERENCE_VALUE = "preferenceValue";
-    public static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
-    public static final int NOTIFICATION_ID_WARNING_LOW = 2002;
+    private static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
+    private static final String ACTION_ENABLE_CHARGING_AND_SAVE_GRAPH = "enableChargingAndSaveGraph";
+    private static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
+    private static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
     private static final int NOTIFICATION_LED_ON_TIME = 500;
     private static final int NOTIFICATION_LED_OFF_TIME = 2000;
+    private final BackgroundServiceBinder binder = new BackgroundServiceBinder();
     private boolean chargingPausedBySmartCharging = false;
     private boolean chargingResumedBySmartCharging = false;
     private boolean chargingResumedByAutoResume = false;
@@ -97,9 +98,7 @@ public class BackgroundService extends Service {
     private RemoteViews infoNotificationContent;
     private BatteryData batteryData;
     private BatteryValueChangedListener listener;
-    private DatabaseModel databaseModel;
-    private BackgroundServiceBinder binder = new BackgroundServiceBinder();
-    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+    private final SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.pref_smart_charging_time_before))
@@ -111,6 +110,7 @@ public class BackgroundService extends Service {
             }
         }
     };
+    private DatabaseModel databaseModel;
 
     /**
      * Checks if the given charging method is enabled in preferences.
@@ -384,7 +384,7 @@ public class BackgroundService extends Service {
                 try {
                     RootHelper.enableCharging();
                     chargingDisabledInFile = false;
-                    notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancel stop charging notification
+                    notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancelJob stop charging notification
                 } catch (RootHelper.NotRootedException e) {
                     chargingDisabledInFile = true;
                     NotificationHelper.showNotification(BackgroundService.this, ID_NOT_ROOTED);
@@ -1171,29 +1171,15 @@ public class BackgroundService extends Service {
             return values[index];
         }
 
+        public int getBatteryLevel() {
+            return batteryLevel;
+        }
 
-        /**
-         * Get the value with the given index as object.
-         *
-         * @param index One of the INDEX attributes that determine which value should be returned.
-         * @return Returns the value with the given index as object or null if there is no object with that index.
-         */
-        public Object getValue(int index) {
-            switch (index) {
-                case INDEX_TECHNOLOGY:
-                    return technology;
-                case INDEX_TEMPERATURE:
-                    return temperature;
-                case INDEX_HEALTH:
-                    return health;
-                case INDEX_BATTERY_LEVEL:
-                    return batteryLevel;
-                case INDEX_VOLTAGE:
-                    return voltage;
-                case INDEX_CURRENT:
-                    return current;
-                default:
-                    return null;
+        private void setBatteryLevel(int batteryLevel) {
+            if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
+                this.batteryLevel = batteryLevel;
+                values[INDEX_BATTERY_LEVEL] = String.format(getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
+                notifyListener(INDEX_BATTERY_LEVEL);
             }
         }
 
@@ -1210,14 +1196,6 @@ public class BackgroundService extends Service {
                 this.health = health;
                 values[INDEX_HEALTH] = getString(R.string.info_health) + ": " + getHealthString(health);
                 notifyListener(INDEX_HEALTH);
-            }
-        }
-
-        private void setBatteryLevel(int batteryLevel) {
-            if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
-                this.batteryLevel = batteryLevel;
-                values[INDEX_BATTERY_LEVEL] = String.format(getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
-                notifyListener(INDEX_BATTERY_LEVEL);
             }
         }
 

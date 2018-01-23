@@ -4,8 +4,8 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 public class Data {
-    private LineGraphSeries<DataPoint>[] graphs;
-    private GraphInfo graphInfo;
+    private final LineGraphSeries<DataPoint>[] graphs;
+    private final GraphInfo graphInfo;
 
     Data(LineGraphSeries<DataPoint>[] graphs, GraphInfo graphInfo) {
         this.graphs = graphs;

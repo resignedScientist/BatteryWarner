@@ -23,8 +23,11 @@ public class TogglePowerSavingService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+        if (powerManager == null) {
+            return;
+        }
         try {
-            PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
             boolean powerSavingEnabled = powerManager.isPowerSaveMode();
             RootHelper.togglePowerSavingMode(!powerSavingEnabled);
         } catch (RootHelper.NotRootedException e) {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
@@ -38,14 +39,13 @@ import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_T
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_STOP_CHARGING;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ACTION_TOGGLE_WARNING_LOW;
-import static com.laudien.p1xelfehler.batterywarner.helper.TaskerHelper.ALL_ACTIONS;
 
 public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
     private static final int LAYOUT_TIME_PICKER = 0;
     private static final int LAYOUT_SWITCH = 1;
     private static final int LAYOUT_EDIT_TEXT = 2;
     private static final int NUMBER_OF_LAYOUTS = 3;
-    private View layouts[] = new View[NUMBER_OF_LAYOUTS];
+    private final View[] layouts = new View[NUMBER_OF_LAYOUTS];
     private TextView textView_setValue;
     private RadioGroup radioGroup_action;
     private boolean rootAvailable;
@@ -87,7 +87,10 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
         toolbar.setSubtitle(getString(R.string.tasker_plugin_name));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -176,7 +179,7 @@ public class TaskerEditActivity extends AbstractAppCompatPluginActivity {
         }
         if (resultBundle != null) {
             if (!TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(resultBundle)) {
-                TaskerPlugin.Setting.setVariableReplaceKeys(resultBundle, ALL_ACTIONS);
+                TaskerPlugin.Setting.setVariableReplaceKeys(resultBundle);
             }
         }
         return resultBundle;

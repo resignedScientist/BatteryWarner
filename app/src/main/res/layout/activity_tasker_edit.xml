@@ -169,7 +169,7 @@
                 android:id="@+id/value_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Number or variable"
+                android:hint="@string/tasker_number_or_variable"
                 android:visibility="gone" />
         </FrameLayout>
     </android.support.constraint.ConstraintLayout>

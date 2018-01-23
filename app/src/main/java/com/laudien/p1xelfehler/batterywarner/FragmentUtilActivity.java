@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 
 public class FragmentUtilActivity extends AppCompatActivity {
-    public int layoutId = 1337;
+    private final int layoutId = 1337;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

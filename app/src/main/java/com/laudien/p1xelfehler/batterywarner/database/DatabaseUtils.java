@@ -129,6 +129,7 @@ public final class DatabaseUtils {
      * @param file The file to check.
      * @return True if it is a valid database file, false if not.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static boolean isFileValid(File file) {
         try {
             FileReader fileReader = new FileReader(file.getPath());
@@ -142,7 +143,7 @@ public final class DatabaseUtils {
         }
     }
 
-    static boolean saveGraphTask(@NonNull File databasePath, @NonNull DatabaseModel databaseModel) {
+    private static boolean saveGraphTask(@NonNull File databasePath, @NonNull DatabaseModel databaseModel) {
         boolean result = false;
         // return if graph disabled in settings or the database has not enough data
         Cursor cursor = databaseModel.getCursor();
@@ -199,10 +200,10 @@ public final class DatabaseUtils {
     }
 
     private static class SaveGraphTask extends AsyncTask<Void, Void, Boolean> {
-        private File databasePath;
-        private DatabaseModel databaseModel;
+        private final File databasePath;
+        private final DatabaseModel databaseModel;
         @Nullable
-        private GraphSavedListener graphSavedListener;
+        private final GraphSavedListener graphSavedListener;
 
         private SaveGraphTask(@NonNull File databasePath, @NonNull DatabaseModel databaseModel, @Nullable GraphSavedListener graphSavedListener) {
             this.databasePath = databasePath;

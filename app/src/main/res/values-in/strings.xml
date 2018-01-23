@@ -222,6 +222,7 @@
     <string name="menu_faq">FAQ (frequently asked questions)</string>
     <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
     <string name="menu_xda_thread">XDA Thread</string>
+    <string name="tasker_number_or_variable">Number or variable</string>
 
     <!-- Changes -->
     <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->

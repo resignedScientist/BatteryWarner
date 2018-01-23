@@ -71,7 +71,7 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         if (bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT))
             changePreference(context, R.string.pref_smart_charging_limit, bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT));
         if (bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME))
-            changePreference(context, R.string.pref_smart_charging_time, bundle.getLong(ACTION_SET_SMART_CHARGING_TIME));
+            changePreference(context, bundle.getLong(ACTION_SET_SMART_CHARGING_TIME));
         if (bundle.containsKey(ACTION_SAVE_GRAPH))
             saveGraph(context);
         if (bundle.containsKey(ACTION_RESET_GRAPH))
@@ -110,10 +110,10 @@ public class TaskerFireReceiver extends AbstractPluginSettingReceiver {
         ServiceHelper.startService(context, intent);
     }
 
-    private void changePreference(Context context, int keyResource, long value) {
+    private void changePreference(Context context, long value) {
         Intent intent = new Intent(context.getApplicationContext(), BackgroundService.class);
         intent.setAction(ACTION_CHANGE_PREFERENCE);
-        intent.putExtra(EXTRA_PREFERENCE_KEY, keyResource);
+        intent.putExtra(EXTRA_PREFERENCE_KEY, R.string.pref_smart_charging_time);
         intent.putExtra(EXTRA_PREFERENCE_VALUE, value);
         ServiceHelper.startService(context, intent);
     }

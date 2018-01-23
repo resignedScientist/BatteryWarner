@@ -40,7 +40,7 @@ public class TaskerHelper {
             ACTION_SAVE_GRAPH,
             ACTION_RESET_GRAPH
     };
-    static final String[] ROOT_ACTIONS = new String[]{
+    private static final String[] ROOT_ACTIONS = new String[]{
             ACTION_TOGGLE_CHARGING,
             ACTION_TOGGLE_STOP_CHARGING,
             ACTION_TOGGLE_SMART_CHARGING,
@@ -50,13 +50,13 @@ public class TaskerHelper {
 
     public static boolean isBundleValid(@NonNull Context context, @NonNull Bundle bundle) {
         if (bundle.isEmpty()
-                || !containsKnownKey(bundle)
+                || containsUnknownKey(bundle)
                 || getAction(bundle) == null
                 || !replaceStringsWithInts(bundle)) {
             return false;
         }
         for (String key : ALL_ACTIONS) {
-            if (bundle.containsKey(key) && !isValueValid(context, key, bundle)) {
+            if (bundle.containsKey(key) && isValueInvalid(context, key, bundle)) {
                 return false;
             }
         }
@@ -64,7 +64,7 @@ public class TaskerHelper {
     }
 
     public static boolean isVariableBundleValid(@NonNull Context context, @Nullable Bundle bundle) {
-        if (bundle == null || bundle.isEmpty() || !containsKnownKey(bundle)) {
+        if (bundle == null || bundle.isEmpty() || containsUnknownKey(bundle)) {
             return false;
         }
         for (String action : ALL_ACTIONS) {
@@ -72,7 +72,7 @@ public class TaskerHelper {
                 continue;
             }
             String value = bundle.getString(action);
-            if (value == null && !isValueValid(context, action, bundle)
+            if (value == null && isValueInvalid(context, action, bundle)
                     || value != null && !variableNameValid(value)) {
                 return false;
             }
@@ -193,18 +193,18 @@ public class TaskerHelper {
         }
     }
 
-    private static boolean containsKnownKey(@NonNull Bundle bundle) {
-        return bundle.containsKey(ACTION_TOGGLE_CHARGING)
-                || bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING)
-                || bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING)
-                || bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH)
-                || bundle.containsKey(ACTION_TOGGLE_WARNING_LOW)
-                || bundle.containsKey(ACTION_SET_WARNING_HIGH)
-                || bundle.containsKey(ACTION_SET_WARNING_LOW)
-                || bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)
-                || bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME)
-                || bundle.containsKey(ACTION_SAVE_GRAPH)
-                || bundle.containsKey(ACTION_RESET_GRAPH);
+    private static boolean containsUnknownKey(@NonNull Bundle bundle) {
+        return !bundle.containsKey(ACTION_TOGGLE_CHARGING)
+                && !bundle.containsKey(ACTION_TOGGLE_STOP_CHARGING)
+                && !bundle.containsKey(ACTION_TOGGLE_SMART_CHARGING)
+                && !bundle.containsKey(ACTION_TOGGLE_WARNING_HIGH)
+                && !bundle.containsKey(ACTION_TOGGLE_WARNING_LOW)
+                && !bundle.containsKey(ACTION_SET_WARNING_HIGH)
+                && !bundle.containsKey(ACTION_SET_WARNING_LOW)
+                && !bundle.containsKey(ACTION_SET_SMART_CHARGING_LIMIT)
+                && !bundle.containsKey(ACTION_SET_SMART_CHARGING_TIME)
+                && !bundle.containsKey(ACTION_SAVE_GRAPH)
+                && !bundle.containsKey(ACTION_RESET_GRAPH);
     }
 
     private static boolean replaceStringsWithInts(Bundle bundle) {
@@ -223,7 +223,7 @@ public class TaskerHelper {
         return true;
     }
 
-    private static boolean isValueValid(@NonNull Context context, @NonNull String action, @NonNull Bundle bundle) {
+    private static boolean isValueInvalid(@NonNull Context context, @NonNull String action, @NonNull Bundle bundle) {
         try {
             int value;
             switch (action) {
@@ -237,15 +237,15 @@ public class TaskerHelper {
                 case ACTION_SET_WARNING_HIGH:
                     BundleAssertions.assertHasInt(bundle, action);
                     value = bundle.getInt(ACTION_SET_WARNING_HIGH);
-                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_high_min), context.getResources().getInteger(R.integer.pref_warning_high_max), value)) {
-                        return false;
+                    if (isIntegerInvalid(context.getResources().getInteger(R.integer.pref_warning_high_min), context.getResources().getInteger(R.integer.pref_warning_high_max), value)) {
+                        return true;
                     }
                     break;
                 case ACTION_SET_WARNING_LOW:
                     BundleAssertions.assertHasInt(bundle, action);
                     value = bundle.getInt(ACTION_SET_WARNING_LOW);
-                    if (!isIntegerValid(context.getResources().getInteger(R.integer.pref_warning_low_min), context.getResources().getInteger(R.integer.pref_warning_low_max), value)) {
-                        return false;
+                    if (isIntegerInvalid(context.getResources().getInteger(R.integer.pref_warning_low_min), context.getResources().getInteger(R.integer.pref_warning_low_max), value)) {
+                        return true;
                     }
                     break;
                 case ACTION_SET_SMART_CHARGING_LIMIT:
@@ -253,8 +253,8 @@ public class TaskerHelper {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     int min = sharedPreferences.getInt(context.getString(R.string.pref_warning_high), context.getResources().getInteger(R.integer.pref_warning_high_default));
                     value = bundle.getInt(ACTION_SET_SMART_CHARGING_LIMIT);
-                    if (!isIntegerValid(min, context.getResources().getInteger(R.integer.pref_smart_charging_limit_max), value)) {
-                        return false;
+                    if (isIntegerInvalid(min, context.getResources().getInteger(R.integer.pref_smart_charging_limit_max), value)) {
+                        return true;
                     }
                     break;
                 case ACTION_SET_SMART_CHARGING_TIME:
@@ -264,17 +264,17 @@ public class TaskerHelper {
                 case ACTION_RESET_GRAPH:
                     break;
                 default:
-                    return false;
+                    return true;
             }
         } catch (AssertionError e) {
             Lumberjack.e("Bundle failed verification%s", e);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    private static boolean isIntegerValid(int min, int max, int value) {
-        return !(value < min || value > max);
+    private static boolean isIntegerInvalid(int min, int max, int value) {
+        return (value < min || value > max);
     }
 
     private static boolean checkDependency(@NonNull Context context, @NonNull SharedPreferences sharedPreferences, @NonNull String action) {

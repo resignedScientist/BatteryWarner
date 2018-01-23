@@ -124,6 +124,7 @@
     <string name="tasker_enable_warning_low">Enable low battery warning</string>
     <!-- Just write something funny in your language here :) -->
     <string name="tasker_headline">Hello Sir!</string>
+    <string name="tasker_number_or_variable">Number or variable</string>
     <string name="tasker_reset_graph">Reset the recorded graph</string>
     <string name="tasker_save_graph">Save the recorded graph</string>
     <string name="tasker_set_smart_charging_limit">Set Smart Charging percentage limit</string>

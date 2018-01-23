@@ -23,7 +23,6 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast.LENGTH_SHORT
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel
@@ -33,6 +32,7 @@ import com.laudien.p1xelfehler.batterywarner.fragments.HistoryPageFragmentDataSo
 import com.laudien.p1xelfehler.batterywarner.helper.KeyboardHelper
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper
 import kotlinx.android.synthetic.main.activity_history.*
+import kotlinx.android.synthetic.main.dialog_rename.*
 import java.io.File
 import java.util.*
 
@@ -208,7 +208,6 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
             dialog.setContentView(R.layout.dialog_rename)
             val editText = dialog.findViewById<EditText>(R.id.editText)
             editText.setText(oldName)
-            val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
             btn_ok.setOnClickListener {
                 val newName = editText.text.toString()
                 if (newName != oldName) {
@@ -229,7 +228,6 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
                 }
                 dialog.dismiss()
             }
-            val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
             btn_cancel.setOnClickListener { dialog.dismiss() }
             dialog.show()
             // show keyboard
@@ -365,7 +363,7 @@ class HistoryActivity : BaseActivity(), ViewPager.OnPageChangeListener {
          */
         internal fun renameFile(position: Int, newFile: File): Boolean {
             if (position <= count) {
-                val oldFile = files!!.get(position)
+                val oldFile = files!![position]
                 if (oldFile.renameTo(newFile)) {
                     textView_fileName.text = newFile.name
                     files!![position] = newFile

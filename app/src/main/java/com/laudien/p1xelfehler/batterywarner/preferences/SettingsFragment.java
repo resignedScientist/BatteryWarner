@@ -228,9 +228,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         } else if (SDK_INT >= LOLLIPOP && preference == pref_graphAutoDelete && pref_graphAutoDelete != null) {
             if (pref_graphAutoDelete.isChecked()) {
-                JobHelper.schedule(getContext(), JobHelper.ID_AUTO_DELETE_GRAPHS);
+                JobHelper.scheduleJob(getContext());
             } else {
-                JobHelper.cancel(getContext(), JobHelper.ID_AUTO_DELETE_GRAPHS);
+                JobHelper.cancelJob(getContext());
             }
         }
     }

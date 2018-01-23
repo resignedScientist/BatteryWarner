@@ -22,12 +22,17 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
  * This Class saves information about the charging curve. It can show an info dialog to the user.
  */
 public class GraphInfo {
-    boolean useFahrenheit, reverseCurrent;
-    int maxBatteryLvl, firstBatteryLvl, maxTemp, minTemp;
+    final boolean useFahrenheit;
+    final boolean reverseCurrent;
+    final int firstBatteryLvl;
+    final long startTime;
+    int maxBatteryLvl;
+    int maxTemp;
+    int minTemp;
     @RequiresApi(LOLLIPOP)
     int minCurrent, maxCurrent;
     double timeInMinutes, minVoltage, maxVoltage, chargingSpeed;
-    long startTime, endTime;
+    long endTime;
     Dialog dialog;
 
     /**

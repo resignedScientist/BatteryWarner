@@ -16,36 +16,38 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 
 @RequiresApi(LOLLIPOP)
 public class JobHelper {
-    public static final int ID_AUTO_DELETE_GRAPHS = 1337;
+    private static final int ID_AUTO_DELETE_GRAPHS = 1337;
     private static final String TAG = JobHelper.class.getSimpleName();
 
-    public static void schedule(Context context, int jobId) {
-        if (jobId == ID_AUTO_DELETE_GRAPHS) {
-            scheduleGraphAutoDelete(context);
-        }
-    }
-
-    public static void cancel(Context context, int jobId) {
+    public static void cancelJob(Context context) {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancel(jobId);
-        Log.d(TAG, "Job canceled: " + jobId);
+        if (jobScheduler == null) {
+            Log.d(TAG, "Job canceling failed!");
+            return;
+        }
+        jobScheduler.cancel(ID_AUTO_DELETE_GRAPHS);
+        Log.d(TAG, "Job canceled: " + ID_AUTO_DELETE_GRAPHS);
     }
 
-    private static void scheduleGraphAutoDelete(Context context) {
+    public static void scheduleJob(Context context) {
         int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            ComponentName componentName = new ComponentName(context, GraphAutoDeleteService.class);
-            JobInfo jobInfo =
-                    new JobInfo.Builder(ID_AUTO_DELETE_GRAPHS, componentName)
-                            .setRequiresCharging(true)
-                            .setPeriodic(1000 * 60 * 60 * 24)
-                            .setPersisted(true) // survive reboots
-                            .build();
-            boolean result = jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_SUCCESS;
-            Log.d(TAG, "Job scheduled: " + ID_AUTO_DELETE_GRAPHS + ", success: " + result);
-        } else {
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Scheduling job failed! No storage permission granted!");
+            return;
         }
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (jobScheduler == null) {
+            Log.d(TAG, "Scheduling job failed! jobScheduler == null");
+            return;
+        }
+        ComponentName componentName = new ComponentName(context, GraphAutoDeleteService.class);
+        JobInfo jobInfo =
+                new JobInfo.Builder(ID_AUTO_DELETE_GRAPHS, componentName)
+                        .setRequiresCharging(true)
+                        .setPeriodic(1000 * 60 * 60 * 24)
+                        .setPersisted(true) // survive reboots
+                        .build();
+        boolean result = jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_SUCCESS;
+        Log.d(TAG, "Job scheduled: " + ID_AUTO_DELETE_GRAPHS + ", success: " + result);
     }
 }

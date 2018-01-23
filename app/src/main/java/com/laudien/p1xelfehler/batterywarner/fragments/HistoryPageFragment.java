@@ -1,6 +1,7 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -39,7 +40,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
         textView_title.setVisibility(View.GONE);
@@ -54,7 +55,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (filePath != null) {
             outState.putString(Key_FILE_PATH, filePath);
@@ -78,14 +79,18 @@ public class HistoryPageFragment extends BasicGraphFragment {
      */
     @Override
     protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         File file = getFile();
         if (file == null || !file.exists()) {
             return;
         }
-        DatabaseModel.getInstance(getContext()).readData(file, useFahrenheit, reverseCurrent, dataReceiver);
+        DatabaseModel.getInstance(context).readData(file, useFahrenheit, reverseCurrent, dataReceiver);
     }
 
     @Nullable

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,18 +31,13 @@ import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.B
 
 public class MainPageFragment extends Fragment implements BackgroundService.BatteryValueChangedListener {
 
-    public static final byte COLOR_LOW = 1;
-    public static final byte COLOR_HIGH = 2;
-    public static final byte COLOR_OK = 3;
+    private static final byte COLOR_LOW = 1;
+    private static final byte COLOR_HIGH = 2;
+    private static final byte COLOR_OK = 3;
     @Nullable
+    private
     BackgroundService.BackgroundServiceBinder serviceBinder;
-    private byte currentColor = 0;
-    private int warningLow, warningHigh;
-    private SharedPreferences sharedPreferences;
-    private TextView textView_current, textView_technology,
-            textView_temp, textView_health, textView_batteryLevel, textView_voltage;
-    private BatteryView img_battery;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             serviceBinder = (BackgroundService.BackgroundServiceBinder) iBinder;
@@ -53,10 +49,16 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
 
         }
     };
+    private byte currentColor = 0;
+    private int warningLow, warningHigh;
+    private SharedPreferences sharedPreferences;
+    private TextView textView_current, textView_technology,
+            textView_temp, textView_health, textView_batteryLevel, textView_voltage;
+    private BatteryView img_battery;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         View view = inflater.inflate(R.layout.fragment_main_page, container, false);
         img_battery = view.findViewById(R.id.img_battery);
@@ -107,7 +109,7 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
                 break;
             case INDEX_BATTERY_LEVEL:
                 textView_batteryLevel.setText(batteryData.getValueString(index));
-                setBatteryColor((int) batteryData.getValue(INDEX_BATTERY_LEVEL));
+                setBatteryColor(batteryData.getBatteryLevel());
                 break;
             case INDEX_VOLTAGE:
                 textView_voltage.setText(batteryData.getValueString(index));

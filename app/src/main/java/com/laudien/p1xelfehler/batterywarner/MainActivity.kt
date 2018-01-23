@@ -51,7 +51,7 @@ class MainActivity : BaseActivity() {
         } else {
             ToastHelper.sendToast(this, R.string.toast_click_to_exit, Toast.LENGTH_SHORT)
             backPressed = true
-            Handler().postDelayed(Runnable {
+            Handler().postDelayed({
                 backPressed = false
             }, 3000)
         }

@@ -51,10 +51,6 @@ public class GraphAutoDeleteService extends JobService {
                 int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
                 long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
                 ArrayList<File> files = DatabaseUtils.getBatteryFiles();
-                if (files == null) {
-                    jobFinished(jobParameters, false);
-                    return;
-                }
                 for (File file : files) {
                     if (canceled) {
                         canceled = false;

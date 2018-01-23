@@ -164,8 +164,8 @@ public abstract class AbstractPluginSettingReceiver extends BroadcastReceiver {
      * @param isOrdered Indicates whether an ordered broadcast is being processed.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    /* package */ final void goAsyncWithCallback(@NonNull final AsyncCallback callback,
-                                                 final boolean isOrdered) {
+    /* package */ private void goAsyncWithCallback(@NonNull final AsyncCallback callback,
+                                                   final boolean isOrdered) {
         assertNotNull(callback, "callback"); //$NON-NLS-1$
 
         final PendingResult pendingResult = goAsync();
@@ -179,7 +179,7 @@ public abstract class AbstractPluginSettingReceiver extends BroadcastReceiver {
                 ThreadUtil.ThreadPriority.BACKGROUND);
         final Handler handler = new Handler(thread.getLooper(), handlerCallback);
 
-        final Object obj = new Pair<PendingResult, AsyncCallback>(pendingResult, callback);
+        final Object obj = new Pair<>(pendingResult, callback);
         final int isOrderedInt = isOrdered ? 1 : 0;
         final Message msg = handler
                 .obtainMessage(AsyncHandlerCallback.MESSAGE_HANDLE_CALLBACK, isOrderedInt, 0, obj);

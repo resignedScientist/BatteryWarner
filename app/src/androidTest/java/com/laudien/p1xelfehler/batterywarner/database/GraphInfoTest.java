@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class GraphInfoTest {
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {

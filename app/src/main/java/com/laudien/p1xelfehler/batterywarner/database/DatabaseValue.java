@@ -17,8 +17,12 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBE
  * It should only be used by DatabaseController and DatabaseModel.
  */
 public class DatabaseValue {
-    private int batteryLevel, current, temperature, voltage;
-    private long utcTimeInMillis, graphCreationTime;
+    private final int batteryLevel;
+    private final int current;
+    private final int temperature;
+    private final int voltage;
+    private final long utcTimeInMillis;
+    private final long graphCreationTime;
 
     /**
      * The one and only constructor.
@@ -130,7 +134,7 @@ public class DatabaseValue {
         return convertToCelsius(temperature);
     }
 
-    double getTemperatureInFahrenheit() {
+    private double getTemperatureInFahrenheit() {
         return convertToFahrenheit(temperature);
     }
 

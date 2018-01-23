@@ -67,7 +67,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
@@ -113,9 +113,13 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     public void onResume() {
         super.onResume();
         if (graphEnabled) {
-            getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
-            getContext().registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
-            DatabaseModel.getInstance(getContext()).registerDatabaseListener(this);
+            Context context = getContext();
+            if (context == null) {
+                return;
+            }
+            context.registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_DISCONNECTED"));
+            context.registerReceiver(chargingStateChangedReceiver, new IntentFilter("android.intent.action.ACTION_POWER_CONNECTED"));
+            DatabaseModel.getInstance(context).registerDatabaseListener(this);
         }
     }
 
@@ -123,6 +127,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     public void onPause() {
         super.onPause();
         if (graphEnabled) {
+            Context context = getContext();
+            if (context == null) {
+                return;
+            }
             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
             sharedPreferencesEditor
                     .putBoolean(getString(R.string.pref_checkBox_percent), switches[GRAPH_INDEX_BATTERY_LEVEL].isChecked())
@@ -133,8 +141,8 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                         .putBoolean(getString(R.string.pref_checkBox_current), switches[GRAPH_INDEX_CURRENT].isChecked());
             }
             sharedPreferencesEditor.apply();
-            DatabaseModel.getInstance(getContext()).unregisterDatabaseListener(this);
-            getContext().unregisterReceiver(chargingStateChangedReceiver);
+            DatabaseModel.getInstance(context).unregisterDatabaseListener(this);
+            context.unregisterReceiver(chargingStateChangedReceiver);
         }
     }
 
@@ -188,7 +196,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      */
     @Override
     protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        DatabaseModel.getInstance(getContext()).readData(useFahrenheit, reverseCurrent, dataReceiver);
+        Context context = getContext();
+        if (context != null) {
+            DatabaseModel.getInstance(context).readData(useFahrenheit, reverseCurrent, dataReceiver);
+        }
     }
 
     /**
@@ -197,6 +208,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      */
     @Override
     void setTimeText() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
         Intent batteryStatus = getContext().registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         if (batteryStatus == null) {
             return;
@@ -328,23 +343,27 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     }
 
     private void saveGraph() {
+        final Context context = getContext();
+        if (context == null) {
+            return;
+        }
         LineGraphSeries graph = getFirstAvailableGraph();
         // check if there is enough data
         if (graph != null && graphs[GRAPH_INDEX_BATTERY_LEVEL].getHighestValueX() > 0) {
             // check for permission
-            if (ContextCompat.checkSelfPermission(getContext(), WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
                 // save graph and show toast
-                DatabaseUtils.saveGraph(getContext(), new DatabaseUtils.GraphSavedListener() {
+                DatabaseUtils.saveGraph(context, new DatabaseUtils.GraphSavedListener() {
                     @Override
                     public void onFinishedSaving(boolean success) {
-                        ToastHelper.sendToast(getContext(), success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
+                        ToastHelper.sendToast(context, success ? R.string.toast_success_saving : R.string.toast_error_saving, LENGTH_SHORT);
                     }
                 });
             } else { // permission not granted -> ask for permission
                 requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_SAVE_GRAPH);
             }
         } else { // there is no graph or the graph does not have enough data
-            ToastHelper.sendToast(getContext(), R.string.toast_nothing_to_save, LENGTH_SHORT);
+            ToastHelper.sendToast(context, R.string.toast_nothing_to_save, LENGTH_SHORT);
         }
     }
 
@@ -353,7 +372,11 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
      * app directory database will be cleared.
      */
     private void showResetDialog() {
-        new AlertDialog.Builder(getContext())
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        new AlertDialog.Builder(context)
                 .setCancelable(true)
                 .setIcon(R.drawable.ic_battery_status_full_green_48dp)
                 .setTitle(R.string.dialog_title_are_you_sure)
@@ -362,9 +385,15 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                 .setPositiveButton(R.string.dialog_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        DatabaseModel.getInstance(getContext()).resetTable();
-                        ToastHelper.sendToast(getContext(), R.string.toast_success_delete_graph, LENGTH_SHORT);
+                        Context context = getContext();
+                        if (context == null) {
+                            return;
+                        }
+                        DatabaseModel.getInstance(context).resetTable();
+                        ToastHelper.sendToast(context, R.string.toast_success_delete_graph, LENGTH_SHORT);
                     }
-                }).create().show();
+                })
+                .create()
+                .show();
     }
 }
