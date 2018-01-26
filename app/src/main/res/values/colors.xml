@@ -20,4 +20,6 @@
 
     <!-- Dark notification -->
     <color name="dark_background">#212121</color>
+
+    <color name="color_link">#0000EE</color>
 </resources>

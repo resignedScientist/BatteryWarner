@@ -1,11 +1,14 @@
 package com.laudien.p1xelfehler.batterywarner.fragments;
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -14,9 +17,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 import com.laudien.p1xelfehler.batterywarner.services.BackgroundService;
 import com.laudien.p1xelfehler.batterywarner.views.BatteryView;
 
@@ -55,6 +60,7 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
     private TextView textView_current, textView_technology,
             textView_temp, textView_health, textView_batteryLevel, textView_voltage;
     private BatteryView img_battery;
+    private int clicks = 0;
 
     @Nullable
     @Override
@@ -68,6 +74,21 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
         textView_batteryLevel = view.findViewById(R.id.textView_batteryLevel);
         textView_voltage = view.findViewById(R.id.textView_voltage);
         textView_current = view.findViewById(R.id.textView_current);
+        img_battery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clicks++;
+                if (clicks > 4) {
+                    showTheDestroyer();
+                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        clicks = 0;
+                    }
+                }, 3000);
+            }
+        });
         return view;
     }
 
@@ -149,5 +170,44 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
                     break;
             }
         }
+    }
+
+    private void showTheDestroyer() {
+        ToastHelper.sendToast(getContext(), "DESTROY!");
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_destroyer);
+        // close button
+        Button btn_close = dialog.findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                ToastHelper.sendToast(getContext(), "TRAIN HARD!");
+                Uri geoLocation = Uri.parse("geo:0,0?q=gym");
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+            }
+        });
+        // credits
+        TextView credits = dialog.findViewById(R.id.textView_credits);
+        credits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=fatalmerlin"));
+                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else { // no twitter app, open browser
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/fatalmerlin"));
+                    if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
+        dialog.show();
     }
 }
