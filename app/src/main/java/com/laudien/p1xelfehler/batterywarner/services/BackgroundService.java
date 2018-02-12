@@ -880,8 +880,8 @@ public class BackgroundService extends Service {
             int batteryLevel = intent.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1);
             if (batteryLevel != lastBatteryLevel) {
                 lastBatteryLevel = batteryLevel;
-                // show warning low notification
-                if (!alreadyNotified) {
+                boolean warningLowEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_enabled), getResources().getBoolean(R.bool.pref_warning_low_enabled_default));
+                if (!alreadyNotified && warningLowEnabled) {
                     int warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
                     if (batteryLevel <= warningLow) {
                         alreadyNotified = true;
