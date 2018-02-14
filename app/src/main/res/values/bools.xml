@@ -25,6 +25,7 @@
     <!-- 'Discharging Service' section in preferences -->
     <bool name="pref_power_saving_mode_default">false</bool>
     <bool name="pref_warning_low_enabled_default">true</bool>
+    <bool name="pref_waring_low_sound_enabled_default">true</bool>
     <!-- smart charging -->
     <bool name="pref_smart_charging_auto_resume_default">true</bool>
     <bool name="pref_smart_charging_enabled_default">false</bool>
@@ -43,5 +44,4 @@
     <bool name="pref_smart_charging_use_alarm_clock_time_default">false</bool>
     <!-- graph auto delete -->
     <bool name="pref_graph_auto_delete_default">false</bool>
-    <bool name="pref_waring_low_sound_enabled_default">true</bool>
 </resources>
