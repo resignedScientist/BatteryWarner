@@ -43,4 +43,5 @@
     <bool name="pref_smart_charging_use_alarm_clock_time_default">false</bool>
     <!-- graph auto delete -->
     <bool name="pref_graph_auto_delete_default">false</bool>
+    <bool name="pref_waring_low_sound_enabled_default">true</bool>
 </resources>

@@ -207,7 +207,7 @@
     <string name="unit_days">\ দিন</string>
 
     <!-- new strings -->
-    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
+    <string name="title_warning_sound_enabled">Enable notification sound</string>
     <string name="intro_advanced_mode">Advanced mode</string>
     <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
     <string name="intro_easy_mode">Easy mode</string>
