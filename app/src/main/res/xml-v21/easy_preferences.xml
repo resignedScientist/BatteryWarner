@@ -11,7 +11,7 @@
             android:defaultValue="@bool/pref_waring_high_sound_enabled_default"
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_warning_high_sound_enabled"
-            android:title="@string/title_warning_high_sound_enabled" />
+            android:title="@string/title_warning_sound_enabled" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="@string/pref_warning_high_sound_enabled"
@@ -40,9 +40,14 @@
             android:key="@string/pref_warning_low_enabled"
             android:summary="@string/summary_warning_low_enabled"
             android:title="@string/title_discharging_notification" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_waring_low_sound_enabled_default"
+            android:dependency="@string/pref_warning_low_enabled"
+            android:key="@string/pref_warning_low_sound_enabled"
+            android:title="@string/title_warning_sound_enabled" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
-            android:dependency="@string/pref_warning_low_enabled"
+            android:dependency="@string/pref_warning_low_sound_enabled"
             android:key="@string/pref_sound_uri_low"
             android:ringtoneType="notification"
             android:showSilent="false"

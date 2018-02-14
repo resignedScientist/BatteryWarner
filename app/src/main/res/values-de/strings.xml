@@ -192,7 +192,7 @@
     <string name="title_usb_charging_disabled">USB-Laden deaktivieren [Root]</string>
     <string name="title_usb_enabled">Warnung beim USB-Laden</string>
     <string name="title_warning_high">Akkustand hoch Warnung</string>
-    <string name="title_warning_high_sound_enabled">Benachrichtigungston aktivieren</string>
+    <string name="title_warning_sound_enabled">Benachrichtigungston aktivieren</string>
     <string name="title_warning_low">Akkustand niedrig Warnung</string>
     <string name="title_warning_percentage">Batterie-Warnung bei:</string>
     <string name="title_wireless_enabled">Warnung beim kabellosen Laden</string>

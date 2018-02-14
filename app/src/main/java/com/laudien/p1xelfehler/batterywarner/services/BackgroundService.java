@@ -628,8 +628,11 @@ public class BackgroundService extends Service {
         if (Build.VERSION.SDK_INT >= O) {
             builder.setChannelId(getString(R.string.channel_warning_low));
         } else {
-            builder.setPriority(PRIORITY_HIGH)
-                    .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false));
+            builder.setPriority(PRIORITY_HIGH);
+            boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_sound_enabled), getResources().getBoolean(R.bool.pref_waring_low_sound_enabled_default));
+            if (soundEnabled) {
+                builder.setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false));
+            }
         }
         if (showPowerSaving) {
             Intent exitPowerSaveIntent = new Intent(this, TogglePowerSavingService.class);

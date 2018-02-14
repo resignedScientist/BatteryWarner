@@ -161,6 +161,7 @@
     <string name="pref_warning_high_sound_enabled" translatable="false">warningHighSoundEnabled</string>
     <string name="pref_warning_low" translatable="false">warningLow</string>
     <string name="pref_warning_low_enabled" translatable="false">warningLowEnabled</string>
+    <string name="pref_warning_low_sound_enabled" translatable="false">warningLowSoundEnabled</string>
     <string name="pref_wireless_enabled" translatable="false">wirelessEnabled</string>
 
     <!-- names of SharedPrefs files -->
@@ -274,9 +275,9 @@
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
     <string name="title_usb_enabled">Warning on USB charging</string>
     <string name="title_warning_high">High battery warning</string>
-    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
     <string name="title_warning_low">Low battery warning</string>
     <string name="title_warning_percentage">Warning percentage:</string>
+    <string name="title_warning_sound_enabled">Enable notification sound</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
 
     <!-- toasts -->

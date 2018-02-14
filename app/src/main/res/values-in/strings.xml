@@ -183,7 +183,7 @@
     <string name="title_time_format">Format waktu</string>
     <string name="title_usb_charging_disabled">Nonaktifkan pengisian USB [Root]</string>
     <string name="title_usb_enabled">Peringatan pada pengisian USB</string>
-    <string name="title_warning_high_sound_enabled">Aktifkan suara pemberitahuan</string>
+    <string name="title_warning_sound_enabled">Aktifkan suara pemberitahuan</string>
     <string name="title_warning_percentage">Persentase peringatan:</string>
     <string name="title_wireless_enabled">Peringatan pada pengisian nirkabel</string>
 
