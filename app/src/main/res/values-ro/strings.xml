@@ -151,6 +151,14 @@
     <string name="tile_warning_low">Avertizare baterie slaba</string>
     <string name="tile_warning_high">Avertizare baterie ridicata</string>
 
+    <!-- Changes -->
+    <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
+    <string name="summary_android_notification_settings">De la Android O trebuie să setezi sunetul în setările de notificare ale Android. Apasă aici ca să îl deschizi!</string>
+    <!-- Please write the translation to 'high battery warning' here instead -->
+    <string name="title_warning_high">Serviciu Încărcare</string>
+    <!-- Please write the translation to 'Low battery warning' here instead -->
+    <string name="title_warning_low">Serviciu Descărcare</string>
+
     <!-- new strings -->
     <string name="title_smart_charging_auto_resume">Auto Resume</string>
     <string name="summary_smart_charging_auto_resume">Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again.</string>
@@ -221,12 +229,16 @@
     <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
     <string name="menu_xda_thread">XDA Thread</string>
     <string name="tasker_number_or_variable">Number or variable</string>
-
-    <!-- Changes -->
-    <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
-    <string name="summary_android_notification_settings">De la Android O trebuie să setezi sunetul în setările de notificare ale Android. Apasă aici ca să îl deschizi!</string>
-    <!-- Please write the translation to 'high battery warning' here instead -->
-    <string name="title_warning_high">Serviciu Încărcare</string>
-    <!-- Please write the translation to 'Low battery warning' here instead -->
-    <string name="title_warning_low">Serviciu Descărcare</string>
+    <string name="channel_description_temp_warning_high">The high battery temperature warning.</string>
+    <string name="channel_description_temp_warning_low">The low battery temperature warning.</string>
+    <string name="channel_title_temp_warning_high">High temperature warning</string>
+    <string name="channel_title_temp_warning_low">Low temperature warning</string>
+    <string name="notification_temp_high">The battery temperature is above</string>
+    <string name="notification_temp_low">The battery temperature is below</string>
+    <string name="summary_temp_warning_high_enabled">Show a high temperature warning when the battery temperature has reached the set point.</string>
+    <string name="summary_temp_warning_low_enabled">Show a low temperature warning when the battery temperature has reached the set point.</string>
+    <string name="title_temp_warning_high_enabled">Enable high temperature warning</string>
+    <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
+    <string name="title_temp_warning_slider">Warning temperature:</string>
+    <string name="title_temp_warnings">Temperature warnings</string>
 </resources>

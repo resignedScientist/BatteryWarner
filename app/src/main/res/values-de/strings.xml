@@ -4,10 +4,14 @@
 
     <string name="channel_description_battery_info">Die Batterie-Info-Benachrichtigung, sowie die \'Lade-Service\'-Benachrichtigung.</string>
     <string name="channel_description_other_warnings">Andere wichtige Warnungen, z.B. wenn die App keinen Root-Zugriff mehr hat.</string>
+    <string name="channel_description_temp_warning_high">Die Temperatur-Hoch Warnung</string>
+    <string name="channel_description_temp_warning_low">Die Temperatur-Niedrig Warnung.</string>
     <string name="channel_description_warning_high">Die \'Der Akkustand ist höher als x%\' Warnung.</string>
     <string name="channel_description_warning_low">Die \'Der Akkustand ist niedriger als x%\' Warnung.</string>
     <string name="channel_title_battery_info">Batterie-Informationen</string>
     <string name="channel_title_other_warnings">Andere Warnungen</string>
+    <string name="channel_title_temp_warning_high">Temperatur-Hoch Warnung</string>
+    <string name="channel_title_temp_warning_low">Temperatur-Niedrig Warnung</string>
     <string name="channel_title_warning_high">Akkust. hoch Warnung</string>
     <string name="channel_title_warning_low">Akkust. niedrig Warnung</string>
 
@@ -89,6 +93,8 @@
     <string name="notification_no_items_enabled">Alle Infos deaktiviert!</string>
     <string name="notification_not_rooted">Die App hat keinen Root-Zugriff mehr! Klicke hier um wieder Root-Zugriff zu erlauben!</string>
     <string name="notification_stop_charging_not_working">Laden abbrechen scheint mit deinem Gerät nicht zu funktionieren! Du kannst diese Funktion deaktivieren.</string>
+    <string name="notification_temp_high">Die Akku-Temperatur ist höher als</string>
+    <string name="notification_temp_low">Die Akku-Temperatur ist niedriger als</string>
     <string name="notification_warning_high">Der Akkustand ist höher als</string>
     <string name="notification_warning_low">Der Akkustand ist niedriger als</string>
 
@@ -106,6 +112,8 @@
     <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
     <string name="summary_smart_charging_auto_resume">"Laden fortsetzen, sobald der Akkustand um X% gesunken ist. Es wird dann bis zum ersten Limit weiter geladen."</string>
     <string name="summary_stop_charging">Stoppt das Laden, sobald die Batterie-Warnung erscheint. Funktioniert nicht auf jedem Gerät!</string>
+    <string name="summary_temp_warning_high_enabled">Zeige eine Temperatur-Hoch Warnung, wenn die eingestellte Temperatur überschritten wurde.</string>
+    <string name="summary_temp_warning_low_enabled">Zeige eine Temperatur-Niedrig Warnung, wenn die eingestellte Temperatur unterschritten wurde.</string>
     <string name="summary_usb_charging_disabled">Verhindert, dass das Gerät bei einer USB-Verbindung lädt. Funktioniert nicht auf jedem Gerät!</string>
     <string name="summary_warning_high_enabled">Zeige eine Batterie-hoch-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
     <string name="summary_warning_low_enabled">Zeige eine Batterie-niedrig-Warnung, wenn die eingestellte Prozentzahl erreicht wird.</string>
@@ -187,14 +195,18 @@
     <string name="title_stats">Statistiken</string>
     <string name="title_stop_charging">Laden automatisch abbrechen [Root]</string>
     <string name="title_temp_unit">Temperatur-Einheit</string>
+    <string name="title_temp_warning_high_enabled">Temperatur-Hoch Warnung</string>
+    <string name="title_temp_warning_low_enabled">Temperatur-Niedrig Warnung</string>
+    <string name="title_temp_warning_slider">Warnung bei:</string>
+    <string name="title_temp_warnings">Temperatur-Warnungen</string>
     <string name="title_theming">Thema</string>
     <string name="title_time_format">Zeit-Format</string>
     <string name="title_usb_charging_disabled">USB-Laden deaktivieren [Root]</string>
     <string name="title_usb_enabled">Warnung beim USB-Laden</string>
     <string name="title_warning_high">Akkustand hoch Warnung</string>
-    <string name="title_warning_sound_enabled">Benachrichtigungston aktivieren</string>
     <string name="title_warning_low">Akkustand niedrig Warnung</string>
     <string name="title_warning_percentage">Batterie-Warnung bei:</string>
+    <string name="title_warning_sound_enabled">Benachrichtigungston aktivieren</string>
     <string name="title_wireless_enabled">Warnung beim kabellosen Laden</string>
 
     <string name="toast_charging_type_disabled">Die jetzige Lademethode ist deaktiviert!</string>

@@ -61,6 +61,34 @@
             app:slider_min="@integer/pref_warning_low_min"
             app:unit="%" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_temp_warnings">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_temp_warning_high_enabled_default"
+            android:key="@string/pref_temp_warning_high_enabled"
+            android:summary="@string/summary_temp_warning_high_enabled"
+            android:title="@string/title_temp_warning_high_enabled" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_temp_high_warning_default"
+            android:dependency="@string/pref_temp_warning_high_enabled"
+            android:key="@string/pref_temp_high_warning"
+            android:title="@string/title_temp_warning_slider"
+            app:slider_max="@integer/pref_temp_high_warning_max"
+            app:slider_min="@integer/pref_temp_high_warning_min"
+            app:unit="°C" />
+        <SwitchPreference
+            android:defaultValue="@bool/pref_temp_warning_low_enabled_default"
+            android:key="@string/pref_temp_warning_low_enabled"
+            android:summary="@string/summary_temp_warning_low_enabled"
+            android:title="@string/title_temp_warning_low_enabled" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_temp_low_warning_default"
+            android:dependency="@string/pref_temp_warning_low_enabled"
+            android:key="@string/pref_temp_low_warning"
+            android:title="@string/title_temp_warning_slider"
+            app:slider_max="@integer/pref_temp_low_warning_max"
+            app:slider_min="@integer/pref_temp_low_warning_min"
+            app:unit="°C" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_notification_settings">
         <SwitchPreference
             android:defaultValue="@bool/pref_info_notification_enabled_default"
