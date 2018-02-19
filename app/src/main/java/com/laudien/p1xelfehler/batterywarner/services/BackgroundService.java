@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -27,12 +28,14 @@ import android.util.TypedValue;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.laudien.p1xelfehler.batterywarner.MainActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseValue;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
+import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 
@@ -40,6 +43,7 @@ import java.util.Locale;
 
 import static android.app.Notification.PRIORITY_HIGH;
 import static android.app.Notification.PRIORITY_LOW;
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.os.BatteryManager.BATTERY_HEALTH_COLD;
 import static android.os.BatteryManager.BATTERY_HEALTH_DEAD;
 import static android.os.BatteryManager.BATTERY_HEALTH_GOOD;
@@ -61,12 +65,18 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_STOP_CHARGING_NOT_WORKING;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.LARGE_ICON_RESOURCE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.SMALL_ICON_RESOURCE;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.BATTERY_LEVEL_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.BATTERY_LEVEL_LOW;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_HIGH;
+import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_LOW;
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
     public static final String ACTION_DISABLE_CHARGING = "disableCharging";
     public static final String ACTION_RESET_ALL = "resetService";
     public static final String ACTION_CHANGE_PREFERENCE = "changePreference";
+    public static final String ACTION_TEMP_WARNING_DISMISSED = "tempWarningDismissed";
+    public static final String ACTION_TEMP_WARNING_CLICKED = "tempWarningClicked";
     public static final String EXTRA_PREFERENCE_KEY = "preferenceKey";
     public static final String EXTRA_PREFERENCE_VALUE = "preferenceValue";
     private static final String ACTION_ENABLE_USB_CHARGING = "enableUsbCharging";
@@ -74,6 +84,8 @@ public class BackgroundService extends Service {
     private static final int NOTIFICATION_ID_WARNING_HIGH = 2001;
     private static final int NOTIFICATION_ID_WARNING_LOW = 2002;
     private static final int NOTIFICATION_ID_INFO = 2003;
+    private static final int NOTIFICATION_ID_TEMP_HIGH = 2004;
+    private static final int NOTIFICATION_ID_TEMP_LOW = 2005;
     private static final int NOTIFICATION_LED_ON_TIME = 500;
     private static final int NOTIFICATION_LED_OFF_TIME = 2000;
     private final BackgroundServiceBinder binder = new BackgroundServiceBinder();
@@ -82,6 +94,8 @@ public class BackgroundService extends Service {
     private boolean chargingResumedByAutoResume = false;
     private boolean chargingPausedByIllegalUsbCharging = false;
     private boolean alreadyNotified = false;
+    private boolean tempHighNotified = false;
+    private boolean tempLowNotified = false;
     private boolean screenOn = true;
     private boolean chargingDisabledInFile = false;
     private boolean charging = false;
@@ -251,6 +265,12 @@ public class BackgroundService extends Service {
                     String key = getString(extras.getInt(EXTRA_PREFERENCE_KEY));
                     Object value = extras.get(EXTRA_PREFERENCE_VALUE);
                     changePreference(key, value);
+                    break;
+                case ACTION_TEMP_WARNING_CLICKED:
+                    startActivity(new Intent(this, MainActivity.class));
+                case ACTION_TEMP_WARNING_DISMISSED:
+                    tempHighNotified = false;
+                    tempLowNotified = false;
                     break;
                 default:
                     throw new RuntimeException("Unknown action!");
@@ -555,7 +575,7 @@ public class BackgroundService extends Service {
             builder.setPriority(PRIORITY_LOW);
             boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_sound_enabled), getResources().getBoolean(R.bool.pref_waring_high_sound_enabled_default));
             if (enableSound && soundEnabled) {
-                builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
+                builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, BATTERY_LEVEL_HIGH));
             }
         }
         // add 'Enable Usb Charging' button if needed
@@ -598,7 +618,7 @@ public class BackgroundService extends Service {
             builder.setPriority(PRIORITY_HIGH);
             boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_high_sound_enabled), getResources().getBoolean(R.bool.pref_waring_high_sound_enabled_default));
             if (soundEnabled) {
-                builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, true));
+                builder.setSound(NotificationHelper.getWarningSound(this, sharedPreferences, BATTERY_LEVEL_HIGH));
             }
         }
         return builder.build();
@@ -631,7 +651,7 @@ public class BackgroundService extends Service {
             builder.setPriority(PRIORITY_HIGH);
             boolean soundEnabled = sharedPreferences.getBoolean(getString(R.string.pref_warning_low_sound_enabled), getResources().getBoolean(R.bool.pref_waring_low_sound_enabled_default));
             if (soundEnabled) {
-                builder.setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, false));
+                builder.setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, BATTERY_LEVEL_LOW));
             }
         }
         if (showPowerSaving) {
@@ -725,6 +745,8 @@ public class BackgroundService extends Service {
                     onPowerDisconnected();
                 }
             }
+            // handle temperature warnings
+            handleTemperatureWarnings(intent);
             // handle charging/discharging
             boolean graphEnabled = !chargingPausedByIllegalUsbCharging && sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
             if (isCharging || chargingDisabledInFile && (chargingPausedBySmartCharging || graphEnabled)) {
@@ -892,6 +914,66 @@ public class BackgroundService extends Service {
                     }
                 }
             }
+        }
+
+        private void handleTemperatureWarnings(@NonNull Intent intent) {
+            boolean tempHighWarningEnabled = sharedPreferences.getBoolean(getString(R.string.pref_temp_warning_high_enabled), getResources().getBoolean(R.bool.pref_temp_warning_high_enabled_default));
+            boolean tempLowWarningEnabled = sharedPreferences.getBoolean(getString(R.string.pref_temp_warning_low_enabled), getResources().getBoolean(R.bool.pref_temp_warning_low_enabled_default));
+
+            if (!tempHighWarningEnabled && !tempLowWarningEnabled) {
+                return;
+            }
+
+            int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
+            // high battery temperature warning
+            if (tempHighWarningEnabled) {
+                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_high_warning), getResources().getInteger(R.integer.pref_temp_high_warning_default));
+                if (temperature >= warningTemperature) {
+                    showTemperatureWarning(true, warningTemperature);
+                }
+            }
+            // low battery temperature warning
+            if (tempLowWarningEnabled) {
+                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_low_warning), getResources().getInteger(R.integer.pref_temp_low_warning_default));
+                if (temperature <= warningTemperature) {
+                    showTemperatureWarning(false, warningTemperature);
+                }
+            }
+        }
+
+        private void showTemperatureWarning(boolean isHighWarning, int warningTemperature) {
+            int messageID = isHighWarning ? R.string.notification_temp_high : R.string.notification_temp_low;
+            String messageText = String.format(Locale.getDefault(), "%s %d°C!", getString(messageID), warningTemperature);
+            int notificationID = isHighWarning ? NOTIFICATION_ID_TEMP_HIGH : NOTIFICATION_ID_TEMP_LOW;
+
+            Intent dismissedIntent = new Intent(BackgroundService.this, BackgroundService.class);
+            dismissedIntent.setAction(ACTION_TEMP_WARNING_DISMISSED);
+            PendingIntent dismissedPendingIntent = PendingIntent.getService(BackgroundService.this, notificationID, dismissedIntent, FLAG_UPDATE_CURRENT);
+
+            Intent clickedIntent = new Intent(BackgroundService.this, BackgroundService.class);
+            dismissedIntent.setAction(ACTION_TEMP_WARNING_CLICKED);
+            PendingIntent clickedPendingIntent = PendingIntent.getService(BackgroundService.this, notificationID, clickedIntent, FLAG_UPDATE_CURRENT);
+
+            Notification.Builder builder = new Notification.Builder(BackgroundService.this)
+                    .setSmallIcon(SMALL_ICON_RESOURCE)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(messageText)
+                    .setStyle(NotificationHelper.getBigTextStyle(messageText))
+                    .setContentIntent(clickedPendingIntent)
+                    .setAutoCancel(true)
+                    .setLights(Color.RED, NOTIFICATION_LED_ON_TIME, NOTIFICATION_LED_OFF_TIME)
+                    .setVibrate(NotificationHelper.VIBRATE_PATTERN)
+                    .setDeleteIntent(dismissedPendingIntent);
+            if (SDK_INT >= O) {
+                int channelResID = isHighWarning ? R.string.channel_temp_warning_high : R.string.channel_temp_warning_low;
+                builder.setChannelId(getString(channelResID));
+            } else {
+                Sound sound = isHighWarning ? TEMPERATURE_HIGH : TEMPERATURE_LOW;
+                builder.setPriority(PRIORITY_HIGH)
+                        .setSound(NotificationHelper.getWarningSound(BackgroundService.this, sharedPreferences, sound));
+            }
+            notificationManager.notify(notificationID, builder.build());
         }
 
         /**
