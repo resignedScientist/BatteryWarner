@@ -5,13 +5,19 @@
 
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
-    <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
+    <string name="channel_description_battery_info">The permanent notification with the battery info (temperature, voltage, …).</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
+    <string name="channel_description_temp_warning_high">The high battery temperature warning.</string>
+    <string name="channel_description_temp_warning_low">The low battery temperature warning.</string>
     <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
     <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
     <string name="channel_other_warnings" translatable="false">otherWarnings</string>
+    <string name="channel_temp_warning_high" translatable="false">tempWarningHigh</string>
+    <string name="channel_temp_warning_low" translatable="false">tempWarningLow</string>
     <string name="channel_title_battery_info">Battery Information</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_title_temp_warning_high">High temperature warning</string>
+    <string name="channel_title_temp_warning_low">Low temperature warning</string>
     <string name="channel_title_warning_high">High battery warning</string>
     <string name="channel_title_warning_low">Low battery warning</string>
     <string name="channel_warning_high" translatable="false">warningHigh</string>
@@ -109,6 +115,8 @@
     <string name="notification_no_items_enabled">No items enabled!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
+    <string name="notification_temp_high">The battery temperature is above</string>
+    <string name="notification_temp_low">The battery temperature is below</string>
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
 
