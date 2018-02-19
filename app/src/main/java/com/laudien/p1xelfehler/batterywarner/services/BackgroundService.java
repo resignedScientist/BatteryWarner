@@ -927,7 +927,7 @@ public class BackgroundService extends Service {
             int temperature = intent.getIntExtra(EXTRA_TEMPERATURE, 0);
             // high battery temperature warning
             if (tempHighWarningEnabled && !tempHighNotified) {
-                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_high_warning), getResources().getInteger(R.integer.pref_temp_high_warning_default));
+                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_high_warning), getResources().getInteger(R.integer.pref_temp_high_warning_default)) * 10;
                 if (temperature >= warningTemperature) {
                     tempHighNotified = true;
                     showTemperatureWarning(true, warningTemperature);
@@ -935,7 +935,7 @@ public class BackgroundService extends Service {
             }
             // low battery temperature warning
             if (tempLowWarningEnabled && !tempLowNotified) {
-                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_low_warning), getResources().getInteger(R.integer.pref_temp_low_warning_default));
+                int warningTemperature = sharedPreferences.getInt(getString(R.string.pref_temp_low_warning), getResources().getInteger(R.integer.pref_temp_low_warning_default)) * 10;
                 if (temperature <= warningTemperature) {
                     tempLowNotified = true;
                     showTemperatureWarning(false, warningTemperature);
