@@ -4,8 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/info_notification_padding"
-    android:paddingLeft="8dp"
+    android:paddingEnd="8dp"
+    android:paddingLeft="16dp"
     android:paddingRight="8dp"
+    android:paddingStart="16dp"
     android:paddingTop="@dimen/info_notification_padding">
 
     <ImageView
