@@ -241,6 +241,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
+    @Nullable
     public SQLiteDatabase getReadableDatabase() {
         try {
             return super.getReadableDatabase();
@@ -251,6 +252,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
+    @Nullable
     public SQLiteDatabase getWritableDatabase() {
         try {
             return super.getWritableDatabase();
@@ -271,8 +273,13 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
+    @Nullable
     public Cursor getCursor() {
-        return getCursor(getReadableDatabase());
+        SQLiteDatabase database = getReadableDatabase();
+        if (database == null) {
+            return null;
+        }
+        return getCursor(database);
     }
 
     @Override
@@ -375,7 +382,14 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Override
     public void addValue(@NonNull DatabaseValue value) {
-        new AddValueTask(getWritableDatabase(), value, listeners).execute();
+        SQLiteDatabase database = getWritableDatabase();
+        if (database == null) {
+            return;
+        }
+        long totalNumberOfRows = addValueTask(database, value);
+        for (DatabaseContract.DatabaseListener listener : listeners) {
+            listener.onValueAdded(value, totalNumberOfRows);
+        }
     }
 
     @Override
@@ -391,7 +405,11 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Override
     public void resetTable() {
-        new ResetTableTask(getWritableDatabase(), listeners).execute();
+        SQLiteDatabase database = getWritableDatabase();
+        if (database == null) {
+            return;
+        }
+        new ResetTableTask(database, listeners).execute();
     }
 
     @Override
@@ -457,35 +475,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             super.onPostExecute(data);
             if (data != null) {
                 dataReceiver.onDataRead(data);
-            }
-        }
-    }
-
-    private static class AddValueTask extends AsyncTask<Void, Void, Long> {
-        private final DatabaseValue value;
-        private final HashSet<DatabaseContract.DatabaseListener> listeners;
-        private final SQLiteDatabase database;
-
-        private AddValueTask(@NonNull SQLiteDatabase writableDatabase, @NonNull DatabaseValue value, @NonNull HashSet<DatabaseContract.DatabaseListener> listeners) {
-            this.database = writableDatabase;
-            this.value = value;
-            this.listeners = listeners;
-        }
-
-        @Override
-        protected Long doInBackground(Void... voids) {
-            return addValueTask(database, value);
-        }
-
-        @Override
-        protected void onPostExecute(Long totalNumberOfRows) {
-            super.onPostExecute(totalNumberOfRows);
-            notifyValueAdded(value, totalNumberOfRows);
-        }
-
-        private void notifyValueAdded(DatabaseValue value, long totalNumberOfRows) {
-            for (DatabaseContract.DatabaseListener listener : listeners) {
-                listener.onValueAdded(value, totalNumberOfRows);
             }
         }
     }
