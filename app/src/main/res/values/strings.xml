@@ -5,13 +5,19 @@
 
     <!-- Notification channels -->
     <string name="channel_battery_info" translatable="false">batteryInfo</string>
-    <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
+    <string name="channel_description_battery_info">The permanent notification with the battery info (temperature, voltage, …).</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
+    <string name="channel_description_temp_warning_high">The high battery temperature warning.</string>
+    <string name="channel_description_temp_warning_low">The low battery temperature warning.</string>
     <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
     <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
     <string name="channel_other_warnings" translatable="false">otherWarnings</string>
+    <string name="channel_temp_warning_high" translatable="false">tempWarningHigh</string>
+    <string name="channel_temp_warning_low" translatable="false">tempWarningLow</string>
     <string name="channel_title_battery_info">Battery Information</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_title_temp_warning_high">High temperature warning</string>
+    <string name="channel_title_temp_warning_low">Low temperature warning</string>
     <string name="channel_title_warning_high">High battery warning</string>
     <string name="channel_title_warning_low">Low battery warning</string>
     <string name="channel_warning_high" translatable="false">warningHigh</string>
@@ -109,6 +115,8 @@
     <string name="notification_no_items_enabled">No items enabled!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
+    <string name="notification_temp_high">The battery temperature is above</string>
+    <string name="notification_temp_low">The battery temperature is below</string>
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
 
@@ -150,8 +158,12 @@
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_temp_high_warning" translatable="false">tempHighWarning</string>
+    <string name="pref_temp_low_warning" translatable="false">tempLowWarning</string>
     <string name="pref_temp_unit" translatable="false">temperatureUnit</string>
     <string name="pref_temp_unit_default" translatable="false">0</string>
+    <string name="pref_temp_warning_high_enabled" translatable="false">tempWarningHighEnabled</string>
+    <string name="pref_temp_warning_low_enabled" translatable="false">tempWarningLowEnabled</string>
     <string name="pref_time_format" translatable="false">timeFormat</string>
     <string name="pref_time_format_default" translatable="false">"0"</string>
     <string name="pref_usb_charging_disabled" translatable="false">usbCharging</string>
@@ -183,6 +195,8 @@
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
+    <string name="summary_temp_warning_high_enabled">Show a high temperature warning when the battery temperature has reached the set point.</string>
+    <string name="summary_temp_warning_low_enabled">Show a low temperature warning when the battery temperature has reached the set point.</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
@@ -270,6 +284,10 @@
     <string name="title_stats">Stats</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
     <string name="title_temp_unit">Temperature unit</string>
+    <string name="title_temp_warning_high_enabled">Enable high temperature warning</string>
+    <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
+    <string name="title_temp_warning_slider">Warning temperature:</string>
+    <string name="title_temp_warnings">Temperature warnings</string>
     <string name="title_theming">Theming</string>
     <string name="title_time_format">Time format</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>

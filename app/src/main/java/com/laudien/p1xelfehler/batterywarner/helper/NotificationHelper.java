@@ -213,14 +213,23 @@ public final class NotificationHelper {
         notificationManager.notify(ID_NO_ALARM_TIME_FOUND, builder.build());
     }
 
-    public static Uri getWarningSound(Context context, SharedPreferences sharedPreferences, boolean warningHigh) {
-        int pref_id = warningHigh ? R.string.pref_sound_uri_high : R.string.pref_sound_uri_low;
+    public static Uri getWarningSound(Context context, SharedPreferences sharedPreferences, Sound sound) {
+        int pref_id;
+        switch (sound) {
+            case BATTERY_LEVEL_LOW:
+                pref_id = R.string.pref_sound_uri_high;
+                break;
+            case BATTERY_LEVEL_HIGH:
+                pref_id = R.string.pref_sound_uri_low;
+                break;
+            default:
+                return getDefaultSound();
+        }
         String uri = sharedPreferences.getString(context.getString(pref_id), "");
         if (uri.equals("")) {
             return getDefaultSound();
-        } else {
-            return Uri.parse(uri);
         }
+        return Uri.parse(uri);
     }
 
     private static Uri getDefaultSound() {
@@ -269,6 +278,32 @@ public final class NotificationHelper {
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setShowBadge(true);
         notificationManager.createNotificationChannel(channel);
+        // high temperature warning
+        channel = new NotificationChannel(
+                context.getString(R.string.channel_temp_warning_high),
+                context.getString(R.string.channel_title_temp_warning_high),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription(context.getString(R.string.channel_description_temp_warning_high));
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATE_PATTERN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(true);
+        notificationManager.createNotificationChannel(channel);
+        // low temperature warning
+        channel = new NotificationChannel(
+                context.getString(R.string.channel_temp_warning_low),
+                context.getString(R.string.channel_title_temp_warning_low),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.setDescription(context.getString(R.string.channel_description_temp_warning_low));
+        channel.enableLights(true);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(VIBRATE_PATTERN);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+        channel.setShowBadge(true);
+        notificationManager.createNotificationChannel(channel);
         // info notification
         channel = new NotificationChannel(
                 context.getString(R.string.channel_battery_info),
@@ -294,6 +329,10 @@ public final class NotificationHelper {
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         channel.setShowBadge(true);
         notificationManager.createNotificationChannel(channel);
+    }
+
+    public enum Sound {
+        BATTERY_LEVEL_HIGH, BATTERY_LEVEL_LOW, TEMPERATURE_HIGH, TEMPERATURE_LOW
     }
 
     private static class IdNotFoundException extends RuntimeException {
