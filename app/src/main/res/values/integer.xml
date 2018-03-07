@@ -26,6 +26,14 @@
     <integer name="pref_warning_low_default">20</integer>
     <integer name="pref_warning_low_max">40</integer>
     <integer name="pref_warning_low_min">5</integer>
+    <!-- temperature high warning -->
+    <integer name="pref_temp_high_warning_default">40</integer>
+    <integer name="pref_temp_high_warning_min">30</integer>
+    <integer name="pref_temp_high_warning_max">45</integer>
+    <!-- temperature low warning -->
+    <integer name="pref_temp_low_warning_default">10</integer>
+    <integer name="pref_temp_low_warning_min">0</integer>
+    <integer name="pref_temp_low_warning_max">20</integer>
     <!-- text sizes -->
     <integer name="text_size_charging_text_big">16</integer>
     <integer name="text_size_charging_text_normal">14</integer>

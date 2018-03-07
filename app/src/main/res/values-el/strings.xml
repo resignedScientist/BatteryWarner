@@ -4,10 +4,14 @@
 
     <string name="channel_description_battery_info">The permanent notification with all the battery infos and the \'Charging Service\' notification.</string>
     <string name="channel_description_other_warnings">Other important warnings, for example if the app has no root access anymore.</string>
+    <string name="channel_description_temp_warning_high">The high battery temperature warning.</string>
+    <string name="channel_description_temp_warning_low">The low battery temperature warning.</string>
     <string name="channel_description_warning_high">The \'Battery level is above x%\' warning.</string>
     <string name="channel_description_warning_low">The \'Battery level is below x%\' warning.</string>
     <string name="channel_title_battery_info">Battery Information</string>
     <string name="channel_title_other_warnings">Other Warnings</string>
+    <string name="channel_title_temp_warning_high">High temperature warning</string>
+    <string name="channel_title_temp_warning_low">Low temperature warning</string>
     <string name="channel_title_warning_high">High battery warning</string>
     <string name="channel_title_warning_low">Low battery warning</string>
 
@@ -89,6 +93,8 @@
     <string name="notification_no_items_enabled">No items enabled!</string>
     <string name="notification_not_rooted">The app has no root access anymore! Click here to grant root access again!</string>
     <string name="notification_stop_charging_not_working">Stop charging seems not to work with your device! You can turn off that feature!</string>
+    <string name="notification_temp_high">The battery temperature is above</string>
+    <string name="notification_temp_low">The battery temperature is below</string>
     <string name="notification_warning_high">Battery level is above</string>
     <string name="notification_warning_low">Battery level is below</string>
 
@@ -106,6 +112,8 @@
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
+    <string name="summary_temp_warning_high_enabled">Show a high temperature warning when the battery temperature has reached the set point.</string>
+    <string name="summary_temp_warning_low_enabled">Show a low temperature warning when the battery temperature has reached the set point.</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
     <string name="summary_warning_high_enabled">Show a high battery warning when the set percentage is reached.</string>
     <string name="summary_warning_low_enabled">Show a low battery warning when the set percentage is reached.</string>
@@ -189,14 +197,18 @@
     <string name="title_stats">Stats</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
     <string name="title_temp_unit">Temperature unit</string>
+    <string name="title_temp_warning_high_enabled">Enable high temperature warning</string>
+    <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
+    <string name="title_temp_warning_slider">Warning temperature:</string>
+    <string name="title_temp_warnings">Temperature warnings</string>
     <string name="title_theming">Theming</string>
     <string name="title_time_format">Time format</string>
     <string name="title_usb_charging_disabled">Disable USB charging [Root]</string>
     <string name="title_usb_enabled">Warning on USB charging</string>
     <string name="title_warning_high">Charging Service</string>
-    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
     <string name="title_warning_low">Discharging Service</string>
     <string name="title_warning_percentage">Warning percentage:</string>
+    <string name="title_warning_sound_enabled">Enable notification sound</string>
     <string name="title_wireless_enabled">Warning on wireless charging</string>
 
     <string name="toast_charging_type_disabled">The current charging type is disabled in settings!</string>

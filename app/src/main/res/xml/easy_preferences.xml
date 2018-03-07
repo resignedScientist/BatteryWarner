@@ -11,7 +11,7 @@
             android:defaultValue="@bool/pref_waring_high_sound_enabled_default"
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_warning_high_sound_enabled"
-            android:title="@string/title_warning_high_sound_enabled" />
+            android:title="@string/title_warning_sound_enabled" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
             android:dependency="@string/pref_warning_high_sound_enabled"
@@ -40,9 +40,14 @@
             android:key="@string/pref_warning_low_enabled"
             android:summary="@string/summary_warning_low_enabled"
             android:title="@string/title_discharging_notification" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_waring_low_sound_enabled_default"
+            android:dependency="@string/pref_warning_low_enabled"
+            android:key="@string/pref_warning_low_sound_enabled"
+            android:title="@string/title_warning_sound_enabled" />
         <RingtonePreference
             android:defaultValue="content://settings/system/notification_sound"
-            android:dependency="@string/pref_warning_low_enabled"
+            android:dependency="@string/pref_warning_low_sound_enabled"
             android:key="@string/pref_sound_uri_low"
             android:ringtoneType="notification"
             android:showSilent="false"
@@ -55,6 +60,34 @@
             app:slider_max="@integer/pref_warning_low_max"
             app:slider_min="@integer/pref_warning_low_min"
             app:unit="%" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/title_temp_warnings">
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_temp_warning_high_enabled_default"
+            android:key="@string/pref_temp_warning_high_enabled"
+            android:summary="@string/summary_temp_warning_high_enabled"
+            android:title="@string/title_temp_warning_high_enabled" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_temp_high_warning_default"
+            android:dependency="@string/pref_temp_warning_high_enabled"
+            android:key="@string/pref_temp_high_warning"
+            android:title="@string/title_temp_warning_slider"
+            app:slider_max="@integer/pref_temp_high_warning_max"
+            app:slider_min="@integer/pref_temp_high_warning_min"
+            app:unit="°C" />
+        <CheckBoxPreference
+            android:defaultValue="@bool/pref_temp_warning_low_enabled_default"
+            android:key="@string/pref_temp_warning_low_enabled"
+            android:summary="@string/summary_temp_warning_low_enabled"
+            android:title="@string/title_temp_warning_low_enabled" />
+        <com.laudien.p1xelfehler.batterywarner.preferences.SeekBarPreference
+            android:defaultValue="@integer/pref_temp_low_warning_default"
+            android:dependency="@string/pref_temp_warning_low_enabled"
+            android:key="@string/pref_temp_low_warning"
+            android:title="@string/title_temp_warning_slider"
+            app:slider_max="@integer/pref_temp_low_warning_max"
+            app:slider_min="@integer/pref_temp_low_warning_min"
+            app:unit="°C" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/title_notification_settings">
         <CheckBoxPreference

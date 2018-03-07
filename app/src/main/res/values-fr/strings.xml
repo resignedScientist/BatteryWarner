@@ -146,6 +146,14 @@
     <string name="toast_success_saving">Le graphique a été enregistré dans l\'historique !</string>
     <string name="toast_theme_changed">Le thème sera activé à la fermeture des paramètres !</string>
 
+    <!-- Changes -->
+    <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
+    <string name="summary_android_notification_settings">Depuis Android O, vous devez régler le son dans les paramètres de notification d\'Android. Cliquez ici pour y accéder.</string>
+    <!-- Please write the translation to 'high battery warning' here instead -->
+    <string name="title_warning_high">Service pour la charge</string>
+    <!-- Please write the translation to 'Low battery warning' here instead -->
+    <string name="title_warning_low">Service pour la décharge</string>
+
     <!-- new strings -->
     <string name="title_info_text_size">Text size of the info notification:</string>
     <string name="notification_button_enable_usb_charging">Enable usb charging</string>
@@ -206,7 +214,7 @@
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="title_reverse_current">Reverse Current</string>
     <string name="toast_dependencies_not_fulfilled">Some dependencies are not fulfilled for that action!</string>
-    <string name="title_warning_high_sound_enabled">Enable notification sound</string>
+    <string name="title_warning_sound_enabled">Enable notification sound</string>
     <string name="intro_advanced_mode">Advanced mode</string>
     <string name="intro_advanced_mode_description">The advanced mode makes root settings and more available - everything the app has to offer.</string>
     <string name="intro_easy_mode">Easy mode</string>
@@ -221,12 +229,16 @@
     <string name="button_open_faq">Open FAQ (frequently asked questions)</string>
     <string name="menu_xda_thread">XDA Thread</string>
     <string name="tasker_number_or_variable">Number or variable</string>
-
-    <!-- Changes -->
-    <!-- Please write the translation to 'Click here to open the notification settings of android to change notification sounds and more.' here instead -->
-    <string name="summary_android_notification_settings">Depuis Android O, vous devez régler le son dans les paramètres de notification d\'Android. Cliquez ici pour y accéder.</string>
-    <!-- Please write the translation to 'high battery warning' here instead -->
-    <string name="title_warning_high">Service pour la charge</string>
-    <!-- Please write the translation to 'Low battery warning' here instead -->
-    <string name="title_warning_low">Service pour la décharge</string>
+    <string name="channel_description_temp_warning_high">The high battery temperature warning.</string>
+    <string name="channel_description_temp_warning_low">The low battery temperature warning.</string>
+    <string name="channel_title_temp_warning_high">High temperature warning</string>
+    <string name="channel_title_temp_warning_low">Low temperature warning</string>
+    <string name="notification_temp_high">The battery temperature is above</string>
+    <string name="notification_temp_low">The battery temperature is below</string>
+    <string name="summary_temp_warning_high_enabled">Show a high temperature warning when the battery temperature has reached the set point.</string>
+    <string name="summary_temp_warning_low_enabled">Show a low temperature warning when the battery temperature has reached the set point.</string>
+    <string name="title_temp_warning_high_enabled">Enable high temperature warning</string>
+    <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
+    <string name="title_temp_warning_slider">Warning temperature:</string>
+    <string name="title_temp_warnings">Temperature warnings</string>
 </resources>
