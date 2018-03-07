@@ -432,7 +432,6 @@ public class BackgroundService extends Service {
         }
         infoNotificationBuilder
                 .setSmallIcon(SMALL_ICON_RESOURCE)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), LARGE_ICON_RESOURCE))
                 .setOngoing(true)
                 .setContentIntent(clickPendingIntent)
                 .setContentTitle(getString(R.string.title_info_notification))
@@ -916,16 +915,14 @@ public class BackgroundService extends Service {
                 batteryData.update(intent, BackgroundService.this);
             }
             if (infoNotificationBuilder != null) {
-                try {
-                    String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
-                    infoNotificationContent = buildInfoNotificationContent(data);
-                    infoNotificationMessage = buildInfoNotificationMessage(data);
-                    infoNotificationBuilder.setContentText(infoNotificationMessage);
-                    notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                String[] data = batteryData.getEnabledOnly(BackgroundService.this, sharedPreferences);
+                infoNotificationContent = buildInfoNotificationContent(data);
+                if (SDK_INT >= LOLLIPOP) {
+                    infoNotificationContent.setImageViewResource(R.id.img_battery, batteryData.getIconResource());
                 }
-
+                infoNotificationMessage = buildInfoNotificationMessage(data);
+                infoNotificationBuilder.setContentText(infoNotificationMessage);
+                notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
             }
         }
 
@@ -1265,6 +1262,15 @@ public class BackgroundService extends Service {
             if (listener != null) {
                 listener.onBatteryValueChanged(this, index);
             }
+        }
+
+        @RequiresApi(api = LOLLIPOP)
+        int getIconResource() {
+            int warningLow = sharedPreferences.getInt(getString(R.string.pref_warning_low), getResources().getInteger(R.integer.pref_warning_low_default));
+            int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
+            return batteryLevel <= warningLow ? R.drawable.ic_battery_status_full_red_48dp
+                    : batteryLevel >= warningHigh ? R.drawable.ic_battery_status_full_orange_48dp
+                    : R.drawable.ic_battery_status_full_green_48dp;
         }
     }
 }
