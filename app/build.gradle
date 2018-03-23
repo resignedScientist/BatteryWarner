@@ -71,20 +71,20 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile "com.android.support.test:runner:$rootProject.ext.testRunnerVersion"
-    testCompile "junit:junit:$rootProject.ext.junitVersion"
-    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
-    testCompile "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-    testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockito"
-    testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockito"
+    androidTestCompile "com.android.support.test:runner:$testRunnerVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"
+    testCompile "org.powermock:powermock-module-junit4:$powerMockito"
+    testCompile "org.powermock:powermock-api-mockito:$powerMockito"
 
-    compile "com.jjoe64:graphview:$rootProject.ext.graphViewVersion"
-    compile "eu.chainfire:libsuperuser:$rootProject.ext.superUserVersion"
-    compile "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayoutVersion"
+    compile "com.jjoe64:graphview:$graphViewVersion"
+    compile "eu.chainfire:libsuperuser:$superUserVersion"
+    compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
     compile project(path: ':material-intro-screen')
-    compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
-    compile "com.android.support:design:$rootProject.ext.supportLibraryVersion"
-    compile "com.twofortyfouram:android-plugin-client-sdk-for-locale:$rootProject.ext.taskerVersion" // Tasker
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.twofortyfouram:android-plugin-client-sdk-for-locale:$taskerVersion" // Tasker
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
