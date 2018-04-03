@@ -1184,6 +1184,7 @@ public class BackgroundService extends Service {
         private int health, batteryLevel;
         private int current, temperature, voltage;
         private boolean changed = true;
+        private long lastTimeChanged;
 
         private BatteryData(Intent batteryStatus) {
             update(batteryStatus);
@@ -1195,6 +1196,11 @@ public class BackgroundService extends Service {
          * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
          */
         void update(Intent batteryStatus) {
+            long currentTime = System.currentTimeMillis();
+            if (Math.abs(lastTimeChanged - currentTime) < 1000) { // limit updates to once a second
+                return;
+            }
+            lastTimeChanged = currentTime;
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
             setTemperature(batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1), false);
             setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1));
