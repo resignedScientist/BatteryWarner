@@ -247,7 +247,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     }
 
     @Override
-    public void onValueAdded(DatabaseValue value, long totalNumberOfRows) {
+    public void onValueAdded(@NonNull DatabaseValue value, long totalNumberOfRows) {
         Context context = getContext();
         if (context == null) {
             return;

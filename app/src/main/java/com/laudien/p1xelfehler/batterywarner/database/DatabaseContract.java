@@ -39,10 +39,6 @@ public class DatabaseContract {
 
         void closeAllExternalFiles();
 
-        void notifyValueAdded(DatabaseValue value, long totalNumberOfRows);
-
-        void notifyTableReset();
-
         void registerDatabaseListener(DatabaseListener listener);
 
         void unregisterDatabaseListener(DatabaseListener listener);

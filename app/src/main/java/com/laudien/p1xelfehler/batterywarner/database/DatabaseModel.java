@@ -423,20 +423,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
-    public void notifyValueAdded(DatabaseValue value, long totalNumberOfRows) {
-        for (DatabaseContract.DatabaseListener listener : listeners) {
-            listener.onValueAdded(value, totalNumberOfRows);
-        }
-    }
-
-    @Override
-    public void notifyTableReset() {
-        for (DatabaseContract.DatabaseListener listener : listeners) {
-            listener.onTableReset();
-        }
-    }
-
-    @Override
     public void registerDatabaseListener(DatabaseContract.DatabaseListener listener) {
         listeners.add(listener);
     }
