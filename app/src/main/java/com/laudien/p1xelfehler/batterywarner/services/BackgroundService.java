@@ -186,7 +186,7 @@ public class BackgroundService extends Service {
         databaseModel = DatabaseModel.getInstance(this);
         databaseModel.registerDatabaseListener(batteryChangedReceiver);
         final Intent batteryChangedIntent = registerReceiver(batteryChangedReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        batteryData = new BatteryData(batteryChangedIntent, this);
+        batteryData = new BatteryData(batteryChangedIntent);
         // screen on/off receiver
         screenOnOffReceiver = new ScreenOnOffReceiver();
         IntentFilter onOffFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -754,7 +754,7 @@ public class BackgroundService extends Service {
                 handleDischarging(intent);
             }
             // refresh batteryData and info notification
-            batteryData.update(intent, BackgroundService.this);
+            batteryData.update(intent);
             if (screenOn) {
                 refreshInfoNotification();
             }
@@ -1185,24 +1185,23 @@ public class BackgroundService extends Service {
         private int current, temperature, voltage;
         private boolean changed = true;
 
-        private BatteryData(Intent batteryStatus, Context context) {
-            update(batteryStatus, context);
+        private BatteryData(Intent batteryStatus) {
+            update(batteryStatus);
         }
 
         /**
          * Updates all the data that is in the batteryStatus intent.
          *
          * @param batteryStatus Intent that is provided by a receiver with the action ACTION_BATTERY_CHANGED.
-         * @param context       An instance of the Context class.
          */
-        void update(Intent batteryStatus, Context context) {
+        void update(Intent batteryStatus) {
             setTechnology(batteryStatus.getStringExtra(EXTRA_TECHNOLOGY));
             setTemperature(batteryStatus.getIntExtra(EXTRA_TEMPERATURE, -1), false);
             setHealth(batteryStatus.getIntExtra(EXTRA_HEALTH, -1));
             setBatteryLevel(batteryStatus.getIntExtra(EXTRA_LEVEL, -1));
             setVoltage(batteryStatus.getIntExtra(EXTRA_VOLTAGE, -1));
             if (SDK_INT >= LOLLIPOP) {
-                BatteryManager batteryManager = (BatteryManager) context.getSystemService(Context.BATTERY_SERVICE);
+                BatteryManager batteryManager = (BatteryManager) getSystemService(Context.BATTERY_SERVICE);
                 if (batteryManager != null) {
                     setCurrent(batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
                 }
