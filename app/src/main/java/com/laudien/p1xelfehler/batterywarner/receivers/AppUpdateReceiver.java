@@ -4,13 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
 import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.helper.ServiceHelper;
@@ -41,17 +39,6 @@ public class AppUpdateReceiver extends BroadcastReceiver {
         if (SDK_INT >= Build.VERSION_CODES.O) {
             NotificationHelper.createNotificationChannels(context);
         }
-        // upgrade databases if necessary
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    DatabaseUtils.upgradeAllSavedDatabases(context);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         // check if one of the root preferences is enabled
         boolean oneRootPermissionIsEnabled = RootHelper.isAnyRootPreferenceEnabled(context, sharedPreferences);
         if (oneRootPermissionIsEnabled) { // this notification starts the service on click

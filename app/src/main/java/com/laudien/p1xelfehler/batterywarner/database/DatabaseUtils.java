@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -95,32 +94,6 @@ public final class DatabaseUtils {
             }
         }
         return fileList;
-    }
-
-    public static void upgradeAllSavedDatabases(@NonNull Context context) {
-        Log.d("DatabaseUtils", "Upgrading all saved databases...");
-        if (ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PERMISSION_GRANTED) {
-            ArrayList<File> files = getBatteryFiles();
-            Collections.sort(files, new Comparator<File>() {
-                @Override
-                public int compare(File f1, File f2) {
-                    if (f1.lastModified() == f2.lastModified()) {
-                        return 0;
-                    }
-                    return f1.lastModified() < f2.lastModified() ? -1 : 1;
-                }
-            });
-            DatabaseModel model = DatabaseModel.getInstance(context);
-            for (File file : files) {
-                Log.d("DatabaseUtils", "Upgrading file: " + file.getPath());
-                Log.d("DatabaseUtils", "last modified: " + file.lastModified());
-                model.getReadableDatabase(file);
-            }
-            model.closeAllExternalFiles();
-            Log.d("DatabaseUtils", "Upgrade finished!");
-        } else {
-            Log.d("DatabaseUtils", "Storage permission not granted!");
-        }
     }
 
     /**
