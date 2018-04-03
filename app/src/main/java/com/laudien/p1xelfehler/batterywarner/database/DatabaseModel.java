@@ -3,13 +3,11 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -176,25 +174,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         }
         writableDatabase.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
         return true;
-    }
-
-    static long addValueTask(@NonNull SQLiteDatabase writableDatabase, DatabaseValue value) {
-        if (!writableDatabase.isOpen()) {
-            return 0L;
-        }
-        long totalNumberOfRows;
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
-        }
-        writableDatabase.insert(DatabaseContract.TABLE_NAME, null, contentValues);
-        totalNumberOfRows = DatabaseUtils.queryNumEntries(writableDatabase, DatabaseContract.TABLE_NAME);
-        Log.d("DatabaseModel", "value added: " + value);
-        return totalNumberOfRows;
     }
 
     @Override
@@ -383,10 +362,24 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     @Override
     public void addValue(@NonNull DatabaseValue value) {
         SQLiteDatabase database = getWritableDatabase();
-        if (database == null) {
+        if (database == null || !database.isOpen()) {
             return;
         }
-        long totalNumberOfRows = addValueTask(database, value);
+        long totalNumberOfRows;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+        if (SDK_INT >= LOLLIPOP) {
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+        }
+        totalNumberOfRows = database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
+        if (totalNumberOfRows == -1) {
+            Log.d("DatabaseModel", "An error occured trying to insert value: " + value);
+            return;
+        }
+        Log.d("DatabaseModel", "value added: " + value);
         for (DatabaseContract.DatabaseListener listener : listeners) {
             listener.onValueAdded(value, totalNumberOfRows);
         }
