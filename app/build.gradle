@@ -67,25 +67,25 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile "com.android.support.test:runner:$testRunnerVersion"
-    testCompile "junit:junit:$junitVersion"
-    testCompile "org.mockito:mockito-all:$mockitoVersion"
-    testCompile "org.hamcrest:hamcrest-all:$hamcrestVersion"
-    testCompile "org.powermock:powermock-module-junit4:$powerMockito"
-    testCompile "org.powermock:powermock-api-mockito:$powerMockito"
+    androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.mockito:mockito-all:$mockitoVersion"
+    testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
+    testImplementation "org.powermock:powermock-module-junit4:$powerMockito"
+    testImplementation "org.powermock:powermock-api-mockito:$powerMockito"
 
-    compile "com.jjoe64:graphview:$graphViewVersion"
-    compile "eu.chainfire:libsuperuser:$superUserVersion"
-    compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
-    compile project(path: ':material-intro-screen')
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.twofortyfouram:android-plugin-client-sdk-for-locale:$taskerVersion" // Tasker
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation project(path: ':material-intro-screen')
+    implementation "com.jjoe64:graphview:$graphViewVersion"
+    implementation "eu.chainfire:libsuperuser:$superUserVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.twofortyfouram:android-plugin-client-sdk-for-locale:$taskerVersion" // Tasker
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
