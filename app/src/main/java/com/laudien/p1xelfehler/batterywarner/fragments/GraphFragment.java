@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -280,8 +281,10 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                     try {
                         graphs[i].appendData(dataPoints[i], false, (int) totalNumberOfRows);
                     } catch (Exception e) { // reload graphs on error
+                        Log.d("GraphFragment", "Error trying to append data point. Reloading graph now...");
                         removeAllGraphs();
                         loadGraphs();
+                        return;
                     }
                 }
                 enableOrDisableSwitch(i);
