@@ -276,7 +276,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             graphInfo = new GraphInfo(value, useFahrenheit, reverseCurrent);
         } else { // not the first point
             for (int i = 0; i < NUMBER_OF_GRAPHS; i++) {
-                if (graphs[i] != null && dataPoints[i] != null) {
+                if (graphs != null && graphs[i] != null && dataPoints[i] != null) {
                     try {
                         graphs[i].appendData(dataPoints[i], false, (int) totalNumberOfRows);
                     } catch (Exception e) { // reload graphs on error
