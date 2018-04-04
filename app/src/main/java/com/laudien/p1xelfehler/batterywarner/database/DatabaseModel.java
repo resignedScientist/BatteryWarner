@@ -341,25 +341,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
-    public SQLiteDatabase getWritableDatabase(@NonNull File databaseFile) {
-        if (openedDatabases.containsKey(databaseFile.getPath())) {
-            return openedDatabases.get(databaseFile.getPath());
-        }
-        try {
-            SQLiteDatabase database = SQLiteDatabase.openDatabase(
-                    databaseFile.getPath(),
-                    null,
-                    SQLiteDatabase.OPEN_READWRITE
-            );
-            openedDatabases.put(databaseFile.getPath(), database);
-            return database;
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
     public void addValue(@NonNull DatabaseValue value) {
         SQLiteDatabase database = getWritableDatabase();
         if (database == null || !database.isOpen()) {

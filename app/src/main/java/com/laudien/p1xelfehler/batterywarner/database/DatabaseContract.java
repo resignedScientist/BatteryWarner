@@ -29,8 +29,6 @@ public class DatabaseContract {
 
         SQLiteDatabase getReadableDatabase(File databaseFile);
 
-        SQLiteDatabase getWritableDatabase(File databaseFile);
-
         void addValue(DatabaseValue value);
 
         long getCreationTime();
