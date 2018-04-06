@@ -104,14 +104,14 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             }
 
             DatabaseValue value = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
-            DatabaseValue diffValue;
+            DiffValue diffValue;
             if (lastValue != null) {
                 diffValue = lastValue.diff(value);
                 if (diffValue == null) {
                     continue;
                 }
             } else {
-                diffValue = value;
+                diffValue = new DiffValue(batteryLevel, temperature, voltage, current);
             }
             DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
             for (int graphIndex = 0; graphIndex < NUMBER_OF_GRAPHS; graphIndex++) {

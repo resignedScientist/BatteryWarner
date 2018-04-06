@@ -82,31 +82,25 @@ public class GraphInfo {
     }
 
     public GraphInfo(@NonNull DatabaseValue value, boolean useFahrenheit, boolean reverseCurrent) {
-        Integer current = value.getCurrent();
-        Double voltage = value.getVoltageInVolts();
-        Integer batteryLevel = value.getBatteryLevel();
-        Integer temperature = value.getTemperature();
+        int current = value.getCurrent();
+        double voltage = value.getVoltageInVolts();
+        int batteryLevel = value.getBatteryLevel();
+        int temperature = value.getTemperature();
 
         this.startTime = value.getGraphCreationTime();
         this.endTime = value.getUtcTimeInMillis();
         this.timeInMinutes = value.getTimeFromStartInMinutes();
-        if (temperature != null) {
-            this.maxTemp = temperature;
-            this.minTemp = temperature;
-        }
+        this.maxTemp = temperature;
+        this.minTemp = temperature;
         this.chargingSpeed = Double.NaN;
-        if (SDK_INT >= LOLLIPOP && current != null) {
+        if (SDK_INT >= LOLLIPOP) {
             this.minCurrent = current;
             this.maxCurrent = current;
         }
-        if (voltage != null) {
-            this.minVoltage = voltage;
-            this.maxVoltage = voltage;
-        }
-        if (batteryLevel != null) {
-            this.maxBatteryLvl = batteryLevel;
-            this.firstBatteryLvl = batteryLevel;
-        }
+        this.minVoltage = voltage;
+        this.maxVoltage = voltage;
+        this.maxBatteryLvl = batteryLevel;
+        this.firstBatteryLvl = batteryLevel;
         this.useFahrenheit = useFahrenheit;
         this.reverseCurrent = reverseCurrent;
     }
@@ -150,45 +144,37 @@ public class GraphInfo {
     }
 
     public void notifyValueAdded(@NonNull DatabaseValue value, @NonNull Context context) {
-        Integer temp = value.getTemperature();
-        if (temp != null) {
-            if (temp > maxTemp) {
-                maxTemp = temp;
-            }
-            if (temp < minTemp) {
-                minTemp = temp;
-            }
+        int temp = value.getTemperature();
+        if (temp > maxTemp) {
+            maxTemp = temp;
         }
-        Integer batteryLevel = value.getBatteryLevel();
-        if (batteryLevel != null) {
-            if (batteryLevel > maxBatteryLvl) {
-                maxBatteryLvl = value.getBatteryLevel();
-                long timeToMaxBatteryLvl = value.getUtcTimeInMillis() - value.getGraphCreationTime();
-                double timeInHours = (double) timeToMaxBatteryLvl / (double) (1000 * 60 * 60);
-                int percentageDiff = maxBatteryLvl - firstBatteryLvl;
-                chargingSpeed = percentageDiff / timeInHours;
-            }
+        if (temp < minTemp) {
+            minTemp = temp;
+        }
+        int batteryLevel = value.getBatteryLevel();
+        if (batteryLevel > maxBatteryLvl) {
+            maxBatteryLvl = value.getBatteryLevel();
+            long timeToMaxBatteryLvl = value.getUtcTimeInMillis() - value.getGraphCreationTime();
+            double timeInHours = (double) timeToMaxBatteryLvl / (double) (1000 * 60 * 60);
+            int percentageDiff = maxBatteryLvl - firstBatteryLvl;
+            chargingSpeed = percentageDiff / timeInHours;
         }
         if (SDK_INT >= LOLLIPOP) {
-            Integer current = value.getCurrent();
-            if (current != null) {
-                int currentToCompare = current * (reverseCurrent ? 1 : -1);
-                if (currentToCompare > maxCurrent) {
-                    maxCurrent = current;
-                }
-                if (currentToCompare < minCurrent) {
-                    minCurrent = current;
-                }
+            int current = value.getCurrent();
+            int currentToCompare = current * (reverseCurrent ? 1 : -1);
+            if (currentToCompare > maxCurrent) {
+                maxCurrent = current;
+            }
+            if (currentToCompare < minCurrent) {
+                minCurrent = current;
             }
         }
-        Double voltage = value.getVoltageInVolts();
-        if (voltage != null) {
-            if (voltage > maxVoltage) {
-                maxVoltage = voltage;
-            }
-            if (voltage < minVoltage) {
-                minVoltage = voltage;
-            }
+        double voltage = value.getVoltageInVolts();
+        if (voltage > maxVoltage) {
+            maxVoltage = voltage;
+        }
+        if (voltage < minVoltage) {
+            minVoltage = voltage;
         }
         timeInMinutes = value.getTimeFromStartInMinutes();
         endTime = value.getUtcTimeInMillis();
@@ -265,7 +251,7 @@ public class GraphInfo {
         if (SDK_INT >= LOLLIPOP) {
             textView = dialog.findViewById(R.id.textView_minCurrent);
             Double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
-            if (minCurrentMilliAmperes != null && !Double.isNaN(minCurrentMilliAmperes)) {
+            if (!Double.isNaN(minCurrentMilliAmperes)) {
                 textView.setText(String.format(
                         Locale.getDefault(),
                         "%s: %.1f mAh",
@@ -279,7 +265,7 @@ public class GraphInfo {
             // max current
             textView = dialog.findViewById(R.id.textView_maxCurrent);
             Double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
-            if (maxCurrentMilliAmperes != null && !Double.isNaN(maxCurrentMilliAmperes)) {
+            if (!Double.isNaN(maxCurrentMilliAmperes)) {
                 textView.setText(String.format(
                         Locale.getDefault(),
                         "%s: %.1f mAh",
