@@ -100,7 +100,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 if (graphs[graphIndex] == null || dataPoints[graphIndex] == null) {
                     continue;
                 }
-                if (lastValue == null || lastValue.get(graphIndex) != value.get(graphIndex) || valueIndex == cursor.getCount() - 1) {
+                if (lastValue == null || lastValue.get(graphIndex).equals(value.get(graphIndex)) || valueIndex == cursor.getCount() - 1) {
                     graphs[graphIndex].appendData(dataPoints[graphIndex], false, valueIndex + 1);
                 }
             }
@@ -341,12 +341,18 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
     }
 
     @Override
-    public void addValue(@NonNull DatabaseValue value) {
+    public void addValue(@NonNull DatabaseValue value, @Nullable DatabaseValue lastValue) {
         SQLiteDatabase database = getWritableDatabase();
         if (database == null || !database.isOpen()) {
             return;
         }
         long totalNumberOfRows;
+        if (lastValue != null) {
+            value = value.diff(lastValue);
+        }
+        if (value == null) {
+            return;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
         contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());

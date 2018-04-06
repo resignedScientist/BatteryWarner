@@ -814,18 +814,20 @@ public class BackgroundService extends Service {
                     graphCreationTime = timeNow;
                 }
             }
-            DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, timeNow, graphCreationTime);
-
-            // return if none of the values did change
-            if (lastDatabaseValue != null && lastDatabaseValue.equals(databaseValue)) {
-                return;
-            }
-            lastDatabaseValue = databaseValue;
+            DatabaseValue databaseValue = new DatabaseValue(
+                    batteryLevel,
+                    temperature,
+                    voltage,
+                    current,
+                    timeNow,
+                    graphCreationTime
+            );
 
             // add a value to the database
             if (graphEnabled) {
-                databaseModel.addValue(databaseValue);
+                databaseModel.addValue(databaseValue, lastDatabaseValue);
             }
+            lastDatabaseValue = databaseValue;
 
             // handle warnings, Stop Charging and Smart Charging
             if (charging || chargingDisabledInFile && chargingPausedBySmartCharging) {
@@ -878,7 +880,7 @@ public class BackgroundService extends Service {
                         if (timeNow >= smartChargingResumeTime) {
                             // add a graph point for optics/correctness
                             if (graphEnabled) {
-                                databaseModel.addValue(databaseValue);
+                                databaseModel.addValue(databaseValue, null);
                             }
                             chargingResumedBySmartCharging = true;
                             resumeCharging();
@@ -1104,6 +1106,7 @@ public class BackgroundService extends Service {
         @Override
         public void onTableReset() {
             graphCreationTime = 0;
+            lastDatabaseValue = null;
         }
     }
 

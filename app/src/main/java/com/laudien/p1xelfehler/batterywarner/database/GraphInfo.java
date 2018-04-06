@@ -24,7 +24,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 public class GraphInfo {
     final boolean useFahrenheit;
     final boolean reverseCurrent;
-    final int firstBatteryLvl;
+    int firstBatteryLvl;
     final long startTime;
     int maxBatteryLvl;
     int maxTemp;
@@ -82,25 +82,31 @@ public class GraphInfo {
     }
 
     public GraphInfo(@NonNull DatabaseValue value, boolean useFahrenheit, boolean reverseCurrent) {
-        int current = value.getCurrent();
-        double voltage = value.getVoltageInVolts();
-        int batteryLevel = value.getBatteryLevel();
-        int temperature = value.getTemperature();
+        Integer current = value.getCurrent();
+        Double voltage = value.getVoltageInVolts();
+        Integer batteryLevel = value.getBatteryLevel();
+        Integer temperature = value.getTemperature();
 
         this.startTime = value.getGraphCreationTime();
         this.endTime = value.getUtcTimeInMillis();
         this.timeInMinutes = value.getTimeFromStartInMinutes();
-        this.maxTemp = temperature;
-        this.minTemp = temperature;
+        if (temperature != null) {
+            this.maxTemp = temperature;
+            this.minTemp = temperature;
+        }
         this.chargingSpeed = Double.NaN;
-        if (SDK_INT >= LOLLIPOP) {
+        if (SDK_INT >= LOLLIPOP && current != null) {
             this.minCurrent = current;
             this.maxCurrent = current;
         }
-        this.minVoltage = voltage;
-        this.maxVoltage = voltage;
-        this.maxBatteryLvl = batteryLevel;
-        this.firstBatteryLvl = batteryLevel;
+        if (voltage != null) {
+            this.minVoltage = voltage;
+            this.maxVoltage = voltage;
+        }
+        if (batteryLevel != null) {
+            this.maxBatteryLvl = batteryLevel;
+            this.firstBatteryLvl = batteryLevel;
+        }
         this.useFahrenheit = useFahrenheit;
         this.reverseCurrent = reverseCurrent;
     }
@@ -144,36 +150,45 @@ public class GraphInfo {
     }
 
     public void notifyValueAdded(@NonNull DatabaseValue value, @NonNull Context context) {
-        int temp = value.getTemperature();
-        if (temp > maxTemp) {
-            maxTemp = temp;
+        Integer temp = value.getTemperature();
+        if (temp != null) {
+            if (temp > maxTemp) {
+                maxTemp = temp;
+            }
+            if (temp < minTemp) {
+                minTemp = temp;
+            }
         }
-        if (temp < minTemp) {
-            minTemp = temp;
-        }
-        if (value.getBatteryLevel() > maxBatteryLvl) {
-            maxBatteryLvl = value.getBatteryLevel();
-            long timeToMaxBatteryLvl = value.getUtcTimeInMillis() - value.getGraphCreationTime();
-            double timeInHours = (double) timeToMaxBatteryLvl / (double) (1000 * 60 * 60);
-            int percentageDiff = maxBatteryLvl - firstBatteryLvl;
-            chargingSpeed = percentageDiff / timeInHours;
+        Integer batteryLevel = value.getBatteryLevel();
+        if (batteryLevel != null) {
+            if (batteryLevel > maxBatteryLvl) {
+                maxBatteryLvl = value.getBatteryLevel();
+                long timeToMaxBatteryLvl = value.getUtcTimeInMillis() - value.getGraphCreationTime();
+                double timeInHours = (double) timeToMaxBatteryLvl / (double) (1000 * 60 * 60);
+                int percentageDiff = maxBatteryLvl - firstBatteryLvl;
+                chargingSpeed = percentageDiff / timeInHours;
+            }
         }
         if (SDK_INT >= LOLLIPOP) {
-            int current = value.getCurrent();
-            int currentToCompare = current * (reverseCurrent ? 1 : -1);
-            if (currentToCompare > maxCurrent) {
-                maxCurrent = current;
-            }
-            if (currentToCompare < minCurrent) {
-                minCurrent = current;
+            Integer current = value.getCurrent();
+            if (current != null) {
+                int currentToCompare = current * (reverseCurrent ? 1 : -1);
+                if (currentToCompare > maxCurrent) {
+                    maxCurrent = current;
+                }
+                if (currentToCompare < minCurrent) {
+                    minCurrent = current;
+                }
             }
         }
-        double voltage = value.getVoltageInVolts();
-        if (voltage > maxVoltage) {
-            maxVoltage = voltage;
-        }
-        if (voltage < minVoltage) {
-            minVoltage = voltage;
+        Double voltage = value.getVoltageInVolts();
+        if (voltage != null) {
+            if (voltage > maxVoltage) {
+                maxVoltage = voltage;
+            }
+            if (voltage < minVoltage) {
+                minVoltage = voltage;
+            }
         }
         timeInMinutes = value.getTimeFromStartInMinutes();
         endTime = value.getUtcTimeInMillis();

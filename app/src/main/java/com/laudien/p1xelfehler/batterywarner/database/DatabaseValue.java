@@ -1,6 +1,8 @@
 package com.laudien.p1xelfehler.batterywarner.database;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.jjoe64.graphview.series.DataPoint;
 
@@ -17,10 +19,12 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBE
  * It should only be used by DatabaseController and DatabaseModel.
  */
 public class DatabaseValue {
-    private final int batteryLevel;
-    private final int current;
-    private final int temperature;
-    private final int voltage;
+    @Nullable
+    private final Integer
+            batteryLevel,
+            current,
+            temperature,
+            voltage;
     private final long utcTimeInMillis;
     private final long graphCreationTime;
 
@@ -32,7 +36,9 @@ public class DatabaseValue {
      * @param utcTimeInMillis   The UTC time in milliseconds.
      * @param graphCreationTime The UTC time in milliseconds of the first point of the graph.
      */
-    public DatabaseValue(int batteryLevel, int temperature, int voltage, int current, long utcTimeInMillis, long graphCreationTime) {
+    public DatabaseValue(@Nullable Integer batteryLevel, @Nullable Integer temperature,
+                         @Nullable Integer voltage, @Nullable Integer current, long utcTimeInMillis,
+                         long graphCreationTime) {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
@@ -75,26 +81,42 @@ public class DatabaseValue {
         );
     }
 
+    @Nullable
+    public DatabaseValue diff(@NonNull DatabaseValue newerDatabaseValue) {
+        if (equals(newerDatabaseValue)) { // it is the same value
+            return null;
+        }
+        return new DatabaseValue(
+                batteryLevel != null && batteryLevel.equals(newerDatabaseValue.batteryLevel) ? null : newerDatabaseValue.batteryLevel,
+                temperature != null && temperature.equals(newerDatabaseValue.temperature) ? null : newerDatabaseValue.temperature,
+                voltage != null && voltage.equals(newerDatabaseValue.voltage) ? null : newerDatabaseValue.voltage,
+                current != null && current.equals(newerDatabaseValue.current) ? null : newerDatabaseValue.current,
+                newerDatabaseValue.utcTimeInMillis,
+                newerDatabaseValue.graphCreationTime
+        );
+    }
+
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return String.format("[time=%d, batteryLevel=%d%%, temperature=%.1f°C, voltage=%.3f V, current=%.3f mAh]",
-                utcTimeInMillis, batteryLevel, (double) temperature / 10, (double) voltage / 1000, (double) current / -1000);
+        return String.format("[time=%d, batteryLevel=%d%%, temperature=%d, voltage=%d, current=%d]",
+                utcTimeInMillis, batteryLevel, temperature, voltage, current);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DatabaseValue) {
             DatabaseValue other = (DatabaseValue) obj;
-            return other.current == current
-                    && other.voltage == voltage
-                    && other.temperature == temperature
-                    && other.batteryLevel == batteryLevel;
+            return other.current != null && other.current.equals(current)
+                    && other.voltage != null && other.voltage.equals(voltage)
+                    && other.temperature != null && other.temperature.equals(temperature)
+                    && other.batteryLevel != null && other.batteryLevel.equals(batteryLevel);
         }
         return false;
     }
 
-    int get(int index) {
+    @Nullable
+    Integer get(int index) {
         switch (index) {
             case GRAPH_INDEX_BATTERY_LEVEL:
                 return batteryLevel;
@@ -114,7 +136,8 @@ public class DatabaseValue {
      *
      * @return The battery level in percent.
      */
-    public int getBatteryLevel() {
+    @Nullable
+    public Integer getBatteryLevel() {
         return batteryLevel;
     }
 
@@ -124,16 +147,19 @@ public class DatabaseValue {
      *
      * @return The temperature in degrees celsius * 10.
      */
-    public int getTemperature() {
+    @Nullable
+    public Integer getTemperature() {
         return temperature;
     }
 
-    double getTemperatureInCelsius() {
-        return convertToCelsius(temperature);
+    @Nullable
+    Double getTemperatureInCelsius() {
+        return temperature != null ? convertToCelsius(temperature) : null;
     }
 
-    private double getTemperatureInFahrenheit() {
-        return convertToFahrenheit(temperature);
+    @Nullable
+    private Double getTemperatureInFahrenheit() {
+        return temperature != null ? convertToFahrenheit(temperature) : null;
     }
 
     /**
@@ -141,12 +167,14 @@ public class DatabaseValue {
      *
      * @return The voltage in volts * 1000.
      */
-    int getVoltage() {
+    @Nullable
+    Integer getVoltage() {
         return voltage;
     }
 
-    public double getVoltageInVolts() {
-        return convertToVolts(voltage);
+    @Nullable
+    public Double getVoltageInVolts() {
+        return voltage != null ? convertToVolts(voltage) : null;
     }
 
     /**
@@ -154,12 +182,14 @@ public class DatabaseValue {
      *
      * @return The current in mA * -1000.
      */
-    int getCurrent() {
+    @Nullable
+    Integer getCurrent() {
         return current;
     }
 
-    public double getCurrentInMilliAmperes(boolean reverseCurrent) {
-        return convertToMilliAmperes(current, reverseCurrent);
+    @Nullable
+    public Double getCurrentInMilliAmperes(boolean reverseCurrent) {
+        return current != null ? convertToMilliAmperes(current, reverseCurrent) : null;
     }
 
     /**
@@ -182,13 +212,17 @@ public class DatabaseValue {
     public DataPoint[] toDataPoints(boolean useFahrenheit, boolean reverseCurrent) {
         DataPoint[] dataPoints = new DataPoint[NUMBER_OF_GRAPHS];
         double timeInMinutes = getTimeFromStartInMinutes();
-        double temperature = useFahrenheit ? getTemperatureInFahrenheit() : getTemperatureInCelsius();
-        double voltage = getVoltageInVolts();
-        double current = getCurrentInMilliAmperes(reverseCurrent);
-        dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
-        dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
-        dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
-        dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+        Double temperature = useFahrenheit ? getTemperatureInFahrenheit() : getTemperatureInCelsius();
+        Double voltage = getVoltageInVolts();
+        Double current = getCurrentInMilliAmperes(reverseCurrent);
+        if (batteryLevel != null)
+            dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
+        if (temperature != null)
+            dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
+        if (voltage != null)
+            dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
+        if (current != null)
+            dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
         return dataPoints;
     }
 }

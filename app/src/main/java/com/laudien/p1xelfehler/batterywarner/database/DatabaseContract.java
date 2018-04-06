@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.File;
 
@@ -29,7 +30,7 @@ public class DatabaseContract {
 
         SQLiteDatabase getReadableDatabase(File databaseFile);
 
-        void addValue(DatabaseValue value);
+        void addValue(@NonNull DatabaseValue value, @Nullable DatabaseValue lastValue);
 
         long getCreationTime();
 
