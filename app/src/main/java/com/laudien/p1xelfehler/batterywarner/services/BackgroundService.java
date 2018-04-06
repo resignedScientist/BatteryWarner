@@ -112,6 +112,8 @@ public class BackgroundService extends Service {
     private RemoteViews infoNotificationContent;
     private BatteryData batteryData;
     private BatteryValueChangedListener listener;
+    @Nullable
+    private DatabaseValue lastDatabaseValue;
     private final SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -813,6 +815,12 @@ public class BackgroundService extends Service {
                 }
             }
             DatabaseValue databaseValue = new DatabaseValue(batteryLevel, temperature, voltage, current, timeNow, graphCreationTime);
+
+            // return if none of the values did change
+            if (lastDatabaseValue != null && lastDatabaseValue.equals(databaseValue)) {
+                return;
+            }
+            lastDatabaseValue = databaseValue;
 
             // add a value to the database
             if (graphEnabled) {
