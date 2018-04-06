@@ -100,7 +100,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 if (graphs[graphIndex] == null || dataPoints[graphIndex] == null) {
                     continue;
                 }
-                if (lastValue == null || lastValue.get(graphIndex).equals(value.get(graphIndex)) || valueIndex == cursor.getCount() - 1) {
+                if (lastValue == null || !lastValue.get(graphIndex).equals(value.get(graphIndex)) || valueIndex == cursor.getCount() - 1) {
                     graphs[graphIndex].appendData(dataPoints[graphIndex], false, valueIndex + 1);
                 }
             }
