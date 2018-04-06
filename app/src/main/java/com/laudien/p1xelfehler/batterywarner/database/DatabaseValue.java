@@ -86,14 +86,12 @@ public class DatabaseValue {
     public boolean equals(Object obj) {
         if (obj instanceof DatabaseValue) {
             DatabaseValue other = (DatabaseValue) obj;
-            return other.utcTimeInMillis == utcTimeInMillis
-                    && other.current == current
+            return other.current == current
                     && other.voltage == voltage
                     && other.temperature == temperature
                     && other.batteryLevel == batteryLevel;
-        } else {
-            return false;
         }
+        return false;
     }
 
     int get(int index) {
