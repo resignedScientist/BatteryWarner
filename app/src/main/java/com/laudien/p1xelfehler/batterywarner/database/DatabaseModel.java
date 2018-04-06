@@ -347,19 +347,22 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             return;
         }
         long totalNumberOfRows;
+        DatabaseValue diffValue;
         if (lastValue != null) {
-            value = value.diff(lastValue);
-        }
-        if (value == null) {
-            return;
+            diffValue = value.diff(lastValue);
+            if (diffValue == null) {
+                return;
+            }
+        } else {
+            diffValue = value;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, diffValue.getUtcTimeInMillis());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, diffValue.getBatteryLevel());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, diffValue.getTemperature());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, diffValue.getVoltage());
         if (SDK_INT >= LOLLIPOP) {
-            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, diffValue.getCurrent());
         }
         totalNumberOfRows = database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
         if (totalNumberOfRows == -1) {
