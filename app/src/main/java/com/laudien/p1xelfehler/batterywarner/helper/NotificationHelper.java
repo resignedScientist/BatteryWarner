@@ -217,10 +217,10 @@ public final class NotificationHelper {
         int pref_id;
         switch (sound) {
             case BATTERY_LEVEL_LOW:
-                pref_id = R.string.pref_sound_uri_high;
+                pref_id = R.string.pref_sound_uri_low;
                 break;
             case BATTERY_LEVEL_HIGH:
-                pref_id = R.string.pref_sound_uri_low;
+                pref_id = R.string.pref_sound_uri_high;
                 break;
             default:
                 return getDefaultSound();
