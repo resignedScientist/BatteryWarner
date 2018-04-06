@@ -47,24 +47,27 @@ public class DatabaseValue {
         this.graphCreationTime = graphCreationTime;
     }
 
-    public static double convertToCelsius(int temperature) {
-        return (double) temperature / 10.0;
+    @Nullable
+    public static Double convertToCelsius(@Nullable Integer temperature) {
+        return temperature == null ? null : temperature.doubleValue() / 10.0;
     }
 
-    public static double convertToFahrenheit(int temperature) {
-        return (((double) temperature * 0.18)) + 32;
+    @Nullable
+    public static Double convertToFahrenheit(Integer temperature) {
+        return temperature != null ? (temperature.doubleValue() * 0.18) + 32 : null;
     }
 
-    public static double convertToMilliAmperes(int current, boolean reverseCurrent) {
-        return (double) current / (reverseCurrent ? 1000.0 : -1000.0);
+    @Nullable
+    public static Double convertToMilliAmperes(@Nullable Integer current, boolean reverseCurrent) {
+        return current != null ? current.doubleValue() / (reverseCurrent ? 1000.0 : -1000.0) : null;
     }
 
-    public static double convertToVolts(int voltage) {
-        return (double) voltage / 1000;
+    public static Double convertToVolts(@Nullable Integer voltage) {
+        return voltage != null ? voltage.doubleValue() / 1000 : null;
     }
 
-    public static String getTemperatureString(int temperature, boolean useFahrenheit) {
-        double convertedTemp;
+    public static String getTemperatureString(@Nullable Integer temperature, boolean useFahrenheit) {
+        Double convertedTemp;
         String unit;
         if (useFahrenheit) {
             convertedTemp = convertToFahrenheit(temperature);

@@ -52,7 +52,11 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
     @Nullable
     static Data readData(Cursor cursor, boolean useFahrenheit, boolean reverseCurrent) {
-        if (cursor == null || cursor.isClosed() || cursor.getCount() <= 0) {
+        if (cursor == null) {
+            return null;
+        }
+        int numberOfValues = cursor.getCount();
+        if (cursor.isClosed() || numberOfValues <= 0) {
             return null;
         }
         LineGraphSeries<DataPoint>[] graphs = new LineGraphSeries[NUMBER_OF_GRAPHS];
@@ -74,14 +78,19 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         long time = 0;
         long timeOfValueWithMaxBatteryLvl = 0;
         DatabaseValue lastValue = null;
+        int cursorIndexBatteryLevel = cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL);
+        int cursorIndexTemperature = cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE);
+        int cursorIndexVoltage = cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE);
+        int cursorIndexCurrent = cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT);
+        int cursorIndexTime = cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME);
 
         for (int valueIndex = 0; valueIndex < cursor.getCount(); valueIndex++) {
             cursor.moveToPosition(valueIndex);
-            int batteryLevel = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL));
-            int temperature = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TEMPERATURE));
-            int voltage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_VOLTAGE));
-            int current = SDK_INT >= LOLLIPOP ? cursor.getInt(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_CURRENT)) : 0;
-            time = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TABLE_COLUMN_TIME));
+            Integer batteryLevel = cursor.getInt(cursorIndexBatteryLevel);
+            Integer temperature = cursor.getInt(cursorIndexTemperature);
+            Integer voltage = cursor.getInt(cursorIndexVoltage);
+            Integer current = cursor.getInt(cursorIndexCurrent);
+            time = cursor.getLong(cursorIndexTime);
             if (valueIndex == 0) {
                 firstBatteryLvl = batteryLevel;
                 maxBatteryLvl = batteryLevel;
@@ -95,12 +104,21 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             }
 
             DatabaseValue value = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
+            DatabaseValue diffValue;
+            if (lastValue != null) {
+                diffValue = lastValue.diff(value);
+                if (diffValue == null) {
+                    continue;
+                }
+            } else {
+                diffValue = value;
+            }
             DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
             for (int graphIndex = 0; graphIndex < NUMBER_OF_GRAPHS; graphIndex++) {
                 if (graphs[graphIndex] == null || dataPoints[graphIndex] == null) {
                     continue;
                 }
-                if (lastValue == null || !lastValue.get(graphIndex).equals(value.get(graphIndex)) || valueIndex == cursor.getCount() - 1) {
+                if (diffValue.get(graphIndex) != null || valueIndex == numberOfValues - 1) {
                     graphs[graphIndex].appendData(dataPoints[graphIndex], false, valueIndex + 1);
                 }
             }
@@ -108,7 +126,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
             if (valueIndex == 0)
                 continue;
-
             if (temperature > maxTemp)
                 maxTemp = temperature;
             if (temperature < minTemp)
@@ -127,7 +144,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             }
         }
 
-        double chargingSpeed = cursor.getCount() < 2 ? Double.NaN :
+        double chargingSpeed = numberOfValues < 2 ? Double.NaN :
                 3600000.0 * ((double) (maxBatteryLvl - firstBatteryLvl) / (double) (timeOfValueWithMaxBatteryLvl - startTime));
 
         GraphInfo graphInfo;
@@ -347,22 +364,16 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
             return;
         }
         long totalNumberOfRows;
-        DatabaseValue diffValue;
-        if (lastValue != null) {
-            diffValue = value.diff(lastValue);
-            if (diffValue == null) {
-                return;
-            }
-        } else {
-            diffValue = value;
+        if (lastValue != null && value.equals(lastValue)) {
+            return;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, diffValue.getUtcTimeInMillis());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, diffValue.getBatteryLevel());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, diffValue.getTemperature());
-        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, diffValue.getVoltage());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TIME, value.getUtcTimeInMillis());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL, value.getBatteryLevel());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_TEMPERATURE, value.getTemperature());
+        contentValues.put(DatabaseContract.TABLE_COLUMN_VOLTAGE, value.getVoltage());
         if (SDK_INT >= LOLLIPOP) {
-            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, diffValue.getCurrent());
+            contentValues.put(DatabaseContract.TABLE_COLUMN_CURRENT, value.getCurrent());
         }
         totalNumberOfRows = database.insert(DatabaseContract.TABLE_NAME, null, contentValues);
         if (totalNumberOfRows == -1) {

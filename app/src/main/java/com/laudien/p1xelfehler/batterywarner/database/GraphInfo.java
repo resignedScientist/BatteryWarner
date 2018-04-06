@@ -264,8 +264,8 @@ public class GraphInfo {
         // min current
         if (SDK_INT >= LOLLIPOP) {
             textView = dialog.findViewById(R.id.textView_minCurrent);
-            double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
-            if (!Double.isNaN(minCurrentMilliAmperes)) {
+            Double minCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent);
+            if (minCurrentMilliAmperes != null && !Double.isNaN(minCurrentMilliAmperes)) {
                 textView.setText(String.format(
                         Locale.getDefault(),
                         "%s: %.1f mAh",
@@ -278,8 +278,8 @@ public class GraphInfo {
             }
             // max current
             textView = dialog.findViewById(R.id.textView_maxCurrent);
-            double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
-            if (!Double.isNaN(maxCurrentMilliAmperes)) {
+            Double maxCurrentMilliAmperes = DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent);
+            if (maxCurrentMilliAmperes != null && !Double.isNaN(maxCurrentMilliAmperes)) {
                 textView.setText(String.format(
                         Locale.getDefault(),
                         "%s: %.1f mAh",
