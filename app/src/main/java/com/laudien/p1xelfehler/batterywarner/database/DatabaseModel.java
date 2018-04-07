@@ -72,8 +72,8 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         int maxTemp = 0;
         int minVoltage = 0;
         int maxVoltage = 0;
-        int minCurrent = 0;
-        int maxCurrent = 0;
+        Integer minCurrent = null;
+        Integer maxCurrent = null;
         long startTime = 0;
         long time = 0;
         long timeOfValueWithMaxBatteryLvl = 0;
@@ -86,10 +86,10 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
 
         for (int valueIndex = 0; valueIndex < cursor.getCount(); valueIndex++) {
             cursor.moveToPosition(valueIndex);
-            Integer batteryLevel = cursor.getInt(cursorIndexBatteryLevel);
-            Integer temperature = cursor.getInt(cursorIndexTemperature);
-            Integer voltage = cursor.getInt(cursorIndexVoltage);
-            Integer current = cursor.getInt(cursorIndexCurrent);
+            int batteryLevel = cursor.getInt(cursorIndexBatteryLevel);
+            int temperature = cursor.getInt(cursorIndexTemperature);
+            int voltage = cursor.getInt(cursorIndexVoltage);
+            Integer current = cursorIndexCurrent != -1 ? cursor.getInt(cursorIndexCurrent) : null;
             time = cursor.getLong(cursorIndexTime);
             if (valueIndex == 0) {
                 firstBatteryLvl = batteryLevel;
@@ -103,7 +103,9 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 startTime = time;
             }
 
-            DatabaseValue value = new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime);
+            DatabaseValue value = SDK_INT >= LOLLIPOP ?
+                    new DatabaseValue(batteryLevel, temperature, voltage, current, time, startTime) :
+                    new DatabaseValue(batteryLevel, temperature, voltage, time, startTime);
             DiffValue diffValue;
             if (lastValue != null) {
                 diffValue = lastValue.diff(value);
@@ -111,7 +113,9 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                     continue;
                 }
             } else {
-                diffValue = new DiffValue(batteryLevel, temperature, voltage, current);
+                diffValue = SDK_INT >= LOLLIPOP ?
+                        new DiffValue(batteryLevel, temperature, voltage, current) :
+                        new DiffValue(batteryLevel, temperature, voltage);
             }
             DataPoint[] dataPoints = value.toDataPoints(useFahrenheit, reverseCurrent);
             for (int graphIndex = 0; graphIndex < NUMBER_OF_GRAPHS; graphIndex++) {
@@ -130,10 +134,12 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 maxTemp = temperature;
             if (temperature < minTemp)
                 minTemp = temperature;
-            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent))
-                maxCurrent = current;
-            if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent))
-                minCurrent = current;
+            if (current != null) {
+                if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) > DatabaseValue.convertToMilliAmperes(maxCurrent, reverseCurrent))
+                    maxCurrent = current;
+                if (DatabaseValue.convertToMilliAmperes(current, reverseCurrent) < DatabaseValue.convertToMilliAmperes(minCurrent, reverseCurrent))
+                    minCurrent = current;
+            }
             if (voltage > maxVoltage)
                 maxVoltage = voltage;
             if (voltage < minVoltage)
@@ -148,7 +154,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                 3600000.0 * ((double) (maxBatteryLvl - firstBatteryLvl) / (double) (timeOfValueWithMaxBatteryLvl - startTime));
 
         GraphInfo graphInfo;
-        if (SDK_INT >= LOLLIPOP) {
+        if (SDK_INT >= LOLLIPOP && minCurrent != null && maxCurrent != null) {
             graphInfo = new GraphInfo(
                     startTime,
                     time,

@@ -39,6 +39,7 @@ import com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound;
 import com.laudien.p1xelfehler.batterywarner.helper.RootHelper;
 import com.laudien.p1xelfehler.batterywarner.preferences.infoNotificationActivity.InfoNotificationActivity;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static android.app.Notification.PRIORITY_HIGH;
@@ -69,6 +70,7 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.So
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.BATTERY_LEVEL_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_LOW;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.NUMBER_OF_ITEMS;
 
 public class BackgroundService extends Service {
     public static final String ACTION_ENABLE_CHARGING = "enableCharging";
@@ -101,7 +103,6 @@ public class BackgroundService extends Service {
     private boolean charging = false;
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
-    private String infoNotificationMessage;
     private Notification.Builder infoNotificationBuilder;
     private BroadcastReceiver screenOnOffReceiver;
     private BatteryChangedReceiver batteryChangedReceiver;
@@ -281,10 +282,7 @@ public class BackgroundService extends Service {
         // battery info notification
         boolean infoNotificationEnabled = SDK_INT >= O || sharedPreferences.getBoolean(getString(R.string.pref_info_notification_enabled), getResources().getBoolean(R.bool.pref_info_notification_enabled_default));
         if (infoNotificationEnabled) {
-            String[] data = batteryData.getEnabledOnly();
-            infoNotificationContent = buildInfoNotificationContent(data);
-            String message = buildInfoNotificationMessage(data);
-            Notification infoNotification = buildInfoNotification(infoNotificationContent, message);
+            Notification infoNotification = buildInfoNotification();
             startForeground(NOTIFICATION_ID_INFO, infoNotification);
         }
         return START_STICKY;
@@ -436,35 +434,38 @@ public class BackgroundService extends Service {
         notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, notification);
     }
 
-    /**
-     * Builds the battery info notification and returns it.
-     *
-     * @param content The big notification content that is shown if there is enough room for it.
-     * @param message The notification message that is shown if there is not enough room
-     *                for the big notification content.
-     * @return The battery info notification.
-     */
-    private Notification buildInfoNotification(RemoteViews content, String message) {
-        Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
-        PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
-        if (SDK_INT >= O) {
-            infoNotificationBuilder = new Notification.Builder(this, getString(R.string.channel_battery_info));
-        } else {
-            infoNotificationBuilder = new Notification.Builder(this);
+    private Notification buildInfoNotification() {
+        ArrayList<String> messageData = new ArrayList<>(NUMBER_OF_ITEMS);
+        StringBuilder messageBuilder = new StringBuilder();
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            if (batteryData.isEnabled(i)) {
+                messageData.add(batteryData.getLongValueString(i));
+                messageBuilder.append(batteryData.getShortValueString(i));
+            }
         }
-        infoNotificationBuilder
-                .setSmallIcon(SMALL_ICON_RESOURCE)
-                .setOngoing(true)
-                .setContentIntent(clickPendingIntent)
-                .setContentTitle(getString(R.string.title_info_notification))
-                .setContentText(message);
+        RemoteViews content = buildInfoNotificationContent(messageData);
+        if (infoNotificationBuilder == null) { // notification not build yet
+            Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
+            PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
+            if (SDK_INT >= O) {
+                infoNotificationBuilder = new Notification.Builder(this, getString(R.string.channel_battery_info));
+            } else {
+                infoNotificationBuilder = new Notification.Builder(this);
+            }
+            infoNotificationBuilder
+                    .setSmallIcon(SMALL_ICON_RESOURCE)
+                    .setOngoing(true)
+                    .setContentIntent(clickPendingIntent)
+                    .setContentTitle(getString(R.string.title_info_notification));
+            if (SDK_INT < O) {
+                infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
+            }
+        }
+        infoNotificationBuilder.setContentText(messageBuilder.toString());
         if (SDK_INT >= N) {
             infoNotificationBuilder.setCustomBigContentView(content);
         } else {
             infoNotificationBuilder.setContent(content);
-        }
-        if (SDK_INT < O) {
-            infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
         }
         return infoNotificationBuilder.build();
     }
@@ -475,7 +476,7 @@ public class BackgroundService extends Service {
      * @param data An array of localised strings that should be shown in the notification.
      * @return RemoteViews object that represents the content of the battery info notification.
      */
-    private RemoteViews buildInfoNotificationContent(String[] data) {
+    private RemoteViews buildInfoNotificationContent(ArrayList<String> data) {
         if (infoNotificationContent == null) {
             boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_info_notification), getResources().getBoolean(R.bool.pref_dark_info_notification_default));
             if (darkThemeEnabled) { // dark theme
@@ -489,24 +490,24 @@ public class BackgroundService extends Service {
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_left, TypedValue.COMPLEX_UNIT_SP, textSize);
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_right, TypedValue.COMPLEX_UNIT_SP, textSize);
         // generate info text
-        if (data != null && data.length > 0) {
-            if (data.length <= 3) {
+        if (data != null && data.size() > 0) {
+            if (data.size() <= 3) {
                 infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
                 infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
-                String message = data[0];
-                if (data.length > 1) {
-                    for (byte i = 1; i < data.length; i++) {
-                        message = message.concat("\n").concat(data[i]);
+                String message = data.get(0);
+                if (data.size() > 1) {
+                    for (byte i = 1; i < data.size(); i++) {
+                        message = message.concat("\n").concat(data.get(i));
                     }
                 }
                 infoNotificationContent.setTextViewText(R.id.textView_message_left, message);
             } else { // more then 3 items
-                String message_left = data[0], message_right = data[1];
-                for (byte i = 2; i < data.length; i++) {
+                String message_left = data.get(0), message_right = data.get(1);
+                for (byte i = 2; i < data.size(); i++) {
                     if (i % 2 == 0) {
-                        message_left = message_left.concat("\n").concat(data[i]);
+                        message_left = message_left.concat("\n").concat(data.get(i));
                     } else {
-                        message_right = message_right.concat("\n").concat(data[i]);
+                        message_right = message_right.concat("\n").concat(data.get(i));
                     }
                 }
                 infoNotificationContent.setTextViewText(R.id.textView_message_left, message_left);
@@ -518,30 +519,10 @@ public class BackgroundService extends Service {
             infoNotificationContent.setTextViewText(R.id.textView_message_left,
                     getString(R.string.notification_no_items_enabled));
         }
-        return infoNotificationContent;
-    }
-
-    /**
-     * Builds the message text of the battery info notification that is shown
-     * if the notification is folded and there is not enough room for the regular notification.
-     *
-     * @param data An array of localised strings that should be shown in the notification.
-     * @return The notification message.
-     */
-    private String buildInfoNotificationMessage(String[] data) {
-        if (data != null && data.length > 0) {
-            infoNotificationMessage = data[0];
-            if (data.length > 1) {
-                int i = 1;
-                do {
-                    infoNotificationMessage = infoNotificationMessage.concat(", ").concat(data[i]);
-                    i++;
-                } while (i < data.length);
-            }
-            return infoNotificationMessage;
-        } else {
-            return getString(R.string.notification_no_items_enabled);
+        if (SDK_INT >= LOLLIPOP) { // set the correct image
+            infoNotificationContent.setImageViewResource(R.id.img_battery, batteryData.getIconResource());
         }
+        return infoNotificationContent;
     }
 
     /**
@@ -814,14 +795,9 @@ public class BackgroundService extends Service {
                     graphCreationTime = timeNow;
                 }
             }
-            DatabaseValue databaseValue = new DatabaseValue(
-                    batteryLevel,
-                    temperature,
-                    voltage,
-                    current,
-                    timeNow,
-                    graphCreationTime
-            );
+            DatabaseValue databaseValue = SDK_INT >= LOLLIPOP ?
+                    new DatabaseValue(batteryLevel, temperature, voltage, current, timeNow, graphCreationTime) :
+                    new DatabaseValue(batteryLevel, temperature, voltage, timeNow, graphCreationTime);
 
             // add a value to the database
             if (graphEnabled) {
@@ -1008,14 +984,7 @@ public class BackgroundService extends Service {
                 Log.d("BackgroundService", "Relevant data not changed or the notification is disabled.");
                 return;
             }
-            String[] data = batteryData.getEnabledOnly();
-            infoNotificationContent = buildInfoNotificationContent(data);
-            if (SDK_INT >= LOLLIPOP) {
-                infoNotificationContent.setImageViewResource(R.id.img_battery, batteryData.getIconResource());
-            }
-            infoNotificationMessage = buildInfoNotificationMessage(data);
-            infoNotificationBuilder.setContentText(infoNotificationMessage);
-            notificationManager.notify(NOTIFICATION_ID_INFO, infoNotificationBuilder.build());
+            notificationManager.notify(NOTIFICATION_ID_INFO, buildInfoNotification());
             Log.d("BackgroundService", "Notification refreshed!");
         }
 
@@ -1154,14 +1123,11 @@ public class BackgroundService extends Service {
     }
 
     public class BackgroundServiceBinder extends Binder {
-        public BatteryData getBatteryData() {
-            return BackgroundService.this.batteryData;
-        }
 
         public void setBatteryValueChangedListener(BatteryValueChangedListener listener) {
             BackgroundService.this.listener = listener;
             // trigger listener for all values for initialization
-            for (byte i = 0; i < BatteryData.NUMBER_OF_ITEMS; i++) {
+            for (byte i = 0; i < NUMBER_OF_ITEMS; i++) {
                 if (i == BatteryData.INDEX_CURRENT && SDK_INT < LOLLIPOP) {
                     continue;
                 }
@@ -1189,8 +1155,7 @@ public class BackgroundService extends Service {
         public static final int INDEX_BATTERY_LEVEL = 3;
         public static final int INDEX_VOLTAGE = 4;
         public static final int INDEX_CURRENT = 5;
-        private static final int NUMBER_OF_ITEMS = 6;
-        private final String[] values = new String[NUMBER_OF_ITEMS];
+        static final int NUMBER_OF_ITEMS = 6;
         private String technology;
         private int health, batteryLevel;
         private int current, temperature, voltage;
@@ -1225,49 +1190,71 @@ public class BackgroundService extends Service {
             }
         }
 
-        /**
-         * This method does the same as the getAsArray() method, but only returns the data that is
-         * enabled to be shown in the info notification.
-         * Caution: The indexes are not correct here!
-         *
-         * @return Returns enabled data as String array with correct formats to show to the user.
-         */
-        private String[] getEnabledOnly() {
-            boolean[] enabledBooleans = new boolean[NUMBER_OF_ITEMS];
-            enabledBooleans[INDEX_TECHNOLOGY] = sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default));
-            enabledBooleans[INDEX_TEMPERATURE] = sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default));
-            enabledBooleans[INDEX_HEALTH] = sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default));
-            enabledBooleans[INDEX_BATTERY_LEVEL] = sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default));
-            enabledBooleans[INDEX_VOLTAGE] = sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default));
-            enabledBooleans[INDEX_CURRENT] = sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default));
-            // add enabled strings to array
-            String[] enabledValues = new String[NUMBER_OF_ITEMS];
-            byte count = 0;
-            for (byte i = 0; i < NUMBER_OF_ITEMS; i++) {
-                if (enabledBooleans[i]) {
-                    enabledValues[i] = values[i];
-                    count++;
-                }
+        private boolean isEnabled(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_technology), getResources().getBoolean(R.bool.pref_info_technology_default));
+                case INDEX_TEMPERATURE:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default));
+                case INDEX_HEALTH:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default));
+                case INDEX_BATTERY_LEVEL:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default));
+                case INDEX_VOLTAGE:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default));
+                case INDEX_CURRENT:
+                    return sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default));
+                default:
+                    throw new IllegalArgumentException("Unknown battery value index!");
             }
-            // remove null values from array
-            String[] cleanedValues = new String[count];
-            byte j = 0;
-            for (String s : enabledValues) {
-                if (s != null) {
-                    cleanedValues[j++] = s;
-                }
-            }
-            return cleanedValues;
         }
 
-        /**
-         * Get a specific value with the given index as correctly formatted String.
-         *
-         * @param index One of the INDEX attributes that determine which value should be returned.
-         * @return Returns the value with the given index as correctly formatted String.
-         */
-        public String getValueString(int index) {
-            return values[index];
+        public String getLongValueString(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return getString(R.string.info_technology) + ": " + technology;
+                case INDEX_TEMPERATURE:
+                    boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
+                    return String.format("%s: %s",
+                            getString(R.string.info_temperature),
+                            DatabaseValue.getTemperatureString(temperature, useFahrenheit)
+                    );
+                case INDEX_HEALTH:
+                    return getString(R.string.info_health) + ": " + getHealthString(health);
+                case INDEX_BATTERY_LEVEL:
+                    return String.format(getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
+                case INDEX_VOLTAGE:
+                    return String.format(Locale.getDefault(), getString(R.string.info_voltage) + ": %.3f V", DatabaseValue.convertToVolts(voltage));
+                case INDEX_CURRENT:
+                    return String.format(Locale.getDefault(),
+                            "%s: %.0f mA",
+                            getString(R.string.info_current),
+                            DatabaseValue.convertToMilliAmperes(current, PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default)))
+                    );
+                default:
+                    throw new IllegalArgumentException("Unknown battery value index!");
+            }
+        }
+
+        String getShortValueString(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return technology;
+                case INDEX_TEMPERATURE:
+                    boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
+                    return DatabaseValue.getTemperatureString(temperature, useFahrenheit);
+                case INDEX_HEALTH:
+                    return getHealthString(health);
+                case INDEX_BATTERY_LEVEL:
+                    return String.format(Locale.getDefault(), "%d%%", batteryLevel);
+                case INDEX_VOLTAGE:
+                    return String.format(Locale.getDefault(), "%.3f V", DatabaseValue.convertToVolts(voltage));
+                case INDEX_CURRENT:
+                    boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+                    return String.format(Locale.getDefault(), "%.0f mA", DatabaseValue.convertToMilliAmperes(current, reverseCurrent));
+                default:
+                    throw new IllegalArgumentException("Unknown battery value index!");
+            }
         }
 
         public int getBatteryLevel() {
@@ -1283,10 +1270,9 @@ public class BackgroundService extends Service {
         }
 
         private void setBatteryLevel(int batteryLevel) {
-            if (this.batteryLevel != batteryLevel || values[INDEX_BATTERY_LEVEL] == null) {
+            if (this.batteryLevel != batteryLevel) {
                 this.batteryLevel = batteryLevel;
-                values[INDEX_BATTERY_LEVEL] = String.format(getString(R.string.info_battery_level) + ": %d%%", batteryLevel);
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_battery_level), getResources().getBoolean(R.bool.pref_info_battery_level_default))) {
+                if (isEnabled(INDEX_BATTERY_LEVEL)) {
                     changed = true;
                 }
                 notifyListener(INDEX_BATTERY_LEVEL);
@@ -1294,18 +1280,16 @@ public class BackgroundService extends Service {
         }
 
         private void setTechnology(String technology) {
-            if (this.technology == null) {
+            if (this.technology == null || !this.technology.equals(technology)) {
                 this.technology = technology;
-                values[INDEX_TECHNOLOGY] = getString(R.string.info_technology) + ": " + technology;
                 notifyListener(INDEX_TECHNOLOGY);
             }
         }
 
         private void setHealth(int health) {
-            if (this.health != health || values[INDEX_HEALTH] == null) {
+            if (this.health != health) {
                 this.health = health;
-                values[INDEX_HEALTH] = getString(R.string.info_health) + ": " + getHealthString(health);
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_health), getResources().getBoolean(R.bool.pref_info_health_default))) {
+                if (isEnabled(INDEX_HEALTH)) {
                     changed = true;
                 }
                 notifyListener(INDEX_HEALTH);
@@ -1314,12 +1298,9 @@ public class BackgroundService extends Service {
 
         @RequiresApi(api = LOLLIPOP)
         private void setCurrent(int current) {
-            if (this.current != current || values[INDEX_CURRENT] == null) {
+            if (this.current != current) {
                 this.current = current;
-                boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-                double convertedCurrent = DatabaseValue.convertToMilliAmperes(current, reverseCurrent);
-                values[INDEX_CURRENT] = String.format(Locale.getDefault(), "%s: %.0f mA", getString(R.string.info_current), convertedCurrent);
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_current), getResources().getBoolean(R.bool.pref_info_current_default))) {
+                if (isEnabled(INDEX_CURRENT)) {
                     changed = true;
                 }
                 notifyListener(INDEX_CURRENT);
@@ -1327,16 +1308,9 @@ public class BackgroundService extends Service {
         }
 
         private void setTemperature(int temperature, boolean forceUpdate) {
-            if (forceUpdate || this.temperature != temperature || values[INDEX_TEMPERATURE] == null) {
+            if (forceUpdate || this.temperature != temperature) {
                 this.temperature = temperature;
-                boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
-                values[INDEX_TEMPERATURE] = String.format(
-                        Locale.getDefault(),
-                        "%s: %s",
-                        getString(R.string.info_temperature),
-                        DatabaseValue.getTemperatureString(temperature, useFahrenheit)
-                );
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_temperature), getResources().getBoolean(R.bool.pref_info_temperature_default))) {
+                if (isEnabled(INDEX_TEMPERATURE)) {
                     changed = true;
                 }
                 notifyListener(INDEX_TEMPERATURE);
@@ -1344,11 +1318,9 @@ public class BackgroundService extends Service {
         }
 
         private void setVoltage(int voltage) {
-            if (this.voltage != voltage || values[INDEX_VOLTAGE] == null) {
+            if (this.voltage != voltage) {
                 this.voltage = voltage;
-                double convertedVoltage = DatabaseValue.convertToVolts(voltage);
-                values[INDEX_VOLTAGE] = String.format(Locale.getDefault(), getString(R.string.info_voltage) + ": %.3f V", convertedVoltage);
-                if (sharedPreferences.getBoolean(getString(R.string.pref_info_voltage), getResources().getBoolean(R.bool.pref_info_voltage_default))) {
+                if (isEnabled(INDEX_VOLTAGE)) {
                     changed = true;
                 }
                 notifyListener(INDEX_VOLTAGE);

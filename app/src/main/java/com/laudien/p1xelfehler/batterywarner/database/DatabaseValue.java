@@ -3,11 +3,14 @@ package com.laudien.p1xelfehler.batterywarner.database;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.Locale;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_BATTERY_LEVEL;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_CURRENT;
 import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.GRAPH_INDEX_TEMPERATURE;
@@ -21,9 +24,10 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBE
 public class DatabaseValue {
     private final int
             batteryLevel,
-            current,
             temperature,
             voltage;
+    @RequiresApi(api = LOLLIPOP)
+    private int current;
     private final long
             utcTimeInMillis,
             graphCreationTime;
@@ -36,14 +40,23 @@ public class DatabaseValue {
      * @param utcTimeInMillis   The UTC time in milliseconds.
      * @param graphCreationTime The UTC time in milliseconds of the first point of the graph.
      */
-    public DatabaseValue(@Nullable Integer batteryLevel, @Nullable Integer temperature,
-                         @Nullable Integer voltage, @Nullable Integer current, long utcTimeInMillis,
-                         long graphCreationTime) {
+    @RequiresApi(api = LOLLIPOP)
+    public DatabaseValue(int batteryLevel, int temperature, int voltage, int current,
+                         long utcTimeInMillis, long graphCreationTime) {
         this.batteryLevel = batteryLevel;
         this.temperature = temperature;
         this.utcTimeInMillis = utcTimeInMillis;
         this.voltage = voltage;
         this.current = current;
+        this.graphCreationTime = graphCreationTime;
+    }
+
+    public DatabaseValue(int batteryLevel, int temperature, int voltage, long utcTimeInMillis,
+                         long graphCreationTime) {
+        this.batteryLevel = batteryLevel;
+        this.temperature = temperature;
+        this.utcTimeInMillis = utcTimeInMillis;
+        this.voltage = voltage;
         this.graphCreationTime = graphCreationTime;
     }
 
@@ -63,7 +76,7 @@ public class DatabaseValue {
         return (double) voltage / 1000;
     }
 
-    public static String getTemperatureString(@Nullable int temperature, boolean useFahrenheit) {
+    public static String getTemperatureString(int temperature, boolean useFahrenheit) {
         Double convertedTemp;
         String unit;
         if (useFahrenheit) {
@@ -86,26 +99,39 @@ public class DatabaseValue {
         if (equals(newerDatabaseValue)) { // it is the same value
             return null;
         }
-        return new DiffValue(
-                batteryLevel == newerDatabaseValue.batteryLevel ? null : newerDatabaseValue.batteryLevel,
-                temperature == newerDatabaseValue.temperature ? null : newerDatabaseValue.temperature,
-                voltage == newerDatabaseValue.voltage ? null : newerDatabaseValue.voltage,
-                current == newerDatabaseValue.current ? null : newerDatabaseValue.current
-        );
+        if (SDK_INT >= LOLLIPOP) {
+            return new DiffValue(
+                    batteryLevel == newerDatabaseValue.batteryLevel ? null : newerDatabaseValue.batteryLevel,
+                    temperature == newerDatabaseValue.temperature ? null : newerDatabaseValue.temperature,
+                    voltage == newerDatabaseValue.voltage ? null : newerDatabaseValue.voltage,
+                    current == newerDatabaseValue.current ? null : newerDatabaseValue.current
+            );
+        } else {
+            return new DiffValue(
+                    batteryLevel == newerDatabaseValue.batteryLevel ? null : newerDatabaseValue.batteryLevel,
+                    temperature == newerDatabaseValue.temperature ? null : newerDatabaseValue.temperature,
+                    voltage == newerDatabaseValue.voltage ? null : newerDatabaseValue.voltage
+            );
+        }
     }
 
     @SuppressLint("DefaultLocale")
     @Override
     public String toString() {
-        return String.format("[time=%d, batteryLevel=%d%%, temperature=%d, voltage=%d, current=%d]",
-                utcTimeInMillis, batteryLevel, temperature, voltage, current);
+        if (SDK_INT >= LOLLIPOP) {
+            return String.format("[time=%d, batteryLevel=%d%%, temperature=%d, voltage=%d, current=%d]",
+                    utcTimeInMillis, batteryLevel, temperature, voltage, current);
+        } else {
+            return String.format("[time=%d, batteryLevel=%d%%, temperature=%d, voltage=%d]",
+                    utcTimeInMillis, batteryLevel, temperature, voltage);
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof DatabaseValue) {
             DatabaseValue other = (DatabaseValue) obj;
-            return other.current == current
+            return (SDK_INT < LOLLIPOP || other.current == current)
                     && other.voltage == voltage
                     && other.temperature == temperature
                     && other.batteryLevel == batteryLevel;
@@ -158,10 +184,12 @@ public class DatabaseValue {
      *
      * @return The current in mA * -1000.
      */
+    @RequiresApi(api = LOLLIPOP)
     int getCurrent() {
         return current;
     }
 
+    @RequiresApi(api = LOLLIPOP)
     public double getCurrentInMilliAmperes(boolean reverseCurrent) {
         return convertToMilliAmperes(current, reverseCurrent);
     }
@@ -188,15 +216,13 @@ public class DatabaseValue {
         double timeInMinutes = getTimeFromStartInMinutes();
         double temperature = useFahrenheit ? getTemperatureInFahrenheit() : getTemperatureInCelsius();
         double voltage = getVoltageInVolts();
-        double current = getCurrentInMilliAmperes(reverseCurrent);
-
+        if (SDK_INT >= LOLLIPOP) {
+            double current = getCurrentInMilliAmperes(reverseCurrent);
+            dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
+        }
         dataPoints[GRAPH_INDEX_BATTERY_LEVEL] = new DataPoint(timeInMinutes, batteryLevel);
-
         dataPoints[GRAPH_INDEX_TEMPERATURE] = new DataPoint(timeInMinutes, temperature);
-
         dataPoints[GRAPH_INDEX_VOLTAGE] = new DataPoint(timeInMinutes, voltage);
-
-        dataPoints[GRAPH_INDEX_CURRENT] = new DataPoint(timeInMinutes, current);
         return dataPoints;
     }
 }

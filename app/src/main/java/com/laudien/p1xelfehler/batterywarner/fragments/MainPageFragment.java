@@ -118,26 +118,27 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
 
     @Override
     public void onBatteryValueChanged(BackgroundService.BatteryData batteryData, int index) {
+        String infoString = batteryData.getLongValueString(index);
         switch (index) {
             case INDEX_TECHNOLOGY:
-                textView_technology.setText(batteryData.getValueString(index));
+                textView_technology.setText(infoString);
                 break;
             case INDEX_TEMPERATURE:
-                textView_temp.setText(batteryData.getValueString(index));
+                textView_temp.setText(infoString);
                 break;
             case INDEX_HEALTH:
-                textView_health.setText(batteryData.getValueString(index));
+                textView_health.setText(infoString);
                 break;
             case INDEX_BATTERY_LEVEL:
-                textView_batteryLevel.setText(batteryData.getValueString(index));
+                textView_batteryLevel.setText(infoString);
                 setBatteryColor(batteryData.getBatteryLevel());
                 break;
             case INDEX_VOLTAGE:
-                textView_voltage.setText(batteryData.getValueString(index));
+                textView_voltage.setText(infoString);
                 break;
             case INDEX_CURRENT:
                 if (SDK_INT >= LOLLIPOP) {
-                    textView_current.setText(batteryData.getValueString(index));
+                    textView_current.setText(infoString);
                 }
                 break;
         }
@@ -173,8 +174,12 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
     }
 
     private void showTheDestroyer() {
-        ToastHelper.sendToast(getContext(), "DESTROY!");
-        final Dialog dialog = new Dialog(getContext());
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        ToastHelper.sendToast(context, "DESTROY!");
+        final Dialog dialog = new Dialog(context);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_destroyer);
         // close button
