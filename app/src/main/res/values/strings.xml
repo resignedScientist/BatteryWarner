@@ -37,10 +37,12 @@
     <!-- dialogs -->
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_close">Close</string>
+    <string name="dialog_button_no">No</string>
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_message_delete_all_graphs">Do you really want to delete ALL graphs?</string>
     <string name="dialog_message_delete_graph">Do you really want to delete that graph?</string>
+    <string name="dialog_message_send_debug_info">Do you want to send debug information with your mail? This can be very helpful, if you want to report a bug.</string>
     <string name="dialog_title_are_you_sure">Are you sure?</string>
     <string name="dialog_title_graph_info">Graph information</string>
     <string name="dialog_title_information">Information</string>
@@ -312,6 +314,7 @@
     <string name="toast_invalid_tasker_settings">Invalid settings!</string>
     <string name="toast_no_alarm_time_found">There was no alarm time found in the alarm clock app! Set an alarm in your clock app or a time manually in the app in order to use Smart Charging!</string>
     <string name="toast_no_data">No data yet!</string>
+    <string name="toast_no_email_app">No email app found!</string>
     <string name="toast_no_graphs_saved">No Graphs saved!</string>
     <string name="toast_not_enough_data">Not enough data yet!</string>
     <string name="toast_not_rooted">You must be rooted for this!</string>

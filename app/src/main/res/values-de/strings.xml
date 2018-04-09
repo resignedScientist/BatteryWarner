@@ -23,10 +23,12 @@
 
     <string name="dialog_button_cancel">Abbrechen</string>
     <string name="dialog_button_close">Schließen</string>
+    <string name="dialog_button_no">Nein</string>
     <string name="dialog_button_ok">Ok</string>
     <string name="dialog_button_yes">Ja</string>
     <string name="dialog_message_delete_all_graphs">Möchten Sie wirklich ALLE Graphen löschen?</string>
     <string name="dialog_message_delete_graph">Möchten Sie den Graphen wirklich löschen?</string>
+    <string name="dialog_message_send_debug_info">Wollen Sie debug Informationen zu Ihrer Mail hinzufügen? Dies kann sehr hilfreich sein, wenn Sie einen Fehler melden möchten.</string>
     <string name="dialog_title_are_you_sure">Sind Sie sicher?</string>
     <string name="dialog_title_graph_info">Graphen-Informationen</string>
     <string name="dialog_title_information">Information</string>
@@ -222,6 +224,7 @@
     <string name="toast_invalid_tasker_settings">Ungültiger Wert!</string>
     <string name="toast_no_alarm_time_found">Es wurde kein aktiver Wecker in der Wecker-App gefunden! Stelle einen Wecker oder stelle manuell eine Zeit ein, damit Smart Charging funktioniert!</string>
     <string name="toast_no_data">Noch keine Daten!</string>
+    <string name="toast_no_email_app">Keine E-Mail App gefunden!</string>
     <string name="toast_no_graphs_saved">Keine Graphen gefunden!</string>
     <string name="toast_not_enough_data">Noch nicht genügend Daten!</string>
     <string name="toast_not_rooted">Du benötigst dafür Root-Rechte!</string>

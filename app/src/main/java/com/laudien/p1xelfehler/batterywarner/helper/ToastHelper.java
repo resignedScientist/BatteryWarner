@@ -14,11 +14,19 @@ public class ToastHelper {
         toast.show();
     }
 
+    public static void sendToast(Context context, int stringResource) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(context, stringResource, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
     public static void sendToast(Context context, String message) {
         if (toast != null) {
             toast.cancel();
         }
-        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         toast.show();
     }
 }
