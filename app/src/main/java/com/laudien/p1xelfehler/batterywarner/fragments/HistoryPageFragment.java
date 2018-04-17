@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,9 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.laudien.p1xelfehler.batterywarner.GraphLoader;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 
 import java.io.File;
 
@@ -44,8 +46,44 @@ public class HistoryPageFragment extends BasicGraphFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
         textView_title.setVisibility(View.GONE);
-        loadGraphs();
+        fetchGraphs();
         return view;
+    }
+
+    @Override
+    protected void fetchGraphs() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        final File file = getFile();
+        if (file == null || !file.exists()) {
+            return;
+        }
+        getLoaderManager().restartLoader(index, null, new LoaderManager.LoaderCallbacks<Data>() {
+            @NonNull
+            @Override
+            public Loader<Data> onCreateLoader(int id, @Nullable Bundle args) {
+                return new GraphLoader(getContext(), file);
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Data> loader, @Nullable Data data) {
+                if (data == null) {
+                    return;
+                }
+                loadGraphs(data.getGraphs());
+                graphInfo = data.getGraphInfo();
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Data> loader) {
+
+            }
+        });
     }
 
     @Override
@@ -69,28 +107,6 @@ public class HistoryPageFragment extends BasicGraphFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Loads the graphs out of the database from that the file path was given in the arguments.
-     *
-     * @return Returns an array of the graphs in the database or null if there was no file path
-     * given in the arguments.
-     */
-    @Override
-    protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        Context context = getContext();
-        if (context == null) {
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        File file = getFile();
-        if (file == null || !file.exists()) {
-            return;
-        }
-        DatabaseModel.getInstance(context).readData(file, useFahrenheit, reverseCurrent, dataReceiver);
     }
 
     @Nullable

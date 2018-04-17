@@ -50,8 +50,83 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         return instance;
     }
 
+    static boolean resetTableTask(@NonNull SQLiteDatabase writableDatabase) {
+        if (!writableDatabase.isOpen()) {
+            return false;
+        }
+        writableDatabase.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
+        return true;
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        if (SDK_INT >= LOLLIPOP) {
+            sqLiteDatabase.execSQL(
+                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
+                            DatabaseContract.TABLE_NAME,
+                            DatabaseContract.TABLE_COLUMN_TIME,
+                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                            DatabaseContract.TABLE_COLUMN_VOLTAGE,
+                            DatabaseContract.TABLE_COLUMN_CURRENT
+                    )
+            );
+        } else {
+            sqLiteDatabase.execSQL(
+                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER);",
+                            DatabaseContract.TABLE_NAME,
+                            DatabaseContract.TABLE_COLUMN_TIME,
+                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
+                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
+                            DatabaseContract.TABLE_COLUMN_VOLTAGE
+                    )
+            );
+        }
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        Log.d(getClass().getSimpleName(), "onUpgrade() -> oldVersion = " + oldVersion + ", newVersion = " + newVersion);
+        if (oldVersion < 5) {
+            Log.d(getClass().getSimpleName(), "Upgrading file: " + sqLiteDatabase.getPath());
+            String statement = "ALTER TABLE %s ADD COLUMN %s INTEGER DEFAULT 0";
+            try {
+                sqLiteDatabase.execSQL(String.format(
+                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_VOLTAGE));
+                sqLiteDatabase.execSQL(String.format(
+                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_CURRENT));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     @Nullable
-    static Data readData(Cursor cursor, boolean useFahrenheit, boolean reverseCurrent) {
+    public SQLiteDatabase getReadableDatabase() {
+        try {
+            return super.getReadableDatabase();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    @Nullable
+    public SQLiteDatabase getWritableDatabase() {
+        try {
+            return super.getWritableDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    @Nullable
+    public Data readData(@Nullable File databaseFile, boolean useFahrenheit, boolean reverseCurrent) {
+        Cursor cursor = databaseFile != null ? getCursor(databaseFile) : getCursor();
         if (cursor == null) {
             return null;
         }
@@ -187,91 +262,7 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
                     reverseCurrent
             );
         }
-
         return new Data(graphs, graphInfo);
-    }
-
-    static boolean resetTableTask(@NonNull SQLiteDatabase writableDatabase) {
-        if (!writableDatabase.isOpen()) {
-            return false;
-        }
-        writableDatabase.execSQL("DELETE FROM " + DatabaseContract.TABLE_NAME);
-        return true;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        if (SDK_INT >= LOLLIPOP) {
-            sqLiteDatabase.execSQL(
-                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER, %s INTEGER);",
-                            DatabaseContract.TABLE_NAME,
-                            DatabaseContract.TABLE_COLUMN_TIME,
-                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
-                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
-                            DatabaseContract.TABLE_COLUMN_VOLTAGE,
-                            DatabaseContract.TABLE_COLUMN_CURRENT
-                    )
-            );
-        } else {
-            sqLiteDatabase.execSQL(
-                    String.format("CREATE TABLE %s (%s TEXT,%s INTEGER,%s INTEGER, %s INTEGER);",
-                            DatabaseContract.TABLE_NAME,
-                            DatabaseContract.TABLE_COLUMN_TIME,
-                            DatabaseContract.TABLE_COLUMN_BATTERY_LEVEL,
-                            DatabaseContract.TABLE_COLUMN_TEMPERATURE,
-                            DatabaseContract.TABLE_COLUMN_VOLTAGE
-                    )
-            );
-        }
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        Log.d(getClass().getSimpleName(), "onUpgrade() -> oldVersion = " + oldVersion + ", newVersion = " + newVersion);
-        if (oldVersion < 5) {
-            Log.d(getClass().getSimpleName(), "Upgrading file: " + sqLiteDatabase.getPath());
-            String statement = "ALTER TABLE %s ADD COLUMN %s INTEGER DEFAULT 0";
-            try {
-                sqLiteDatabase.execSQL(String.format(
-                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_VOLTAGE));
-                sqLiteDatabase.execSQL(String.format(
-                        statement, DatabaseContract.TABLE_NAME, DatabaseContract.TABLE_COLUMN_CURRENT));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    @Nullable
-    public SQLiteDatabase getReadableDatabase() {
-        try {
-            return super.getReadableDatabase();
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    @Nullable
-    public SQLiteDatabase getWritableDatabase() {
-        try {
-            return super.getWritableDatabase();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public void readData(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        new ReadDataTask(getCursor(), useFahrenheit, reverseCurrent, dataReceiver).execute();
-    }
-
-    @Override
-    public void readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        new ReadDataTask(getCursor(databaseFile), useFahrenheit, reverseCurrent, dataReceiver).execute();
     }
 
     @Override
@@ -432,36 +423,6 @@ public class DatabaseModel extends SQLiteOpenHelper implements DatabaseContract.
         listeners.remove(listener);
         if (listeners.isEmpty()) {
             close();
-        }
-    }
-
-    private static class ReadDataTask extends AsyncTask<Void, Void, Data> {
-        private final DatabaseContract.DataReceiver dataReceiver;
-        private final boolean useFahrenheit;
-        private final boolean reverseCurrent;
-        private final Cursor cursor;
-
-        private ReadDataTask(@Nullable Cursor cursor, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-            this.cursor = cursor;
-            this.useFahrenheit = useFahrenheit;
-            this.reverseCurrent = reverseCurrent;
-            this.dataReceiver = dataReceiver;
-        }
-
-        @Override
-        protected Data doInBackground(Void... voids) {
-            if (cursor == null || cursor.isClosed()) {
-                return null;
-            }
-            return readData(cursor, useFahrenheit, reverseCurrent);
-        }
-
-        @Override
-        protected void onPostExecute(Data data) {
-            super.onPostExecute(data);
-            if (data != null) {
-                dataReceiver.onDataRead(data);
-            }
         }
     }
 

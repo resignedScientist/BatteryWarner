@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,8 +26,10 @@ import android.widget.CompoundButton;
 
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.laudien.p1xelfehler.batterywarner.GraphLoader;
 import com.laudien.p1xelfehler.batterywarner.HistoryActivity;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils;
@@ -57,6 +61,7 @@ import static com.laudien.p1xelfehler.batterywarner.database.DatabaseUtils.NUMBE
 public class GraphFragment extends BasicGraphFragment implements DatabaseContract.DatabaseListener {
 
     private static final int REQUEST_SAVE_GRAPH = 10;
+    private static final int LOADER_ID = 1;
     private SharedPreferences sharedPreferences;
     private final BroadcastReceiver chargingStateChangedReceiver = new BroadcastReceiver() {
         @Override
@@ -102,7 +107,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
             return;
         }
         DatabaseModel.getInstance(context).registerDatabaseListener(this);
-        loadGraphs();
+        fetchGraphs();
     }
 
     @Override
@@ -114,6 +119,31 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
         }
         DatabaseModel.getInstance(context).unregisterDatabaseListener(this);
         removeAllGraphs();
+    }
+
+    @Override
+    protected void fetchGraphs() {
+        getLoaderManager().restartLoader(LOADER_ID, null, new LoaderManager.LoaderCallbacks<Data>() {
+            @NonNull
+            @Override
+            public Loader<Data> onCreateLoader(int id, @Nullable Bundle args) {
+                return new GraphLoader(getContext(), null);
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<Data> loader, @Nullable Data data) {
+                if (data == null) {
+                    return;
+                }
+                loadGraphs(data.getGraphs());
+                graphInfo = data.getGraphInfo();
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<Data> loader) {
+
+            }
+        });
     }
 
     @Override
@@ -195,19 +225,6 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
     }
 
     /**
-     * Loads the graphs out of the database from the database file in the app directory.
-     *
-     * @return Returns an array of the graphs in the database.
-     */
-    @Override
-    protected void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver) {
-        Context context = getContext();
-        if (context != null) {
-            DatabaseModel.getInstance(context).readData(useFahrenheit, reverseCurrent, dataReceiver);
-        }
-    }
-
-    /**
      * Sets the text under the GraphView depending on if the device is charging, fully charged or
      * not charging. It also shows if there is no or not enough data to show a graph.
      */
@@ -283,7 +300,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                     } catch (Exception e) { // reload graphs on error
                         Log.d("GraphFragment", "Error trying to append data point. Reloading graph now...");
                         removeAllGraphs();
-                        loadGraphs();
+                        fetchGraphs();
                         return;
                     }
                 }

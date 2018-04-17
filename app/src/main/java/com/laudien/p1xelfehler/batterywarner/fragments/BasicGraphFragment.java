@@ -25,7 +25,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
 import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
@@ -159,32 +158,14 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
+    protected abstract void fetchGraphs();
+
     /**
-     * Method that provides an array of the graphs that should be displayed.
+     * Loads the given graphs into the GraphView.
      *
-     * @return Returns an array of graphs.
+     * @param graphs The graphs to load.
      */
-    protected abstract void readGraphs(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
-
-    /**
-     * Method that loads the graph into the GraphView and sets the text of the TextView that show the time.
-     * You can override it to only do it under some conditions.
-     */
-    void loadGraphs() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
-        final boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-        readGraphs(useFahrenheit, reverseCurrent, new DatabaseContract.DataReceiver() {
-            @Override
-            public void onDataRead(@NonNull Data data) {
-                graphInfo = data.getGraphInfo();
-                LineGraphSeries<DataPoint>[] graphs = data.getGraphs();
-                loadGraphs(graphs);
-            }
-        });
-    }
-
-    private void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
+    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
         this.graphs = graphs;
         setTimeText();
         if (graphs == null) {

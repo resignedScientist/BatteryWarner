@@ -18,9 +18,8 @@ public class DatabaseContract {
     static final String DATABASE_HISTORY_PATH = Environment.getExternalStorageDirectory() + "/BatteryWarner";
 
     public interface Model {
-        void readData(boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
 
-        void readData(File databaseFile, boolean useFahrenheit, boolean reverseCurrent, @NonNull DatabaseContract.DataReceiver dataReceiver);
+        Data readData(@Nullable File databaseFile, boolean useFahrenheit, boolean reverseCurrent);
 
         Cursor getCursor();
 
@@ -59,9 +58,5 @@ public class DatabaseContract {
          * Called when the app directory database has been cleared.
          */
         void onTableReset();
-    }
-
-    public interface DataReceiver {
-        void onDataRead(@NonNull Data data);
     }
 }
