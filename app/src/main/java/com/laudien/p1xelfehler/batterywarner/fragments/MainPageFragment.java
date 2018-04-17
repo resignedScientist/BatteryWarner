@@ -118,7 +118,7 @@ public class MainPageFragment extends Fragment implements BackgroundService.Batt
 
     @Override
     public void onBatteryValueChanged(BackgroundService.BatteryData batteryData, int index) {
-        String infoString = batteryData.getLongValueString(index);
+        String infoString = batteryData.getValueString(index);
         switch (index) {
             case INDEX_TECHNOLOGY:
                 textView_technology.setText(infoString);

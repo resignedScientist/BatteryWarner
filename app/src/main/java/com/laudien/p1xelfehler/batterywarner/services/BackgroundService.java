@@ -436,11 +436,9 @@ public class BackgroundService extends Service {
 
     private Notification buildInfoNotification() {
         ArrayList<String> messageData = new ArrayList<>(NUMBER_OF_ITEMS);
-        StringBuilder messageBuilder = new StringBuilder();
         for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
             if (batteryData.isEnabled(i)) {
-                messageData.add(batteryData.getLongValueString(i));
-                messageBuilder.append(batteryData.getShortValueString(i));
+                messageData.add(batteryData.getValueString(i));
             }
         }
         RemoteViews content = buildInfoNotificationContent(messageData);
@@ -461,7 +459,6 @@ public class BackgroundService extends Service {
                 infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
             }
         }
-        infoNotificationBuilder.setContentText(messageBuilder.toString());
         if (SDK_INT >= N) {
             infoNotificationBuilder.setCustomBigContentView(content);
         } else {
@@ -1209,7 +1206,7 @@ public class BackgroundService extends Service {
             }
         }
 
-        public String getLongValueString(int index) {
+        public String getValueString(int index) {
             switch (index) {
                 case INDEX_TECHNOLOGY:
                     return getString(R.string.info_technology) + ": " + technology;
@@ -1231,27 +1228,6 @@ public class BackgroundService extends Service {
                             getString(R.string.info_current),
                             DatabaseValue.convertToMilliAmperes(current, PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default)))
                     );
-                default:
-                    throw new IllegalArgumentException("Unknown battery value index!");
-            }
-        }
-
-        String getShortValueString(int index) {
-            switch (index) {
-                case INDEX_TECHNOLOGY:
-                    return technology;
-                case INDEX_TEMPERATURE:
-                    boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
-                    return DatabaseValue.getTemperatureString(temperature, useFahrenheit);
-                case INDEX_HEALTH:
-                    return getHealthString(health);
-                case INDEX_BATTERY_LEVEL:
-                    return String.format(Locale.getDefault(), "%d%%", batteryLevel);
-                case INDEX_VOLTAGE:
-                    return String.format(Locale.getDefault(), "%.3f V", DatabaseValue.convertToVolts(voltage));
-                case INDEX_CURRENT:
-                    boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
-                    return String.format(Locale.getDefault(), "%.0f mA", DatabaseValue.convertToMilliAmperes(current, reverseCurrent));
                 default:
                     throw new IllegalArgumentException("Unknown battery value index!");
             }
