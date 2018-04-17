@@ -435,13 +435,7 @@ public class BackgroundService extends Service {
     }
 
     private Notification buildInfoNotification() {
-        ArrayList<String> messageData = new ArrayList<>(NUMBER_OF_ITEMS);
-        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            if (batteryData.isEnabled(i)) {
-                messageData.add(batteryData.getValueString(i));
-            }
-        }
-        RemoteViews content = buildInfoNotificationContent(messageData);
+        RemoteViews content = buildInfoNotificationContent();
         if (infoNotificationBuilder == null) { // notification not build yet
             Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
             PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
@@ -470,10 +464,9 @@ public class BackgroundService extends Service {
     /**
      * Builds the notification content that is shown if there is enough room for it.
      *
-     * @param data An array of localised strings that should be shown in the notification.
      * @return RemoteViews object that represents the content of the battery info notification.
      */
-    private RemoteViews buildInfoNotificationContent(ArrayList<String> data) {
+    private RemoteViews buildInfoNotificationContent() {
         if (infoNotificationContent == null) {
             boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_info_notification), getResources().getBoolean(R.bool.pref_dark_info_notification_default));
             if (darkThemeEnabled) { // dark theme
@@ -486,8 +479,20 @@ public class BackgroundService extends Service {
         int textSize = sharedPreferences.getInt(getString(R.string.pref_info_text_size), getResources().getInteger(R.integer.pref_info_text_size_default));
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_left, TypedValue.COMPLEX_UNIT_SP, textSize);
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_right, TypedValue.COMPLEX_UNIT_SP, textSize);
+        // get info data
+        ArrayList<String> data = new ArrayList<>(NUMBER_OF_ITEMS);
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            if (batteryData.isEnabled(i)) {
+                data.add(batteryData.getValueString(i));
+            }
+        }
         // generate info text
-        if (data != null && data.size() > 0) {
+        if (data.isEmpty()) {
+            infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
+            infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
+            infoNotificationContent.setTextViewText(R.id.textView_message_left,
+                    getString(R.string.notification_no_items_enabled));
+        } else { // data is not empty
             if (data.size() <= 3) {
                 infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
                 infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
@@ -510,11 +515,6 @@ public class BackgroundService extends Service {
                 infoNotificationContent.setTextViewText(R.id.textView_message_left, message_left);
                 infoNotificationContent.setTextViewText(R.id.textView_message_right, message_right);
             }
-        } else {
-            infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
-            infoNotificationContent.setViewVisibility(R.id.textView_message_right, GONE);
-            infoNotificationContent.setTextViewText(R.id.textView_message_left,
-                    getString(R.string.notification_no_items_enabled));
         }
         if (SDK_INT >= LOLLIPOP) { // set the correct image
             infoNotificationContent.setImageViewResource(R.id.img_battery, batteryData.getIconResource());
