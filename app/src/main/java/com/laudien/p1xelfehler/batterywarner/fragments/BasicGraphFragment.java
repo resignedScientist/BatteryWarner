@@ -146,41 +146,6 @@ public abstract class BasicGraphFragment extends Fragment {
         }
     }
 
-    protected abstract void fetchGraphs();
-
-    /**
-     * Loads the given graphs into the GraphView.
-     *
-     * @param graphs The graphs to load.
-     */
-    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
-        this.graphs = graphs;
-        setTimeText();
-        if (graphs == null) {
-            graphView.removeAllSeries();
-            for (CompoundButton s : switches) {
-                if (s != null) {
-                    s.setEnabled(false);
-                }
-            }
-            return;
-        }
-        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
-            if (switches[i] == null) {
-                continue;
-            }
-            enableOrDisableSwitch(i);
-            if (graphs[i] == null) {
-                continue;
-            }
-            styleGraph(i);
-            if (switches[i].isChecked()) {
-                graphView.addSeries(graphs[i]);
-            }
-        }
-        applyGraphScale();
-    }
-
     void enableOrDisableSwitch(int index) {
         if (switches[index] == null || graphs == null) {
             return;
@@ -255,6 +220,55 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
+     * Shows the info dialog defined in the {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo}.
+     * Shows a toast if there are no graphs or if the
+     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo} is null.
+     */
+    void showInfo() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        if (graphs != null && graphInfo != null) {
+            graphInfo.showDialog(context);
+        } else {
+            ToastHelper.sendToast(context, R.string.toast_no_data, LENGTH_SHORT);
+        }
+    }
+
+    void styleGraph(int index) {
+        Context context = getContext();
+        if (graphs == null || graphs[index] == null || switches[index] == null || context == null) {
+            return;
+        }
+        int color;
+        switch (index) {
+            case GRAPH_INDEX_BATTERY_LEVEL:
+                graphs[index].setDrawBackground(true);
+                TypedValue typedValue = new TypedValue();
+                Resources.Theme theme = context.getTheme();
+                theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+                color = typedValue.data;
+                int backgroundColor = ColorUtils.setAlphaComponent(color, 64);
+                graphs[index].setBackgroundColor(backgroundColor);
+                break;
+            case GRAPH_INDEX_TEMPERATURE:
+                color = Color.argb(255, 104, 159, 56);
+                break;
+            case GRAPH_INDEX_CURRENT:
+                color = Color.argb(255, 63, 81, 181);
+                break;
+            case GRAPH_INDEX_VOLTAGE:
+                color = Color.argb(255, 255, 165, 0);
+                break;
+            default:
+                return;
+        }
+        graphs[index].setColor(color);
+        switches[index].setTextColor(color);
+    }
+
+    /**
      * Provides the format of the text of the x and y axis of the graph.
      *
      * @return Returns a LabelFormatter that is used in the GraphView.
@@ -326,51 +340,37 @@ public abstract class BasicGraphFragment extends Fragment {
     }
 
     /**
-     * Shows the info dialog defined in the {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo}.
-     * Shows a toast if there are no graphs or if the
-     * {@link com.laudien.p1xelfehler.batterywarner.fragments.BasicGraphFragment#graphInfo} is null.
+     * Loads the given graphs into the GraphView.
+     *
+     * @param graphs The graphs to load.
      */
-    void showInfo() {
-        Context context = getContext();
-        if (context == null) {
+    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
+        this.graphs = graphs;
+        setTimeText();
+        if (graphs == null) {
+            graphView.removeAllSeries();
+            for (CompoundButton s : switches) {
+                if (s != null) {
+                    s.setEnabled(false);
+                }
+            }
             return;
         }
-        if (graphs != null && graphInfo != null) {
-            graphInfo.showDialog(context);
-        } else {
-            ToastHelper.sendToast(context, R.string.toast_no_data, LENGTH_SHORT);
+        for (byte i = 0; i < NUMBER_OF_GRAPHS; i++) {
+            if (switches[i] == null) {
+                continue;
+            }
+            enableOrDisableSwitch(i);
+            if (graphs[i] == null) {
+                continue;
+            }
+            styleGraph(i);
+            if (switches[i].isChecked()) {
+                graphView.addSeries(graphs[i]);
+            }
         }
+        applyGraphScale();
     }
 
-    void styleGraph(int index) {
-        Context context = getContext();
-        if (graphs == null || graphs[index] == null || switches[index] == null || context == null) {
-            return;
-        }
-        int color;
-        switch (index) {
-            case GRAPH_INDEX_BATTERY_LEVEL:
-                graphs[index].setDrawBackground(true);
-                TypedValue typedValue = new TypedValue();
-                Resources.Theme theme = context.getTheme();
-                theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-                color = typedValue.data;
-                int backgroundColor = ColorUtils.setAlphaComponent(color, 64);
-                graphs[index].setBackgroundColor(backgroundColor);
-                break;
-            case GRAPH_INDEX_TEMPERATURE:
-                color = Color.argb(255, 104, 159, 56);
-                break;
-            case GRAPH_INDEX_CURRENT:
-                color = Color.argb(255, 63, 81, 181);
-                break;
-            case GRAPH_INDEX_VOLTAGE:
-                color = Color.argb(255, 255, 165, 0);
-                break;
-            default:
-                return;
-        }
-        graphs[index].setColor(color);
-        switches[index].setTextColor(color);
-    }
+    protected abstract void fetchGraphs();
 }
