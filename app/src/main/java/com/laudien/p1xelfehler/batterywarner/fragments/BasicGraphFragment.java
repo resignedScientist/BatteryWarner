@@ -25,8 +25,6 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseContract;
-import com.laudien.p1xelfehler.batterywarner.database.DatabaseModel;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
@@ -96,20 +94,10 @@ public abstract class BasicGraphFragment extends Fragment {
             }
         }
     };
-    private DatabaseContract.Model databaseModel;
     /**
      * A byte containing the number of graph labels.
      */
     private byte labelCounter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Context context = getContext();
-        if (context != null) {
-            databaseModel = DatabaseModel.getInstance(context);
-        }
-    }
 
     @Nullable
     @Override
