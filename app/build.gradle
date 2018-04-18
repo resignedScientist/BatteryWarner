@@ -15,6 +15,9 @@ android {
         resConfigs "de", "en", "fr", "bn", "ro", "in"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    lintOptions {
+        checkReleaseBuilds false
+    }
     buildTypes {
         release {
             debuggable false
@@ -29,7 +32,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     flavorDimensions "default"
     productFlavors {
         pro {
