@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.RemoteViews;
@@ -59,7 +60,6 @@ import static android.os.BatteryManager.EXTRA_TEMPERATURE;
 import static android.os.BatteryManager.EXTRA_VOLTAGE;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
-import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O;
 import static android.view.View.GONE;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.ID_NOT_ROOTED;
@@ -103,7 +103,7 @@ public class BackgroundService extends Service {
     private boolean charging = false;
     private int lastBatteryLevel = -1;
     private long smartChargingResumeTime;
-    private Notification.Builder infoNotificationBuilder;
+    private NotificationCompat.Builder infoNotificationBuilder;
     private BroadcastReceiver screenOnOffReceiver;
     private BatteryChangedReceiver batteryChangedReceiver;
     private NotificationManager notificationManager;
@@ -439,25 +439,14 @@ public class BackgroundService extends Service {
         if (infoNotificationBuilder == null) { // notification not build yet
             Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
             PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
-            if (SDK_INT >= O) {
-                infoNotificationBuilder = new Notification.Builder(this, getString(R.string.channel_battery_info));
-            } else {
-                infoNotificationBuilder = new Notification.Builder(this);
-            }
-            infoNotificationBuilder
+            infoNotificationBuilder = new NotificationCompat.Builder(this, getString(R.string.channel_battery_info))
                     .setSmallIcon(SMALL_ICON_RESOURCE)
                     .setOngoing(true)
                     .setContentIntent(clickPendingIntent)
-                    .setContentTitle(getString(R.string.title_info_notification));
-            if (SDK_INT < O) {
-                infoNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
-            }
+                    .setContentTitle(getString(R.string.title_info_notification))
+                    .setPriority(Notification.PRIORITY_MIN);
         }
-        if (SDK_INT >= N) {
-            infoNotificationBuilder.setCustomBigContentView(content);
-        } else {
-            infoNotificationBuilder.setContent(content);
-        }
+        infoNotificationBuilder.setCustomBigContentView(content);
         return infoNotificationBuilder.build();
     }
 
