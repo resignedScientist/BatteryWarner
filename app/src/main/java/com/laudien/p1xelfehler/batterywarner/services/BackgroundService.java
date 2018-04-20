@@ -70,6 +70,8 @@ import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.So
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.BATTERY_LEVEL_LOW;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_HIGH;
 import static com.laudien.p1xelfehler.batterywarner.helper.NotificationHelper.Sound.TEMPERATURE_LOW;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.INDEX_HEALTH;
+import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.INDEX_TECHNOLOGY;
 import static com.laudien.p1xelfehler.batterywarner.services.BackgroundService.BatteryData.NUMBER_OF_ITEMS;
 
 public class BackgroundService extends Service {
@@ -435,18 +437,35 @@ public class BackgroundService extends Service {
     }
 
     private Notification buildInfoNotification() {
-        RemoteViews content = buildInfoNotificationContent();
+        // get info data
+        ArrayList<String> data = new ArrayList<>(NUMBER_OF_ITEMS);
+        StringBuilder messageBuilder = new StringBuilder();
+        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
+            if (batteryData.isEnabled(i)) {
+                data.add(batteryData.getValueString(i));
+                if (i != INDEX_TECHNOLOGY && i != INDEX_HEALTH) {
+                    messageBuilder.append(batteryData.getShortValueString(i));
+                    if (i < NUMBER_OF_ITEMS - 2) {
+                        messageBuilder.append(", ");
+                    }
+                }
+            }
+        }
+        RemoteViews content = buildInfoNotificationContent(data);
         if (infoNotificationBuilder == null) { // notification not build yet
             Intent clickIntent = new Intent(this, InfoNotificationActivity.class);
             PendingIntent clickPendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID_INFO, clickIntent, 0);
             infoNotificationBuilder = new NotificationCompat.Builder(this, getString(R.string.channel_battery_info))
                     .setSmallIcon(SMALL_ICON_RESOURCE)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_battery_status_full_green_48dp))
                     .setOngoing(true)
                     .setContentIntent(clickPendingIntent)
                     .setContentTitle(getString(R.string.title_info_notification))
                     .setPriority(Notification.PRIORITY_MIN);
         }
-        infoNotificationBuilder.setCustomBigContentView(content);
+        infoNotificationBuilder
+                .setContentText(messageBuilder.toString())
+                .setCustomBigContentView(content);
         return infoNotificationBuilder.build();
     }
 
@@ -455,7 +474,7 @@ public class BackgroundService extends Service {
      *
      * @return RemoteViews object that represents the content of the battery info notification.
      */
-    private RemoteViews buildInfoNotificationContent() {
+    private RemoteViews buildInfoNotificationContent(@NonNull ArrayList<String> data) {
         if (infoNotificationContent == null) {
             boolean darkThemeEnabled = sharedPreferences.getBoolean(getString(R.string.pref_dark_info_notification), getResources().getBoolean(R.bool.pref_dark_info_notification_default));
             if (darkThemeEnabled) { // dark theme
@@ -468,13 +487,6 @@ public class BackgroundService extends Service {
         int textSize = sharedPreferences.getInt(getString(R.string.pref_info_text_size), getResources().getInteger(R.integer.pref_info_text_size_default));
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_left, TypedValue.COMPLEX_UNIT_SP, textSize);
         infoNotificationContent.setTextViewTextSize(R.id.textView_message_right, TypedValue.COMPLEX_UNIT_SP, textSize);
-        // get info data
-        ArrayList<String> data = new ArrayList<>(NUMBER_OF_ITEMS);
-        for (int i = 0; i < NUMBER_OF_ITEMS; i++) {
-            if (batteryData.isEnabled(i)) {
-                data.add(batteryData.getValueString(i));
-            }
-        }
         // generate info text
         if (data.isEmpty()) {
             infoNotificationContent.setViewVisibility(R.id.view_middleLine, GONE);
@@ -1217,6 +1229,27 @@ public class BackgroundService extends Service {
                             getString(R.string.info_current),
                             DatabaseValue.convertToMilliAmperes(current, PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default)))
                     );
+                default:
+                    throw new IllegalArgumentException("Unknown battery value index!");
+            }
+        }
+
+        String getShortValueString(int index) {
+            switch (index) {
+                case INDEX_TECHNOLOGY:
+                    return technology;
+                case INDEX_TEMPERATURE:
+                    boolean useFahrenheit = sharedPreferences.getString(getString(R.string.pref_temp_unit), getString(R.string.pref_temp_unit_default)).equals("1");
+                    return DatabaseValue.getTemperatureString(temperature, useFahrenheit);
+                case INDEX_HEALTH:
+                    return getHealthString(health);
+                case INDEX_BATTERY_LEVEL:
+                    return String.format(Locale.getDefault(), "%d%%", batteryLevel);
+                case INDEX_VOLTAGE:
+                    return String.format(Locale.getDefault(), "%.3f V", DatabaseValue.convertToVolts(voltage));
+                case INDEX_CURRENT:
+                    boolean reverseCurrent = PreferenceManager.getDefaultSharedPreferences(BackgroundService.this).getBoolean(getString(R.string.pref_reverse_current), getResources().getBoolean(R.bool.pref_reverse_current_default));
+                    return String.format(Locale.getDefault(), "%.0f mA", DatabaseValue.convertToMilliAmperes(current, reverseCurrent));
                 default:
                     throw new IllegalArgumentException("Unknown battery value index!");
             }
