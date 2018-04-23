@@ -109,7 +109,7 @@
     <string name="title_minutes_before">Minutes avant :</string>
     <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
     <string name="title_preferences">Paramètres</string>
-    <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie</string>
+    <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie [Root]</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>
     <string name="title_smart_charging_enabled">Smart Charging activé</string>
     <string name="title_smart_charging_time">Choix manuel de l\'heure :</string>

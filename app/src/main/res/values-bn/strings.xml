@@ -159,7 +159,7 @@
     <string name="title_minutes_before">মিনিট আগে:</string>
     <string name="title_power_saving_mode">পাওয়ার সেভিং মোড চালু</string>
     <string name="title_preferences">ব্যবস্থাপনা</string>
-    <string name="title_reset_battery_stats">ব্যাটারি তথ্য পুনঃস্থাপন</string>
+    <string name="title_reset_battery_stats">ব্যাটারি তথ্য পুনঃস্থাপন [রুট]</string>
     <string name="title_reverse_current">বিপরীত বিদ্যুৎ</string>
     <string name="title_smart_charging">স্মার্ট চার্জিং [রুট]</string>
     <string name="title_smart_charging_auto_resume">স্বয়ংক্রিয়ভাবে চালু</string>

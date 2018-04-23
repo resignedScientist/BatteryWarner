@@ -167,7 +167,7 @@
     <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
     <string name="title_preferences">Pengaturan</string>
     <string name="title_repeat_warning">Ulangi peringatan</string>
-    <string name="title_reset_battery_stats">Atur ulang statistik baterai</string>
+    <string name="title_reset_battery_stats">Atur ulang statistik baterai [Root]</string>
     <string name="title_reverse_current">Arus Terbalik</string>
     <string name="title_smart_charging">Pengisian Pintar [Root]</string>
     <string name="title_smart_charging_auto_resume">Lanjutkan Secara Otomatis</string>
