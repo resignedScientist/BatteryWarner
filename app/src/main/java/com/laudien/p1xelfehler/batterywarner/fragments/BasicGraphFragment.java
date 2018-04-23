@@ -25,6 +25,7 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.Series;
 import com.laudien.p1xelfehler.batterywarner.R;
+import com.laudien.p1xelfehler.batterywarner.database.Data;
 import com.laudien.p1xelfehler.batterywarner.database.GraphInfo;
 import com.laudien.p1xelfehler.batterywarner.helper.ToastHelper;
 
@@ -339,13 +340,9 @@ public abstract class BasicGraphFragment extends Fragment {
         viewport.setMaxY(HIGHEST_Y_DEFAULT);
     }
 
-    /**
-     * Loads the given graphs into the GraphView.
-     *
-     * @param graphs The graphs to load.
-     */
-    protected void loadGraphs(@Nullable LineGraphSeries<DataPoint>[] graphs) {
-        this.graphs = graphs;
+    protected void loadGraphs(@NonNull Data data) {
+        this.graphs = data.getGraphs();
+        this.graphInfo = data.getGraphInfo();
         setTimeText();
         if (graphs == null) {
             graphView.removeAllSeries();

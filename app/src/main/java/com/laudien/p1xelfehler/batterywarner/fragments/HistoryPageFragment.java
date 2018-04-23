@@ -75,8 +75,7 @@ public class HistoryPageFragment extends BasicGraphFragment {
                 if (data == null) {
                     return;
                 }
-                loadGraphs(data.getGraphs());
-                graphInfo = data.getGraphInfo();
+                loadGraphs(data);
             }
 
             @Override

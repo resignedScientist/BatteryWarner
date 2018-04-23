@@ -135,8 +135,7 @@ public class GraphFragment extends BasicGraphFragment implements DatabaseContrac
                 if (data == null) {
                     return;
                 }
-                loadGraphs(data.getGraphs());
-                graphInfo = data.getGraphInfo();
+                loadGraphs(data);
             }
 
             @Override
