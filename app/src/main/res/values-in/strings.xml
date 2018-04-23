@@ -164,7 +164,7 @@
     <string name="title_info_text_size">Ukuran teks dari info pemberitahuan:</string>
     <string name="title_main_page">Halaman utama</string>
     <string name="title_minutes_before">Waktu sebelum:</string>
-    <string name="title_power_saving_mode">Aktifkan mode hemat daya</string>
+    <string name="title_power_saving_mode">Aktifkan mode hemat daya [Root]</string>
     <string name="title_preferences">Pengaturan</string>
     <string name="title_repeat_warning">Ulangi peringatan</string>
     <string name="title_reset_battery_stats">Atur ulang statistik baterai [Root]</string>

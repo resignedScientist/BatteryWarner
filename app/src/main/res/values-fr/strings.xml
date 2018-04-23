@@ -107,7 +107,7 @@
     <string name="title_info_notification_items">Affiché(s) dans la notification</string>
     <string name="title_main_page">Accueil</string>
     <string name="title_minutes_before">Minutes avant :</string>
-    <string name="title_power_saving_mode">Activer l\'économiseur de batterie</string>
+    <string name="title_power_saving_mode">Activer l\'économiseur de batterie [Root]</string>
     <string name="title_preferences">Paramètres</string>
     <string name="title_reset_battery_stats">Réinitialiser les statistiques de la batterie [Root]</string>
     <string name="title_smart_charging">Smart Charging [Root]</string>

@@ -271,7 +271,7 @@
     <string name="title_main_page">Main page</string>
     <string name="title_minutes_before">Minutes before:</string>
     <string name="title_notification_settings">Notification settings</string>
-    <string name="title_power_saving_mode">Enable power saving mode</string>
+    <string name="title_power_saving_mode">Enable power saving mode [Root]</string>
     <string name="title_preferences">Settings</string>
     <string name="title_repeat_warning">Repeat the warning</string>
     <string name="title_reset_battery_stats">Reset battery stats [Root]</string>

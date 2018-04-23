@@ -182,7 +182,7 @@
     <string name="title_main_page">Hauptseite</string>
     <string name="title_minutes_before">Minuten vorher:</string>
     <string name="title_notification_settings">Benachrichtigungs-Einstellungen</string>
-    <string name="title_power_saving_mode">Energiesparmodus aktivieren</string>
+    <string name="title_power_saving_mode">Energiesparmodus aktivieren [Root]</string>
     <string name="title_preferences">Einstellungen</string>
     <string name="title_repeat_warning">Warnung wiederholen</string>
     <string name="title_reset_battery_stats">Akkustatistik zurücksetzen [Root]</string>
