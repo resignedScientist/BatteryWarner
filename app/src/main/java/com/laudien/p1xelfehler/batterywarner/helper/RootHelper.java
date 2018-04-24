@@ -195,9 +195,6 @@ public final class RootHelper {
         if (PRODUCT.toLowerCase().equals("walleye") || MODEL.equals("Pixel 2")) { // Pixel 2
             return new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1");
         }
-        if (PRODUCT.equals("OnePlus5T")) { // OnePlus 5T
-            return new ToggleChargingFile("/sys/class/power_supply/battery/input_suspend", "0", "1");
-        }
         if (MODEL.contains("Pixel")) {
             toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
         } else if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
