@@ -45,7 +45,7 @@ public class GraphAutoDeleteService extends JobService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         boolean autoDeleteEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_auto_delete), getResources().getBoolean(R.bool.pref_graph_auto_delete_default));
-        if (!graphEnabled || !autoDeleteEnabled) { // disabled in settings
+        if (!(graphEnabled && autoDeleteEnabled)) { // disabled in settings
             Log.d(TAG, "Auto delete is disabled in settings!");
             return;
         }
