@@ -55,20 +55,21 @@ public class GraphAutoDeleteService extends JobService {
             return;
         }
         int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
-        long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
+        long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days); // everything older will be deleted
         ArrayList<File> files = DatabaseUtils.getBatteryFiles();
         for (File file : files) {
+            if (file.lastModified() > deletionTime) { // last modified time newer than deletion time
+                continue;
+            }
             if (canceled) {
                 canceled = false;
                 Log.d(TAG, "Job canceled!");
                 return;
             }
-            if (file.lastModified() <= deletionTime) {
-                if (file.delete()) {
-                    Log.d(TAG, "File deleted: " + file.getPath());
-                } else {
-                    Log.d(TAG, "Deletion failed! File: " + file.getPath());
-                }
+            if (file.delete()) {
+                Log.d(TAG, "File deleted: " + file.getPath());
+            } else {
+                Log.d(TAG, "Deletion failed! File: " + file.getPath());
             }
         }
         Log.d(TAG, "Job finished!");
