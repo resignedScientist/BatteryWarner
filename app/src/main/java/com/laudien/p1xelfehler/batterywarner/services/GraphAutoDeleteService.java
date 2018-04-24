@@ -45,33 +45,33 @@ public class GraphAutoDeleteService extends JobService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean graphEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_enabled), getResources().getBoolean(R.bool.pref_graph_enabled_default));
         boolean autoDeleteEnabled = sharedPreferences.getBoolean(getString(R.string.pref_graph_auto_delete), getResources().getBoolean(R.bool.pref_graph_auto_delete_default));
-        if (graphEnabled && autoDeleteEnabled) { // enabled in settings
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) { // storage permission granted
-                int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
-                long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
-                ArrayList<File> files = DatabaseUtils.getBatteryFiles();
-                for (File file : files) {
-                    if (canceled) {
-                        canceled = false;
-                        Log.d(TAG, "Job canceled!");
-                        return;
-                    }
-                    if (file.lastModified() <= deletionTime) {
-                        if (file.delete()) {
-                            Log.d(TAG, "File deleted: " + file.getPath());
-                        } else {
-                            Log.d(TAG, "Deletion failed! File: " + file.getPath());
-                        }
-                    }
-                }
-                Log.d(TAG, "Job finished!");
-            } else {
-                Log.d(TAG, "Deletion failed! No storage permission granted!");
-            }
-        } else {
+        if (!graphEnabled || !autoDeleteEnabled) { // disabled in settings
             Log.d(TAG, "Auto delete is disabled in settings!");
+            return;
         }
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) { // storage permission not granted
+            Log.d(TAG, "Deletion failed! No storage permission granted!");
+            return;
+        }
+        int days = sharedPreferences.getInt(getString(R.string.pref_graph_auto_delete_time), getResources().getInteger(R.integer.pref_graph_auto_delete_time_default));
+        long deletionTime = System.currentTimeMillis() - (1000 * 60 * 60 * 24 * days);
+        ArrayList<File> files = DatabaseUtils.getBatteryFiles();
+        for (File file : files) {
+            if (canceled) {
+                canceled = false;
+                Log.d(TAG, "Job canceled!");
+                return;
+            }
+            if (file.lastModified() <= deletionTime) {
+                if (file.delete()) {
+                    Log.d(TAG, "File deleted: " + file.getPath());
+                } else {
+                    Log.d(TAG, "Deletion failed! File: " + file.getPath());
+                }
+            }
+        }
+        Log.d(TAG, "Job finished!");
         jobFinished(jobParameters, false);
     }
 }
