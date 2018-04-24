@@ -107,9 +107,9 @@
     <string name="title_info_notification_items">Arată în notificările cu informaţii</string>
     <string name="title_main_page">Pagina principală</string>
     <string name="title_minutes_before">Minute înainte:</string>
-    <string name="title_power_saving_mode">Activează modul de salvare energie</string>
+    <string name="title_power_saving_mode">Activează modul de salvare energie [Root]</string>
     <string name="title_preferences">Setări</string>
-    <string name="title_reset_battery_stats">Resetează statusul bateriei</string>
+    <string name="title_reset_battery_stats">Resetează statusul bateriei [Root]</string>
     <string name="title_smart_charging">Încărcare Inteligentă [Root]</string>
     <string name="title_smart_charging_enabled">Încărcarea Inteligentă este activată</string>
     <string name="title_smart_charging_time">Timpul când te trezeşti:</string>
