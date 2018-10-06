@@ -195,12 +195,11 @@ public final class RootHelper {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean autoPickEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging_auto_pick), context.getResources().getBoolean(R.bool.pref_stop_charging_auto_pick_default));
         if (!autoPickEnabled) {
-            ToggleChargingFile file = new ToggleChargingFile(
+            return new ToggleChargingFile(
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_file), ""),
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_enable_charging_text), context.getString(R.string.pref_stop_charging_enable_charging_text_default)),
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_disable_charging_text), context.getString(R.string.pref_stop_charging_disable_charging_text_default))
             );
-            return file;
         }
         ToggleChargingFile toggleChargingFile = null;
         if (PRODUCT.toLowerCase().equals("walleye") || MODEL.equals("Pixel 2")) { // Pixel 2
