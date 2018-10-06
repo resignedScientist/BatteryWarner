@@ -200,9 +200,7 @@ public final class RootHelper {
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_enable_charging_text), context.getString(R.string.pref_stop_charging_enable_charging_text_default)),
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_disable_charging_text), context.getString(R.string.pref_stop_charging_disable_charging_text_default))
             );
-            if (new File(file.path).exists()) {
-                return file;
-            }
+            return file;
         }
         ToggleChargingFile toggleChargingFile = null;
         if (PRODUCT.toLowerCase().equals("walleye") || MODEL.equals("Pixel 2")) { // Pixel 2
