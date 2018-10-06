@@ -2,8 +2,8 @@
 <resources>
     <string name="channel_description_battery_info">সকল ব্যাটারির তথ্যসহ স্থায়ী নোটিফিকেশন \'Charging Service\'</string>
     <string name="channel_description_other_warnings">অন্যান্য সতর্ক সংকেত, যেমন রুট অনুমতি না পেলে!</string>
-    <string name="channel_description_warning_high">\'ব্যাটারি সীমা  x%\ এর উপরে!' সতর্কবার্তা</string>
-    <string name="channel_description_warning_low">\'ব্যাটারি সীমা x%\ এর নিচে! 'সতর্কবার্তা </string>
+    <string name="channel_description_warning_high">\'ব্যাটারি সীমা  x%\ এর উপরে!\' সতর্কবার্তা</string>
+    <string name="channel_description_warning_low">\'ব্যাটারি সীমা x%\ এর নিচে! \'সতর্কবার্তা </string>
     <string name="channel_title_battery_info">ব্যাটারি তথ্য</string>
     <string name="channel_title_other_warnings">অন্যান্য সতর্কবার্তাসমূহ</string>
     <string name="channel_title_warning_high">সর্বোচ্চ ব্যাটারি সতর্কবার্তা</string>
