@@ -28,6 +28,13 @@
             android:summary="@string/summary_stop_charging"
             android:title="@string/title_stop_charging" />
         <Preference
+            android:dependency="@string/pref_stop_charging"
+            android:key="@string/pref_stop_charging_file"
+            android:summary="@string/summary_stop_charging_file"
+            android:title="@string/title_stop_charging_file">
+            <intent android:action="com.laudien.p1xelfehler.batterywarner.preferences.StopChargingFileActivity" />
+        </Preference>
+        <Preference
             android:dependency="@string/pref_warning_high_enabled"
             android:key="@string/pref_smart_charging_enabled"
             android:title="@string/title_smart_charging">
