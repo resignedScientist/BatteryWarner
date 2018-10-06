@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="@bool/pref_stop_charging_auto_pick_default"
+        android:key="@string/pref_stop_charging_auto_pick"
+        android:summary="@string/summary_stop_charging_auto_pick"
+        android:title="@string/title_stop_charging_auto_pick" />
+    <EditTextPreference
+        android:key="@string/pref_stop_charging_file"
+        android:title="@string/title_stop_charging_file" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_stop_charging_enable_charging_text_default"
+        android:key="@string/pref_stop_charging_enable_charging_text"
+        android:title="@string/title_stop_charging_enable_charging_text" />
+    <EditTextPreference
+        android:defaultValue="@string/pref_stop_charging_disable_charging_text_default"
+        android:key="@string/pref_stop_charging_disable_charging_text"
+        android:title="@string/title_stop_charging_disable_charging_text" />
+</PreferenceScreen>

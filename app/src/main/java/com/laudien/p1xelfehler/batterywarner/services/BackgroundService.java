@@ -202,7 +202,7 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
                 try {
-                    chargingDisabledInFile = !RootHelper.isChargingEnabled();
+                    chargingDisabledInFile = !RootHelper.isChargingEnabled(BackgroundService.this);
                     notificationManager.cancel(NotificationHelper.ID_GRANT_ROOT); // prevent double root check when updated
                     if (chargingDisabledInFile) {
                         NotificationHelper.cancelNotification(BackgroundService.this,
@@ -380,7 +380,7 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
                 try {
-                    RootHelper.disableCharging();
+                    RootHelper.disableCharging(BackgroundService.this);
                     notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH);
                     Notification stopChargingNotification = buildStopChargingNotification(enableSound);
                     notificationManager.notify(NOTIFICATION_ID_WARNING_HIGH, stopChargingNotification);
@@ -404,7 +404,7 @@ public class BackgroundService extends Service {
             @Override
             public void run() {
                 try {
-                    RootHelper.enableCharging();
+                    RootHelper.enableCharging(BackgroundService.this);
                     chargingDisabledInFile = false;
                     notificationManager.cancel(NOTIFICATION_ID_WARNING_HIGH); // cancelJob stop charging notification
                 } catch (RootHelper.NotRootedException e) {

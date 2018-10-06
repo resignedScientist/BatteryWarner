@@ -57,6 +57,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".TaskerEditActivity" />
+        <activity
+            android:name=".preferences.stopChargingFileActivity.StopChargingFileActivity"
+            android:parentActivityName=".SettingsActivity">
+            <intent-filter>
+                <action android:name="com.laudien.p1xelfehler.batterywarner.preferences.StopChargingFileActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <activity-alias
             android:name="com.twofortyfouram.locale.example.setting.toast.ui.activity.PluginActivity"

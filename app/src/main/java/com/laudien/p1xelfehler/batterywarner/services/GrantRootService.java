@@ -38,7 +38,7 @@ public class GrantRootService extends IntentService {
                 boolean isCharging = batteryStatus.getIntExtra(android.os.BatteryManager.EXTRA_PLUGGED, -1) != 0;
                 if (!isCharging) { // if not charging make sure that it is not disabled by the app
                     try {
-                        RootHelper.isChargingEnabled();
+                        RootHelper.isChargingEnabled(GrantRootService.this);
                     } catch (RootHelper.NotRootedException e) { // user disabled root again after allowing it
                         NotificationHelper.showNotification(getApplicationContext(), ID_NOT_ROOTED);
                     } catch (RootHelper.NoBatteryFileFoundException e) {

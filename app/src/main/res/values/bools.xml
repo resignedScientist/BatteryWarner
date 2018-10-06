@@ -47,4 +47,5 @@
     <!-- temperature warnings -->
     <bool name="pref_temp_warning_high_enabled_default">false</bool>
     <bool name="pref_temp_warning_low_enabled_default">false</bool>
+    <bool name="pref_stop_charging_auto_pick_default">true</bool>
 </resources>

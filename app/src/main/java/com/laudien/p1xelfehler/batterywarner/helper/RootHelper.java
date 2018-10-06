@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -92,12 +93,12 @@ public final class RootHelper {
      *
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void enableCharging() throws NotRootedException, NoBatteryFileFoundException {
+    public static void enableCharging(@NonNull Context context) throws NotRootedException, NoBatteryFileFoundException {
         Log.d(TAG, "Enabling charging...");
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        ToggleChargingFile toggleChargingFile = getAvailableFile(context);
         Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOn, toggleChargingFile.path));
         Log.d(TAG, "Charging was enabled!");
     }
@@ -107,12 +108,12 @@ public final class RootHelper {
      *
      * @throws NotRootedException thrown if the app has no root permissions.
      */
-    public static void disableCharging() throws NotRootedException, NoBatteryFileFoundException {
+    public static void disableCharging(@NonNull Context context) throws NotRootedException, NoBatteryFileFoundException {
         Log.d(TAG, "Disabling charging...");
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        ToggleChargingFile toggleChargingFile = getAvailableFile(context);
         Shell.SU.run(String.format("echo %s > %s", toggleChargingFile.chargeOff, toggleChargingFile.path));
         Log.d(TAG, "Charging was disabled!");
     }
@@ -125,11 +126,11 @@ public final class RootHelper {
      * @throws NoBatteryFileFoundException thrown if the file to change was not found.
      *                                     That means that the stop charging feature is not working with this device.
      */
-    public static boolean isChargingEnabled() throws NotRootedException, NoBatteryFileFoundException {
+    public static boolean isChargingEnabled(@NonNull Context context) throws NotRootedException, NoBatteryFileFoundException {
         if (!isRootAvailable()) {
             throw new NotRootedException();
         }
-        ToggleChargingFile toggleChargingFile = getAvailableFile();
+        ToggleChargingFile toggleChargingFile = getAvailableFile(context);
         List output = Shell.SU.run("cat " + toggleChargingFile.path);
         if (output != null && !output.isEmpty()) {
             return output.get(0).equals(toggleChargingFile.chargeOn);
@@ -176,7 +177,7 @@ public final class RootHelper {
                     intent.putExtra(EXTRA_PREFERENCE, preference);
                     boolean rootAllowed = true;
                     try {
-                        RootHelper.isChargingEnabled();
+                        RootHelper.isChargingEnabled(context);
                     } catch (RootHelper.NotRootedException e) {
                         rootAllowed = false;
                     } catch (NoBatteryFileFoundException e) {
@@ -190,7 +191,19 @@ public final class RootHelper {
         }
     }
 
-    private static ToggleChargingFile getAvailableFile() throws NoBatteryFileFoundException {
+    private static ToggleChargingFile getAvailableFile(@NonNull Context context) throws NoBatteryFileFoundException {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean autoPickEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging_auto_pick), context.getResources().getBoolean(R.bool.pref_stop_charging_auto_pick_default));
+        if (!autoPickEnabled) {
+            ToggleChargingFile file = new ToggleChargingFile(
+                    sharedPreferences.getString(context.getString(R.string.pref_stop_charging_file), ""),
+                    sharedPreferences.getString(context.getString(R.string.pref_stop_charging_enable_charging_text), context.getString(R.string.pref_stop_charging_enable_charging_text_default)),
+                    sharedPreferences.getString(context.getString(R.string.pref_stop_charging_disable_charging_text), context.getString(R.string.pref_stop_charging_disable_charging_text_default))
+            );
+            if (new File(file.path).exists()) {
+                return file;
+            }
+        }
         ToggleChargingFile toggleChargingFile = null;
         if (PRODUCT.toLowerCase().equals("walleye") || MODEL.equals("Pixel 2")) { // Pixel 2
             return new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1");

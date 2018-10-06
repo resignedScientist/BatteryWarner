@@ -160,6 +160,7 @@
     <string name="pref_sound_uri_low" translatable="false">savedSoundUriLow</string>
     <string name="pref_stats" translatable="false">stats</string>
     <string name="pref_stop_charging" translatable="false">stopCharging</string>
+    <string name="pref_stop_charging_file">stopChargingFile</string>
     <string name="pref_temp_high_warning" translatable="false">tempHighWarning</string>
     <string name="pref_temp_low_warning" translatable="false">tempLowWarning</string>
     <string name="pref_temp_unit" translatable="false">temperatureUnit</string>
@@ -197,6 +198,7 @@
     <string name="summary_reverse_current">Check this if the wrong current is shown.</string>
     <string name="summary_smart_charging_auto_resume">"Resumes charging after the percentage dropped by X% below the first limit. The charging will then be resumed until the first limit was reached again."</string>
     <string name="summary_stop_charging">Stops the charging when the warning high percentage is reached. Does not work with every device!</string>
+    <string name="summary_stop_charging_file">Stop charging needs a file to work. If it is not working by default on your device, you can find and pick that file here.</string>
     <string name="summary_temp_warning_high_enabled">Show a high temperature warning when the battery temperature has reached the set point.</string>
     <string name="summary_temp_warning_low_enabled">Show a low temperature warning when the battery temperature has reached the set point.</string>
     <string name="summary_usb_charging_disabled">Prevents the device from charging when plugged in via usb. Does not work with every device!</string>
@@ -285,6 +287,7 @@
     <string name="title_sound_uri">Choose notification Sound</string>
     <string name="title_stats">Stats</string>
     <string name="title_stop_charging">Automatically stop charging [Root]</string>
+    <string name="title_stop_charging_file">Pick Stop charging file</string>
     <string name="title_temp_unit">Temperature unit</string>
     <string name="title_temp_warning_high_enabled">Enable high temperature warning</string>
     <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
@@ -331,4 +334,13 @@
 
     <!-- units after a slider in a SeekBarPreference -->
     <string name="unit_days">\ days</string>
+    <string name="pref_stop_charging_auto_pick">stopChargingAutoPick</string>
+    <string name="title_stop_charging_auto_pick">Auto Pick</string>
+    <string name="summary_stop_charging_auto_pick">Automatically pick the correct file</string>
+    <string name="title_stop_charging_enable_charging_text">Text to enable charging</string>
+    <string name="title_stop_charging_disable_charging_text">Text to disable charging</string>
+    <string name="pref_stop_charging_enable_charging_text">stopChargingEnableChargingText</string>
+    <string name="pref_stop_charging_enable_charging_text_default">1</string>
+    <string name="pref_stop_charging_disable_charging_text">stopChargingDisableChargingText</string>
+    <string name="pref_stop_charging_disable_charging_text_default">0</string>
 </resources>
