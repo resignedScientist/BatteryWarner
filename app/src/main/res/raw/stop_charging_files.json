@@ -158,6 +158,6 @@
   {
     "path": "/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled",
     "chargeOn": "1",
-    "chargeOff": "0
+    "chargeOff": "0"
   }
 ]
