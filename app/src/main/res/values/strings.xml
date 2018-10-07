@@ -343,4 +343,5 @@
     <string name="pref_stop_charging_enable_charging_text_default">1</string>
     <string name="pref_stop_charging_disable_charging_text">stopChargingDisableChargingText</string>
     <string name="pref_stop_charging_disable_charging_text_default">0</string>
+    <string name="menu_sent_file_to_developer">Send file to developer</string>
 </resources>

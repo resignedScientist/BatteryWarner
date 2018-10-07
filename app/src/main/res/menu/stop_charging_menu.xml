@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sent_file_to_developer"
+        android:title="@string/menu_sent_file_to_developer"
+        app:showAsAction="never" />
+</menu>
