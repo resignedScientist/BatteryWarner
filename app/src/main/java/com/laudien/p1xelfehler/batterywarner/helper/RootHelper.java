@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -297,6 +298,7 @@ public final class RootHelper {
         }
     }
 
+    @Keep
     private static class ToggleChargingFile {
         @NonNull
         private final String path, chargeOn, chargeOff;
