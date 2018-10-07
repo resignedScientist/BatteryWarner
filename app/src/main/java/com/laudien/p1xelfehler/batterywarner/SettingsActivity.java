@@ -108,7 +108,8 @@ public class SettingsActivity extends BaseActivity {
                             "\nAndroid version: " + SDK_INT +
                             "\nDevice: " + Build.DEVICE +
                             "\nBrand: " + Build.BRAND +
-                            "\nModel: " + Build.MODEL);
+                            "\nModel: " + Build.MODEL +
+                            "\nProduct: " + Build.PRODUCT);
         }
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
