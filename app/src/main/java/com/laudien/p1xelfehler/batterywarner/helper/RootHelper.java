@@ -234,8 +234,16 @@ public final class RootHelper {
         String brand = BRAND.toLowerCase();
         // find file by product, model or brand
         for (ToggleChargingFile file : files) {
-            if (file.products.contains(product) || file.models.contains(model) || file.brands.contains(brand)) {
-                Log.d("RootHelper", "File found the short way: " + file.path);
+            if (file.products != null && file.products.contains(product)) {
+                Log.d("RootHelper", "File found with product: " + file.path);
+                return file;
+            }
+            if (file.models != null && file.models.contains(model)) {
+                Log.d("RootHelper", "File found with model: " + file.path);
+                return file;
+            }
+            if (file.brands != null && file.brands.contains(brand)) {
+                Log.d("RootHelper", "File found with brand: " + file.path);
                 return file;
             }
         }
@@ -278,18 +286,18 @@ public final class RootHelper {
     }
 
     private static class ToggleChargingFile {
-        private final String path;
-        private final String chargeOn;
-        private final String chargeOff;
+        @NonNull
+        private final String path, chargeOn, chargeOff;
+        @Nullable
         private List<String> products, models, brands;
 
-        ToggleChargingFile(String path, String chargeOn, String chargeOff) {
+        ToggleChargingFile(@NonNull String path, @NonNull String chargeOn, @NonNull String chargeOff) {
             this.path = path;
             this.chargeOn = chargeOn;
             this.chargeOff = chargeOff;
         }
 
-        public ToggleChargingFile(String path, String chargeOn, String chargeOff, List<String> products, List<String> models, List<String> brands) {
+        public ToggleChargingFile(@NonNull String path, @NonNull String chargeOn, @NonNull String chargeOff, @Nullable List<String> products, @Nullable List<String> models, @Nullable List<String> brands) {
             this.path = path;
             this.chargeOn = chargeOn;
             this.chargeOff = chargeOff;
