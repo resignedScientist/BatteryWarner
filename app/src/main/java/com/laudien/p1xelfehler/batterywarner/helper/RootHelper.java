@@ -198,9 +198,12 @@ public final class RootHelper {
     private static ToggleChargingFile findExistingFile(ToggleChargingFile[] files) {
         String[] commands = new String[files.length];
         for (int i = 0; i < files.length; i++) {
-            commands[i] = "[ -f /etc/hosts/test ] && echo \"yes\" || echo \"no\"";
+            commands[i] = "[ -f " + files[i].path + " ] && echo \"yes\" || echo \"no\"";
         }
         List output = Shell.SU.run(commands);
+        if (output == null) {
+            return null;
+        }
         int index = output.indexOf("yes");
         if (index > -1) {
             return files[index];
@@ -232,14 +235,14 @@ public final class RootHelper {
         // find file by product, model or brand
         for (ToggleChargingFile file : files) {
             if (file.products.contains(product) || file.models.contains(model) || file.brands.contains(brand)) {
-                Log.d("RootHelper", "File found: " + file.path);
+                Log.d("RootHelper", "File found the short way: " + file.path);
                 return file;
             }
         }
         // return first existing file
         ToggleChargingFile file = findExistingFile(files);
         if (file != null) {
-            Log.d("RootHelper", "File found: " + file.path);
+            Log.d("RootHelper", "File found the long way: " + file.path);
             return file;
         }
         Log.e("RootHelper", "No battery file found to toggle charging! :(");
