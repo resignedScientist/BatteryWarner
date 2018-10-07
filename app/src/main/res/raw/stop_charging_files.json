@@ -1,5 +1,18 @@
 [
   {
+    "path": "/sys/class/power_supply/battery/charging_enabled",
+    "chargeOn": "1",
+    "chargeOff": "0",
+    "products": [
+      "angler"
+    ],
+    "brands": [
+      "oneplus",
+      "motorola",
+      "lge"
+    ]
+  },
+  {
     "path": "/sys/class/hw_power/charger/charge_data/enable_charger",
     "chargeOn": "1",
     "chargeOff": "0"
@@ -45,19 +58,6 @@
     "path": "/sys/class/power_supply/battery/charger_control",
     "chargeOn": "1",
     "chargeOff": "0"
-  },
-  {
-    "path": "/sys/class/power_supply/battery/charging_enabled",
-    "chargeOn": "1",
-    "chargeOff": "0",
-    "products": [
-      "angler"
-    ],
-    "brands": [
-      "oneplus",
-      "motorola",
-      "lge"
-    ]
   },
   {
     "path": "/sys/class/power_supply/battery/device/Charging_Enable",
@@ -158,6 +158,6 @@
   {
     "path": "/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled",
     "chargeOn": "1",
-    "chargeOff": "0"
+    "chargeOff": "0
   }
 ]
