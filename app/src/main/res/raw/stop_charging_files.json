@@ -4,12 +4,16 @@
     "chargeOn": "1",
     "chargeOff": "0",
     "products": [
-      "angler"
+      "angler",
+      "OnePlus2"
     ],
     "brands": [
-      "oneplus",
+      "OnePlus",
       "motorola",
       "lge"
+    ],
+    "models": [
+      "ONE A2003"
     ]
   },
   {

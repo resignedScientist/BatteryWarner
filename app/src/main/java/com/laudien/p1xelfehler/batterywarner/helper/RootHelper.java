@@ -234,7 +234,7 @@ public final class RootHelper {
         String brand = BRAND.toLowerCase();
         // find file by product, model or brand
         for (ToggleChargingFile file : files) {
-            if (file.products != null && !product.isEmpty()) {
+            if (file.products != null) {
                 for (String item : file.products) {
                     if (item.toLowerCase().contains(product)) {
                         Log.d("RootHelper", "File found with product: " + file.path);
@@ -242,7 +242,7 @@ public final class RootHelper {
                     }
                 }
             }
-            if (file.models != null && !model.isEmpty()) {
+            if (file.models != null) {
                 for (String item : file.models) {
                     if (item.toLowerCase().contains(model)) {
                         Log.d("RootHelper", "File found with model: " + file.path);
@@ -250,7 +250,7 @@ public final class RootHelper {
                     }
                 }
             }
-            if (file.brands != null && !model.isEmpty()) {
+            if (file.brands != null) {
                 for (String item : file.brands) {
                     if (item.toLowerCase().contains(brand)) {
                         Log.d("RootHelper", "File found with brand: " + file.path);
