@@ -242,7 +242,7 @@ public final class RootHelper {
                     }
                 }
             }
-            if (file.models != null && file.models.contains(model)) {
+            if (file.models != null) {
                 for (String item : file.models) {
                     if (item.toLowerCase().contains(model)) {
                         Log.d("RootHelper", "File found with model: " + file.path);
@@ -250,7 +250,7 @@ public final class RootHelper {
                     }
                 }
             }
-            if (file.brands != null && file.brands.contains(brand)) {
+            if (file.brands != null) {
                 for (String item : file.brands) {
                     if (item.toLowerCase().contains(brand)) {
                         Log.d("RootHelper", "File found with brand: " + file.path);
