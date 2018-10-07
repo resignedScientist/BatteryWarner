@@ -17,6 +17,17 @@
     ]
   },
   {
+    "path": "/sys/class/power_supply/battery/input_suspend",
+    "chargeOn": "0",
+    "chargeOff": "1",
+    "models": [
+      "PH-1"
+    ],
+    "brands": [
+      "essential"
+    ]
+  },
+  {
     "path": "/sys/class/hw_power/charger/charge_data/enable_charger",
     "chargeOn": "1",
     "chargeOff": "0"
@@ -67,17 +78,6 @@
     "path": "/sys/class/power_supply/battery/device/Charging_Enable",
     "chargeOn": "1",
     "chargeOff": "0"
-  },
-  {
-    "path": "/sys/class/power_supply/battery/input_suspend",
-    "chargeOn": "0",
-    "chargeOff": "1",
-    "models": [
-      "ph-1"
-    ],
-    "brands": [
-      "essential"
-    ]
   },
   {
     "path": "/sys/class/power_supply/battery/status",
