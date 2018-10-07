@@ -86,8 +86,8 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         Context context = getActivity();
         if (context != null) {

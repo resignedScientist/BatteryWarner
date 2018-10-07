@@ -28,6 +28,12 @@ public class StopChargingFileFragment extends PreferenceFragment implements Shar
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference pref = findPreference(key);
         if (pref instanceof EditTextPreference) {

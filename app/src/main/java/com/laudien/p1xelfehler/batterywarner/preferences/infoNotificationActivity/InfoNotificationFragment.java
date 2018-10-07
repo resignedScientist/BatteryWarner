@@ -24,6 +24,12 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         Context context = getActivity();
         if (context != null) {
