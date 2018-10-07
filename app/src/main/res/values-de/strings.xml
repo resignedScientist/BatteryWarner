@@ -84,6 +84,7 @@
     <string name="menu_rename">Umbenennen</string>
     <string name="menu_rename_graph">Graphen umbenennen</string>
     <string name="menu_save_to_history">Graph speichern</string>
+    <string name="menu_sent_file_to_developer">Datei an Entwickler senden</string>
     <string name="menu_xda_thread">XDA Thread</string>
 
     <string name="notification_button_enable_charging">Laden aktivieren</string>
@@ -114,6 +115,8 @@
     <string name="summary_reverse_current">Aktivieren Sie dies, wenn eine falsche Stromstärke angezeigt wird.</string>
     <string name="summary_smart_charging_auto_resume">"Laden fortsetzen, sobald der Akkustand um X% gesunken ist. Es wird dann bis zum ersten Limit weiter geladen."</string>
     <string name="summary_stop_charging">Stoppt das Laden, sobald die Batterie-Warnung erscheint. Funktioniert nicht auf jedem Gerät!</string>
+    <string name="summary_stop_charging_auto_pick">Automatisch die richtige Datei auswählen.</string>
+    <string name="summary_stop_charging_file">Damit stop charging funktioniert, braucht es eine bestimmte Datei. Sollte Stop charging nicht funktionieren, können Sie diese Datei hier auswählen.</string>
     <string name="summary_temp_warning_high_enabled">Zeige eine Temperatur-Hoch Warnung, wenn die eingestellte Temperatur überschritten wurde.</string>
     <string name="summary_temp_warning_low_enabled">Zeige eine Temperatur-Niedrig Warnung, wenn die eingestellte Temperatur unterschritten wurde.</string>
     <string name="summary_usb_charging_disabled">Verhindert, dass das Gerät bei einer USB-Verbindung lädt. Funktioniert nicht auf jedem Gerät!</string>
@@ -196,6 +199,10 @@
     <string name="title_sound_uri">Benachrichtigungston ändern</string>
     <string name="title_stats">Statistiken</string>
     <string name="title_stop_charging">Laden automatisch abbrechen [Root]</string>
+    <string name="title_stop_charging_auto_pick">Automatisch auswählen</string>
+    <string name="title_stop_charging_disable_charging_text">Text zum Laden abbrechen</string>
+    <string name="title_stop_charging_enable_charging_text">Text zum Laden fortsetzen</string>
+    <string name="title_stop_charging_file">Stop charging Datei auswählen</string>
     <string name="title_temp_unit">Temperatur-Einheit</string>
     <string name="title_temp_warning_high_enabled">Temperatur-Hoch Warnung</string>
     <string name="title_temp_warning_low_enabled">Temperatur-Niedrig Warnung</string>

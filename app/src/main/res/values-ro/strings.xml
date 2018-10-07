@@ -241,4 +241,14 @@
     <string name="title_temp_warning_low_enabled">Enable low temperature warning</string>
     <string name="title_temp_warning_slider">Warning temperature:</string>
     <string name="title_temp_warnings">Temperature warnings</string>
+    <string name="dialog_button_no">No</string>
+    <string name="dialog_message_send_debug_info">Do you want to send debug information with your mail? This can be very helpful, if you want to report a bug.</string>
+    <string name="toast_no_email_app">No email app found!</string>
+    <string name="menu_sent_file_to_developer">Send file to developer</string>
+    <string name="summary_stop_charging_auto_pick">Automatically pick the correct file</string>
+    <string name="summary_stop_charging_file">Stop charging needs a file to work. If it is not working by default on your device, you can find and pick that file here.</string>
+    <string name="title_stop_charging_auto_pick">Auto Pick</string>
+    <string name="title_stop_charging_disable_charging_text">Text to disable charging</string>
+    <string name="title_stop_charging_enable_charging_text">Text to enable charging</string>
+    <string name="title_stop_charging_file">Pick Stop charging file</string>
 </resources>
