@@ -149,5 +149,15 @@
     "path": "/proc/smb1357_disable_chrg",
     "chargeOn": "0",
     "chargeOff": "1"
+  },
+  {
+    "path": "/sys/devices/qpnp-charger-f2d04c00/power_supply/battery/charging_enabled",
+    "chargeOn": "1",
+    "chargeOff": "0"
+  },
+  {
+    "path": "/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled",
+    "chargeOn": "1",
+    "chargeOff": "0"
   }
 ]
