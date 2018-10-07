@@ -48,4 +48,5 @@ ext {
     taskerVersion = '4.0.3'
     graphViewVersion = '4.2.1'
     testRunnerVersion = '1.0.1'
+    gsonVersion = '2.8.5'
 }

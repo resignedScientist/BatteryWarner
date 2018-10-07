@@ -10,9 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.laudien.p1xelfehler.batterywarner.R;
 
-import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 import eu.chainfire.libsuperuser.Shell;
@@ -191,6 +194,27 @@ public final class RootHelper {
         }
     }
 
+    @Nullable
+    private static ToggleChargingFile findExistingFile(ToggleChargingFile[] files) {
+        String[] commands = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            commands[i] = "[ -f /etc/hosts/test ] && echo \"yes\" || echo \"no\"";
+        }
+        List output = Shell.SU.run(commands);
+        int index = output.indexOf("yes");
+        if (index > -1) {
+            return files[index];
+        }
+        return null;
+    }
+
+    private static ToggleChargingFile[] readFiles(@NonNull Context context) {
+        Gson gson = new Gson();
+        InputStream inputStream = context.getResources().openRawResource(R.raw.stop_charging_files);
+        Reader reader = new InputStreamReader(inputStream);
+        return gson.fromJson(reader, ToggleChargingFile[].class);
+    }
+
     private static ToggleChargingFile getAvailableFile(@NonNull Context context) throws NoBatteryFileFoundException {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean autoPickEnabled = sharedPreferences.getBoolean(context.getString(R.string.pref_stop_charging_auto_pick), context.getResources().getBoolean(R.bool.pref_stop_charging_auto_pick_default));
@@ -201,49 +225,22 @@ public final class RootHelper {
                     sharedPreferences.getString(context.getString(R.string.pref_stop_charging_disable_charging_text), context.getString(R.string.pref_stop_charging_disable_charging_text_default))
             );
         }
-        ToggleChargingFile toggleChargingFile = null;
-        if (PRODUCT.toLowerCase().equals("walleye") || MODEL.equals("Pixel 2")) { // Pixel 2
-            return new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1");
-        }
-        if (MODEL.contains("Pixel")) {
-            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0");
-        } else if (BRAND.equals("OnePlus") || PRODUCT.equals("angler") || BRAND.equals("motorola") || BRAND.equals("lge")) {
-            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0");
-        } else if (BRAND.equals("samsung")) {
-            toggleChargingFile = new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1");
-        }
-        if (toggleChargingFile != null && new File(toggleChargingFile.path).exists()) {
-            return toggleChargingFile;
-        }
-        ToggleChargingFile[] files = new ToggleChargingFile[]{
-                new ToggleChargingFile("/sys/class/power_supply/battery/battery_charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/batt_slate_mode", "0", "1"),
-                new ToggleChargingFile("/sys/class/hw_power/charger/charge_data/enable_charger", "1", "0"),
-                new ToggleChargingFile("/sys/module/pm8921_charger/parameters/disabled", "0", "1"),
-                new ToggleChargingFile("/sys/devices/qpnp-charger-f2d04c00/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/devices/qpnp-charger-14/power_supply/battery/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/input_suspend", "0", "1"),
-                new ToggleChargingFile("/sys/class/power_supply/ac/charging_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/charge_enabled", "1", "0"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/device/Charging_Enable", "1", "0"),
-                new ToggleChargingFile("/sys/devices/platform/7000c400.i2c/i2c-1/1-006b/charging_state", "enabled", "disabled"),
-                new ToggleChargingFile("/sys/class/power_supply/battery/charge_disable", "0", "1")
-                /*new ToggleChargingFile("/sys/class/power_supply/battery/charger_control", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/class/power_supply/bq2589x_charger/enable_charging", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/class/power_supply/chargalg/disable_charging", "0", "1"), // experimental
-                new ToggleChargingFile("/sys/class/power_supply/dollar_cove_charger/present", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/devices/platform/battery/ChargerEnable", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/devices/platform/huawei_charger/enable_charger", "1", "0"), // experimental
-                new ToggleChargingFile("/sys/devices/platform/mt-battery/disable_charger", "0", "1"), // experimental
-                new ToggleChargingFile("/sys/devices/platform/tegra12-i2c.0/i2c-0/0-006b/charging_state", "enabled", "disabled"), // experimental
-                new ToggleChargingFile("/sys/devices/virtual/power_supply/manta-battery/charge_enabled", "1", "0")*/ // experimental
-        };
+        ToggleChargingFile[] files = readFiles(context);
+        String product = PRODUCT.toLowerCase();
+        String model = MODEL.toLowerCase();
+        String brand = BRAND.toLowerCase();
+        // find file by product, model or brand
         for (ToggleChargingFile file : files) {
-            if (new File(file.path).exists()) {
+            if (file.products.contains(product) || file.models.contains(model) || file.brands.contains(brand)) {
                 Log.d("RootHelper", "File found: " + file.path);
                 return file;
             }
+        }
+        // return first existing file
+        ToggleChargingFile file = findExistingFile(files);
+        if (file != null) {
+            Log.d("RootHelper", "File found: " + file.path);
+            return file;
         }
         Log.e("RootHelper", "No battery file found to toggle charging! :(");
         throw new NoBatteryFileFoundException();
@@ -281,11 +278,21 @@ public final class RootHelper {
         private final String path;
         private final String chargeOn;
         private final String chargeOff;
+        private List<String> products, models, brands;
 
-        private ToggleChargingFile(String path, String chargeOn, String chargeOff) {
+        ToggleChargingFile(String path, String chargeOn, String chargeOff) {
             this.path = path;
             this.chargeOn = chargeOn;
             this.chargeOff = chargeOff;
+        }
+
+        public ToggleChargingFile(String path, String chargeOn, String chargeOff, List<String> products, List<String> models, List<String> brands) {
+            this.path = path;
+            this.chargeOn = chargeOn;
+            this.chargeOff = chargeOff;
+            this.products = products;
+            this.models = models;
+            this.brands = brands;
         }
     }
 }
