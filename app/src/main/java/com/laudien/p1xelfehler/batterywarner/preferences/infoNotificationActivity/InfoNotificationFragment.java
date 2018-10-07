@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
 import com.laudien.p1xelfehler.batterywarner.R;
@@ -15,18 +14,18 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.info_notification_items);
-
-        Context context = getActivity();
-        if (context != null) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        }
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    public void onResume() {
+        super.onResume();
+        registerObservers();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterObservers();
     }
 
     @Override
@@ -35,5 +34,13 @@ public class InfoNotificationFragment extends PreferenceFragment implements Shar
         if (context != null) {
             ServiceHelper.restartService(context);
         }
+    }
+
+    private void registerObservers() {
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void unregisterObservers() {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 }

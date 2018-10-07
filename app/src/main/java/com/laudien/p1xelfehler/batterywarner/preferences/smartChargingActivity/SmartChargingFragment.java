@@ -57,9 +57,7 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             int warningHigh = sharedPreferences.getInt(getString(R.string.pref_warning_high), getResources().getInteger(R.integer.pref_warning_high_default));
             seekBar_limit.setMin(warningHigh);
-            context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
         }
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -68,6 +66,13 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
         if (SDK_INT >= LOLLIPOP) {
             timePickerPreference.setEnabled(!alarmTimeSwitch.isChecked());
         }
+        registerObservers();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterObservers();
     }
 
     @Override
@@ -83,16 +88,6 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        Context context = getActivity();
-        if (context != null) {
-            context.unregisterReceiver(rootCheckFinishedReceiver);
-        }
     }
 
     @Override
@@ -150,6 +145,22 @@ public class SmartChargingFragment extends PreferenceFragment implements SharedP
                     .setIcon(R.drawable.ic_battery_status_full_green_48dp)
                     .create()
                     .show();
+        }
+    }
+
+    private void registerObservers() {
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        Context context = getActivity();
+        if (context != null) {
+            context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
+        }
+    }
+
+    private void unregisterObservers() {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        Context context = getActivity();
+        if (context != null) {
+            context.unregisterReceiver(rootCheckFinishedReceiver);
         }
     }
 }

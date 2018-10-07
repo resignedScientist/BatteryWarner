@@ -1,12 +1,10 @@
 package com.laudien.p1xelfehler.batterywarner.preferences.stopChargingFileActivity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.TwoStatePreference;
 import android.support.annotation.Nullable;
 
@@ -20,11 +18,18 @@ public class StopChargingFileFragment extends PreferenceFragment implements Shar
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.stop_charging_file);
         preparePreferences();
-        Context context = getActivity();
-        if (context != null) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerObservers();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterObservers();
     }
 
     @Override
@@ -58,5 +63,13 @@ public class StopChargingFileFragment extends PreferenceFragment implements Shar
         mEnablePref.setEnabled(enabled);
         mDisablePref.setSummary(mDisablePref.getText());
         mDisablePref.setEnabled(enabled);
+    }
+
+    private void registerObservers() {
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void unregisterObservers() {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 }

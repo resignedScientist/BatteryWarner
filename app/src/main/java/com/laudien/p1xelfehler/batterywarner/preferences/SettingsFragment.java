@@ -94,8 +94,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context context = getContext();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         easyMode = sharedPreferences.getBoolean(getString(R.string.pref_easy_mode), getResources().getBoolean(R.bool.pref_easy_mode_default));
 
         // load arguments
@@ -132,9 +131,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         setRingtoneSummary(true); // warning high sound
         setRingtoneSummary(false); // warning low sound
-        // register receivers
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        context.registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
     }
 
     @Override
@@ -147,16 +143,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             pref_repeatWarning.setEnabled(!pref_stopCharging.isChecked());
         }
         pref_autoSave.setEnabled(pref_graphEnabled.isChecked());
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         setInfoNotificationSubtitle(sharedPreferences);
         setSmartChargingSummary(sharedPreferences);
+        registerObservers();
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        getContext().unregisterReceiver(rootCheckFinishedReceiver);
+    public void onPause() {
+        super.onPause();
+        unregisterObservers();
     }
 
     @Override
@@ -289,5 +285,15 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
+    }
+
+    private void registerObservers() {
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        getContext().registerReceiver(rootCheckFinishedReceiver, new IntentFilter(ACTION_ROOT_CHECK_FINISHED));
+    }
+
+    private void unregisterObservers() {
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        getContext().unregisterReceiver(rootCheckFinishedReceiver);
     }
 }
