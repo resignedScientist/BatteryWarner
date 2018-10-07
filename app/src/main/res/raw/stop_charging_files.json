@@ -90,7 +90,9 @@
     "chargeOn": "0",
     "chargeOff": "1",
     "products": [],
-    "models": [],
+    "models": [
+      "ph-1"
+    ],
     "brands": [
       "essential"
     ]
