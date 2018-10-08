@@ -28,6 +28,32 @@
     ]
   },
   {
+    "path": "/sys/class/power_supply/battery/charge_disable",
+    "chargeOn": "0",
+    "chargeOff": "1",
+    "products": [
+      "walleye"
+    ],
+    "models": [
+      "pixel 2"
+    ]
+  },
+  {
+    "path": "/sys/class/power_supply/battery/battery_charging_enabled",
+    "chargeOn": "1",
+    "chargeOff": "0",
+    "products": [
+      "ZL1_NA"
+    ],
+    "brands": [
+      "LeEco"
+    ],
+    "models": [
+      "pixel",
+      "LEX727"
+    ]
+  },
+  {
     "path": "/sys/class/hw_power/charger/charge_data/enable_charger",
     "chargeOn": "1",
     "chargeOff": "0"
@@ -43,25 +69,6 @@
     "chargeOff": "1",
     "brands": [
       "samsung"
-    ]
-  },
-  {
-    "path": "/sys/class/power_supply/battery/charge_disable",
-    "chargeOn": "0",
-    "chargeOff": "1",
-    "products": [
-      "walleye"
-    ],
-    "models": [
-      "pixel 2"
-    ]
-  },
-  {
-    "path": "/sys/class/power_supply/battery/battery_charging_enabled",
-    "chargeOn": "1",
-    "chargeOff": "0",
-    "models": [
-      "pixel"
     ]
   },
   {
