@@ -45,7 +45,7 @@ ext {
     espressoVersion = '2.2.2'
     superUserVersion = '1.0.0.201608240809'
     taskerVersion = '4.0.3'
-    graphViewVersion = '4.2.1'
-    testRunnerVersion = '1.0.1'
+    graphViewVersion = '4.2.2'
+    testRunnerVersion = '1.0.2'
     gsonVersion = '2.8.5'
 }
